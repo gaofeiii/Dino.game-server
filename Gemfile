@@ -8,6 +8,18 @@ gem 'rails', '3.2.1'
 gem 'sqlite3'
 gem 'ohm'
 
+group :development do
+  gem 'rspec-rails', '2.8.1'
+  gem 'capistrano', '2.11.2'
+end
+
+group :test do
+  gem 'rspec-rails', '2.8.1'
+  gem 'autotest-rails', '4.1.2'
+  gem 'factory_girl_rails'
+  gem 'simplecov'
+end
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
