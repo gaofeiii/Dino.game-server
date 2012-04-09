@@ -1,6 +1,8 @@
-class Player < Ohm::Model
-	attribute :nickname
-	attribute :village_id
+class Player < GameClass
+	attribute :account_id, Integer
+	
+	attribute :nickname, String
+	attribute :village_id, Integer
 	
 	index :nickname
 	index :village_id

@@ -1,6 +1,6 @@
-class Village < Ohm::Model
-	attribute :name
-	attribute :player_id
+class Village < GameClass
+	attribute :name, 			String
+	attribute :player_id, Integer
 
 	index :name
 	index :player_id
