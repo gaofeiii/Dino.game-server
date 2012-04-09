@@ -9,7 +9,7 @@ describe Player do
 			@village = Village.create :name => "gaofei's village"
 		end
 
-		it "should have a vlliage method" do
+		it "should have a village method" do
 			Player.new(@attr).should respond_to(:village)
 		end
 
