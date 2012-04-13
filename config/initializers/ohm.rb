@@ -6,17 +6,23 @@ require 'ohm/contrib'
 Ohm.connect :ip => "127.0.0.1", :port => 8899
 
 if Rails.env.production?
-  Ohm.redis.select 3
+  Ohm.redis.select 0
 elsif Rails.env.development?
-  Ohm.redis.select 4
+  Ohm.redis.select 1
 elsif Rails.env.test?
-  Ohm.redis.select 5
+  Ohm.redis.select 2
+end
+
+class Numeric
+  def object
+    self
+  end
 end
 
 module Ohm
 
   class Model
-    # NOTE: 用更安全的方式重写Ohm::Modle.lock!和unlock!方法
+    # NOTE: 用更安全的方式重写Ohm::Model.lock!和unlock!方法
     # 原有的加锁机制存在明显的bug，详细请看：
     # http://huangz.iteye.com/blog/1381538
 
@@ -51,10 +57,10 @@ module Ohm
     # 修改后的lock!方法
     # 增加unwatch方法
     def unlock_with_secure!
-      # p "secure unlock!"
       db.unwatch
       unlock_without_secure!
     end
+
     alias_method_chain :lock!, :secure
     alias_method_chain :unlock!, :secure
   end
@@ -83,7 +89,7 @@ module Ohm
 end
 
 class GameClass < Ohm::Model
-	include Ohm::ActiveModelExtension
+  include Ohm::ActiveModelExtension
   include Ohm::Boundaries
   include Ohm::Typecast
   include Ohm::WebValidations
@@ -122,27 +128,34 @@ class GameClass < Ohm::Model
         raise NoMethodError
       end
     end
-	end
+  end
 
+  # NOTE: 对象的id要单独处理，否则会出错
   def to_hash
-    new_hash = super
+    new_hash = {:id => id.to_i}
     attributes.each do |key|
       value = send(key)
-      new_hash[key] = value.nil? ? nil : value.object
+      begin
+        new_hash[key] = value.object
+      rescue
+        new_hash[key] = value
+      end
     end
     new_hash
   end
 
-	def save!
-		save
-	end
+  def save!
+    save
+  end
 
   def reload
     x = self.class[id]
     attributes.each do |attribute|
-      eval("self.#{attribute} = x.send(attribute)")
+      self.send("#{attribute}=", x.send(attribute))
     end
     self
   end
 
 end
+
+
