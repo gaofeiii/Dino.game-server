@@ -6,11 +6,11 @@ require 'ohm/contrib'
 Ohm.connect :ip => "127.0.0.1", :port => 6379
 
 if Rails.env.production?
-  Ohm.redis.select 0
+  Ohm.redis.select 11
 elsif Rails.env.development?
-  Ohm.redis.select 1
+  Ohm.redis.select 12
 elsif Rails.env.test?
-  Ohm.redis.select 2
+  Ohm.redis.select 13
 end
 
 class Numeric
