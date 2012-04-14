@@ -1,5 +1,8 @@
 class Village < GameClass
 	attribute :name, 			String
+	attribute :x, 				Integer
+	attribute :y, 				Integer
+
 	attribute :player_id, Integer
 
 	index :name
@@ -7,5 +10,9 @@ class Village < GameClass
 
 	def player
 		Player[player_id]
+	end
+
+	def as_json
+		
 	end
 end
