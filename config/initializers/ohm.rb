@@ -3,7 +3,7 @@ p 'Loading ohm.rb...' if Rails.env.development?
 require 'ohm/contrib'
 
 # Set ohm redis server
-Ohm.connect :ip => "127.0.0.1", :port => 8899
+Ohm.connect :ip => "127.0.0.1", :port => 6379
 
 if Rails.env.production?
   Ohm.redis.select 0
