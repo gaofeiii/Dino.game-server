@@ -24,7 +24,7 @@ set :rails_env, :production
 set :use_sudo, false
 set :keep_releases, 5
 
-set :repository,  "git@vm-192-168-14-216.shengyun.grandcloud.cn:/git/dinosaur.git"
+set :repository,  "git@vm-192-168-14-216.shengyun.grandcloud.cn:/git/dinosaur-game.git"
 set :scm, :git
 set :branch, "master"
 set :scm_passphrase, "123"
