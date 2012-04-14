@@ -19,7 +19,7 @@ set :runner, "gaofei"
 set :ssh_options,   { :forward_agent => true }
 set :application, "dinosaur"
 set :deploy_to, "/var/games/servers/#{application}"
-# set :deploy_via, :remote_cache
+set :deploy_via, :remote_cache
 set :rails_env, :production
 set :use_sudo, false
 set :keep_releases, 5
@@ -58,7 +58,7 @@ end
 
 # 如果有rvmrc文件需要执行 trust_rvmrc
 # after "deploy", "rvm:trust_rvmrc"
-after "deploy", "deploy:migrate"
+# after "deploy", "deploy:migrate"
 # after "deploy:create_symlink", "assets:precompile"
 
 namespace :unicorn do

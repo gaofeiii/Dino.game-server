@@ -12,7 +12,4 @@ class Village < GameClass
 		Player[player_id]
 	end
 
-	def as_json
-		
-	end
 end
