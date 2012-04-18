@@ -2,6 +2,8 @@ include SessionsHelper
 
 class SessionsController < ApplicationController
 
+	skip_before_filter :find_player
+
 	def create
 		player = Player.find_by_account_id(params[:account_id])
 
