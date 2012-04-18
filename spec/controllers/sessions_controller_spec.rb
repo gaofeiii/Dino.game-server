@@ -15,17 +15,18 @@ describe SessionsController do
 		describe "success" do
 			
 			it "should return success" do
-				post :create, @user.except(:id)
+				post :create, :session_key => 'abcdefg', :account_id => @user[:id]
 				response.should be_success
+				@player.reload.should be_logined
+			end
+
+			it "should create a player" do
+				lambda do
+					post :create, :session_key => "xixihaha", :account_id => 100
+					response.should be_success
+				end.should change(Player, :count).by(1)
 			end
 		end
 
-		describe "failure" do
-			
-			it "should return success" do
-				delete :destroy, :player_id => @player.id
-				response.should be_success
-			end
-		end
 	end
 end

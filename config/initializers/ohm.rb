@@ -1,6 +1,11 @@
 p 'Loading ohm.rb...' if Rails.env.development?
+
+# Use hiredis for redis connecting
+require 'redis/connection/hiredis'
+
 # Should require 'ohm/contrib' for ohm extensions
 require 'ohm/contrib'
+
 
 # Set ohm redis server
 Ohm.connect :ip => "127.0.0.1", :port => 6379

@@ -1,11 +1,15 @@
+include SessionsHelper
+
 class SessionsController < ApplicationController
 
-	# TODO: 登录和注销的功能，可能自己创建一个session的类
 	def create
-		render :json => "Login success"
-	end
+		player = Player.find_by_account_id(params[:account_id])
 
-	def destroy
-		render :json => "Logout success"
+		unless player
+			player = create_player(params[:account_id])
+		end
+
+		login(player, params[:session_key])
+		render :json => "OK"
 	end
 end

@@ -5,7 +5,9 @@ class Player < GameClass
 	attribute :level, Integer
 	attribute :experience, Float
 	attribute :village_id, Integer
+	attribute :session_id, Integer
 	
+	index :account_id
 	index :nickname
 	index :village_id
 	index :level
@@ -21,8 +23,12 @@ class Player < GameClass
 		Village[village_id]
 	end
 
-	def as_json
-		
+	def session
+		Session[session_id]
+	end
+
+	def logined?
+		(session && session.expired_time > Time.now) ? true : false
 	end
 
 end
