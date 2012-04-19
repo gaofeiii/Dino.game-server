@@ -5,12 +5,12 @@ FactoryGirl.define do
 	end
 
 	factory :village do
-		name 			"gaofei's village"
+		sequence(:name) {|n| "gaofei_#{n}'s village"}
 	end
 
 	factory :session do
 		session_key 	"session_key_test"
-		expired_time 	1.hour.from_now.localtime
+		expired_time 	1.hour.since(Time.now)
 	end
 
 	factory :building do

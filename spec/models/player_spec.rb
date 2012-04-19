@@ -64,6 +64,16 @@ describe Player do
 			@player.reload.session.should_not be_nil
 			@player.reload.should_not be_logined 
 		end
+
+		it "should respond_to 'village=' method" do
+			@player.should respond_to(:village=)
+		end
+
+		it "should set the corrent village" do
+			village = FactoryGirl.create(:village)
+			@player.village = village
+			@player.village.should == village
+		end
 	end
 
 
