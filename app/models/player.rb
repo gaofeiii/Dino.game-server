@@ -14,6 +14,7 @@ class Player < GameClass
 	index :level
 	index :experience
 
+
 	# 验证属性字段的方法
 	# 注：validate方法优先于initialize方法
 	def validate
@@ -35,8 +36,8 @@ class Player < GameClass
 
 	# 设置玩家的村庄
 	def village=(vil)
-		self.update :village_id => vil.id
-		vil.update :player_id => self.id
+		self.village_id = vil ? vil.id : nil
+		self
 	end
 
 	# 玩家登录后的session

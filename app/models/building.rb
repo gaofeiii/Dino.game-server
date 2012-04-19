@@ -6,7 +6,5 @@ class Building < GameClass
 	index :type
 	index :village_id
 
-	def village
-		Village[village_id]
-	end
+	reference :village, Village
 end

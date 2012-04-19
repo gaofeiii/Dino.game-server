@@ -1,7 +1,7 @@
 FactoryGirl.define do
 	
 	factory :player do
-		nickname		"gaofei"
+		sequence(:nickname) {|n| "gaofei_#{n}"}
 	end
 
 	factory :village do
@@ -13,4 +13,8 @@ FactoryGirl.define do
 		expired_time 	1.hour.from_now.localtime
 	end
 
+	factory :building do
+		type 			2
+		level			1
+	end
 end

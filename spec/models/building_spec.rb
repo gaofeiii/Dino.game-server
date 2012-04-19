@@ -1,5 +1,15 @@
 require 'spec_helper'
 
 describe Building do
-  pending "add some examples to (or delete) #{__FILE__}"
+
+	describe "Relationships" do
+		
+		before(:each) do
+			@building = FactoryGirl.create(:building)
+		end
+
+		it "should respond to village" do
+			@building.should respond_to(:village)
+		end
+	end
 end
