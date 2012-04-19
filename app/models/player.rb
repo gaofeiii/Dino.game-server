@@ -1,32 +1,50 @@
 class Player < GameClass
 
-	attribute :account_id, Integer
-	attribute :nickname, String
-	attribute :level, Integer
-	attribute :experience, Float
-	attribute :village_id, Integer
-	attribute :session_id, Integer
+	# Player的属性
+	attribute :account_id, 		Integer
+	attribute :nickname, 			String
+	attribute :level, 				Integer
+	attribute :experience, 		Float
+	attribute :village_id, 		Integer
+	attribute :session_id, 		Integer
 	
+	# 为Player添加索引便于查找
 	index :account_id
 	index :nickname
-	index :village_id
 	index :level
+	index :experience
 
+	# 验证属性字段的方法
+	# 注：validate方法优先于initialize方法
+	def validate
+		assert_numeric :level
+		assert_numeric :experience
+	end
+
+	# 构造函数
 	def initialize(args = {})
 		super
 		self.level = 1 if level.nil?
 		self.experience = 0 unless experience
 	end
 
-
+	# 获取玩家的村庄
 	def village
 		Village[village_id]
 	end
 
+	# 设置玩家的村庄
+	def village=(vil)
+		self.update :village_id => vil.id
+		vil.update :player_id => self.id
+	end
+
+	# 玩家登录后的session
 	def session
 		Session[session_id]
 	end
 
+	# 玩家是否在线？
 	def logined?
 		(session && session.expired_time > Time.now) ? true : false
 	end
