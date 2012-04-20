@@ -9,8 +9,6 @@ describe Player do
 			@village = FactoryGirl.create(:village)
 		end
 
-
-
 		it "level and experience should be default value when not assigned" do
 			player = Player.create @attr
 			player.level.should == 1
@@ -21,6 +19,12 @@ describe Player do
 			player = Player.new @attr
 			player.level = 'xxx'
 			player.should_not be_valid
+		end
+
+		it "should respond_to created_at updated_at" do
+			player = Player.new @attr
+			player.should respond_to(:created_at)
+			player.should respond_to(:updated_at)
 		end
 	end
 
