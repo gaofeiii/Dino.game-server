@@ -6,7 +6,7 @@ class Village < GameClass
 	attribute :player_id, 	Integer
 	collection :buildings, 	Building
 
-	include Ohm::Timestamping
+	include Ohm::MyTimestamping
 
 	index :name
 	index :x
