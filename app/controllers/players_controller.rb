@@ -1,4 +1,10 @@
-# TODO: [S] 完成show方法, 获取玩家的信息
-
 class PlayersController < ApplicationController
+
+	def show
+		player = Player[params[:id]]
+		if player.nil?
+			render :json => {:error => "Player not found"}, :status => 999 and return
+		end
+		render :json => {:player => player}
+	end
 end
