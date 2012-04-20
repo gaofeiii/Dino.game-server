@@ -8,7 +8,7 @@ class Player < GameClass
 	attribute :village_id, 		Integer
 	attribute :session_id, 		Integer
 
-	include MyTimestamping
+	include Ohm::MyTimestamping
 	
 	# 为Player添加索引便于查找
 	index :account_id
