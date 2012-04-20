@@ -1,5 +1,5 @@
 DinosaurGame::Application.routes.draw do
-  resources :players, :only => :show do
+  resources :players, :only => [:index, :show] do
     resources :villages, :only => :index
   end
 

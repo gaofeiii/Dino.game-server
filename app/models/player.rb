@@ -7,6 +7,8 @@ class Player < GameClass
 	attribute :experience, 		Float
 	attribute :village_id, 		Integer
 	attribute :session_id, 		Integer
+
+	include MyTimestamping
 	
 	# 为Player添加索引便于查找
 	index :account_id
