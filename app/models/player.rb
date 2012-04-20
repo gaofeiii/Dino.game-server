@@ -8,7 +8,7 @@ class Player < GameClass
 	attribute :village_id, 		Integer
 	attribute :session_id, 		Integer
 
-	include Ohm::MyTimestamping
+	include Ohm::Timestamping
 	
 	# 为Player添加索引便于查找
 	index :account_id
@@ -49,7 +49,7 @@ class Player < GameClass
 
 	# 玩家是否在线？
 	def logined?
-		(session && session.expired_time > Time.now) ? true : false
+		(session && session.expired_time > Time.now.utc) ? true : false
 	end
 
 end

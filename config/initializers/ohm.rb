@@ -49,11 +49,11 @@ module Ohm
       # 只需要对key[:_lock]添加乐观锁来保证setnx期间key[:_lock]不会发生变化才会生效
       # p "secure lock!"
       key[:_lock].watch
-      until db.multi{|t| t.setnx(key[:_lock], Time.now.to_f + 0.5)}
+      until db.multi{|t| t.setnx(key[:_lock], Time.zone.now.to_f + 0.5)}
         next unless timestamp = key[:_lock].get
         sleep(0.1) and next unless lock_expired?(timestamp)
 
-        break unless timestamp = key[:_lock].getset(Time.now.to_f + 0.5)
+        break unless timestamp = key[:_lock].getset(Time.zone.now.to_f + 0.5)
         break if lock_expired?(timestamp)
       end
 
@@ -78,14 +78,14 @@ module Ohm
     end
 
     def create
-      self.created_at ||= Time.now.to_i
+      self.created_at ||= Time.now.utc.to_i
 
       super
     end
 
   protected
     def write
-      self.updated_at = Time.now.to_i
+      self.updated_at = Time.now.utc.to_i
 
       super
     end
