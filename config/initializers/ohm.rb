@@ -146,7 +146,7 @@ class GameClass < Ohm::Model
         new_hash[key] = value
       end
     end
-    new_hash
+    new_hash.except(:updated_at, :created_at)
   end
 
   def save!

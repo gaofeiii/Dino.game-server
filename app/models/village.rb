@@ -27,7 +27,11 @@ class Village < GameClass
 		self
 	end
 
-	def create_building(building_type, level = 0)
-		Building.create :type => building_type.to_i, :level => level, :village_id => id
+	def create_building(building_type, level = 0, x, y)
+		Building.create :type => building_type.to_i, :level => level, :village_id => id, :x => x, :y => y
+	end
+
+	def full_info
+		self.to_hash.merge(:buildings => buildings.to_a)
 	end
 end

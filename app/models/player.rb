@@ -52,4 +52,7 @@ class Player < GameClass
 		(session && session.expired_time > Time.now.utc) ? true : false
 	end
 
+	def full_info
+		self.to_hash.merge(:village => village.full_info)
+	end
 end

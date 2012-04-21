@@ -6,6 +6,6 @@ class VillagesController < ApplicationController
 		unless player
 			render :json => "Player not found", :status => 999 and return
 		end
-		render :json => {:village => player.try(:village)}
+		render :json => player.full_info
 	end
 end

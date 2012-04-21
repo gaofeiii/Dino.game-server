@@ -5,7 +5,7 @@ class PlayersController < ApplicationController
 		if player.nil?
 			render :json => {:error => "Player not found"}, :status => 999 and return
 		end
-		render :json => {:player => player}
+		render :json => {:player => player.full_info}
 	end
 
 	def show
@@ -13,6 +13,6 @@ class PlayersController < ApplicationController
 		if player.nil?
 			render :json => {:error => "Player not found"}, :status => 999 and return
 		end
-		render :json => {:player => player}
+		render :json => {:player => player.full_info}
 	end
 end

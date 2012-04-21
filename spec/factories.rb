@@ -16,5 +16,7 @@ FactoryGirl.define do
 	factory :building do
 		type 			2
 		level			1
+		x 				100
+		y					200
 	end
 end
