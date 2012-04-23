@@ -27,7 +27,7 @@ class Village < GameClass
 		self
 	end
 
-	def create_building(building_type, level = 0, x, y)
+	def create_building(building_type, level = 1, x, y)
 		Building.create :type => building_type.to_i, :level => level, :village_id => id, :x => x, :y => y
 	end
 
