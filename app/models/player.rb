@@ -16,6 +16,9 @@ class Player < GameClass
 	index :level
 	index :experience
 
+	# Callbacks
+	after :create, :create_village
+
 
 	# 验证属性字段的方法
 	# 注：validate方法优先于initialize方法
@@ -54,5 +57,10 @@ class Player < GameClass
 
 	def full_info
 		self.to_hash.merge(:village => village.full_info)
+	end
+
+	def create_village
+		vil = Village.create :name => "#{self.nickname}'s village", :player_id => self.id
+		self.update :village_id => vil.id
 	end
 end
