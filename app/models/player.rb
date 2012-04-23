@@ -55,10 +55,12 @@ class Player < GameClass
 		(session && session.expired_time > Time.now.utc) ? true : false
 	end
 
+	# 获取玩家所有的信息，包括村庄的完整信息
 	def full_info
-		self.to_hash.merge(:village => village.full_info)
+		self.to_hash.merge(:village => village.try(:full_info))
 	end
 
+	# 为新玩家创建村庄
 	def create_village
 		vil = Village.create :name => "#{self.nickname}'s village", :player_id => self.id
 		self.update :village_id => vil.id

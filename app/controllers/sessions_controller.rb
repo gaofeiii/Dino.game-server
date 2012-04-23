@@ -12,6 +12,6 @@ class SessionsController < ApplicationController
 		end
 
 		login(player, params[:session_key])
-		render :json => "OK"
+		render :json => {:player_id => player.id.to_i}
 	end
 end
