@@ -5,6 +5,7 @@ class Village < GameClass
 
 	attribute :player_id, 	Integer
 	collection :buildings, 	Building
+	collection :dinosaurs, 	Dinosaur
 
 	include Ohm::MyTimestamping
 
@@ -32,6 +33,6 @@ class Village < GameClass
 	end
 
 	def full_info
-		self.to_hash.merge(:buildings => buildings.to_a)
+		self.to_hash.merge(:buildings => buildings.to_a, :dinosaurs => dinosaurs.to_a)
 	end
 end

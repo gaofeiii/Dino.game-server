@@ -40,6 +40,15 @@ describe Village do
       @village.player.should == @player
     end
 
+    it "should respond_to dinosaurs" do
+      @village.should respond_to(:dinosaurs)
+    end
+
+    it "should have the correct dinosaurs" do
+      d1 = FactoryGirl.create(:dinosaur, :village_id => @village.id)
+      @village.dinosaurs.should include(d1)
+    end
+
   end
 
 

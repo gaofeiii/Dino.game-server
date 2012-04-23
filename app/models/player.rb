@@ -9,6 +9,8 @@ class Player < GameClass
 	attribute :session_id, 		Integer
 
 	include Ohm::MyTimestamping
+
+	collection :dinosaurs, 		Dinosaur
 	
 	# 为Player添加索引便于查找
 	index :account_id

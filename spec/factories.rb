@@ -8,6 +8,10 @@ FactoryGirl.define do
 		sequence(:name) {|n| "gaofei_#{n}'s village"}
 	end
 
+	factory :dinosaur do
+		sequence(:type) {|n| n}
+	end
+
 	factory :session do
 		session_key 	"session_key_test"
 		expired_time 	1.hour.since(Time.now)
