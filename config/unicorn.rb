@@ -1,3 +1,6 @@
+require 'ohm'
+require 'redis/connection/hiredis'
+
 worker_processes 1
 
 working_directory "/var/games/servers/dinosaur/current"
@@ -13,9 +16,9 @@ stdout_path "/var/games/servers/dinosaur/shared/log/unicorn.stdout.log"
 before_fork do |server, worker|
   # the following is highly recomended for Rails + "preload_app true"
   # as there's no need for the master process to hold a connection
-  if defined?(ActiveRecord::Base)
-    ActiveRecord::Base.connection.disconnect!
-  end
+  # if defined?(ActiveRecord::Base)
+  #   ActiveRecord::Base.connection.disconnect!
+  # end
 
   # Before forking, kill the master process that belongs to the .oldbin PID.
   # This enables 0 downtime deploys.
@@ -30,10 +33,11 @@ before_fork do |server, worker|
 end
 
 after_fork do |server, worker|
+  Ohm.connect :host => "127.0.0.7", :port =>  6379
   # the following is *required* for Rails + "preload_app true",
-  if defined?(ActiveRecord::Base)
-    ActiveRecord::Base.establish_connection
-  end
+  # if defined?(ActiveRecord::Base)
+  #   ActiveRecord::Base.establish_connection
+  # end
 
   # if preload_app is true, then you may also want to check and
   # restart any other shared sockets/descriptors such as Memcached,
