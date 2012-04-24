@@ -15,6 +15,7 @@ guard 'rspec', :version => 2 do
   watch('config/routes.rb')                           { ["spec/controllers", "spec/requests"] }
   watch('app/controllers/application_controller.rb')  { ["spec/controllers", "spec/requests"] }
   watch('spec/factories.rb')                          { "spec" }
+  watch(%r{^const/(.*)\.rb$})                         { "spec" }
   # Capybara request specs
   watch(%r{^app/views/(.+)/.*\.(erb|haml)$})          { |m| "spec/requests/#{m[1]}_spec.rb" }
 end
