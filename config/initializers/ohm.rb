@@ -35,7 +35,7 @@ module Ohm
         db.scard(key[:all])
       end
 
-
+      # 获取当前类实例的最大id
       def current_id
         db.get(key[:id]).to_i
       end
