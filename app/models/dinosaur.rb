@@ -1,11 +1,13 @@
-class Dinosaur < GameClass
-	attribute :level, 		Integer
-	attribute :experience, 		Integer
-	attribute :type, 			Integer
+# 恐龙的类
 
-	attribute :basic_attack, 			Integer
-	attribute :basic_defense, 		Integer
-	attribute :basic_agility,			Integer
+class Dinosaur < GameClass
+	attribute :level, 				Integer
+	attribute :experience, 		Integer
+	attribute :type, 					Integer
+
+	attribute :basic_attack, 			Integer			# 基础攻击
+	attribute :basic_defense, 		Integer			# 基础防御
+	attribute :basic_agility,			Integer 		# 基础敏捷
 	attribute :total_attack, 			Integer
 	attribute :total_defense, 		Integer
 	attribute :total_agility,			Integer
@@ -13,6 +15,8 @@ class Dinosaur < GameClass
 
 	reference :player, 		Player
 	reference :village, 	Village
+
+	include Ohm::MyTimestamping
 
 	# 构造函数
 	def initialize(args = {})
