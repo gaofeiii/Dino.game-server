@@ -25,15 +25,16 @@ class Player < GameClass
 	# 验证属性字段的方法
 	# 注：validate方法优先于initialize方法
 	def validate
-		assert_numeric :level
-		assert_numeric :experience
+		assert_unique 	:nickname
+		assert_numeric 	:level
+		assert_numeric 	:experience
 	end
 
 	# 构造函数
 	def initialize(args = {})
 		super
 		self.level = 1 if level.nil?
-		self.experience = 0 unless experience
+		self.experience = 0 if experience.nil?
 	end
 
 	# 获取玩家的村庄
@@ -62,6 +63,7 @@ class Player < GameClass
 		self.to_hash.merge(:village => village.try(:full_info))
 	end
 
+	private
 	# 为新玩家创建村庄
 	def create_village
 		vil = Village.create :name => "#{self.nickname}'s village", :player_id => self.id

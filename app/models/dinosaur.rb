@@ -22,7 +22,7 @@ class Dinosaur < GameClass
 	def initialize(args = {})
 		super
 		self.level = 1 if level.nil?
-		self.experience = 0 unless experience
+		self.experience = 0 if experience.nil?
 	end
 
 	def to_hash

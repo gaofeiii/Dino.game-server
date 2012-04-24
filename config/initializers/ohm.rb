@@ -27,6 +27,20 @@ end
 module Ohm
 
   class Model
+
+    class << self
+
+      # 获取类实例的总数
+      def count
+        db.scard(key[:all])
+      end
+
+
+      def current_id
+        db.get(key[:id]).to_i
+      end
+    end
+
     # NOTE: 用更安全的方式重写Ohm::Model.lock!和unlock!方法
     # 原有的加锁机制存在明显的bug，详细请看：
     # http://huangz.iteye.com/blog/1381538
@@ -44,10 +58,10 @@ module Ohm
 
     # 修改后的lock!方法
     # 只需要对key[:_lock]添加乐观锁来保证setnx期间key[:_lock]不会发生变化才会生效
+    # 
+    # 使用redis的watch和multi来实现这个事务
+
     def lock_with_secure!
-      # 修改后的lock!方法
-      # 只需要对key[:_lock]添加乐观锁来保证setnx期间key[:_lock]不会发生变化才会生效
-      # p "secure lock!"
       key[:_lock].watch
       until db.multi{|t| t.setnx(key[:_lock], Time.now.utc.to_f + 0.5)}
         next unless timestamp = key[:_lock].get
@@ -56,10 +70,9 @@ module Ohm
         break unless timestamp = key[:_lock].getset(Time.now.utc.to_f + 0.5)
         break if lock_expired?(timestamp)
       end
-
     end
 
-    # 修改后的lock!方法
+    # 修改后的unlock!方法
     # 增加unwatch方法
     def unlock_with_secure!
       db.unwatch
@@ -103,13 +116,6 @@ class GameClass < Ohm::Model
 
   class << self
 
-    def count
-      db.scard("#{self.name}:all")
-    end
-
-    def current_id
-      db.get("#{self.name}:id").to_i
-    end
     # 定义self.find_by_attribute方法，返回查询结果的第一条记录，没有记录则返回nil
     # attribute必须在类中申明了index才可以使用此方法
     def method_missing(method, *args, &block)
