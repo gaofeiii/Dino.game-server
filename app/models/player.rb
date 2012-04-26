@@ -60,7 +60,7 @@ class Player < GameClass
 
 	# 获取玩家所有的信息，包括村庄的完整信息
 	def full_info
-		self.to_hash.merge(:village => village.try(:full_info))
+		self.to_hash.except(:session_id).merge(:village => village.try(:full_info))
 	end
 
 	private
