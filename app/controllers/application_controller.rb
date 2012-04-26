@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   # 以下为临时解决方案
   def set_ohm
   	Ohm.redis.select 12 if Rails.env.development?
+    Ohm.redis.select 11 if Rails.env.production?
   end
 
   def find_player
