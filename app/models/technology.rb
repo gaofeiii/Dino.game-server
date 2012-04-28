@@ -1,3 +1,5 @@
-class Technology < ActiveRecord::Base
-  # attr_accessible :title, :body
+class Technology < GameClass
+	attribute :level
+	attribute :type
+	attribute :name
 end

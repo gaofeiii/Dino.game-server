@@ -4,6 +4,8 @@ class Player < GameClass
 	attribute :account_id, 		Integer
 	attribute :nickname, 			String
 	attribute :level, 				Integer
+	attribute :sun, 					Integer
+	attribute :gold_coin, 		Integer
 	attribute :experience, 		Float
 	attribute :village_id, 		Integer
 	attribute :session_id, 		Integer
@@ -33,8 +35,10 @@ class Player < GameClass
 	# 构造函数
 	def initialize(args = {})
 		super
+		(attributes - [:level, :account_id, :nickname, :village_id, :session_id, :updated_at, :created_at]).each do |attri|
+			send("#{attri}=", 0) if send(attri).nil?
+		end
 		self.level = 1 if level.nil?
-		self.experience = 0 if experience.nil?
 	end
 
 	# 获取玩家的村庄
