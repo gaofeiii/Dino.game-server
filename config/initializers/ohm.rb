@@ -9,6 +9,14 @@ require 'ohm/contrib'
 
 # Set ohm redis server
 Ohm.connect :ip => "127.0.0.1", :port => 6379
+case Rails.env
+when "production"
+  Ohm.redis.select 11
+when "development"
+  Ohm.redis.select 12
+when "test"
+  Ohm.redis.select 13
+end
 
 class Numeric
   def object
