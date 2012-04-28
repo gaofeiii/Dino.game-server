@@ -10,14 +10,6 @@ require 'ohm/contrib'
 # Set ohm redis server
 Ohm.connect :ip => "127.0.0.1", :port => 6379
 
-if Rails.env.production?
-  Ohm.redis.select 11
-elsif Rails.env.development?
-  Ohm.redis.select 12
-elsif Rails.env.test?
-  Ohm.redis.select 13
-end
-
 class Numeric
   def object
     self
@@ -146,6 +138,7 @@ class GameClass < Ohm::Model
     new_hash = {:id => id.to_i}
     attributes.each do |key|
       value = send(key)
+      # next if value.nil?
       begin
         new_hash[key] = value.object
       rescue

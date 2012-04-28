@@ -62,6 +62,10 @@ class Player < GameClass
 		(session && session.expired_time > Time.now.utc) ? true : false
 	end
 
+	def to_hash
+		super.merge(:experience => experience.to_i)
+	end
+
 	# 获取玩家所有的信息，包括村庄的完整信息
 	def full_info
 		self.to_hash.except(:session_id).merge(:village => village.try(:full_info))

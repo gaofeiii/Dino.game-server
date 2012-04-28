@@ -7,12 +7,18 @@ class ApplicationController < ActionController::Base
 
 
   private
-  # FIXME: [D] development模式的bug
-  # ohm没有执行ohm.rb文件中Ohm.redis.select 12的语句
+  # NOTE: Redis database selecting ...
+  # 不能全局地设置redis database，待解决中
   # 以下为临时解决方案
   def set_ohm
-  	Ohm.redis.select 12 if Rails.env.development?
-    Ohm.redis.select 11 if Rails.env.production?
+    case Rails.env
+    when "production"
+      Ohm.redis.select 11
+    when "development"
+      Ohm.redis.select 12
+    when "test"
+      Ohm.redis.select 13
+    end
   end
 
   def find_player
