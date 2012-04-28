@@ -3,9 +3,6 @@ class ApplicationController < ActionController::Base
   before_filter :set_ohm 
   before_filter :find_player unless Rails.env.test?
 
-
-
-
   private
   # NOTE: Redis database selecting ...
   # 不能全局地设置redis database，待解决中
