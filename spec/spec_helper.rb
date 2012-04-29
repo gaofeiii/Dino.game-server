@@ -19,6 +19,10 @@ require 'rspec/autorun'
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 RSpec.configure do |config|
+  config.before :each do
+    Ohm.redis.flushdb
+  end
+  
   config.after :each do
     Ohm.redis.flushdb
   end
