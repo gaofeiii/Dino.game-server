@@ -33,6 +33,7 @@ class Player < GameClass
 	end
 
 	# 构造函数
+	# 初始化一些字段
 	def initialize(args = {})
 		super
 		(attributes - [:level, :account_id, :nickname, :village_id, :session_id, :updated_at, :created_at]).each do |attri|
