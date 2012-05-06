@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
 	skip_before_filter :find_player
 
 	def create
-		player = Player.find_by_account_id(params[:account_id])
+		player = Player.find(:account_id => params[:account_id]).first
 
 		unless player
 			player = create_player(params[:account_id])

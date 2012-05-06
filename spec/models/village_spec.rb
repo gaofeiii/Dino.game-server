@@ -32,7 +32,7 @@ describe Village do
 
     it "should include a specified building" do
       building = FactoryGirl.create(:building, :village_id => @village.id)
-      @village.reload.buildings.should include(building)
+      @village.buildings.should include(building)
     end
 
     it "should set player success" do

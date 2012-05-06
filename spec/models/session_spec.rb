@@ -5,7 +5,7 @@ describe Session do
 	describe "Validations" do
 		
 		before(:each) do
-			@attr = {:session_key => "Test_SeSSion_KeY", :expired_time => 1.day.since(Time.now)}
+			@attr = {:session_key => "Test_SeSSion_KeY", :expired_at => 1.day.since(Time.now)}
 		end
 
 		it "should be create a session" do

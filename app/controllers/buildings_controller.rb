@@ -16,6 +16,6 @@ class BuildingsController < ApplicationController
 		end
 
 		village.create_building(params[:building_type], params[:x], params[:y])
-		render :json => player.full_info
+		render :json => player
 	end
 end

@@ -16,7 +16,6 @@ class Dinosaur < GameClass
 	reference :player, 		Player
 	reference :village, 	Village
 
-	include Ohm::MyTimestamping
 
 	# 构造函数
 	def initialize(args = {})

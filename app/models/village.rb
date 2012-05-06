@@ -1,5 +1,5 @@
 class Village < GameClass
-	attribute :name, 			String
+	attribute :name
 	attribute :x, 				Integer
 	attribute :y, 				Integer
 
@@ -7,7 +7,6 @@ class Village < GameClass
 	collection :buildings, 	Building
 	collection :dinosaurs, 	Dinosaur
 
-	include Ohm::MyTimestamping
 
 	index :name
 	index :x

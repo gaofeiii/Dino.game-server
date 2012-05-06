@@ -14,7 +14,7 @@ FactoryGirl.define do
 
 	factory :session do
 		session_key 	"session_key_test"
-		expired_time 	1.hour.since(Time.now)
+		expired_at	 	1.hour.since(Time.now.utc)
 	end
 
 	factory :building do

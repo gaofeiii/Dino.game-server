@@ -10,16 +10,17 @@ describe Player do
 		end
 
 		it "level and experience should be default value when not assigned" do
-			player = Player.create @attr
+			player = Player.new @attr
+			player.save
 			player.level.should == 1
 			player.experience.should == 0
 		end
 
-		it "should be invalid when level is not a number" do
-			player = Player.new @attr
-			player.level = 'xxx'
-			player.should_not be_valid
-		end
+		# it "should be invalid when level is not a number" do
+		# 	player = Player.new @attr
+		# 	player.level = 'xxx'
+		# 	player.should_not be_valid
+		# end
 
 		it "should respond_to created_at updated_at" do
 			player = Player.new @attr
@@ -61,14 +62,14 @@ describe Player do
 		it "should return true when player's session is valid" do
 			sess = FactoryGirl.create(:session, :player_id => @player.id)
 			@player.update :session_id => sess.id
-			@player.reload.should be_logined
+			@player.should be_logined
 		end
 
 		it "should return false when player's session is expired" do
-			sess = FactoryGirl.create(:session, :expired_time => 1.hour.ago.localtime, :player_id => @player.id)
+			sess = FactoryGirl.create(:session, :expired_at => 1.hour.ago.localtime, :player_id => @player.id)
 			@player.update :session_id => sess.id
-			@player.reload.session.should_not be_nil
-			@player.reload.should_not be_logined 
+			@player.session.should_not be_nil
+			@player.should_not be_logined 
 		end
 
 		it "should respond_to 'village=' method" do

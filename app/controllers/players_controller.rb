@@ -1,11 +1,11 @@
 class PlayersController < ApplicationController
 
 	def index
-		player = Session.find_by_session_key(params[:session_key]).try(:player)
+		player = Session.with(:session_key, params[:session_key]).try(:player)
 		if player.nil?
 			render :json => {:error => "Player not found"}, :status => 999 and return
 		end
-		render :json => {:player => player.full_info}
+		render :json => {:player => player}
 	end
 
 	def show
@@ -13,6 +13,6 @@ class PlayersController < ApplicationController
 		if player.nil?
 			render :json => {:error => "Player not found"}, :status => 999 and return
 		end
-		render :json => {:player => player.full_info}
+		render :json => {:player => player}
 	end
 end

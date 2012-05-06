@@ -7,8 +7,9 @@ gem 'rails', '3.2.3'
 gem 'unicorn', '~> 4.3.0'
 gem 'sqlite3', '~> 1.3.6'
 gem 'hiredis', '0.4.5'
-gem 'ohm', '0.1.5'
-gem 'ohm-contrib', '0.1.2'
+gem 'ohm', '~> 1.0.1'
+gem 'ohm-contrib', '~> 1.0.0'
+gem 'roo', '~> 1.10.1'
 
 group :development do
 	gem "rspec-rails" ,"~> 2.9.0"

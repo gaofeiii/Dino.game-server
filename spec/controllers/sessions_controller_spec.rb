@@ -17,7 +17,7 @@ describe SessionsController do
 			it "should return success" do
 				post :create, :session_key => 'abcdefg', :account_id => @user[:id]
 				response.should be_success
-				@player.reload.should be_logined
+				@player.load!.should be_logined
 			end
 
 			it "should create a player" do
