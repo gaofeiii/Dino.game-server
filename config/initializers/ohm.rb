@@ -71,26 +71,22 @@ class GameClass < Ohm::Model
   # User.count # => 3
 
   class << self
-    [:first, :count, :blank?, :empty].each do |med|
+    [:first, :blank?, :empty].each do |med|
       define_method(med) do
         all.send(med)
       end
     end
-    # def first
-    #   all.first
+
+    # TODO: [D] Find a way to get the last instance.
+    # The below method is incorrect when self[current_id] was deleted.
+    #
+    # def last
+    #   self[current_id]
     # end
 
-    def last
-      self[current_id]
+    def count
+      all.size
     end
-
-    # def count
-    #   all.size
-    # end
-
-    # def blank?
-      
-    # end
 
     def current_id
       db.get(key[:id]).to_i

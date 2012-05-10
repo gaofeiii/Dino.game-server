@@ -13,8 +13,7 @@ class Village < GameClass
 	index :x
 	index :y
 	index :player_id
-
-
+	index :country_id
 
 	# 获取村庄所属的玩家
 	def player
