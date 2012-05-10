@@ -78,7 +78,7 @@ class GameClass < Ohm::Model
     end
 
     # TODO: [D] Find a way to get the last instance.
-    # The below method is incorrect when self[current_id] was deleted.
+    # The method below is incorrect when self[current_id] was deleted.
     #
     # def last
     #   self[current_id]
