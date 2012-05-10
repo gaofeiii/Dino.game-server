@@ -4,6 +4,7 @@ class Village < GameClass
 	attribute :y, 				Integer
 
 	attribute :player_id, 	Integer
+	attribute :country_id, 	Integer
 	collection :buildings, 	Building
 	collection :dinosaurs, 	Dinosaur
 

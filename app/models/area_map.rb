@@ -1,7 +1,8 @@
 class AreaMap < GameClass
-	attribute :x, 			Integer
-	attribute :y, 			Integer
-	attribute :blocked, Boolean
+	attribute :x, 						Integer
+	attribute :y, 						Integer
+	attribute :blocked, 			Boolean
+	attribute :country_id, 		Integer
 
 	index :x
 	index :y

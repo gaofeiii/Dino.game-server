@@ -10,6 +10,7 @@ class Player < GameClass
 	attribute :experience, 		Integer
 	attribute :village_id, 		Integer
 	attribute :session_id, 		Integer
+	attribute :country_id, 		Integer
 
 	collection :dinosaurs, 		:Dinosaur
 	
@@ -48,7 +49,7 @@ class Player < GameClass
 	end
 
 	# Callbacks
-	protected
+	# protected
 
 	def before_create
 		init_attributes
@@ -58,7 +59,7 @@ class Player < GameClass
 		create_village
 	end
 
-	private
+	# private
 
 	def init_attributes
 		self.level 			= 1 if level.nil?
@@ -72,42 +73,18 @@ class Player < GameClass
 
 	# 为新玩家创建村庄
 	def create_village
-		vil = Village.create :name => "#{self.nickname}'s village", :player_id => self.id
+		vil = Village.create :name => "#{self.nickname}'s village", :player_id => self.id, 
+		:x => rand(50), :y => rand(50), :country_id => default_country.id
 		self.update :village_id => vil.id
 	end
 
-	# 构造函数
-	# 初始化一些字段
-	# def initialize(args = {})
-	# 	super
-	# 	# (attributes - [:level, :account_id, :nickname, :village_id, :session_id, :updated_at, :created_at]).each do |attri|
-	# 	# 	send("#{attri}=", 0) if send(attri).nil?
-	# 	# end
-	# 	self.level = 1 if level.nil?
-	# end
+	def default_country
+		case Rails.env
+		when "test"
+			Country.all.blank? ? Country.create(:name => :test_country, :serial_id => 11) : Country.first
+		else
+			Country.first
+		end
+	end
 
-
-
-	# # 玩家登录后的session
-	# def session
-	# 	Session[session_id]
-	# end
-
-	
-
-	# def to_hash
-	# 	super.merge(:experience => experience.to_i)
-	# end
-
-	# # 获取玩家所有的信息，包括村庄的完整信息
-	# def full_info
-	# 	self.to_hash.except(:session_id).merge(:village => village.try(:full_info))
-	# end
-
-	# private
-	# # 为新玩家创建村庄
-	# def create_village
-	# 	vil = Village.create :name => "#{self.nickname}'s village", :player_id => self.id
-	# 	self.update :village_id => vil.id
-	# end
 end

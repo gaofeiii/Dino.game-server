@@ -37,6 +37,7 @@ module Ohm
       Timestamp = lambda { |t| t.nil? ? t : t && UnixTime.at(t.to_i) }
       Hash      = lambda { |h| h && (h.kind_of?(::Hash) ? SerializedHash[h] : JSON(h)) }
       Array     = lambda { |a| a && (a.kind_of?(::Array) ? SerializedArray.new(a) : JSON(a)) }
+      Symbol    = lambda { |x| x.nil? ? x : x.to_sym}
     end
   end
 
@@ -70,17 +71,26 @@ class GameClass < Ohm::Model
   # User.count # => 3
 
   class << self
-    def first
-      all.first
+    [:first, :count, :blank?, :empty].each do |med|
+      define_method(med) do
+        all.send(med)
+      end
     end
+    # def first
+    #   all.first
+    # end
 
     def last
       self[current_id]
     end
 
-    def count
-      all.size
-    end
+    # def count
+    #   all.size
+    # end
+
+    # def blank?
+      
+    # end
 
     def current_id
       db.get(key[:id]).to_i

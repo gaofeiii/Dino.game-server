@@ -23,4 +23,9 @@ FactoryGirl.define do
 		x 				100
 		y					200
 	end
+
+	factory :country do
+		name 				:forest
+		serial_id		10
+	end
 end
