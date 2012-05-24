@@ -3,15 +3,17 @@ require 'redis/connection/hiredis'
 
 worker_processes 1
 
-working_directory "/var/games/servers/dinosaur/current"
+application = "dinosaur_game"
 
-listen "/tmp/dinosaur.sock", :backlog => 128
+working_directory "/var/games/servers/#{application}/current"
+
+listen "/tmp/#{application}.sock", :backlog => 128
 
 preload_app true
 timeout 30
 pid "/var/games/servers/dinosaur/shared/pids/unicorn.pid"
-stderr_path "/var/games/servers/dinosaur/shared/log/unicorn.stderr.log"
-stdout_path "/var/games/servers/dinosaur/shared/log/unicorn.stdout.log"
+stderr_path "/var/games/servers/#{application}/shared/log/unicorn.stderr.log"
+stdout_path "/var/games/servers/#{application}/shared/log/unicorn.stdout.log"
 
 before_fork do |server, worker|
   # the following is highly recomended for Rails + "preload_app true"
@@ -22,7 +24,7 @@ before_fork do |server, worker|
 
   # Before forking, kill the master process that belongs to the .oldbin PID.
   # This enables 0 downtime deploys.
-  old_pid = "/var/games/servers/dinosaur/shared/pids/unicorn.pid.oldbin"
+  old_pid = "/var/games/servers/#{application}/shared/pids/unicorn.pid.oldbin"
   if File.exists?(old_pid) && server.pid != old_pid
     begin
       Process.kill("QUIT", File.read(old_pid).to_i)

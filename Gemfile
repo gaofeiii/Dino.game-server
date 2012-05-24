@@ -4,24 +4,24 @@ gem 'rails', '3.2.3'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
-gem 'unicorn', '~> 4.3.0'
+gem 'unicorn', '~> 4.0'
 gem 'sqlite3', '~> 1.3.6'
 gem 'hiredis', '0.4.5'
-gem 'ohm', '~> 1.0.1'
-gem 'ohm-contrib', '~> 1.0.0'
+gem 'ohm', '~> 1.0'
+gem 'ohm-contrib', '~> 1.0'
 gem 'roo', '~> 1.10.1'
 
 group :development do
-	gem "rspec-rails" ,"~> 2.9.0"
-  gem 'capistrano', '2.11.2'
-  gem 'guard', '~> 1.0.1'
-  gem 'guard-rspec', '~> 0.7.0'
+	gem "rspec-rails" ,"~> 2.0"
+  gem 'capistrano', '2.0'
+  gem 'guard', '~> 1.0'
+  gem 'guard-rspec', '~> 0.7'
   gem 'ruby_gntp', '~> 0.3.4'
 end
 
 group :test do
-  gem 'factory_girl_rails', "~> 3.1.0"
-  gem 'simplecov', '~> 0.6.1'
+  gem 'factory_girl_rails', "~> 3.0"
+  gem 'simplecov', '~> 0.6'
 end
 
 # Gems used only for assets and not required

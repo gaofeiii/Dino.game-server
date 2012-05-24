@@ -11,11 +11,11 @@ require 'ohm/contrib'
 # NOTE: test, development, production使用三个不同的redis-server,避免select的时效性
 case Rails.env
 when "production"
-  Ohm.connect :ip => "127.0.0.1", :port => 6380
+  Ohm.connect :ip => "127.0.0.1", :port => 6379
 when "development"
   Ohm.connect :ip => "127.0.0.1", :port => 6379
 when "test"
-  Ohm.connect :ip => "127.0.0.1", :port => 6378
+  Ohm.connect :ip => "127.0.0.1", :port => 6377
 end
 
 class Numeric
