@@ -13,7 +13,9 @@ gem 'roo', '~> 1.10.1'
 
 group :development do
 	gem "rspec-rails" ,"~> 2.0"
-  gem 'capistrano', '2.0'
+	gem 'net-ssh', '2.3'
+  gem 'capistrano', '~> 2.0'
+  gem 'rvm-capistrano', '~> 1.0'
   gem 'guard', '~> 1.0'
   gem 'guard-rspec', '~> 0.7'
   gem 'ruby_gntp', '~> 0.3.4'

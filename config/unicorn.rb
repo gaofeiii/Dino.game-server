@@ -3,7 +3,7 @@ require 'redis/connection/hiredis'
 
 worker_processes 1
 
-application = "dinosaur_game"
+application = "dinosaur"
 
 working_directory "/var/games/servers/#{application}/current"
 
@@ -11,7 +11,7 @@ listen "/tmp/#{application}.sock", :backlog => 128
 
 preload_app true
 timeout 30
-pid "/var/games/servers/dinosaur/shared/pids/unicorn.pid"
+pid "/var/games/servers/#{application}/shared/pids/unicorn.pid"
 stderr_path "/var/games/servers/#{application}/shared/log/unicorn.stderr.log"
 stdout_path "/var/games/servers/#{application}/shared/log/unicorn.stdout.log"
 
