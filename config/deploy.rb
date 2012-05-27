@@ -42,11 +42,16 @@ role :db,  eval("@#{@@server}"), :primary => true # This is where Rails migratio
 #   end
 # end
 
+# 如果有rvmrc文件需要执行 trust_rvmrc
+# after "deploy", "rvm:trust_rvmrc"
+# after "deploy", "deploy:migrate"
+# after "deploy:create_symlink", "assets:precompile"
+
+
 namespace :remote_cache do
-  desc "Remove the remote cache" do
-    task :remote do
-      run "rm -rf #{deploy_to}/shared/cached_copy"
-    end
+  desc "Remove the remote cache"
+  task :remove do
+    run "rm -rf #{deploy_to}/shared/cached_copy"
   end
 end
 
@@ -80,11 +85,6 @@ namespace :rvm do
     run "rvm rvmrc trust \#\{release_path\}"
   end
 end
-
-# 如果有rvmrc文件需要执行 trust_rvmrc
-# after "deploy", "rvm:trust_rvmrc"
-# after "deploy", "deploy:migrate"
-# after "deploy:create_symlink", "assets:precompile"
 
 namespace :redis do
   desc "Starting redis in production mode"
