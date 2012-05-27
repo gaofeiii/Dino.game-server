@@ -58,7 +58,7 @@ end
 namespace :nginx do
   desc "Copy nginx config file to aim directory"
   task :config do
-    run "sudo cp #{current_path}/config/nginx/dinosaur-account.conf /etc/nginx/conf.d/"
+    run "sudo cp #{current_path}/config/nginx/dinosaur-game.conf /etc/nginx/conf.d/"
   end
 
   desc "Reload nginx"
