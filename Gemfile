@@ -1,29 +1,28 @@
 source 'http://ruby.taobao.org'
 
-gem 'rails', '3.2.3'
+gem 'rails', '3.2.6'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 gem 'unicorn', '~> 4.0'
 gem 'sqlite3', '~> 1.3.6'
-gem 'hiredis', '0.4.5'
+gem 'hiredis', '~> 0.4'
 gem 'ohm', '~> 1.0'
 gem 'ohm-contrib', '~> 1.0'
 gem 'roo', '~> 1.10.1'
 
 group :development do
-	gem "rspec-rails" ,"~> 2.0"
-	# gem 'net-ssh', '2.3'
-  gem 'capistrano', '~> 2.0'
-  gem 'rvm-capistrano', '~> 1.0'
-  gem 'guard', '~> 1.0'
-  gem 'guard-rspec', '~> 0.7'
-  gem 'ruby_gntp', '~> 0.3.4'
+	gem "rspec-rails"
+  gem 'capistrano'
+  gem 'rvm-capistrano'
+  gem 'guard'
+  gem 'guard-rspec'
+  gem 'ruby_gntp'
 end
 
 group :test do
-  gem 'factory_girl_rails', "~> 3.0"
-  gem 'simplecov', '~> 0.6'
+  gem 'factory_girl_rails'
+  gem 'simplecov'
 end
 
 # Gems used only for assets and not required

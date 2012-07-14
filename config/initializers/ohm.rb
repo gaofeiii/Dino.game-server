@@ -26,6 +26,24 @@ end
 
 module Ohm
 
+
+  module MyOhmExtensions
+    module ClassMethods
+      def count
+        self.all.size
+      end
+    end
+    
+    module InstanceMethods
+      
+    end
+    
+    def self.included(receiver)
+      receiver.extend         ClassMethods
+      receiver.send :include, InstanceMethods
+    end
+  end
+
   module DataTypes
     module MyType
       Integer   = lambda { |x| x.nil? ? x : x.to_i }
@@ -40,11 +58,7 @@ module Ohm
       Symbol    = lambda { |x| x.nil? ? x : x.to_sym}
     end
   end
-
-  class Model
-    
-  end
-
+  
 end
 
 class GameClass < Ohm::Model

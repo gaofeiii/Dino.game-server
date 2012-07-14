@@ -1,16 +1,20 @@
-class Player < GameClass
+class Player < Ohm::Model
+	include Ohm::DataTypes
+	include Ohm::Timestamps
+	include Ohm::Callbacks
+	include Ohm::MyOhmExtensions
 
 	# Player的属性
-	attribute :account_id, 		Integer
+	attribute :account_id, 		Type::Integer
 	attribute :nickname
 	unique 		:nickname
-	attribute :level, 				Integer
-	attribute :sun, 					Integer
-	attribute :gold_coin, 		Integer
-	attribute :experience, 		Integer
-	attribute :village_id, 		Integer
-	attribute :session_id, 		Integer
-	attribute :country_id, 		Integer
+	attribute :level, 				Type::Integer
+	attribute :sun, 					Type::Integer
+	attribute :gold_coin, 		Type::Integer
+	attribute :experience, 		Type::Integer
+	attribute :village_id, 		Type::Integer
+	attribute :session_id, 		Type::Integer
+	attribute :country_id, 		Type::Integer
 
 	collection :dinosaurs, 		:Dinosaur
 	
@@ -49,6 +53,18 @@ class Player < GameClass
 		(session && session.expired_at > ::Time.now.utc) ? true : false
 	end
 
+	def to_hash(*args)
+		extra = {
+			:nickname => nickname,
+			:level => level,
+			:sun => sun,
+			:gold_coin => gold_coin,
+			:experience => experience,
+			:account_id => account_id
+		}
+		super.merge(extra)
+	end
+
 	# Callbacks
 	# protected
 
@@ -63,7 +79,7 @@ class Player < GameClass
 	# private
 
 	def init_attributes
-		self.level 			= 1 if level.nil?
+		self.level 			= 1 if (level.nil? or level == 0)
 		self.account_id = 0 if account_id.nil?
 		self.sun 				= 0 if sun.nil?
 		self.gold_coin 	= 0 if gold_coin.nil?
