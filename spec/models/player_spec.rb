@@ -72,16 +72,6 @@ describe Player do
 			@player.should_not be_logined 
 		end
 
-		it "should respond_to 'village=' method" do
-			@player.should respond_to(:village=)
-		end
-
-		it "should set the corrent village" do
-			village = FactoryGirl.create(:village)
-			@player.village = village
-			@player.village.should == village
-		end
-
 		it "should respond_to dinosaurs" do
 			@player.should respond_to(:dinosaurs)
 		end

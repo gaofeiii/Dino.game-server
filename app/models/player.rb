@@ -16,31 +16,19 @@ class Player < Ohm::Model
 	attribute :session_id, 		Type::Integer
 	attribute :country_id, 		Type::Integer
 
+	# relations
 	collection :dinosaurs, 		:Dinosaur
 	
-	# 为Player添加索引便于查找
+	# indices
 	index :account_id
 	index :nickname
 	index :level
 	index :experience
 	index :country_id
 
-	# 验证属性字段的方法
-	# 注：validate方法优先于initialize方法
-	def validate
-		# assert_unique 	:nickname
-		# assert_numeric 	:level
-		# assert_numeric 	:experience
-	end
-	# 获取玩家的村庄
+
 	def village
 		Village[village_id]
-	end
-
-	# 设置玩家的村庄
-	def village=(vil)
-		self.village_id = vil ? vil.id : nil
-		self
 	end
 
 	# 玩家登录后的session
@@ -66,27 +54,17 @@ class Player < Ohm::Model
 	end
 
 	# Callbacks
-	# protected
+	protected
 
 	def before_create
-		init_attributes
+		self.level = 1 if (level.nil? or level == 0)
 	end
 
 	def after_create
 		create_village
 	end
 
-	# private
-
-	def init_attributes
-		self.level 			= 1 if (level.nil? or level == 0)
-		self.account_id = 0 if account_id.nil?
-		self.sun 				= 0 if sun.nil?
-		self.gold_coin 	= 0 if gold_coin.nil?
-		self.experience = 0 if experience.nil?
-		self.village_id = 0 if village_id.nil?
-		self.session_id = 0 if session_id.nil?
-	end
+	private
 
 	# 为新玩家创建村庄
 	def create_village

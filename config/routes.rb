@@ -8,6 +8,8 @@ DinosaurGame::Application.routes.draw do
   match 'create_building' => 'buildings#create', :via => :post
 
   resources :sessions, :only => :create
+
+  match 'login' => 'sessions#create', :via => :post
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
