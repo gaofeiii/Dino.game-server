@@ -5,13 +5,15 @@ class SessionsController < ApplicationController
 	skip_before_filter :find_player
 
 	def create
-		signin_url = URI("http://#{ACCOUNT_SERVER_IP}:#{ACCOUNT_SERVER_PORT}/signin")
-		res = Net::HTTP.post_form signin_url, 
-			:username => params[:username],
-			:email => params[:email],
-			:password => params[:password]
-		rcv_msg = JSON.parse(res.body).deep_symbolize_keys
-
+		# signin_url = URI("http://#{ACCOUNT_SERVER_IP}:#{ACCOUNT_SERVER_PORT}/signin")
+		# res = Net::HTTP.post_form signin_url, 
+		# 	:username => params[:username],
+		# 	:email => params[:email],
+		# 	:password => params[:password]
+		# rcv_msg = JSON.parse(res.body).deep_symbolize_keys
+		rcv_msg = account_authenticate :username => params[:username], 
+																	 :email 	 => params[:email], 
+																	 :password => params[:password]
 		data = {}
 		if rcv_msg[:success]
 			@player = Player.find(:account_id => rcv_msg[:account_id]).first
@@ -20,7 +22,7 @@ class SessionsController < ApplicationController
 			end
 			data = {:message => "LOGIN_SUCCESS", :player => @player.to_hash}
 		else
-			data = {:message => "Wrong username/email and password combination"}
+			data = {:message => "LOGIN_FAILED"}
 		end
 		render :json => data
 	end
