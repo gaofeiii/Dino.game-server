@@ -4,7 +4,6 @@ gem 'rails', '3.2.6'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
-gem 'thin'
 gem 'unicorn', '~> 4.0'
 gem 'sqlite3', '~> 1.3.6'
 gem 'hiredis', '~> 0.4'
@@ -13,6 +12,7 @@ gem 'ohm-contrib', '~> 1.0'
 gem 'roo', '~> 1.10.1'
 
 group :development do
+	gem 'thin'
 	gem "rspec-rails"
   gem 'capistrano'
   gem 'rvm-capistrano'
