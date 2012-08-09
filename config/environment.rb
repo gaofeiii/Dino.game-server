@@ -1,10 +1,14 @@
 p 'Loading enviornment.rb...'
 
+
 # Set time zone to UTC
 ENV['TZ'] = "UTC"
 
 # Load the rails application
 require File.expand_path('../application', __FILE__)
+
+# Load server info
+require "#{Rails.root}/config/server_config.rb"
 
 const_dir = "#{Rails.root}/const"
 Dir[const_dir + '/*.rb', const_dir + '/**/*.rb'].each{|file| require file}

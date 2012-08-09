@@ -1,15 +1,21 @@
 DinosaurGame::Application.routes.draw do
+  # 账户模块
+  match 'demo'        => 'sessions#demo',       :via => :post
+  match 'login'       => 'sessions#create',     :via => :post
+  match 'register'    => 'sessions#register',   :via => :post
+  match 'logout'      => 'sessions#logout',     :via => :post
+  match 'update'      => 'sessions#update',     :via => :post
+
+  # 玩家信息
   resources :players, :only => [:index, :show] do
     resources :villages, :only => :index do
-      resources :buildings, :only => :create
     end
   end
 
+  # 村庄建造相关
   match 'create_building' => 'buildings#create', :via => :post
 
-  resources :sessions, :only => :create
-
-  match 'login' => 'sessions#create', :via => :post
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

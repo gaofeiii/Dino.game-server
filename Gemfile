@@ -18,7 +18,8 @@ group :development do
   gem 'rvm-capistrano'
   gem 'guard'
   gem 'guard-rspec'
-  gem 'ruby_gntp'
+  # gem 'ruby_gntp'
+  gem 'terminal-notifier'
 end
 
 group :test do

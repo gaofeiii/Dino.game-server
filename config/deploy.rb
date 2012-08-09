@@ -3,10 +3,10 @@
 require 'bundler/capistrano'
 
 # Server list
-@test = "106.187.90.19"
+@linode = "106.187.90.19"
 
 # Deploy server
-@@server = :test
+@@server = :linode
 
 set :rvm_ruby_string, "1.9.3@dinosaur_game"
 set :rvm_type, :user

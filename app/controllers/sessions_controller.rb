@@ -4,13 +4,15 @@ class SessionsController < ApplicationController
 
 	skip_before_filter :find_player
 
+
+	# TODO:
+	# 试玩
+	def demo
+		
+	end
+
+	# 登录
 	def create
-		# signin_url = URI("http://#{ACCOUNT_SERVER_IP}:#{ACCOUNT_SERVER_PORT}/signin")
-		# res = Net::HTTP.post_form signin_url, 
-		# 	:username => params[:username],
-		# 	:email => params[:email],
-		# 	:password => params[:password]
-		# rcv_msg = JSON.parse(res.body).deep_symbolize_keys
 		rcv_msg = account_authenticate :username => params[:username], 
 																	 :email 	 => params[:email], 
 																	 :password => params[:password]
@@ -27,14 +29,29 @@ class SessionsController < ApplicationController
 		render :json => data
 	end
 
-	# def create
-	# 	player = Player.find(:account_id => params[:account_id]).first
+	
+	# 注册
+	def register
+		
+	end
 
-	# 	unless player
-	# 		player = create_player(params[:account_id])
-	# 	end
+	# 登出
+	def logout
+		
+	end
 
-	# 	login(player, params[:session_key])
-	# 	render :json => {:player_id => player.id.to_i}
-	# end
+	# 更新账号
+	def update
+		
+	end
+
+
+	private
+
+	def create_player(account_id, nickname = nil)
+		n_name = nickname.nil? ? "Player_#{Digest::MD5.hexdigest(Time.now.utc.to_s + String.sample(6))}" : nickname
+		Player.create :account_id => account_id, :nickname => n_name
+	end
+
+
 end
