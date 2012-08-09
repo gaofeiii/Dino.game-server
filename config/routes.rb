@@ -1,10 +1,10 @@
 DinosaurGame::Application.routes.draw do
   # 账户模块
-  match 'demo'        => 'sessions#demo',       :via => :post
-  match 'login'       => 'sessions#create',     :via => :post
-  match 'register'    => 'sessions#register',   :via => :post
-  match 'logout'      => 'sessions#logout',     :via => :post
-  match 'update'      => 'sessions#update',     :via => :post
+  match '/demo'        => 'sessions#demo',       :via => :post
+  match '/login'       => 'sessions#create',     :via => :post
+  match '/register'    => 'sessions#register',   :via => :post
+  match '/logout'      => 'sessions#logout',     :via => :post
+  match '/update'      => 'sessions#update',     :via => :post
 
   # 玩家信息
   resources :players, :only => [:index, :show] do

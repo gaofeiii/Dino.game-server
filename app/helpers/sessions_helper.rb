@@ -1,12 +1,21 @@
 module SessionsHelper
 	
+	# 与账户服务器交互的方法	
 
 	def account_authenticate(params = {})
-		http_post "#{ACCOUNT_SERVER}:#{ACCOUNT_PORT}/signin", params
+		http_post "#{ServerInfo.account_server}/signin", params
 	end
 
 	def account_register(params = {})
-		http_post "#{ACCOUNT_SERVER}:#{ACCOUNT_PORT}/signup", params
+		http_post "#{ServerInfo.account_server}/signup", params
+	end
+
+	def account_update(params = {})
+		http_post "#{ServerInfo.account_server}/update", params
+	end
+
+	def trying
+		http_get("#{ServerInfo.account_server}/try_playing")
 	end
 
 	def login(player, session_key)
@@ -15,6 +24,8 @@ module SessionsHelper
 		player.update :session_id => sess.id
 	end
 	
+	# 私有方法
+	# private
 	def http_get(address)
 		uri = URI.parse create_url(address)
 		res = Net::HTTP.get_response uri
@@ -24,6 +35,7 @@ module SessionsHelper
 	def http_post(address, params = {})
 		uri = URI.parse create_url(address)
 		res = Net::HTTP.post_form uri, params
+		data = JSON.parse(res.body).deep_symbolize_keys
 	end
 
 	def create_url(address)
