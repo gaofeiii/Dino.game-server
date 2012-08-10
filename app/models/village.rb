@@ -1,23 +1,63 @@
-class Village < GameClass
-	attribute :name
-	attribute :x, 				Integer
-	attribute :y, 				Integer
+class Village < Ohm::Model
+	include Ohm::DataTypes
+	include Ohm::Callbacks
+	include Ohm::Timestamps
 
-	attribute :player_id, 	Integer
-	attribute :country_id, 	Integer
-	collection :buildings, 	Building
-	collection :dinosaurs, 	Dinosaur
+	attribute :name
+	attribute :x, 					Type::Integer
+	attribute :y, 					Type::Integer
+
+	attribute :wood,						Type::Integer
+	attribute :wood_inc, 				Type::Integer
+	attribute :wood_max, 				Type::Integer
+	attribute :stone, 					Type::Integer
+	attribute :stone_inc,				Type::Integer
+	attribute :stone_max,				Type::Integer
+	attribute :population, 			Type::Integer
+	attribute :population_inc,	Type::Integer
+	attribute :population_max,	Type::Integer
+		
+
+	attribute :player_id, 	Type::Integer
+	attribute :country_id, 	Type::Integer
+
+	collection :specialties, 	:Specialty
+	collection :buildings, 		:Building
+	collection :dinosaurs, 		:Dinosaur
 
 
 	index :name
 	index :x
 	index :y
-	index :player_id
 	index :country_id
 
 	# 获取村庄所属的玩家
 	def player
 		Player[player_id]
+	end
+
+	def to_hash(*args)
+		hash = {
+			:id => id.to_s,
+			:x => x,
+			:y => y,
+			:resources => resources,
+			:country_id => country_id
+		}
+	end
+
+	def resources
+		{
+			:wood => wood,
+			:wood_inc => wood_inc,
+			:wood_max => wood_max,
+			:stone => stone, 		
+			:stone_inc => stone_inc,	
+			:stone_max => stone_max,
+			:population => population, 		
+			:population_inc => population_inc,
+			:population_max => population_max,
+		}
 	end
 
 	# 设置村庄所属的玩家

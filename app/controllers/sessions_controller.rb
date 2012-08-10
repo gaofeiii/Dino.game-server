@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
 			player = create_player(result[:account_id])
 			{
 				:message => "SUCCESS", 
-				:player => player.to_hash, 
+				:player => player.to_hash(:all), 
 				:username => result[:username],
 				:password => result[:password]
 			}
@@ -34,7 +34,7 @@ class SessionsController < ApplicationController
 			if @player.nil?
 				@player = create_player(rcv_msg[:account_id])
 			end
-			data = {:message => "LOGIN_SUCCESS", :player => @player.to_hash}
+			data = {:message => "LOGIN_SUCCESS", :player => @player.to_hash(:all)}
 		else
 			data = {:message => "LOGIN_FAILED"}
 		end
@@ -50,7 +50,7 @@ class SessionsController < ApplicationController
 															:password_confirmation => params[:password_confirmation]
 		if result[:success]
 			@player = create_player(result[:account_id])
-			data = {:message => 'REGISTER_SUCCESS', :player => @player.to_hash}
+			data = {:message => 'REGISTER_SUCCESS', :player => @player.to_hash(:all)}
 		else
 			data = result
 		end

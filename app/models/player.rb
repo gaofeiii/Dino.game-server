@@ -2,7 +2,7 @@ class Player < Ohm::Model
 	include Ohm::DataTypes
 	include Ohm::Timestamps
 	include Ohm::Callbacks
-	include Ohm::MyOhmExtensions
+	include OhmExtension
 
 	# Player的属性
 	attribute :account_id, 		Type::Integer
@@ -42,7 +42,8 @@ class Player < Ohm::Model
 	end
 
 	def to_hash(*args)
-		extra = {
+		hash = {
+			:id => id.to_s,
 			:nickname => nickname,
 			:level => level,
 			:sun => sun,
@@ -50,7 +51,20 @@ class Player < Ohm::Model
 			:experience => experience,
 			:account_id => account_id
 		}
-		super.merge(extra)
+		opts = if args.include?(:all)
+			args + [:village]
+		else
+			args
+		end
+		p opts
+
+		opts.each do |att|
+			case att
+			when :village
+				hash[:village] = village.to_hash(:all)
+			end
+		end
+		return hash
 	end
 
 	# Callbacks
@@ -81,7 +95,7 @@ class Player < Ohm::Model
 		when "test"
 			Country.all.blank? ? Country.create(:name => :test_country, :serial_id => 11) : Country.first
 		else
-			Country.first
+			Country.all.first
 		end
 	end
 
