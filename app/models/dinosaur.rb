@@ -27,9 +27,9 @@ class Dinosaur < Ohm::Model
 
 	def to_hash
 		hash = {
-			:level,
-			:experience,
-			:type,
+			:level => level,
+			:experience => experience,
+			:type => type,
 			:attack => total_attack,
 			:defense => total_defense,
 			:agility => total_agility
