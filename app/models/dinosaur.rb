@@ -1,20 +1,21 @@
-# 恐龙的类
+class Dinosaur < Ohm::Model
+	include Ohm::DataTypes
+	include Ohm::Callbacks
+	include Ohm::Timestamps
 
-class Dinosaur < GameClass
-	attribute :level, 				Integer
-	attribute :experience, 		Integer
-	attribute :type, 					Integer
+	attribute :level, 				Type::Integer
+	attribute :experience, 		Type::Integer
+	attribute :type, 					Type::Integer
 
-	attribute :basic_attack, 			Integer			# 基础攻击
-	attribute :basic_defense, 		Integer			# 基础防御
-	attribute :basic_agility,			Integer 		# 基础敏捷
-	attribute :total_attack, 			Integer
-	attribute :total_defense, 		Integer
-	attribute :total_agility,			Integer
+	attribute :basic_attack, 			Type::Integer			# 基础攻击
+	attribute :basic_defense, 		Type::Integer			# 基础防御
+	attribute :basic_agility,			Type::Integer 		# 基础敏捷
+	attribute :total_attack, 			Type::Integer
+	attribute :total_defense, 		Type::Integer
+	attribute :total_agility,			Type::Integer
 
 
 	reference :player, 		Player
-	reference :village, 	Village
 
 
 	# 构造函数
@@ -25,6 +26,13 @@ class Dinosaur < GameClass
 	end
 
 	def to_hash
-		super
+		hash = {
+			:level,
+			:experience,
+			:type,
+			:attack => total_attack,
+			:defense => total_defense,
+			:agility => total_agility
+		}
 	end
 end

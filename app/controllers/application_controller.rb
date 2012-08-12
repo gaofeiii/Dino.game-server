@@ -1,17 +1,23 @@
 class ApplicationController < ActionController::Base
-  before_filter :find_player unless Rails.env.test?
   after_filter :log_info if Rails.env.development?
 
   private
 
-  def find_player
-  	# @current_player = Session.find_by_session_key(params[:session_key]).try(:player)
-  	# unless @current_player
-  	# 	render :json => "Login expired.", :status => 998 and return
-  	# end
+  def validate_player
+  	@player = Player[params[:player_id]]
+    if @player.nil?
+      render :json => {:error => "PLAYER_NOT_FOUND"} and return
+    end
+  end
+
+  def validate_village
+    @village = Village[params[:village_id]]
+    if @village.nil?
+      render :json => {:error => "VILLAGE_NOT_FOUND"} and return
+    end
   end
 
   def log_info
-  	p "=== Response ===", JSON.parse(response.body).deep_symbolize_keys
+  	pp "=== Response ===", JSON.parse(response.body).deep_symbolize_keys
   end
 end

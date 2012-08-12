@@ -39,11 +39,27 @@ class Village < Ohm::Model
 	def to_hash(*args)
 		hash = {
 			:id => id.to_s,
+			:name => name,
 			:x => x,
 			:y => y,
 			:resources => resources,
 			:country_id => country_id
 		}
+
+		options = if args.include?(:all)
+			args + [:buildings]
+		else
+			args
+		end
+
+		options.each do |arg|
+			case arg
+			when :buildings
+				hash[:buildings] = buildings.to_a.map(&:update_status!).map(&:to_hash)
+			end
+		end
+
+		hash
 	end
 
 	def resources

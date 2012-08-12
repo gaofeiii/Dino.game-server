@@ -1,22 +1,75 @@
-class Building < GameClass
-	attribute :type, Integer
-	attribute :level, Integer
-	attribute :status, Integer
-	attribute :x, Integer
-	attribute :y, Integer
+class Building < Ohm::Model
+	include Ohm::DataTypes
+	include Ohm::Callbacks
+	include Ohm::Timestamps
+	include OhmExtension
+
+	attribute :type, Type::Integer
+	attribute :level, Type::Integer
+	attribute :x, Type::Integer
+	attribute :y, Type::Integer
+
+	attribute :status, Type::Integer
+	attribute :start_building_time, 	Type::Integer
+	attribute :time, Type::Integer
 
 	index :type
 	index :village_id
 
 	reference :village, Village
 
-	def initialize(attrs = {})
-		super
-		self.level = 1
-		self.status = 0
+	def self.info
+		BUILDINGS
+	end
+
+	def self.names
+		BUILDING_NAMES
+	end
+
+	def self.cost(type)
+		BUILDINGS[type][:cost]
+	end
+
+	def info
+		self.class.info.type(self.type)
+	end
+
+	def update_status!
+		left_time = (::Time.now.utc.to_i - start_building_time)
+		case status
+		when 0
+			if left_time > self.info.cost[:time]
+				self.status = 2
+				self.time = 0
+			elsif left_time > 0 && left_time >= self.info.cost[:time]/2
+				self.status = 1
+				self.time = left_time - self.info.cost[:time]/2
+			end
+		when 1
+			if left_time > self.info.cost[:time]
+				self.status = 2				
+			end
+		end
+		self.save
 	end
 
 	def to_hash
-		super.merge(:time => 0)
+		{
+			:id => id.to_i,
+			:type => type,
+			:level => level,
+			:status => status,
+			:time => time,
+			:x => x,
+			:y => y
+		}
+	end
+
+	protected
+
+	def before_create
+		self.status = 0
+		self.start_building_time = Time.now.utc.to_i
 	end
 end
+

@@ -12,12 +12,15 @@ class Player < Ohm::Model
 	attribute :sun, 					Type::Integer
 	attribute :gold_coin, 		Type::Integer
 	attribute :experience, 		Type::Integer
+	attribute :score, 				Type::Integer
+	
 	attribute :village_id, 		Type::Integer
 	attribute :session_id, 		Type::Integer
 	attribute :country_id, 		Type::Integer
 
 	# relations
 	collection :dinosaurs, 		:Dinosaur
+	collection :technologies, :Technology
 	
 	# indices
 	index :account_id
@@ -52,16 +55,17 @@ class Player < Ohm::Model
 			:account_id => account_id
 		}
 		opts = if args.include?(:all)
-			args + [:village]
+			args + [:village, :techs]
 		else
 			args
 		end
-		p opts
 
 		opts.each do |att|
 			case att
 			when :village
 				hash[:village] = village.to_hash(:all)
+			when :techs
+				hash[:techs] = technologies.to_a.map(&:update_status!).map(&:to_hash)
 			end
 		end
 		return hash

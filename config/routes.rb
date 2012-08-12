@@ -12,8 +12,13 @@ DinosaurGame::Application.routes.draw do
     end
   end
 
+  match 'refresh' => 'players#refresh', :via => :post
+
   # 村庄建造相关
   match 'create_building' => 'buildings#create', :via => :post
+
+  # 科技研究相关
+  match 'research' => 'research#research', :via => :post
 
   
   # The priority is based upon order of creation:
