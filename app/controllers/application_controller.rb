@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
   end
 
   def log_info
-  	pp "=== Response ===", JSON.parse(response.body).deep_symbolize_keys
+  	# pp "=== Response ===", JSON.parse(response.body).deep_symbolize_keys
+    pp "=== Response ===", response.body
   end
 end

@@ -20,6 +20,13 @@ DinosaurGame::Application.routes.draw do
   # 科技研究相关
   match 'research' => 'research#research', :via => :post
 
+  # 即时信息的刷新
+  match 'real_time' => 'real_time_info#refresh', :via => :post
+
+  # 聊天
+  match 'world_chat' => 'chat#world_chat', :via => :post
+  match 'create_chat_message' => 'chat#create_chat_message', :via => :post
+
   
   # The priority is based upon order of creation:
   # first created -> highest priority.

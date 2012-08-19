@@ -1,2 +1,5 @@
-ACCOUNT_SERVER_IP = '192.168.1.107'
-ACCOUNT_SERVER_PORT = '3000'
+CHANNELS = {
+	:world => 1,
+	:league => 2,
+	:private => 3
+}
