@@ -9,13 +9,22 @@ require 'ohm/contrib'
 
 # Set ohm redis server
 # NOTE: test, development, production使用三个不同的redis-server,避免select的时效性
-case Rails.env
+# case Rails.env
+# when "production"
+#   Ohm.connect :ip => "127.0.0.1", :port => 6379
+# when "development"
+#   Ohm.connect :ip => "127.0.0.1", :port => 6379
+# when "test"
+#   Ohm.connect :ip => "127.0.0.1", :port => 6377
+# end
+
+Redis.current = case Rails.env
 when "production"
-  Ohm.connect :ip => "127.0.0.1", :port => 6379
+  Redis.new :host => "127.0.0.1", :port => 6379, :driver => :hiredis
 when "development"
-  Ohm.connect :ip => "127.0.0.1", :port => 6379
+  Redis.new :host => "127.0.0.1", :port => 6379, :driver => :hiredis
 when "test"
-  Ohm.connect :ip => "127.0.0.1", :port => 6377
+  Redis.new :host => "127.0.0.1", :port => 6377, :driver => :hiredis
 end
 
 class Numeric
@@ -25,6 +34,18 @@ class Numeric
 end
 
 module Ohm
+
+  def self.redis
+    p '------- my current redis -------'
+    Redis.current
+  end
+
+  class Model
+    def self.db
+      p '------- my current redis -------'
+      Redis.current
+    end
+  end
 
 
   module MyOhmExtensions

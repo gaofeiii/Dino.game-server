@@ -90,4 +90,10 @@ class Village < Ohm::Model
 	def full_info
 		self.to_hash.merge(:buildings => buildings.to_a, :dinosaurs => dinosaurs.to_a)
 	end
+
+	protected
+	def before_create
+		self.wood = 99999
+		self.stone = 99999
+	end
 end

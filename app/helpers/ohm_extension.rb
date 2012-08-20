@@ -7,6 +7,10 @@ module OhmExtension
 		def first
 			self.all.first
 		end
+
+		def sample
+			self[Ohm.redis.srandmember(self.all.key)]
+		end
 	end
 	
 	module InstanceMethods

@@ -75,6 +75,8 @@ class Player < Ohm::Model
 	protected
 
 	def before_create
+		self.gold_coin = 99999
+		self.sun = 9999
 		self.level = 1 if (level.nil? or level == 0)
 	end
 
