@@ -1,7 +1,7 @@
 class ChatController < ApplicationController
 
 	def world_chat
-		last_id = params[:last_id] == '-1' ? nil : params[:last_id]
+		last_id = params[:last_id].to_i == -1 ? nil : params[:last_id]
 		msgs = ChatMessage.world_messages(last_id, 10)
 		render :json => msgs
 	end

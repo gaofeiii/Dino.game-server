@@ -21,7 +21,7 @@ class ChatMessage < Ohm::Model
 
 	def to_hash
 		{
-			:id => id,
+			:id => id.to_i,
 			:channel => channel,
 			:speaker => speaker,
 			:content => content,

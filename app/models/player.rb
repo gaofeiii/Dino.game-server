@@ -44,6 +44,49 @@ class Player < Ohm::Model
 		(session && session.expired_at > ::Time.now.utc) ? true : false
 	end
 
+	def spend!(args = {})
+		db.multi do |t|
+			args.slice(:gold_coin, :sun).each	do |att, val|
+				return false if send(att) < val || val < 0
+				t.hincrby(self.key, att, -val)
+			end
+		end
+		load!
+	end
+
+	def receive!(args = {})
+		db.multi do |t|
+			args.slice(:gold_coin, :sun).each do |att, val|
+				return false if val < 0
+				t.hincrby self.key, att, val
+			end
+		end
+		load!
+	end
+
+	# [:spend, :receive].each do |name|
+	# 	define_method("#{name}!") do |args = {}|
+	# 		db.multi do |t|
+	# 			args.slice(:gold_coin, :sun).each do |att, val|
+	# 				v = name == :spend ? -val : val
+	# 				return false if ((name == :spend) && send(att) < v)
+	# 				t.hincrby(self.key, att, v)
+	# 			end
+
+	# 			# vlg = village
+	# 			# if (args.keys & [:wood, :stone, :population]).any?
+	# 			# 	args.slice(:wood, :stone, :population).each do |att, val|
+	# 			# 		return false if vlg.send(att) < val
+	# 			# 		v = name == :spend ? -val : val
+	# 			# 		t.hincrby(vlg.key, att, v)
+	# 			# 	end
+	# 			# end
+				
+	# 		end
+	# 		load!
+	# 	end
+	# end
+
 	def to_hash(*args)
 		hash = {
 			:id => id.to_s,

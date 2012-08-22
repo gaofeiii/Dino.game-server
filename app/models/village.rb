@@ -76,6 +76,21 @@ class Village < Ohm::Model
 		}
 	end
 
+	[:spend, :receive].each do |name|
+		define_method("#{name}!") do |args = {}|
+			db.multi do |t|
+				args.each do |att, val|
+					if self.respond_to?(att)
+						return false if send(att) < val
+						v = name == :spend ? -val : val
+						t.hincrby(self.key, att, v)
+					end
+				end
+			end
+			load!
+		end
+	end
+
 	# 设置村庄所属的玩家
 	# 不会写到数据库中，如果要保存到数据库中，需要调用save方法
 	def player=(plyr)
