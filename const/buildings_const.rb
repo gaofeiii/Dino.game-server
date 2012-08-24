@@ -34,11 +34,25 @@ book.default_sheet = "建造列表"
 		:gold => book.cell(i, 'E').to_i,
 		:population => book.cell(i, 'F').to_i
 	}
-	property = {
+	reward = {
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'I').to_i
 	}
-	BUILDINGS[b_type] = {:cost => cost, :property => property}
+	BUILDINGS[b_type] = {:cost => cost, :reward => reward}
 end
 
+
 BUILDINGS.extend(ConstHelper::BuildingConstHelper)
+
+
+
+
+
+
+
+
+
+
+
+
+

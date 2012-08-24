@@ -45,20 +45,34 @@ class Player < Ohm::Model
 	end
 
 	def spend!(args = {})
+		vil = (args.include?(:wood) or args.include?(:stone) or args.include?(:population)) ? village : nil
 		db.multi do |t|
-			args.slice(:gold_coin, :sun).each	do |att, val|
-				return false if send(att) < val || val < 0
-				t.hincrby(self.key, att, -val)
+			args.each do |att, val|
+				if att.in?([:gold_coin, :sun])
+					return false if send(att) < val || val < 0
+					t.hincrby(key, att, -val)
+				elsif att.in?([:wood, :stone, :population])
+					return false if vil.send(att) < val || val < 0
+					t.hincrby(vil.key, att, -val)
+				end
 			end
 		end
 		load!
 	end
 
 	def receive!(args = {})
+		vil = (args.include?(:wood) or args.include?(:stone) or args.include?(:population)) ? village : nil
 		db.multi do |t|
-			args.slice(:gold_coin, :sun).each do |att, val|
-				return false if val < 0
-				t.hincrby self.key, att, val
+			# args.slice(:gold_coin, :sun).each do |att, val|
+			# 	return false if val < 0
+			# 	t.hincrby self.key, att, val
+			# end
+			args.each do |att, val|
+				if att.in?([:gold_coin, :sun])
+					t.hincrby(key, att, val)
+				elsif att.in?([:wood, :stone, :population])
+					t.hincrby(vil.key, att, val)
+				end
 			end
 		end
 		load!
@@ -127,13 +141,22 @@ class Player < Ohm::Model
 		create_village
 	end
 
+	def after_delete
+		delete_village
+	end
+
 	private
 
 	# 为新玩家创建村庄
 	def create_village
 		vil = Village.create :name => "#{self.nickname}'s village", :player_id => self.id, 
 		:x => rand(50), :y => rand(50), :country_id => default_country.id
-		self.update :village_id => vil.id
+		self.set :village_id, vil.id
+	end
+
+	def delete_village
+		vil = village
+		vil.delete if vil
 	end
 
 	def default_country

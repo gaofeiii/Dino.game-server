@@ -2,6 +2,7 @@ class Village < Ohm::Model
 	include Ohm::DataTypes
 	include Ohm::Callbacks
 	include Ohm::Timestamps
+	include OhmExtension
 
 	attribute :name
 	attribute :x, 					Type::Integer
@@ -110,5 +111,6 @@ class Village < Ohm::Model
 	def before_create
 		self.wood = 99999
 		self.stone = 99999
+		self.population = 99999
 	end
 end
