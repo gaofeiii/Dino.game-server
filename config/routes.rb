@@ -27,6 +27,8 @@ DinosaurGame::Application.routes.draw do
   match 'world_chat' => 'chat#world_chat', :via => :post
   match 'create_chat_message' => 'chat#create_chat_message', :via => :post
 
+  # match 'get_techs' => 'info#get_techs', :via => :get
+
   
   # The priority is based upon order of creation:
   # first created -> highest priority.
