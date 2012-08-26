@@ -1,23 +1,33 @@
 # encoding: utf-8
 p '--- Reading buildings const ---'
-# TODO: [S] 完成buildings的const信息
-RESIDENTIAL 			= 1 		# 民居
-LUMBER_MILL 			= 2			# 伐木场
-QUARRY 						= 3			# 采石场
-HUNTING_FIELD 		= 4			# 狩猎场
-COLLECTING_FARM 	= 5			# 采集场
-HABITAT 					= 6			# 孵化园，栖息地
-BEASTIARY 				= 7			# 兽栏
-MARKET 						= 8			# 市场
-WORKSHOP 					= 9			# 工坊
-TEMPLE 						= 10		# 神庙
-WAREHOUSE 				= 11		# 仓库
+
+BUILDING_RESIDENTIAL 			= 1 		# 民居
+BUILDING_LUMBER_MILL 			= 2			# 伐木场
+BUILDING_QUARRY 					= 3			# 采石场
+BUILDING_HUNTING_FIELD 		= 4			# 狩猎场
+BUILDING_COLLECTING_FARM 	= 5			# 采集场
+BUILDING_HABITAT 					= 6			# 孵化园，栖息地
+BUILDING_BEASTIARY 				= 7			# 兽栏
+BUILDING_MARKET 					= 8			# 市场
+BUILDING_WORKSHOP 				= 9			# 工坊
+BUILDING_TEMPLE 					= 10		# 神庙
+BUILDING_WAREHOUSE 				= 11		# 仓库
 
 
 BUILDING_TYPES = (1..11).to_a
 BUILDINGS = {}
-BUILDING_NAMES = %w(residential lumber_mill quarry hunting_field collecting_farm habitat
-	beastiary market workshop temple warehouse).each do |name|
+BUILDING_NAMES = %w(
+	building_residential 
+	building_lumber_mill 
+	building_quarry 
+	building_hunting_field 
+	building_collecting_farm 
+	building_habitat
+	building_beastiary 
+	building_market 
+	building_workshop 
+	building_temple 
+	building_warehouse).each do |name|
 		BUILDINGS[eval(name.upcase)] = {:name => name.to_sym}
 	end
 
