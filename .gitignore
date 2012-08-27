@@ -17,4 +17,4 @@
 coverage
 .idea
 
-/const/game_numerics/~$technologies.old.xlsx
+~*.xlsx

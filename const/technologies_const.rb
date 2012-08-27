@@ -1,52 +1,52 @@
 # encoding: utf-8
 p '--- Reading technologies const ---'
-TECH_HOUSING 		= 1	# 住宅
-TECH_LUMBERING 	= 2 # 伐木技术
-TECH_QUARRYING 	= 3	# 采石技术
-TECH_HUNTING 		= 4 # 狩猎技术
-TECH_COLLECTING	= 5 # 采集技术
-TECH_STORING 		= 6 # 储藏技术
-TECH_HATCHING		= 7 # 孵化技术
-TECH_TRAINING		= 8 # 驯养技术
-TECH_BUSINESS 	= 9 # 商业技术
-TECH_SCIENCE 		= 10# 科研技术
-TECH_PRAYING		= 11 # 祭祀技术
-TECH_ALCHEMY 		= 12 # 炼金
-TECH_COURAGE 		= 13 # 勇气
-TECH_FORTITUDE 	= 14 # 刚毅
-TECH_LOYALTY 		= 15 # 忠诚
-TECH_KINDHEARTED = 16 # 仁义
-TECH_TREASURE 	= 17 # 寻宝
-TECH_VIOLENCE 	= 18 # 残暴
-TECH_PLUNDER 		= 19 # 掠夺
-TECH_WISDOM 		= 20 # 智慧
 
-TECHNOLOGIES = {}
+TECH_1		= 1		# 住宅
+TECH_2		= 2		# 伐木技术
+TECH_3		= 3		# 采石技术
+TECH_4		= 4		# 狩猎技术
+TECH_5		= 5		# 采集技术
+TECH_6		= 6		# 储藏技术
+TECH_7		= 7		# 孵化技术
+TECH_8		= 8		# 驯养技术
+TECH_9		= 9		# 商业技术
+TECH_10		= 10	# 科研技术
+TECH_11		= 11	# 祭祀技术
+TECH_12		= 12	# 炼金
+TECH_13		= 13	# 勇气
+TECH_14		= 14	# 刚毅
+TECH_15		= 15	# 忠诚
+TECH_16		= 16	# 仁义
+TECH_17		= 17	# 寻宝
+TECH_18		= 18	# 残暴
+TECH_19		= 19	# 掠夺
+TECH_20		= 20	# 智慧
 
-TECHNOLOGIES_names = %w(
-	tech_housing
-	tech_lumbering
-	TECH_QUARRYING 	
-	tech_hunting 		
-	tech_collecting	
-	tech_storing 		
-	tech_hatching		
-	tech_training		
-	tech_business 	
-	tech_science 		
-	tech_praying		
-	tech_alchemy 		
-	tech_courage 		
-	tech_fortitude 	
-	tech_loyalty 		
-	tech_kindhearted
-	tech_treasure 	
-	tech_violence
-	tech_plunder
-	tech_wisdom
-).each do |name|
-	TECHNOLOGIES[name.upcase.constantize] = {:name => name}
-end
+TECHNOLOGIES = {
+	1		=> {:name => :housing},
+	2		=> {:name => :lumbering},
+	3		=> {:name => :QUARRYING},
+	4		=> {:name => :hunting},
+	5		=> {:name => :collecting},
+	6		=> {:name => :storing},
+	7		=> {:name => :hatching},
+	8		=> {:name => :training},
+	9		=> {:name => :business},
+	10	=> {:name => :science},
+	11	=> {:name => :praying},
+	12	=> {:name => :alchemy},
+	13	=> {:name => :courage},
+	14	=> {:name => :fortitude},
+	15	=> {:name => :loyalty},
+	16	=> {:name => :kindhearted},
+	17	=> {:name => :treasure},
+	18	=> {:name => :violence},
+	19	=> {:name => :plunder},
+	20	=> {:name => :wisdom},
+}
+
+TECHNOLOGY_TYPES = TECHNOLOGIES.keys
+TECHNOLOGY_NAMES = TECHNOLOGIES.values.map{|v| v[:name]}
 
 book = Excelx.new "#{Rails.root}/const/game_numerics/technologies.xlsx"
 
@@ -74,8 +74,8 @@ book.default_sheet = '住宅'
 		:score => book.cell(i, 'I').to_i,
 	}
 
-	TECHNOLOGIES[TECH_HOUSING][level] ||= {}
-	TECHNOLOGIES[TECH_HOUSING][level] = {
+	TECHNOLOGIES[TECH_1][level] ||= {}
+	TECHNOLOGIES[TECH_1][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -101,8 +101,8 @@ book.default_sheet = '伐木技术'
 		:experience => book.cell(i, 'h').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_LUMBERING][level] ||= {}
-	TECHNOLOGIES[TECH_LUMBERING][level] = {
+	TECHNOLOGIES[TECH_2][level] ||= {}
+	TECHNOLOGIES[TECH_2][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -128,8 +128,8 @@ book.default_sheet = '采石技术'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_QUARRYING][level] ||= {}
-	TECHNOLOGIES[TECH_QUARRYING][level] = {
+	TECHNOLOGIES[TECH_3][level] ||= {}
+	TECHNOLOGIES[TECH_3][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -155,8 +155,8 @@ book.default_sheet = '狩猎技术'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_HUNTING][level] ||= {}
-	TECHNOLOGIES[TECH_HUNTING][level] = {
+	TECHNOLOGIES[TECH_4][level] ||= {}
+	TECHNOLOGIES[TECH_4][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -182,8 +182,8 @@ book.default_sheet = '采集技术'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_COLLECTING][level] ||= {}
-	TECHNOLOGIES[TECH_COLLECTING][level] = {
+	TECHNOLOGIES[TECH_5][level] ||= {}
+	TECHNOLOGIES[TECH_5][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -209,8 +209,8 @@ book.default_sheet = '储藏技术'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_STORING][level] ||= {}
-	TECHNOLOGIES[TECH_STORING][level] = {
+	TECHNOLOGIES[TECH_6][level] ||= {}
+	TECHNOLOGIES[TECH_6][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -238,8 +238,8 @@ book.default_sheet = '孵化技术'
 		:experience => book.cell(i, 'j').to_i,
 		:score => book.cell(i, 'k').to_i,
 	}
-	TECHNOLOGIES[TECH_HATCHING][level] ||= {}
-	TECHNOLOGIES[TECH_HATCHING][level] = {
+	TECHNOLOGIES[TECH_7][level] ||= {}
+	TECHNOLOGIES[TECH_7][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -266,8 +266,8 @@ book.default_sheet = '驯养技术'
 		:experience => book.cell(i, 'i').to_i,
 		:score => book.cell(i, 'j').to_i,
 	}
-	TECHNOLOGIES[TECH_TRAINING][level] ||= {}
-	TECHNOLOGIES[TECH_TRAINING][level] = {
+	TECHNOLOGIES[TECH_8][level] ||= {}
+	TECHNOLOGIES[TECH_8][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -294,8 +294,8 @@ book.default_sheet = '商业技术'
 		:experience => book.cell(i, 'i').to_i,
 		:score => book.cell(i, 'j').to_i,
 	}
-	TECHNOLOGIES[TECH_BUSINESS][level] ||= {}
-	TECHNOLOGIES[TECH_BUSINESS][level] = {
+	TECHNOLOGIES[TECH_9][level] ||= {}
+	TECHNOLOGIES[TECH_9][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -321,8 +321,8 @@ book.default_sheet = '科研技术'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_SCIENCE][level] ||= {}
-	TECHNOLOGIES[TECH_SCIENCE][level] = {
+	TECHNOLOGIES[TECH_10][level] ||= {}
+	TECHNOLOGIES[TECH_10][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -348,8 +348,8 @@ book.default_sheet = '祭祀技术'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_PRAYING][level] ||= {}
-	TECHNOLOGIES[TECH_PRAYING][level] = {
+	TECHNOLOGIES[TECH_11][level] ||= {}
+	TECHNOLOGIES[TECH_11][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -376,8 +376,8 @@ book.default_sheet = '炼金'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_ALCHEMY][level] ||= {}
-	TECHNOLOGIES[TECH_ALCHEMY][level] = {
+	TECHNOLOGIES[TECH_12][level] ||= {}
+	TECHNOLOGIES[TECH_12][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -403,8 +403,8 @@ book.default_sheet = '勇气'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_COURAGE][level] ||= {}
-	TECHNOLOGIES[TECH_COURAGE][level] = {
+	TECHNOLOGIES[TECH_13][level] ||= {}
+	TECHNOLOGIES[TECH_13][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -430,8 +430,8 @@ book.default_sheet = '刚毅'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_FORTITUDE][level] ||= {}
-	TECHNOLOGIES[TECH_FORTITUDE][level] = {
+	TECHNOLOGIES[TECH_14][level] ||= {}
+	TECHNOLOGIES[TECH_14][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -457,8 +457,8 @@ book.default_sheet = '忠诚'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_LOYALTY][level] ||= {}
-	TECHNOLOGIES[TECH_LOYALTY][level] = {
+	TECHNOLOGIES[TECH_15][level] ||= {}
+	TECHNOLOGIES[TECH_15][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -484,8 +484,8 @@ book.default_sheet = '仁义'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_KINDHEARTED][level] ||= {}
-	TECHNOLOGIES[TECH_KINDHEARTED][level] = {
+	TECHNOLOGIES[TECH_16][level] ||= {}
+	TECHNOLOGIES[TECH_16][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -511,8 +511,8 @@ book.default_sheet = '寻宝'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_TREASURE][level] ||= {}
-	TECHNOLOGIES[TECH_TREASURE][level] = {
+	TECHNOLOGIES[TECH_17][level] ||= {}
+	TECHNOLOGIES[TECH_17][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -538,8 +538,8 @@ book.default_sheet = '残暴'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_VIOLENCE][level] ||= {}
-	TECHNOLOGIES[TECH_VIOLENCE][level] = {
+	TECHNOLOGIES[TECH_18][level] ||= {}
+	TECHNOLOGIES[TECH_18][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -565,8 +565,8 @@ book.default_sheet = '掠夺'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_PLUNDER][level] ||= {}
-	TECHNOLOGIES[TECH_PLUNDER][level] = {
+	TECHNOLOGIES[TECH_18][level] ||= {}
+	TECHNOLOGIES[TECH_18][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,
@@ -592,8 +592,8 @@ book.default_sheet = '智慧'
 		:experience => book.cell(i, 'H').to_i,
 		:score => book.cell(i, 'i').to_i,
 	}
-	TECHNOLOGIES[TECH_WISDOM][level] ||= {}
-	TECHNOLOGIES[TECH_WISDOM][level] = {
+	TECHNOLOGIES[TECH_20][level] ||= {}
+	TECHNOLOGIES[TECH_20][level] = {
 		:condition => condition,
 		:cost => cost, 
 		:property => property,

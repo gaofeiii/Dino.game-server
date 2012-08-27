@@ -5,4 +5,8 @@ class Specialty < Ohm::Model
 
 	include OhmExtension
 
+	attribute :type, 		Type::Integer
+	attribute :count,	 	Type::Integer
+
+	reference :player, 	:Player
 end

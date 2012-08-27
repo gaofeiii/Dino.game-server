@@ -14,8 +14,18 @@ class Technology < Ohm::Model
 
 	reference :player, :Player
 
-	def self.info
-		TECHNOLOGIES
+	class << self
+		def info
+			TECHNOLOGIES
+		end
+
+		def names
+			TECHNOLOGY_NAMES
+		end
+
+		def types
+			TECHNOLOGY_TYPES
+		end
 	end
 
 	def info(lv = self.level)

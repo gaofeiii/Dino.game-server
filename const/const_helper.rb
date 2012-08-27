@@ -8,6 +8,10 @@ module ConstHelper
 		def property
 			self[:property]
 		end
+
+		def condition
+			self[:condition]
+		end
 	end
 
 	module TypeHelper

@@ -4,7 +4,7 @@ class BuildingsController < ApplicationController
 
 	def create
 		type = params[:building_type].to_i
-		unless BUILDING_TYPES.include?(type)
+		unless type.in?(Building.types)
 			render :json => {:error => "INVALID_BUILDING_TYPE"}, :status => 999 and return
 		end
 
@@ -18,6 +18,5 @@ class BuildingsController < ApplicationController
 			render :json => {:error => 'NOT_ENOUGH_RESOURCES'}
 		end
 
-		
 	end
 end

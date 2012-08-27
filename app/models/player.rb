@@ -21,6 +21,7 @@ class Player < Ohm::Model
 	# relations
 	collection :dinosaurs, 		:Dinosaur
 	collection :technologies, :Technology
+	collection :specialties, 	:Specialty
 	
 	# indices
 	index :account_id

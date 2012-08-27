@@ -18,17 +18,27 @@ class Building < Ohm::Model
 
 	reference :village, Village
 
-	def self.info
-		BUILDINGS
+	# Class methods:
+
+	class << self
+		def info
+			BUILDINGS
+		end
+
+		def names
+			BUILDING_NAMES
+		end
+
+		def types
+			BUILDING_TYPES
+		end
+
+		def cost(type)
+			BUILDINGS[type][:cost]
+		end
 	end
 
-	def self.names
-		BUILDING_NAMES
-	end
-
-	def self.cost(type)
-		BUILDINGS[type][:cost]
-	end
+	# Instance methods:
 
 	def info
 		self.class.info.type(self.type)
