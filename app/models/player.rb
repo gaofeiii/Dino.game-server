@@ -44,6 +44,22 @@ class Player < Ohm::Model
 		(session && session.expired_at > ::Time.now.utc) ? true : false
 	end
 
+	# player的spend!方法：
+	# 参数为hash，key值是:wood, :stone, :population, :gold, :sun
+	# 前三个为玩家所属村落的资源，后两者为玩家的基本货币单位
+	# 返回值：某项资源不够返回false，成功返回玩家信息
+	# 
+	# E.g. player = Player.create :nickname => 'gaofei'
+	# # 假设以下数值
+	# player.gold_coin
+	# => 100
+	# player.sun
+	# => 50
+	# player.village.wood
+	# => 200
+	#
+	# player.spend!(:gold_coin => 10, :sun => 5, :wood => 100)
+	#
 	def spend!(args = {})
 		vil = (args.include?(:wood) or args.include?(:stone) or args.include?(:population)) ? village : nil
 		db.multi do |t|
@@ -60,13 +76,11 @@ class Player < Ohm::Model
 		load!
 	end
 
+	# player的receive!方法：
+	# 参数与返回值同spend!方法
 	def receive!(args = {})
 		vil = (args.include?(:wood) or args.include?(:stone) or args.include?(:population)) ? village : nil
 		db.multi do |t|
-			# args.slice(:gold_coin, :sun).each do |att, val|
-			# 	return false if val < 0
-			# 	t.hincrby self.key, att, val
-			# end
 			args.each do |att, val|
 				if att.in?([:gold_coin, :sun])
 					t.hincrby(key, att, val)
@@ -78,29 +92,11 @@ class Player < Ohm::Model
 		load!
 	end
 
-	# [:spend, :receive].each do |name|
-	# 	define_method("#{name}!") do |args = {}|
-	# 		db.multi do |t|
-	# 			args.slice(:gold_coin, :sun).each do |att, val|
-	# 				v = name == :spend ? -val : val
-	# 				return false if ((name == :spend) && send(att) < v)
-	# 				t.hincrby(self.key, att, v)
-	# 			end
-
-	# 			# vlg = village
-	# 			# if (args.keys & [:wood, :stone, :population]).any?
-	# 			# 	args.slice(:wood, :stone, :population).each do |att, val|
-	# 			# 		return false if vlg.send(att) < val
-	# 			# 		v = name == :spend ? -val : val
-	# 			# 		t.hincrby(vlg.key, att, v)
-	# 			# 	end
-	# 			# end
-				
-	# 		end
-	# 		load!
-	# 	end
-	# end
-
+	# player的to_hash方法，主要用于render的返回值
+	# 参数为symbol数组
+	# 若参数为空返回基本信息
+	# 带上参数则查询并返回参数所对应的信息，如player.to_hash(:village, :techs)
+	# 只要包含:all参数，返回所有的信息
 	def to_hash(*args)
 		hash = {
 			:id => id.to_s,

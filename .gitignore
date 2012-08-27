@@ -16,4 +16,5 @@
 .DS_Store
 coverage
 .idea
-./../~*.*
+
+/const/game_numerics/~$technologies.old.xlsx
