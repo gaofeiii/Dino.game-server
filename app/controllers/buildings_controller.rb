@@ -1,6 +1,7 @@
 class BuildingsController < ApplicationController
 
 	before_filter :validate_village, :only => [:create]
+	before_filter :validate_player, :only => [:speed_up]
 
 	def create
 		type = params[:building_type].to_i
@@ -17,6 +18,27 @@ class BuildingsController < ApplicationController
 		else
 			render :json => {:error => 'NOT_ENOUGH_RESOURCES'}
 		end
+
+	end
+
+	def speed_up
+		building = Building[params[:building_id]]
+
+		if building.nil?
+			render :json => {:error => "INVALID_BUILDING_ID"} and return
+		end
+
+		if building.status >= 2
+			render :json => {:error => "BUILDING_IS_FINISHED"} and return
+		end
+
+		if @player.spend!(BUILDING_SPEED_UP_COST)
+			building.update :status => 2, :start_building_time => 0
+		else
+			render :json => {:error => "NOT_ENOUGH_SUNS"} and return
+		end
+
+		render :json => {:message => "OK", :player => @player.to_hash(:village)}
 
 	end
 end

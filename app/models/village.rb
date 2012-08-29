@@ -22,7 +22,6 @@ class Village < Ohm::Model
 	attribute :player_id, 	Type::Integer
 	attribute :country_id, 	Type::Integer
 
-	collection :specialties, 	:Specialty
 	collection :buildings, 		:Building
 	collection :dinosaurs, 		:Dinosaur
 

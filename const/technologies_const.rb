@@ -568,7 +568,7 @@ book.default_sheet = '掠夺'
 	TECHNOLOGIES[TECH_18][level] ||= {}
 	TECHNOLOGIES[TECH_18][level] = {
 		:condition => condition,
-		:cost => cost, 
+		:cost => cost,
 		:property => property,
 		:reward => reward
 	}
@@ -595,7 +595,7 @@ book.default_sheet = '智慧'
 	TECHNOLOGIES[TECH_20][level] ||= {}
 	TECHNOLOGIES[TECH_20][level] = {
 		:condition => condition,
-		:cost => cost, 
+		:cost => cost,
 		:property => property,
 		:reward => reward
 	}

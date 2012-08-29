@@ -16,6 +16,7 @@ DinosaurGame::Application.routes.draw do
 
   # 村庄建造相关
   match 'create_building' => 'buildings#create', :via => :post
+  match 'building_speed_up' => 'buildings#speed_up', :via => :post
 
   # 科技研究相关
   match 'research' => 'research#research', :via => :post
