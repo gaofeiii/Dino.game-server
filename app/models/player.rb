@@ -157,9 +157,6 @@ class Player < Ohm::Model
 	end
 
 	def default_country
-		# TODO: [D] In test mode, const will load just once, but redis db flushing is before/after each spec.
-		# So the country and areamap info will be erased on every spec.
-		# The method below is to make sure the test goes smoothly, but just temporary.
 		case Rails.env
 		when "test"
 			Country.all.blank? ? Country.create(:name => :test_country, :serial_id => 11) : Country.first

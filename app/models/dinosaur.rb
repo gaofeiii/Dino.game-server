@@ -1,4 +1,5 @@
 class Dinosaur < Ohm::Model
+	STATUS = {:egg => 0, :infancy => 1, :adult => 2}
 	include Ohm::DataTypes
 	include Ohm::Callbacks
 	include Ohm::Timestamps
