@@ -13,7 +13,7 @@ class ChatMessage < Ohm::Model
 		msgs = if last_id.nil?
 			ChatMessage.all.sort_by(:created_at, :order => 'DESC', :limit => [0, number])
 		else
-			(last_id..(last_id.to_i + number - 1)).map do |i|
+			((last_id + 1)..last_id.to_i + number).map do |i|
 				ChatMessage[i]
 			end.compact
 		end.map(&:to_hash)
