@@ -19,7 +19,6 @@ class Dinosaur < Ohm::Model
 	reference :player, 		Player
 
 
-	# 构造函数
 	def initialize(args = {})
 		super
 		self.level = 1 if level.nil?
