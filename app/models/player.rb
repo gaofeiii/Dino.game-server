@@ -22,7 +22,7 @@ class Player < Ohm::Model
 	collection :dinosaurs, 		:Dinosaur
 	collection :technologies, :Technology
 	collection :specialties, 	:Specialty
-	collection :items, 				:Items
+	collection :items, 				:Item
 	
 	# indices
 	index :account_id
@@ -120,7 +120,11 @@ class Player < Ohm::Model
 			when :village
 				hash[:village] = village.to_hash(:all)
 			when :techs
-				hash[:techs] = technologies.to_a.map(&:update_status!).map(&:to_hash)
+				hash[:techs] = technologies.to_a.map{|t| t.update_status!}.map{|t| t.to_hash}
+			when :dinosaurs
+				hash[:dinosaurs] = dinosaurs.to_a.map{|d| d.to_hash}
+			when :items
+				hash[:items] = items.map{|i| i.to_hash}				
 			end
 		end
 		return hash
@@ -137,6 +141,7 @@ class Player < Ohm::Model
 
 	def after_create
 		create_village
+		Item.create :item_type => 1, :item_number => 1, :player_id => id
 	end
 
 	def after_delete

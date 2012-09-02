@@ -30,6 +30,14 @@ DinosaurGame::Application.routes.draw do
 
   # match 'get_techs' => 'info#get_techs', :via => :get
 
+  # 物品相关
+  match 'items_list' => 'items#my_items_list', :via => :post
+  match 'item_use' => 'items#use', :via => :post
+
+  # 恐龙相关
+  # match 'hatching' => 'dinosaur#hatching', :via => :post
+
+
   
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -17,6 +17,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def validate_item
+    @item = Item[params[:item_id]]
+    if @item.nil?
+      render :json => {:error => "ITEM_NOT_FOUND"} and return
+    end
+  end
+
   def log_info
   	# pp "=== Response ===", JSON.parse(response.body).deep_symbolize_keys
     pp "=== Response ===", response.body
