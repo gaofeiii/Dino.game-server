@@ -37,6 +37,7 @@ module Ohm
 
   def self.redis
     # p '------- my current redis -------'
+    $redis_count ||= 0
     $redis_count += 1
     Redis.current
   end
@@ -44,7 +45,7 @@ module Ohm
   class Model
     def self.db
       # p '------- my current redis -------'
-      $redis_count += 1
+      $redis_count ||= 0
       Redis.current
     end
   end

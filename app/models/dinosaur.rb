@@ -6,6 +6,8 @@ class Dinosaur < Ohm::Model
 	include Ohm::Callbacks
 	include Ohm::Timestamps
 
+	include OhmExtension
+
 	attribute :level, 				Type::Integer
 	attribute :experience, 		Type::Integer
 	attribute :type, 					Type::Integer
@@ -25,6 +27,12 @@ class Dinosaur < Ohm::Model
 
 	reference :player, 		Player
 
+	class << self
+		def info
+			DINOSAURS
+		end
+	end
+
 
 	def initialize(args = {})
 		super
@@ -32,24 +40,40 @@ class Dinosaur < Ohm::Model
 		self.experience = 0 if experience.nil?
 	end
 
+	def info
+		DINOSAURS[type]
+	end
+
 	def to_hash
 		hash = {
+			:id => id.to_i,
 			:level => level,
 			:experience => experience,
 			:type => type,
+			:status => status,
 			:attack => total_attack,
 			:defense => total_defense,
 			:agility => total_agility
 		}
 
 		if event_type != 0
-			hash[:event] = {
-				:event_type => event_type,
-				:start_time => start_time,
-				:finish_time => finish_time
-			}
+			hash[:event_type]  = event_type,
+			hash[:start_time]  = start_time,
+			hash[:finish_time] = finish_time
 		end
 		return hash
+	end
+
+	def hatch_speed_up!
+		if event_type == EVENTS[:hatch]
+			init_props
+			self.level = 1
+			self.status = 1
+			self.event_type = 0
+			self.save
+		else
+			false
+		end
 	end
 
 	def update_status
@@ -62,16 +86,31 @@ class Dinosaur < Ohm::Model
 				self.level = 1
 				self.status = 1
 				self.event_type = 0
-				return self
+			else
 			end
 		end
+		self
+	end
+
+	def update_status!
+		update_status
+		save
 	end
 
 	def init_props
 		[:attack, :defense, :agility].each do |att|
-			
+			send("basic_#{att}=", info[:property][att])
+			send("total_#{att}=", send("basic_#{att}"))
 		end
 	end
+
+	protected
+
+	# def before_save
+	# 	[:attack, :defense, :agility].each do |att|
+	# 		send("total_#{att}=", send("basic_#{att}"))
+	# 	end
+	# end
 
 end
 

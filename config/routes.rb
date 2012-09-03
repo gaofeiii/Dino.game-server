@@ -35,7 +35,8 @@ DinosaurGame::Application.routes.draw do
   match 'item_use' => 'items#use', :via => :post
 
   # 恐龙相关
-  # match 'hatching' => 'dinosaur#hatching', :via => :post
+  match 'update_dinosaur' => 'dinosaur#update', :via => :post
+  match 'hatch_speed_up' => 'dinosaur#hatch_speed_up', :via => :post
 
 
   

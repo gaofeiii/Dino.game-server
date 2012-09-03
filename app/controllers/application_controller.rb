@@ -5,9 +5,24 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # === Logs ===
+
   def redis_access_log
     $redis_count = 0
   end
+
+  def log_info
+    logger.debug format("%-64s", '='*64)
+    logger.debug format("| %-60s |", "* Redis access: #{$redis_count} times.")
+    logger.debug format("| %-60s |", "* ")
+    logger.debug format("| %-60s |", "*")
+    logger.debug format("%-64s", '='*64)
+    logger.debug "\n"
+    logger.debug '---- Response body ----'
+    logger.debug response.body 
+  end
+
+  # === Validation methods ===
 
   def validate_player
   	@player = Player[params[:player_id]]
@@ -30,11 +45,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def log_info
-    logger.debug format("%-64s", '='*64)
-    logger.debug format("| %-60s |", "* Redis access: #{$redis_count} times.")
-    logger.debug format("| %-60s |", "*")
-    logger.debug format("| %-60s |", "*")
-    logger.debug format("%-64s", '='*64)
+  def validate_dinosaur
+    @dinosaur = Dinosaur[params[:dinosaur_id]]
+    if @dinosaur.nil?
+      render :json => {:error => "Invalid_dinosaur_id"} and return
+    end
   end
+
+  
 end
