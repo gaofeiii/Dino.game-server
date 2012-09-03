@@ -1,7 +1,13 @@
 class ApplicationController < ActionController::Base
   after_filter :log_info if Rails.env.development?
 
+  before_filter :redis_access_log
+
   private
+
+  def redis_access_log
+    $redis_count = 0
+  end
 
   def validate_player
   	@player = Player[params[:player_id]]
@@ -25,7 +31,10 @@ class ApplicationController < ActionController::Base
   end
 
   def log_info
-  	# pp "=== Response ===", JSON.parse(response.body).deep_symbolize_keys
-    pp "=== Response ===", response.body
+    logger.debug format("%-64s", '='*64)
+    logger.debug format("| %-60s |", "* Redis access: #{$redis_count} times.")
+    logger.debug format("| %-60s |", "*")
+    logger.debug format("| %-60s |", "*")
+    logger.debug format("%-64s", '='*64)
   end
 end

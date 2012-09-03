@@ -4,9 +4,10 @@ require 'bundler/capistrano'
 
 # Server list
 @linode = "106.187.90.19"
+@ali = '110.76.45.28'
 
 # Deploy server
-@@server = :linode
+@@server = :ali
 
 set :rvm_ruby_string, "1.9.3@dinosaur_game"
 set :rvm_type, :user
@@ -25,7 +26,7 @@ set :rails_env, :production
 set :use_sudo, false
 set :keep_releases, 5
 
-set :repository,  "gitolite@106.187.90.19:dinosaur_game.git"
+set :repository,  "gitolite@110.76.45.28:game_server.git"
 set :scm, :git
 set :branch, "master"
 

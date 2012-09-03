@@ -17,7 +17,6 @@ Dir[const_dir + '/*.rb', const_dir + '/**/*.rb'].each{|file| require file}
 # Initialize the rails application
 DinosaurGame::Application.initialize!
 
-
 module StringExtensions
 	CHARACTORS = ('A'..'Z').to_a + ('a'..'z').to_a + ('0'..'9').to_a
 

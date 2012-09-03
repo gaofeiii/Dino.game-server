@@ -3,12 +3,12 @@ class Item < Ohm::Model
 	include Ohm::Callbacks
 	include OhmExtension
 
-	attribute :item_type, 	Type::Integer
-	attribute :item_number, Type::Integer
+	attribute :item_category, 	Type::Integer
+	attribute :item_type, 			Type::Integer
 	reference :player, :Player
 
 	def info
-		ITEMS[item_type][item_number]
+		ITEMS[item_category][item_type]
 	end
 
 	def use!
@@ -30,8 +30,8 @@ class Item < Ohm::Model
 	def to_hash
 		{
 			:id => id.to_i,
-			:type => item_type,
-			:number => item_number
+			:category => item_category,
+			:type => item_type
 		}
 	end
 end

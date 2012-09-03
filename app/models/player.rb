@@ -110,7 +110,7 @@ class Player < Ohm::Model
 			:account_id => account_id
 		}
 		opts = if args.include?(:all)
-			args + [:village, :techs]
+			args + [:village, :techs, :dinosaurs, :items]
 		else
 			args
 		end
@@ -141,7 +141,7 @@ class Player < Ohm::Model
 
 	def after_create
 		create_village
-		Item.create :item_type => 1, :item_number => 1, :player_id => id
+		Item.create :item_type => 1, :item_category => 1, :player_id => id
 	end
 
 	def after_delete
