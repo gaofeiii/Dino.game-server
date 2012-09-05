@@ -37,7 +37,8 @@ DinosaurGame::Application.routes.draw do
   # 恐龙相关
   match 'update_dinosaur' => 'dinosaur#update', :via => :post
   match 'hatch_speed_up' => 'dinosaur#hatch_speed_up', :via => :post
-
+  match 'feed_dinosaur' => 'dinosaur#feed', :via => :post
+  match 'food_list' => 'dinosaur#food_list', :via => :post
 
   
   # The priority is based upon order of creation:

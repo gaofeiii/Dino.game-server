@@ -5,8 +5,27 @@ class Specialty < Ohm::Model
 
 	include OhmExtension
 
-	attribute :type, 		Type::Integer
-	attribute :count,	 	Type::Integer
+	attribute :category, 	Type::Integer
+	attribute :type, 			Type::Integer
+	attribute :count,	 		Type::Integer
+
+	index :categroy
+	index :type
 
 	reference :player, 	:Player
+
+	def to_hash
+		hash = {
+			:id => id.to_i,
+			:category => category,
+			:type => type,
+			:count => count
+		}
+	end
+
+	protected
+
+	def before_create
+		self.category = 2
+	end
 end

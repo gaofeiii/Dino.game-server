@@ -1,5 +1,9 @@
+p "--- Reading items const ---"
+require "#{Rails.root}/const/specialty_const.rb"
+
 ITEM_TYPES = {
-	:egg => 1
+	:egg => 1,
+	:specialty => 2,
 }
 
 ITEMS = {
@@ -10,7 +14,9 @@ ITEMS = {
 			:cost => {:sun => 1},
 			:property => {:dinosaur_type => 1}
 		}
-	}
+	},
+
+	2 => SPECIALTIES,
 }
 
 

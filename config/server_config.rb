@@ -11,5 +11,12 @@ SERVER_INFO = {
 		:port => 10002,
 		:account_server_ip => '106.187.90.19',
 		:account_server_port => 10001
+	},
+
+	:Linode => {
+		:ip => '110.76.45.28',
+		:port => 10002,
+		:account_server_ip => '110.76.45.28',
+		:account_server_port => 10001
 	}
 }

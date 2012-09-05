@@ -110,7 +110,7 @@ class Player < Ohm::Model
 			:account_id => account_id
 		}
 		opts = if args.include?(:all)
-			args + [:village, :techs, :dinosaurs, :items]
+			args + [:village, :techs, :dinosaurs]
 		else
 			args
 		end
@@ -124,10 +124,16 @@ class Player < Ohm::Model
 			when :dinosaurs
 				hash[:dinosaurs] = dinosaurs.to_a.map{|d| d.to_hash}
 			when :items
-				hash[:items] = items.map{|i| i.to_hash}				
+				hash[:items] = items.map{|i| i.to_hash}
+			when :specialties
+				hash[:food] = specialties.map{|s| s.to_hash}
 			end
 		end
 		return hash
+	end
+
+	def food_list
+		specialties.map{|s| s.to_hash}
 	end
 
 	# Callbacks
@@ -141,7 +147,12 @@ class Player < Ohm::Model
 
 	def after_create
 		create_village
+
+		# == Test ==
 		Item.create :item_type => 1, :item_category => 1, :player_id => id
+		1.upto(8) do |i|
+			Specialty.create :type => i, :count => 999, :player_id => id
+		end
 	end
 
 	def after_delete

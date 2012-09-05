@@ -23,7 +23,7 @@ module OhmExtension
 	
 	module InstanceMethods
 		
-		def incr(key, count=1)
+		def increase(key, count=1)
 			db.hincrby(self.key, key, count)
 			get(key)
 		end
