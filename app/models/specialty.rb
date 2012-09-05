@@ -9,7 +9,7 @@ class Specialty < Ohm::Model
 	attribute :type, 			Type::Integer
 	attribute :count,	 		Type::Integer
 
-	index :categroy
+	index :category
 	index :type
 
 	reference :player, 	:Player
