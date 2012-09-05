@@ -13,7 +13,7 @@ SERVER_INFO = {
 		:account_server_port => 10001
 	},
 
-	:Linode => {
+	:ali => {
 		:ip => '110.76.45.28',
 		:port => 10002,
 		:account_server_ip => '110.76.45.28',
