@@ -1,6 +1,6 @@
 class Dinosaur < Ohm::Model
 	STATUS = {:egg => 0, :infancy => 1, :adult => 2}
-	EVENTS = {:hatch => 1}
+	EVENTS = {:hatching => 1}
 	EMOTIONS = {:happy => 2, :normal => 1, :angry => 0}
 
 	include Ohm::DataTypes
@@ -49,6 +49,10 @@ class Dinosaur < Ohm::Model
 		DINOSAURS[type]
 	end
 
+	def next_level_exp
+		DINOSAUR_EXPS[level + 1]
+	end
+
 	def to_hash
 		hash = {
 			:id => id.to_i,
@@ -82,26 +86,30 @@ class Dinosaur < Ohm::Model
 	end
 
 	def update_status
-		case event_type
-		when 0
-			return false
-		when EVENTS[:hatch]
+		if event_type == EVENTS[:hatching]
 			if ::Time.now.to_i >= finish_time
 				init_atts
-			else
+				return self
 			end
+		elsif status > 0
+			update_level
+			consume_food
+		else
+			return false
 		end
-		self
 	end
 
 	def update_status!
-		update_status
-		save
+		if update_status
+			save
+		else
+			false
+		end
 	end
 
 	def init_atts
 		[:attack, :defense, :agility, :hp].each do |att|
-			send("basic_#{att}=", info[:property][att])
+			send("basic_#{att}=", (info[:property][att] * rand(DINOSAUR_GROWTH_FACTOR)).to_i)
 			send("total_#{att}=", send("basic_#{att}"))
 		end
 		self.level = 1
@@ -111,6 +119,27 @@ class Dinosaur < Ohm::Model
 		self.emotion = EMOTIONS[:normal]
 		self.feed_point = 1
 		self.updated_feed_time = Time.now.to_i
+	end
+
+	def update_atts
+		self.basic_attack += (info[:enhance_property][:attack_inc] * rand(DINOSAUR_GROWTH_FACTOR)).to_i
+		self.basic_defense += (info[:enhance_property][:defense_inc] * rand(DINOSAUR_GROWTH_FACTOR)).to_i
+		self.basic_agility += (info[:enhance_property][:agility_inc] * rand(DINOSAUR_GROWTH_FACTOR)).to_i
+		self.basic_hp += (info[:enhance_property][:hp_inc] * rand(DINOSAUR_GROWTH_FACTOR)).to_i
+	end
+
+	def update_level
+		if experience > next_level_exp
+			self.experience -= next_level_exp
+			self.level += 1
+			update_atts
+		end
+	end
+
+	def consume_food
+		time = Time.now.to_i - updated_feed_time
+		consume = feed_point < time ? feed_point : time
+		self.feed_point -= consume
 	end
 
 	def eat!(food)
@@ -134,7 +163,7 @@ class Dinosaur < Ohm::Model
 		# [:attack, :defense, :agility].each do |att|
 		# 	send("total_#{att}=", send("basic_#{att}"))
 		# end
-		self.feed_point -= Time.now.to_i - updated_feed_time
+		# self.feed_point -= Time.now.to_i - updated_feed_time
 	end
 
 

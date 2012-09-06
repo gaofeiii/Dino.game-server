@@ -14,7 +14,7 @@ class DinosaurController < ApplicationController
 
 	def feed
 		food = @player.specialties.find(:type => params[:food_type].to_i).first
-		if food.count <= 0
+		if food.nil? || food.count <= 0
 			render :json => {:error => "NOT_ENOUGH_FOOD"} and return
 		else
 			@dinosaur.eat!(food)	
