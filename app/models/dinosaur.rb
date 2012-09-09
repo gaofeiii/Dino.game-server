@@ -92,8 +92,8 @@ class Dinosaur < Ohm::Model
 				return self
 			end
 		elsif status > 0
-			update_level
 			consume_food
+			update_level
 		else
 			return false
 		end
@@ -109,7 +109,7 @@ class Dinosaur < Ohm::Model
 
 	def init_atts
 		[:attack, :defense, :agility, :hp].each do |att|
-			send("basic_#{att}=", (info[:property][att] * rand(DINOSAUR_GROWTH_FACTOR)).to_i)
+			send("basic_#{att}=", (info[:property][att] * rand(0.8..1.2)).to_i)
 			send("total_#{att}=", send("basic_#{att}"))
 		end
 		self.level = 1
@@ -122,10 +122,18 @@ class Dinosaur < Ohm::Model
 	end
 
 	def update_atts
-		self.basic_attack += (info[:enhance_property][:attack_inc] * rand(DINOSAUR_GROWTH_FACTOR)).to_i
-		self.basic_defense += (info[:enhance_property][:defense_inc] * rand(DINOSAUR_GROWTH_FACTOR)).to_i
-		self.basic_agility += (info[:enhance_property][:agility_inc] * rand(DINOSAUR_GROWTH_FACTOR)).to_i
-		self.basic_hp += (info[:enhance_property][:hp_inc] * rand(DINOSAUR_GROWTH_FACTOR)).to_i
+		factor = case status
+		when STATUS[:happy]
+			0.8..1.2
+		when STATUS[:normal]
+			0.5..1.0
+		else
+			0
+		end
+		self.basic_attack += info[:enhance_property][:attack_inc] * factor.to_i
+		self.basic_defense += info[:enhance_property][:defense_inc] * factor.to_i
+		self.basic_agility += info[:enhance_property][:agility_inc] * factor.to_i
+		self.basic_hp += info[:enhance_property][:hp_inc] * factor.to_i
 	end
 
 	def update_level
@@ -148,7 +156,7 @@ class Dinosaur < Ohm::Model
 		else
 			EMOTIONS[:normal]
 		end
-		self.increase(:feed_point, d.info[:property][:hunger_time])
+		self.increase(:feed_point, info[:property][:hunger_time])
 		food.increase(:count, -1)
 		save
 	end
@@ -164,6 +172,7 @@ class Dinosaur < Ohm::Model
 		# 	send("total_#{att}=", send("basic_#{att}"))
 		# end
 		# self.feed_point -= Time.now.to_i - updated_feed_time
+		self.name = 'Earthquake' if name.blank?
 	end
 
 

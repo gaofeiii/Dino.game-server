@@ -19,7 +19,12 @@ class DinosaurController < ApplicationController
 		else
 			@dinosaur.eat!(food)	
 		end
-		render :json => {:player => {:dinosaurs => [@dinosaur.to_hash]}}
+		render :json => {
+			:player => {
+				:dinosaurs => [@dinosaur.to_hash],
+				:food => [food.to_hash]
+			}
+		}
 	end
 
 	def food_list
