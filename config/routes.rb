@@ -40,6 +40,15 @@ DinosaurGame::Application.routes.draw do
   match 'feed_dinosaur' => 'dinosaur#feed', :via => :post
   match 'food_list' => 'dinosaur#food_list', :via => :post
 
+  # 公会
+  resources :leagues, :only => :create do
+    collection do
+      post 'search'
+    end
+  end
+
+  match 'create_league' => 'leagues#create', :via => :post
+
   
   # The priority is based upon order of creation:
   # first created -> highest priority.

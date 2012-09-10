@@ -23,6 +23,11 @@ class Player < Ohm::Model
 	collection :technologies, :Technology
 	collection :specialties, 	:Specialty
 	collection :items, 				:Item
+
+	attribute :league_member_ship_id
+	reference :league, League
+	collection :league_applys, LeagueApply
+
 	
 	# indices
 	index :account_id
@@ -107,7 +112,8 @@ class Player < Ohm::Model
 			:sun => sun,
 			:gold_coin => gold_coin,
 			:experience => experience,
-			:account_id => account_id
+			:account_id => account_id,
+			:score => score
 		}
 		opts = if args.include?(:all)
 			args + [:village, :techs, :dinosaurs]
@@ -127,6 +133,8 @@ class Player < Ohm::Model
 				hash[:items] = items.map{|i| i.to_hash}
 			when :specialties
 				hash[:food] = specialties.map{|s| s.to_hash}
+			when :league
+				hash[:league] = league.to_hash if league
 			end
 		end
 		return hash
