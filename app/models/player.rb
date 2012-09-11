@@ -134,10 +134,14 @@ class Player < Ohm::Model
 			when :specialties
 				hash[:food] = specialties.map{|s| s.to_hash}
 			when :league
-				hash[:league] = league.to_hash if league
+				hash[:league] = league.to_hash.merge(:level => league_member_ship_id) if league
 			end
 		end
 		return hash
+	end
+
+	def league_member_ship
+		LeagueMemberShip[league_member_ship]
 	end
 
 	def food_list

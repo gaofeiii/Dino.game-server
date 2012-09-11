@@ -52,5 +52,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def validate_league
+    @league = League[params[:league_id]]
+    if @league.nil?
+      render :json => {:error => "LEAGUE_NOT_FOUND"} and return
+    end
+  end
+
   
 end

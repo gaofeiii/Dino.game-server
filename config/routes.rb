@@ -44,6 +44,13 @@ DinosaurGame::Application.routes.draw do
   resources :leagues, :only => :create do
     collection do
       post 'search'
+      post 'member_list'
+      post 'apply'
+      # post 'allow_to_join'
+      # post 'refuse_to_join'
+      post 'handle_apply'
+      post 'apply_list'
+      post 'my_league_info'
     end
   end
 
