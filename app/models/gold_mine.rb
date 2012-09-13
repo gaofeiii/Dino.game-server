@@ -7,6 +7,6 @@ class GoldMine < Ohm::Model
 	attribute :x, 	Type::Integer
 	attribute :y, 	Type::Integer
 
-	attribute :type 	Type::Integer
-	attribute :level	Type::Integer
+	attribute :type, 	Type::Integer
+	attribute :level,	Type::Integer
 end
