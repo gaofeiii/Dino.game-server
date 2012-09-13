@@ -1,11 +1,12 @@
 class LeaguesController < ApplicationController
 
-	before_filter :validate_player, :only => [:create, :apply, :my_league_info, :members_list]
+	before_filter :validate_player, :only => [:create, :apply, :my_league_info, :member_list]
 	before_filter :validate_league, :only => [:apply, :apply_list]
 
 	def create
 		if @player.spend!(:sun => 10)
-			name = "League#{rand(1..10000000)}" # params[:name]
+			# name = "League#{rand(1..10000000)}"
+			name = params[:name]
 			lg = League.create :name => name, :desc => params[:desc], :president_id => @player.id
 			lms = LeagueMemberShip.create :player_id => @player.id, 
 																		:league_id => lg.id, 
@@ -19,17 +20,23 @@ class LeaguesController < ApplicationController
 	end
 
 	def search
-		leagues = Ohm.redis.sunion(Ohm.redis.keys("League:indices:name:*#{params[:keyword]}*")).map do |lid|
-			League[lid].to_hash
+		keys = Ohm.redis.keys("League:indices:name:*#{params[:keyword]}*")
+
+		leagues = if keys.blank?
+			[]
+		else
+			Ohm.redis.sunion(keys).map do |lid|
+				League[lid].to_hash
+			end
 		end
 
-		render :json => {:player => {:leagues_list => leagues}}
+		render :json => {:leagues_list => leagues}
 	end
 
 	def my_league_info
 		league = @player.league
 		if league.nil?
-			render :json => {:error => "LEAGUE_NOT_FOUND"}
+			render :json => {:player => {:league => {}}}
 		else
 			render :json => {
 				:player => {
@@ -39,7 +46,7 @@ class LeaguesController < ApplicationController
 		end
 	end
 
-	def members_list
+	def member_list
 		league = @player.league
 		if league.nil?
 			render :json => {:error => "LEAGUE_NOT_FOUND"}
@@ -117,42 +124,4 @@ class LeaguesController < ApplicationController
 		end
 	end
 
-	# def allow_to_join
-	# 	apply = LeagueApply[params[:apply_id]]
-	# 	if apply.nil?
-	# 		render :json => {:message => "APPLY_ALREADY_HANDLED"}
-	# 	else
-	# 		apply.mutex do
-	# 			player = apply.player
-	# 			membership = LeagueMemberShip.create 	:player_id => apply.player_id,
-	# 																						:league_id => apply.league_id,
-	# 																						:nickname => player.nickname,
-	# 																						:level => LEAGUE_MEMBER_LEVELS[:member]
-	# 			player.update :league_id => apply.league_id, :league_member_ship_id => membership.id
-	# 			render :json => {
-	# 				:player => {
-	# 					:league => player.to_hash(:league)
-	# 				}
-	# 			}
-	# 		end
-	# 	end
-	# end
-
-	# def refuse_to_join
-	# 	apply = LeagueApply[params[:apply_id]]
-	# 	if apply.nil?
-	# 		render :json => {:message => "APPLY_ALREADY_HANDLED"}
-	# 	else
-	# 		apply.mutex do
-	# 			apply.delete
-	# 		end
-	# 		render :json => {
-	# 			:player => {
-	# 				:league => {
-	# 					:apply_list => aplly.league.apply_list
-	# 				}
-	# 			}
-	# 		}
-	# 	end
-	# end
 end

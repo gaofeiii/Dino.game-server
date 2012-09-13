@@ -13,7 +13,7 @@ class LeagueMemberShip < Ohm::Model
 
 	def to_hash
 		{
-			:player_id => player_id,
+			:player_id => player_id.to_i,
 			:nickname => nickname,
 			:alias_name => alias_name,
 			:level => level

@@ -113,7 +113,8 @@ class Player < Ohm::Model
 			:gold_coin => gold_coin,
 			:experience => experience,
 			:account_id => account_id,
-			:score => score
+			:score => score,
+			:country_id => country_id.to_i
 		}
 		opts = if args.include?(:all)
 			args + [:village, :techs, :dinosaurs]
@@ -134,10 +135,14 @@ class Player < Ohm::Model
 			when :specialties
 				hash[:food] = specialties.map{|s| s.to_hash}
 			when :league
-				hash[:league] = league.to_hash.merge(:level => league_member_ship_id) if league
+				hash[:league] = league_info
 			end
 		end
 		return hash
+	end
+
+	def league_info
+		league.nil? ? {} : league.to_hash.merge(:level => league_member_ship_id)
 	end
 
 	def league_member_ship

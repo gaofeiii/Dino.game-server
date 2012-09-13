@@ -1,4 +1,4 @@
-p '=== Loading enviornment.rb ==='
+p '=== Loading environment.rb ==='
 
 
 # Set time zone to UTC
@@ -16,6 +16,9 @@ Dir[const_dir + '/*.rb', const_dir + '/**/*.rb'].each{|file| require file}
 
 # Initialize the rails application
 DinosaurGame::Application.initialize!
+
+init_dir = "#{Rails.root}/init_data"
+Dir[init_dir + '/*.rb', init_dir + '/**/*.rb'].each{|file| require file}
 
 module StringExtensions
 	CHARACTORS = ('A'..'Z').to_a + ('a'..'z').to_a + ('0'..'9').to_a

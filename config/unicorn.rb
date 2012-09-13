@@ -35,7 +35,7 @@ before_fork do |server, worker|
 end
 
 after_fork do |server, worker|
-  Ohm.connect :host => "127.0.0.7", :port =>  6379
+  Ohm.connect :host => "127.0.0.7", :port => 6379, :driver => :hiredis
   # the following is *required* for Rails + "preload_app true",
   # if defined?(ActiveRecord::Base)
   #   ActiveRecord::Base.establish_connection

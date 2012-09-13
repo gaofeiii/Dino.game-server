@@ -1,6 +1,6 @@
 class PlayersController < ApplicationController
 
-	before_filter :validate_player
+	# before_filter :validate_player
 
 	def index
 		player = Session.with(:session_key, params[:session_key]).try(:player)

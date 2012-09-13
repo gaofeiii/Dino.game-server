@@ -56,6 +56,9 @@ DinosaurGame::Application.routes.draw do
 
   match 'create_league' => 'leagues#create', :via => :post
 
+  # 地图
+  match 'country_map' => 'world_map#country_map', :via => :post
+
   
   # The priority is based upon order of creation:
   # first created -> highest priority.
