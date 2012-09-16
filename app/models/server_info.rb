@@ -1,4 +1,5 @@
 class ServerInfo
+	include OhmExtension
 
 	class << self
 

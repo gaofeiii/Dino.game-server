@@ -19,6 +19,13 @@ module OhmExtension
 		def delete_all
 			self.all.each(&:delete)
 		end
+
+		def db
+      p '------- my current self.db -------'
+      $redis_count ||= 0
+      $redis_count += 1
+      Redis.current
+    end
 	end
 	
 	module InstanceMethods

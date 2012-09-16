@@ -1,8 +1,9 @@
 class AreaMap < Ohm::Model
 
 	TYPE = {
-		:blank_village => 0,
-		:player_village => 1,
+		:blocked => -1,
+		:empty => 0,
+		:village => 1,
 		:monster => 2,
 		:gold_mine => 3
 	}
@@ -10,6 +11,7 @@ class AreaMap < Ohm::Model
 	include Ohm::DataTypes
 	include Ohm::Callbacks
 	include OhmExtension
+	
 	attribute :x, 			Type::Integer
 	attribute :y, 			Type::Integer
 	attribute :blocked,	Type::Boolean
@@ -26,7 +28,7 @@ class AreaMap < Ohm::Model
 		hash = {
 			:x => x,
 			:y => y,
-			:info => {:type => 1, :name => 'ToT', :id => 12, :level => 2}
+			:info => {}
 		}
 		hash
 	end

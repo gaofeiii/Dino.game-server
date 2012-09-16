@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
     logger.debug format("%-64s", '='*64)
     logger.debug "\n"
     logger.debug '---- Response body ----'
-    logger.debug response.body 
+    # logger.debug response.body 
   end
 
   # === Validation methods ===
