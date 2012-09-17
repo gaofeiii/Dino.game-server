@@ -3,7 +3,7 @@ class FriendsController < ApplicationController
 	before_filter :validate_friend, :only => [:add_friend, :remove_friend]
 
 	def search_friend
-		ids = Ohm.redis.keys("Player:indices:nickname:#{params[:name]}").map do |key|
+		ids = Ohm.redis.keys("Player:indices:nickname:*#{params[:name]}*").map do |key|
 			Ohm.redis.smembers(key)
 		end.flatten
 
