@@ -7,15 +7,17 @@ class ChatController < ApplicationController
 	end
 
 	def create_chat_message
-		speaker, content, channel = params[:speaker], params[:content], params[:channel].to_i
+		speaker, player_id, content, channel = params[:speaker], params[:player_id], params[:content], params[:channel].to_i
 
 		unless channel.in?([1, 2, 3])
 			render :json => {:message => "INVALID_CHANNEL"} and return
 		end
 
+
 		chat = ChatMessage.create 	:channel => channel, 
 																:speaker => speaker, 
-																:content => content
+																:content => content,
+																:player_id => player_id
 		msgs = ChatMessage.world_messages(nil, 10)
 		render :json => msgs
 	end

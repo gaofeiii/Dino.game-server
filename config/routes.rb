@@ -59,6 +59,16 @@ DinosaurGame::Application.routes.draw do
   # 地图
   match 'country_map' => 'world_map#country_map', :via => :post
 
+  # 好友
+  resources :friends, :only => :index do
+    collection do
+      post 'add_friend'
+      post 'remove_friend'
+      post 'friend_list'
+      post 'search_friend'
+    end
+  end
+
   
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -76,7 +76,7 @@ class SessionsController < ApplicationController
 	private
 
 	def create_player(account_id, nickname = nil)
-		n_name = nickname.nil? ? "Player^#{Digest::MD5.hexdigest(Time.now.utc.to_s + String.sample(6))[8, 16]}" : nickname
+		n_name = nickname.nil? ? "Player^#{Digest::MD5.hexdigest(Time.now.utc.to_s + String.sample(6))[8, 6]}" : nickname
 		Player.create :account_id => account_id, :nickname => n_name
 	end
 

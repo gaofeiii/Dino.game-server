@@ -6,6 +6,7 @@ class ChatMessage < Ohm::Model
 	attribute :channel, 	Type::Integer
 	attribute :speaker
 	attribute :content
+	attribute :player_id
 
 	index :channel
 
@@ -23,6 +24,7 @@ class ChatMessage < Ohm::Model
 		{
 			:id => id.to_i,
 			:channel => channel,
+			:player_id => player_id.to_i,
 			:speaker => speaker,
 			:content => content,
 			:time => created_at.to_i

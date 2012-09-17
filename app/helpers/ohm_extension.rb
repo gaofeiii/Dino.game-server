@@ -26,6 +26,10 @@ module OhmExtension
       $redis_count += 1
       Redis.current
     end
+
+    def gets(id, *args)
+    	db.hmget(key[id], args)
+    end
 	end
 	
 	module InstanceMethods
@@ -34,6 +38,10 @@ module OhmExtension
 			db.hincrby(self.key, key, count)
 			get(key)
 		end
+
+		def _skip_empty(atts)
+      atts
+    end
 	end
 	
 	def self.included(receiver)

@@ -27,6 +27,7 @@ class Player < Ohm::Model
 	attribute :league_member_ship_id
 	reference :league, League
 	collection :league_applys, LeagueApply
+	set :friends, Player
 
 	
 	# indices
@@ -151,6 +152,19 @@ class Player < Ohm::Model
 
 	def food_list
 		specialties.map{|s| s.to_hash}
+	end
+
+	# 好友列表
+	def friend_list
+		friends.map do |friend|
+			{
+				:id => friend.id.to_i,
+				:nickname => friend.nickname,
+				:level => friend.level,
+				:score => friend.score,
+				:rank => rand(1..1000)
+			}
+		end
 	end
 
 	# Callbacks
