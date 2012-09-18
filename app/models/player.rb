@@ -30,7 +30,7 @@ class Player < Ohm::Model
 	collection :league_applys, LeagueApply
 	set :friends, 	Player
 	
-	collection :adviser_relations, AdviseRelation
+	collection :advise_relations, AdviseRelation
 
 	
 	# indices
