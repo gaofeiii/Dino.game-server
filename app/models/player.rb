@@ -122,7 +122,7 @@ class Player < Ohm::Model
 			:country_id => country_id.to_i
 		}
 		opts = if args.include?(:all)
-			args + [:village, :techs, :dinosaurs, :advisers]
+			args + [:village, :techs, :dinosaurs, :advisers, :league]
 		else
 			args
 		end
