@@ -143,7 +143,7 @@ class Player < Ohm::Model
 			when :advisers
 				hash[:advisers] = adviser_relations.map do |ar|
 					nk, lvl = Player.gets(ar.adviser_id, :nickname, :level)
-					{:id => aid.to_i, :nickname => nk, :level => lvl}
+					{:id => ar.adviser_id.to_i, :nickname => nk, :level => lvl}
 				end
 			end
 		end
