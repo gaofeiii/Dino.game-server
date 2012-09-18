@@ -31,8 +31,9 @@ class AdvisersController < ApplicationController
 		if @player.spend!(:gold_coin => adviser.price)
 			adviser.mutex do
 				adviser.player.receive!(:gold_coin => adviser.price((1-Adviser::Tax).to_i))
-				adviser.player.set :master_id, @player.id
-				@player.hire(adviser)
+				AdviseRelation.create :adviser_id => adviser.player_id,
+															:player_id => @player.id
+															:time => adviser.time
 				adviser.delete
 			end
 			render :json => {:player => @player.to_hash(:advisers)}

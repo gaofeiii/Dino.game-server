@@ -12,6 +12,7 @@ class Adviser < Ohm::Model
 	unique :player_id
 	attribute :price, 	Type::Integer
 	attribute :hired, 	Type::Boolean
+	attribute :time, 		Type::Integer
 
 	index :player_id
 	index :price

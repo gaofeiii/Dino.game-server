@@ -30,8 +30,7 @@ class Player < Ohm::Model
 	collection :league_applys, LeagueApply
 	set :friends, 	Player
 	
-	set :advisers, 	Player
-	attribute :employer_id
+	collection :adviser_relations, AdviseRelation
 
 	
 	# indices
@@ -142,8 +141,8 @@ class Player < Ohm::Model
 			when :league
 				hash[:league] = league_info
 			when :advisers
-				hash[:advisers] = advisers.ids.map do |aid|
-					nk, lvl = Player.gets(aid, :nickname, :level)
+				hash[:advisers] = adviser_relations.map do |ar|
+					nk, lvl = Player.gets(ar.adviser_id, :nickname, :level)
 					{:id => aid.to_i, :nickname => nk, :level => lvl}
 				end
 			end
