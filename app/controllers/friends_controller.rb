@@ -13,7 +13,7 @@ class FriendsController < ApplicationController
 			{
 				:id => id.to_i,
 				:nickname => info[0],
-				:level => info[1],
+				:level => info[1].to_i,
 				:score => info[2].to_i,
 				:rank => rank
 			}
