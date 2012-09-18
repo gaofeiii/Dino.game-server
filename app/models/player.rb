@@ -122,7 +122,7 @@ class Player < Ohm::Model
 			:country_id => country_id.to_i
 		}
 		opts = if args.include?(:all)
-			args + [:village, :techs, :dinosaurs]
+			args + [:village, :techs, :dinosaurs, :advisers]
 		else
 			args
 		end
@@ -142,7 +142,10 @@ class Player < Ohm::Model
 			when :league
 				hash[:league] = league_info
 			when :advisers
-				hash[:advisers] = advisers.map{|ad| ad.adviser_info}
+				hash[:advisers] = advisers.ids.map do |aid|
+					nk, lvl = Player.gets(aid, :nickname, :level)
+					{:id => aid.to_i, :nickname => nk, :level => lvl}
+				end
 			end
 		end
 		return hash
