@@ -32,7 +32,7 @@ class AdvisersController < ApplicationController
 			adviser.mutex do
 				adviser.player.receive!(:gold_coin => adviser.price((1-Adviser::Tax).to_i))
 				AdviseRelation.create :adviser_id => adviser.player_id,
-															:player_id => @player.id
+															:player_id => @player.id,
 															:time => adviser.time
 				adviser.delete
 			end
