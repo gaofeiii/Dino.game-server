@@ -2,6 +2,7 @@ class Player < Ohm::Model
 	include Ohm::DataTypes
 	include Ohm::Timestamps
 	include Ohm::Callbacks
+	include Ohm::Locking
 	include OhmExtension
 
 	# Player的属性
@@ -27,7 +28,10 @@ class Player < Ohm::Model
 	attribute :league_member_ship_id
 	reference :league, League
 	collection :league_applys, LeagueApply
-	set :friends, Player
+	set :friends, 	Player
+	
+	set :advisers, 	Player
+	attribute :employer_id
 
 	
 	# indices
@@ -137,9 +141,19 @@ class Player < Ohm::Model
 				hash[:food] = specialties.map{|s| s.to_hash}
 			when :league
 				hash[:league] = league_info
+			when :advisers
+				hash[:advisers] = advisers.map{|ad| ad.adviser_info}
 			end
 		end
 		return hash
+	end
+
+	def adviser_info
+		{
+			:id => id.to_i,
+			:nickname => nickname,
+			:level => level
+		}
 	end
 
 	def league_info
@@ -165,6 +179,15 @@ class Player < Ohm::Model
 				:rank => rand(1..1000)
 			}
 		end
+	end
+
+	# 顾问
+	def hire(adviser)
+		advisers.add(adviser)
+	end
+
+	def fire(adviser)
+		advisers.delete(adviser)
 	end
 
 	# Callbacks
