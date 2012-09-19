@@ -33,7 +33,7 @@ class AdvisersController < ApplicationController
 				adviser.player.receive!(:gold_coin => adviser.price((1-Adviser::Tax).to_i))
 				AdviseRelation.create :adviser_id => adviser.player_id,
 															:player_id => @player.id,
-															:time => adviser.time
+															:time => adviser.time,
 															:type => params[:adviser_type]
 				adviser.delete
 			end
