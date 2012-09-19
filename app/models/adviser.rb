@@ -1,6 +1,7 @@
 class Adviser < Ohm::Model
 
 	TAX = 0.01
+	TYPE = {:produce => 1, :military => 2, :business => 3, :technology => 4}
 
 	include Ohm::DataTypes
 	include Ohm::Timestamps
@@ -13,6 +14,7 @@ class Adviser < Ohm::Model
 	attribute :price, 	Type::Integer
 	attribute :hired, 	Type::Boolean
 	attribute :time, 		Type::Integer
+	attribute :type, 		Type::Integer
 
 	index :player_id
 	index :price

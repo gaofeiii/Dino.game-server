@@ -15,6 +15,12 @@ if country.get_map.blank?
 		blocked_info = file.read
 		$country_map = blocked_info.each_char.map{|i| i = i.to_i; i = -1 if i == 1; i}
 
+		# TODO: 生成金矿点
+
+		
+
+
+		# 生成玩家村落的位置点
 		15.step(289, 9) do |x|
 			15.step(289, 9) do |y|
 				

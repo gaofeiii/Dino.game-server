@@ -34,6 +34,7 @@ class AdvisersController < ApplicationController
 				AdviseRelation.create :adviser_id => adviser.player_id,
 															:player_id => @player.id,
 															:time => adviser.time
+															:type => params[:adviser_type]
 				adviser.delete
 			end
 			render :json => {:player => @player.to_hash(:advisers)}

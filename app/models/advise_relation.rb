@@ -6,6 +6,7 @@ class AdviseRelation < Ohm::Model
 	include OhmExtension
 
 	attribute :adviser_id
+	attribute :type, 		Type::Integer
 	reference :player, 	Player
 
 	def adviser
