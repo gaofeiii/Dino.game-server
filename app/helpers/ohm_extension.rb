@@ -21,9 +21,9 @@ module OhmExtension
 		end
 
 		def db
-      # p '------- my current self.db -------'
       $redis_count ||= 0
       $redis_count += 1
+      p "--- Redis.current ---"
       Redis.current
     end
 

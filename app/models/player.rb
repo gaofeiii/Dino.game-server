@@ -192,6 +192,19 @@ class Player < Ohm::Model
 		advisers.delete(adviser)
 	end
 
+	def private_mails
+		Mail.find(:receiver_name => nickname, :mail_type => Mail::TYPE[:private]).to_a
+	end
+
+	def league_mails
+		if league_id.blank?
+			return []
+		else
+			Mail.find(:league_id => league_id).to_a
+		end
+		
+	end
+
 	# Callbacks
 	protected
 
