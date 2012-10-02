@@ -7,9 +7,9 @@ SERVER_INFO = {
 	},
 
 	:Linode => {
-		:ip => '106.187.90.19',
+		:ip => '106.187.91.156',
 		:port => 10002,
-		:account_server_ip => '106.187.90.19',
+		:account_server_ip => '106.187.91.156',
 		:account_server_port => 10001
 	},
 
