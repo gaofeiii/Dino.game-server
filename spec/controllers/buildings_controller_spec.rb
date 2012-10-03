@@ -18,7 +18,7 @@ describe BuildingsController do
 	it "should POST 'create' failed" do
 		lambda do
 			post :create, :player_id => @player.id, :village_id => 3333, :building_type => 1, :x => 1, :y => 1
-			response.should_not be_success
+			response.should be_success
 		end.should_not change(Building, :count)
 	end
 end

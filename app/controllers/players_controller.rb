@@ -3,13 +3,11 @@ class PlayersController < ApplicationController
 	before_filter :validate_player, :only => [:refresh]
 
 	def index
-		# player = Session.with(:session_key, params[:session_key]).try(:player)
-		# if player.nil?
-		# 	render :json => {:error => "Player not found"}, :status => 999 and return
-		# end
-		# render :json => {:player => player.to_hash(:all)}
-		AreaMap.first
-		render :text => "Redis access: #{$redis_count}."
+		player = Session.with(:session_key, params[:session_key]).try(:player)
+		if player.nil?
+			render :json => {:error => "Player not found"}, :status => 999 and return
+		end
+		render :json => {:player => player.to_hash(:all)}
 	end
 
 	def show

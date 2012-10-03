@@ -192,17 +192,17 @@ class Player < Ohm::Model
 		advisers.delete(adviser)
 	end
 
-	def private_mails
-		Mail.find(:receiver_name => nickname, :mail_type => Mail::TYPE[:private]).to_a
-	end
-
-	def league_mails
-		if league_id.blank?
-			return []
+	def mails(type)
+		return [] if type <= 0
+		result = case type
+		when Mail::TYPE[:private]
+			Mail.find(:receiver_name => nickname, :mail_type => type)
+		when Mail::TYPE[:league]
+			Mail.find(:league_id => league_id)
 		else
-			Mail.find(:league_id => league_id).to_a
+			[]
 		end
-		
+		return result		
 	end
 
 	# Callbacks
@@ -245,7 +245,7 @@ class Player < Ohm::Model
 	def default_country
 		case Rails.env
 		when "test"
-			Country.all.blank? ? Country.create(:name => :test_country, :serial_id => 11) : Country.first
+			Country.all.blank? ? Country.create(:index => 1) : Country.first
 		else
 			Country.all.first
 		end

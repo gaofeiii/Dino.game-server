@@ -25,7 +25,15 @@ FactoryGirl.define do
 	end
 
 	factory :country do
-		name 				:forest
-		serial_id		10
+		index 		1
+	end
+
+	factory :league do
+		name 		"test_league"
+		desc		"test_league_description"
+	end
+
+	factory :league_member_ship do
+		
 	end
 end

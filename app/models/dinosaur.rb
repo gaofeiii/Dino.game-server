@@ -38,6 +38,7 @@ class Dinosaur < Ohm::Model
 
 
 	reference :player, 		Player
+	reference :village, 	Village
 
 	class << self
 		def info

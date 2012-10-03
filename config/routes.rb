@@ -79,6 +79,10 @@ DinosaurGame::Application.routes.draw do
     end
   end
 
+  # 邮件
+  match 'send_mail'     => 'mails#send_mail',     :via => :post
+  match 'receive_mail'  => 'mails#receive_mail',  :via => :post
+
   
   # The priority is based upon order of creation:
   # first created -> highest priority.

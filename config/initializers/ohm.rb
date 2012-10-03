@@ -19,7 +19,6 @@ end
 module Ohm
 
   def self.redis
-  	p "--- Redis.current ---"
     $redis_count ||= 0
     $redis_count += 1
     Redis.current

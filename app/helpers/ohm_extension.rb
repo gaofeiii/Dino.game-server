@@ -23,7 +23,6 @@ module OhmExtension
 		def db
       $redis_count ||= 0
       $redis_count += 1
-      p "--- Redis.current ---"
       Redis.current
     end
 

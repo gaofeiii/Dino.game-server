@@ -19,7 +19,7 @@ group :development do
   gem 'guard'
   gem 'guard-rspec'
   # gem 'ruby_gntp'
-  gem 'terminal-notifier'
+  gem 'terminal-notifier-guard'
 end
 
 group :test do
