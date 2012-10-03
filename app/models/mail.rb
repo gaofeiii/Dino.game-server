@@ -28,7 +28,8 @@ class Mail < Ohm::Model
 			:sender => sender_name,
 			:receiver => receiver_name,
 			:title => title,
-			:content => content
+			:content => content,
+			:time => created_at.to_i
 		}
 	end
 

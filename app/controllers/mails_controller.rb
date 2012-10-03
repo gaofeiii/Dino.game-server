@@ -25,6 +25,11 @@ class MailsController < ApplicationController
 		# 公会邮件
 		when Mail::TYPE[:league]
 			league = League[params[:league_id]]
+			
+			if league.nil?
+				render :json => {:error => "Invalid league id"} and return
+			end
+
 			Mail.create :type => Mail::TYPE[:league],
 									:sender_name => sender.nickname,
 									:title => params[:title],
