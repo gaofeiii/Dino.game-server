@@ -40,4 +40,8 @@ class Mail < Ohm::Model
 	def receiver
 		@receiver_player ||= Player.with(:nickname, receiver_name)
 	end
+
+	def league
+		@league ||= League[league_id]
+	end
 end

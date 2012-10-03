@@ -9,4 +9,5 @@ class GoldMine < Ohm::Model
 
 	attribute :type, 	Type::Integer
 	attribute :level,	Type::Integer
+
 end

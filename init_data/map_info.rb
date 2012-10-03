@@ -1,5 +1,4 @@
 p '--- Initializing country and maps info ---'
-# ================================== Ruby Array =====================================
 country = Country.with(:index, 1)
 country = Country.create(:index => 1) if country.nil?
 $country_map = []

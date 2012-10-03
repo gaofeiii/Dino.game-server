@@ -5,25 +5,27 @@ class Village < Ohm::Model
 	include OhmExtension
 
 	attribute :name
-	attribute :x, 					Type::Integer
-	attribute :y, 					Type::Integer
+	attribute :x, 									Type::Integer
+	attribute :y, 									Type::Integer
 
-	attribute :wood,						Type::Integer
-	attribute :wood_inc, 				Type::Integer
-	attribute :wood_max, 				Type::Integer
-	attribute :stone, 					Type::Integer
-	attribute :stone_inc,				Type::Integer
-	attribute :stone_max,				Type::Integer
-	attribute :population, 			Type::Integer
-	attribute :population_inc,	Type::Integer
-	attribute :population_max,	Type::Integer
+	attribute :wood,								Type::Integer
+	attribute :wood_inc, 						Type::Integer
+	attribute :wood_max, 						Type::Integer
+	attribute :stone, 							Type::Integer
+	attribute :stone_inc,						Type::Integer
+	attribute :stone_max,						Type::Integer
+	attribute :population, 					Type::Integer
+	attribute :population_inc,			Type::Integer
+	attribute :population_max,			Type::Integer
+	attribute :update_resource_at, 	Type::Integer
 		
 
-	attribute :player_id, 	Type::Integer
-	attribute :country_id, 	Type::Integer
+	attribute :player_id, 					Type::Integer
+	attribute :country_id, 					Type::Integer
 
-	collection :buildings, 		:Building
-	collection :dinosaurs, 		:Dinosaur
+	collection :buildings, 					Building
+	collection :dinosaurs, 					Dinosaur
+	collection :buffs, 							Buff
 
 
 	index :name
@@ -111,5 +113,6 @@ class Village < Ohm::Model
 		self.wood = 99999
 		self.stone = 99999
 		self.population = 99999
+		self.update_resource_at ||= ::Time.now.utc.to_i
 	end
 end

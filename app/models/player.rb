@@ -19,18 +19,22 @@ class Player < Ohm::Model
 	attribute :session_id, 		Type::Integer
 	attribute :country_id, 		Type::Integer
 
-	# relations
-	collection :dinosaurs, 		:Dinosaur
-	collection :technologies, :Technology
-	collection :specialties, 	:Specialty
-	collection :items, 				:Item
-
 	attribute :league_member_ship_id
+
+
+	collection :dinosaurs, 				Dinosaur
+	collection :technologies, 		Technology
+	collection :specialties, 			Specialty
+	collection :items, 						Item
+	collection :league_applys, 		LeagueApply
+	collection :advise_relations, AdviseRelation
+	collection :buffs, 						Buff
+
 	reference :league, League
-	collection :league_applys, LeagueApply
+	
 	set :friends, 	Player
 	
-	collection :advise_relations, AdviseRelation
+	
 
 	
 	# indices
