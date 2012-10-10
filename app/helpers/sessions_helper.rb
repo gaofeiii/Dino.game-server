@@ -14,6 +14,10 @@ module SessionsHelper
 		http_post "#{ServerInfo.account_server}/update", params
 	end
 
+	def send_push_message(params = {})
+		http_post "#{ServerInfo.account_server}/send_apn", params
+	end
+
 	def trying
 		http_get("#{ServerInfo.account_server}/try_playing")
 	end
@@ -23,6 +27,8 @@ module SessionsHelper
 													:player_id => player.id
 		player.update :session_id => sess.id
 	end
+
+
 	
 	# 私有方法
 	# private

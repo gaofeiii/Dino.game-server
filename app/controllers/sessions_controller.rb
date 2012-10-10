@@ -3,6 +3,7 @@ include SessionsHelper
 class SessionsController < ApplicationController
 
 	skip_before_filter :find_player
+	before_filter :get_device_token, :only => [:demo, :create, :register]
 
 
 	# TODO:
@@ -33,6 +34,8 @@ class SessionsController < ApplicationController
 			@player = Player.find(:account_id => rcv_msg[:account_id]).first
 			if @player.nil?
 				@player = create_player(rcv_msg[:account_id])
+			else
+				@player.set :device_token, @device_token
 			end
 			data = {:message => "LOGIN_SUCCESS", :player => @player.to_hash(:all)}
 		else
@@ -77,7 +80,11 @@ class SessionsController < ApplicationController
 
 	def create_player(account_id, nickname = nil)
 		n_name = nickname.nil? ? "Player^#{Digest::MD5.hexdigest(Time.now.utc.to_s + String.sample(6))[8, 6]}" : nickname
-		Player.create :account_id => account_id, :nickname => n_name
+		Player.create :account_id => account_id, :nickname => n_name, :device_token => @device_token
+	end
+
+	def get_device_token
+		@device_token = params[:device_token].delete('<').delete('>').delete(' ')
 	end
 
 

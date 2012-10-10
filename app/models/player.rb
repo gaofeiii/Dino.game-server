@@ -5,6 +5,8 @@ class Player < Ohm::Model
 	include Ohm::Locking
 	include OhmExtension
 
+	include SessionsHelper
+
 	# Player的属性
 	attribute :account_id, 		Type::Integer
 	attribute :nickname
@@ -14,6 +16,7 @@ class Player < Ohm::Model
 	attribute :gold_coin, 		Type::Integer
 	attribute :experience, 		Type::Integer
 	attribute :score, 				Type::Integer
+	attribute :device_token
 	
 	attribute :village_id, 		Type::Integer
 	attribute :session_id, 		Type::Integer
@@ -207,6 +210,10 @@ class Player < Ohm::Model
 			[]
 		end
 		return result		
+	end
+
+	def send_push(message)
+		send_push_message(:device_token => device_token, :message => message)
 	end
 
 	# Callbacks
