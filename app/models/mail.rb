@@ -25,6 +25,7 @@ class Mail < Ohm::Model
 
 	def to_hash
 		{
+			:id => id.to_i,
 			:sender => sender_name,
 			:receiver => receiver_name,
 			:title => title,

@@ -53,7 +53,7 @@ class MailsController < ApplicationController
 			render :json => {:error => "Invalid mail type"} and return
 		end
 
-		mails = @player.mails(mail_type)
+		mails = @player.mails(mail_type).to_a
 		render :json => {:mails => mails}
 	end
 end
