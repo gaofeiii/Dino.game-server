@@ -84,7 +84,7 @@ class SessionsController < ApplicationController
 	end
 
 	def get_device_token
-		@device_token = params[:device_token].delete('<').delete('>').delete(' ')
+		@device_token = params[:device_token].to_s.delete('<').delete('>').delete(' ')
 	end
 
 
