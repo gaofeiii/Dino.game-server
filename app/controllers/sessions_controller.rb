@@ -37,9 +37,9 @@ class SessionsController < ApplicationController
 			else
 				@player.set :device_token, @device_token
 			end
-			data = {:message => "LOGIN_SUCCESS", :player => @player.to_hash(:all)}
+			data = {:message => "SUCCESS", :player => @player.to_hash(:all)}
 		else
-			data = {:message => "LOGIN_FAILED"}
+			data = {:message => "FAILED"}
 		end
 		render :json => data
 	end
@@ -48,14 +48,15 @@ class SessionsController < ApplicationController
 	# 注册
 	def register
 		result = account_register :username => params[:username],
-															:email 		=> params[:email],
+															:email 		=> params[:email].blank? ? nil : params[:email],
 															:password => params[:password],
 															:password_confirmation => params[:password_confirmation]
 		data = {}
+		p "result", result
 		if result[:success]
 			begin
 				@player = create_player(result[:account_id], params[:username])
-				data = {:message => 'REGISTER_SUCCESS', :player => @player.to_hash(:all)}
+				data = {:message => 'SUCCESS', :player => @player.to_hash(:all)}
 			rescue Exception => e
 				data = {:message => format_error_message(e)}
 			end

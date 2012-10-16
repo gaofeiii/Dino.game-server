@@ -41,6 +41,7 @@ module SessionsHelper
 	def http_post(address, params = {})
 		uri = URI.parse create_url(address)
 		res = Net::HTTP.post_form uri, params
+		p "response: ", res.body
 		data = JSON.parse(res.body).deep_symbolize_keys
 	end
 
