@@ -25,7 +25,7 @@ class MailsController < ApplicationController
 									:title => params[:title],
 									:content => params[:content]
 
-			render :json => {:message => "Success"} and return
+			render :json => {:message => "SUCCESS"} and return
 		# 公会邮件
 		when Mail::TYPE[:league]
 			league = League[params[:league_id]]
@@ -40,7 +40,7 @@ class MailsController < ApplicationController
 									:content => params[:content],
 									:league_id => params[:league_id]
 
-			render :json => {:message => "Success"}
+			render :json => {:message => "SUCCESS"}
 		else
 			render :json => {:error => "Invalid mail type"} and return
 		end

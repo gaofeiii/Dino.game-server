@@ -2,8 +2,8 @@ SERVER_INFO = {
 	:Mini => {
 		:ip => '192.168.1.200',
 		:port => 3001,
-		:account_server_ip => '192.168.1.200',
-		:account_server_port => 3000
+		:account_server_ip => '106.187.91.156',
+		:account_server_port => 10001
 	},
 
 	:Linode => {

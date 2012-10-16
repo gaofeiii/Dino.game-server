@@ -51,9 +51,14 @@ class SessionsController < ApplicationController
 															:email 		=> params[:email],
 															:password => params[:password],
 															:password_confirmation => params[:password_confirmation]
+		data = {}
 		if result[:success]
-			@player = create_player(result[:account_id])
-			data = {:message => 'REGISTER_SUCCESS', :player => @player.to_hash(:all)}
+			begin
+				@player = create_player(result[:account_id], params[:username])
+				data = {:message => 'REGISTER_SUCCESS', :player => @player.to_hash(:all)}
+			rescue Exception => e
+				data = {:message => format_error_message(e)}
+			end
 		else
 			data = result
 		end

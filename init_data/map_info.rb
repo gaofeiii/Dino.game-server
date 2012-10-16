@@ -33,8 +33,8 @@ if country.get_map.blank?
 						if $country_map[index] < 0
 							b << index
 
-							(((rx-1)..(rx+1))).each do |sx|
-								(((ry-1)..(ry+1))).each do |sy|
+							((rx-1)..(rx+1)).each do |sx|
+								((ry-1)..(ry+1)).each do |sy|
 									b << sx + sy * 300
 								end
 							end
@@ -52,8 +52,8 @@ if country.get_map.blank?
 				ry = town_index / 300
 				rx = town_index % 300
 				
-				(((rx-1)..(rx+1))).each do |sx|
-					(((ry-1)..(ry+1))).each do |sy|
+				((rx-1)..(rx+1)).each do |sx|
+					((ry-1)..(ry+1)).each do |sy|
 						$country_map[town_index] = -1
 					end
 				end
