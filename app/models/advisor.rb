@@ -1,4 +1,4 @@
-class Adviser < Ohm::Model
+class Advisor < Ohm::Model
 
 	TAX = 0.01
 	TYPE = {:produce => 1, :military => 2, :business => 3, :technology => 4}
@@ -20,7 +20,7 @@ class Adviser < Ohm::Model
 	index :price
 
 	class << self
-		def apply_adviser(player, prc)
+		def apply_advisor(player, prc)
 			self.create :player_id => player.id, :price => prc
 		end
 	end

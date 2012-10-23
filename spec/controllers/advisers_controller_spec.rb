@@ -1,5 +1,5 @@
 require 'spec_helper'
 
-describe AdvisersController do
+describe AdvisorsController do
 
 end

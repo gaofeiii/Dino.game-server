@@ -10,7 +10,11 @@ class Buff < Ohm::Model
 		:stone_inc 			=> 2, 
 		:gold_inc 			=> 3, 
 		:resource_inc 	=> 4, 
-		:exp_inc 				=> 5 
+		:exp_inc 				=> 5,
+		:attack_inc 		=> 6,
+		:defense_inc		=> 7,
+		:agility_inc		=> 8,
+		:research_inc 	=> 9 
 	}
 
 	attribute :buff_type, 		Type::Integer

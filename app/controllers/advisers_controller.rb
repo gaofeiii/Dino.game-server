@@ -1,66 +1,66 @@
-class AdvisersController < ApplicationController
+class AdvisorsController < ApplicationController
 
 	before_filter :validate_player, :only => [:hire, :fire, :apply]
 
-	def adviser_list
+	def advisor_list
 		start = params[:page].to_i
-		advs = Adviser.all.sort(:by => :level, :order => "DESC", :limit => [start, 50])
-		render :json => {:advisers => advs}
+		advs = Advisor.all.sort(:by => :level, :order => "DESC", :limit => [start, 50])
+		render :json => {:advisors => advs}
 	end
 
 	def apply
-		if Adviser.with(:player_id => @player.id)
-			render :json => {:error => "YOU_HAVE_ALREADY_BEEN_AN_ADVISER"} and return
+		if Advisor.with(:player_id => @player.id)
+			render :json => {:error => "YOU_HAVE_ALREADY_BEEN_AN_ADVISOR"} and return
 		end
 
-		Adviser.apply_adviser(@player, price)
+		Advisor.apply_advisor(@player, price)
 		render :json => {:message => "success"}
 	end
 
 	def hire
-		adviser = Adviser.with(:player_id => params[:player_id])
+		advisor = Advisor.with(:player_id => params[:player_id])
 
-		if adviser.nil?
-			render :json => {:error => "ADVISER_NOT_FOUND"} and return
+		if advisor.nil?
+			render :json => {:error => "ADVISOR_NOT_FOUND"} and return
 		end
 
-		if adviser.hired?
-			render :json => {:error => "ADVISE_HAS_BEEN_HIRED"} and return
+		if advisor.hired?
+			render :json => {:error => "ADVISOR_HAS_BEEN_HIRED"} and return
 		end
 
-		if @player.spend!(:gold_coin => adviser.price)
-			adviser.mutex do
-				adviser.player.receive!(:gold_coin => adviser.price((1-Adviser::Tax).to_i))
-				AdviseRelation.create :adviser_id => adviser.player_id,
+		if @player.spend!(:gold_coin => advisor.price)
+			advisor.mutex do
+				advisor.player.receive!(:gold_coin => advisor.price((1-Advisor::Tax).to_i))
+				AdviseRelation.create :advisor_id => advisor.player_id,
 															:player_id => @player.id,
-															:time => adviser.time,
-															:type => params[:adviser_type]
-				adviser.delete
+															:time => advisor.time,
+															:type => params[:advisor_type]
+				advisor.delete
 			end
-			render :json => {:player => @player.to_hash(:advisers)}
+			render :json => {:player => @player.to_hash(:advisors)}
 		else
 			render :json => {:error => "NOT_ENOUGH_GOLD"}
 		end
 	end
 
 	def fire
-		adviser = Player[params[:adviser_id]]
-		if adviser.nil?
-			render :json => {:error => "ADVISER_NOT_FOUND"} and return
+		advisor = Player[params[:advisor_id]]
+		if advisor.nil?
+			render :json => {:error => "ADVISOR_NOT_FOUND"} and return
 		end
 
-		if @player.include?(adviser)
-			@player.advisers.delete(adviser)
-			adviser.set :master_id, nil
+		if @player.include?(advisor)
+			@player.advisors.delete(advisor)
+			advisor.set :master_id, nil
 		end
-		render :json => {:player => @player.to_hash(:advisers)}
+		render :json => {:player => @player.to_hash(:advisors)}
 	end
 
 	private
 
-	def validate_adviser
-		@adviser = Player[params[:adviser_id]]
-		if @adviser.nil?
+	def validate_advisor
+		@advisor = Player[params[:advisor_id]]
+		if @advisor.nil?
 			render :json => {:error => "PLAYER_NOT_FOUND"} and return
 		end
 	end

@@ -32,6 +32,7 @@ class Player < Ohm::Model
 	collection :league_applys, 		LeagueApply
 	collection :advise_relations, AdviseRelation
 	collection :buffs, 						Buff
+	collection :gods, 						God
 
 	reference :league, League
 	
@@ -128,7 +129,7 @@ class Player < Ohm::Model
 			:country_id => country_id.to_i
 		}
 		opts = if args.include?(:all)
-			args + [:village, :techs, :dinosaurs, :advisers, :league]
+			args + [:village, :techs, :dinosaurs, :advisors, :league]
 		else
 			args
 		end
@@ -147,17 +148,17 @@ class Player < Ohm::Model
 				hash[:food] = specialties.map{|s| s.to_hash}
 			when :league
 				hash[:league] = league_info
-			when :advisers
-				hash[:advisers] = advise_relations.map do |ar|
-					nk, lvl = Player.gets(ar.adviser_id, :nickname, :level)
-					{:id => ar.adviser_id.to_i, :nickname => nk, :level => lvl}
+			when :advisors
+				hash[:advisors] = advise_relations.map do |ar|
+					nk, lvl = Player.gets(ar.advisor_id, :nickname, :level)
+					{:id => ar.advisor_id.to_i, :nickname => nk, :level => lvl}
 				end
 			end
 		end
 		return hash
 	end
 
-	def adviser_info
+	def advisor_info
 		{
 			:id => id.to_i,
 			:nickname => nickname,
@@ -191,12 +192,12 @@ class Player < Ohm::Model
 	end
 
 	# 顾问
-	def hire(adviser)
-		advisers.add(adviser)
+	def hire(advisor)
+		advisors.add(advisor)
 	end
 
-	def fire(adviser)
-		advisers.delete(adviser)
+	def fire(advisor)
+		advisors.delete(advisor)
 	end
 
 	def mails(type)

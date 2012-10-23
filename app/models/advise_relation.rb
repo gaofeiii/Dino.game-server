@@ -5,11 +5,11 @@ class AdviseRelation < Ohm::Model
 	include Ohm::Locking
 	include OhmExtension
 
-	attribute :adviser_id
+	attribute :advisor_id
 	attribute :type, 		Type::Integer
 	reference :player, 	Player
 
-	def adviser
-		Player[adviser_id]
+	def advisor
+		Player[advisor_id]
 	end
 end

@@ -83,6 +83,10 @@ DinosaurGame::Application.routes.draw do
   match 'send_mail'     => 'mails#send_mail',     :via => :post
   match 'receive_mail'  => 'mails#receive_mails',  :via => :post
 
+  # 神灵
+  match 'worship_gods'  => 'god#worship_gods',    :via => :post
+  match 'cancel_worship_gods' => 'god#cancel_worship_gods',   :via => :post
+
   
   # The priority is based upon order of creation:
   # first created -> highest priority.
