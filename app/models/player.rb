@@ -244,23 +244,17 @@ class Player < Ohm::Model
 
 	# 为新玩家创建村庄
 	def create_village
+		random_coord = $village_info.keys.sample
+		x = random_coord / COORD_TRANS_FACTOR
+		y = random_coord % COORD_TRANS_FACTOR
 		vil = Village.create :name => "#{self.nickname}'s village", :player_id => self.id, 
-		:x => rand(50), :y => rand(50), :country_id => default_country.id
+		:x => x, :y => y, :country_index => rand(1..COUNTRY_SZ)
 		self.set :village_id, vil.id
 	end
 
 	def delete_village
 		vil = village
 		vil.delete if vil
-	end
-
-	def default_country
-		case Rails.env
-		when "test"
-			Country.all.blank? ? Country.create(:index => 1) : Country.first
-		else
-			Country.all.first
-		end
 	end
 
 end

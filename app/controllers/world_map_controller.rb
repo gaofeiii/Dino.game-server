@@ -64,12 +64,12 @@ class WorldMapController < ApplicationController
 
 
 		ids = ids_1 - (ids_1 & ids_2)
+		country_map = Country.first.town_nodes_info
 		ids.each do |i|
-			if $country_map[i] > 0
+			if country_map[i].to_i > 0
 				map_info << {:x => i % 300, :y => i / 300, :info => {:type => 1, :id => rand(10000), :name => "ToT", :level => rand(1..10)}}
 			end
 		end
-		# map_info = (Ohm.redis.hmget Country.first.map_key, ids).map{|m| JSON.parse(m)}
 
 		render :json => {:country_map => map_info}
 	end
