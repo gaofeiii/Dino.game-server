@@ -85,7 +85,9 @@ class SessionsController < ApplicationController
 	private
 
 	def create_player(account_id, nickname = nil)
-		n_name = nickname.nil? ? "Player^#{Digest::MD5.hexdigest(Time.now.utc.to_s + String.sample(6))[8, 6]}" : nickname
+		p '------- create_player'
+		guest_id = Ohm.redis.get(Player.key[:id]).to_i + 1
+		n_name = nickname.nil? ? "Player_#{guest_id}" : nickname
 		Player.create :account_id => account_id, :nickname => n_name, :device_token => @device_token
 	end
 

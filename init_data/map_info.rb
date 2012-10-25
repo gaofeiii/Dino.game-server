@@ -1,8 +1,4 @@
 p '--- Initializing country and maps info ---'
-COUNTRY_SZ 					= 2 															# 国家的数量
-COORD_TRANS_FACTOR 	= 300 														# 坐标的大小
-TOWN_SZ 						= {:length => 3, :width => 3} 		# 城镇节点的大小
-GOLD_MINE_SZ 				= {:length => 3, :width => 3}			# 金矿节点的大小，默认是正方形
 
 # 从起点开始，计算所有矩阵格子中的index，并返回所有index的数组
 def get_nodes_matrix(start_x, start_y, offset_x, offset_y)
@@ -60,8 +56,8 @@ end
 				town_available_nodes = []	# 可作为城镇节点的格子
 
 				# 11*11矩形格子中，最外圈不可用，即可用的为9*9
-				((x-4)..(x+5)).each do |rx|
-					((y-4)..(y+5)).each do |ry|
+				((x-4)..(x+4)).each do |rx|
+					((y-4)..(y+4)).each do |ry|
 						idx = rx * COORD_TRANS_FACTOR + ry # 地图节点的实际index
 						all_nodes << idx
 						t_nodes = get_town_nodes(rx, ry)
@@ -82,11 +78,16 @@ end
 
 				town_index = town_available_nodes.sample
 				town_nodes_info[town_index] = 1
+
+				gold_available_nodes = town_available_nodes - get_town_nodes(town_index / COORD_TRANS_FACTOR, town_index % COORD_TRANS_FACTOR)
+				gold_index = gold_available_nodes.sample
+				gold_mine_info[gold_index] = 3
 			end
 		end
 
 		country.set_basic_map_info(basic_map_info)
 		country.set_town_nodes_info(town_nodes_info)
+		country.set_gold_mine_info(gold_mine_info)
 	end
 end
 

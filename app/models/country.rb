@@ -6,13 +6,6 @@ class Country < Ohm::Model
 	attribute :index, Type::Integer
 	unique :index
 
-	# collection :area_maps, 	AreaMap
-
-
-	def after_delete
-		Ohm.redis.del map_key
-	end
-
 	# Map methods:
 	def set_map(arr1, arr2)
 		Ohm.redis.multi do |t|
@@ -80,5 +73,14 @@ class Country < Ohm::Model
 	# 		JSON.parse(info)
 	# 	end
 	# end
+
+	protected
+
+	def after_delete
+		# Clear up town and gold indices info.
+		db.del(key[:town_nodes_info])
+		db.del(key[:basic_map_info])
+		db.del(key[:gold_mine_info])
+	end
 
 end

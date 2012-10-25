@@ -21,7 +21,9 @@ class WorldMapController < ApplicationController
 		x_max = x + 10 >= 299 ? 299 : x + 10
 		y_max = y + 10 >= 299 ? 299 : y + 10
 
-		map_info = []
+
+		towns_info = []
+		gold_mines_info = []
 		# ids_1 = ((x-10)..(x+10)).map do |i|
 		# 	((y-10)..(y+10)).map do |j|
 		# 		i*10000 + j
@@ -42,7 +44,7 @@ class WorldMapController < ApplicationController
 
 		ids_1 = (x_min..x_max).map do |i|
 			(y_min..y_max).map do |j|
-				i + j * 300
+				i * 300 + j
 			end
 		end.flatten
 
@@ -55,7 +57,7 @@ class WorldMapController < ApplicationController
 
 			(last_x_min..last_x_max).map do |i|
 				(last_y_min..last_y_max).map do |j|
-					i + j * 300
+					i * 300 + j
 				end
 			end.flatten
 		else
@@ -63,14 +65,50 @@ class WorldMapController < ApplicationController
 		end
 
 
-		ids = ids_1 - (ids_1 & ids_2)
-		country_map = Country.first.town_nodes_info
+		# ids = ids_1 - (ids_1 & ids_2)
+		ids = ids_1
+		country = Country.first
+		country_map = country.town_nodes_info
+		gold_mine_map = country.gold_mine_info
+
 		ids.each do |i|
 			if country_map[i].to_i > 0
-				map_info << {:x => i % 300, :y => i / 300, :info => {:type => 1, :id => rand(10000), :name => "ToT", :level => rand(1..10)}}
+				vil = Village.with(:index, i)
+				vx = i / 300
+				vy = i % 300
+				tp, vid, nm, lv = if vil
+					[1, vil.id.to_i, vil.name + "(#{vx}, #{vy})", vil.level]
+				else
+					[0, 0, "Blank Village (#{vx}, #{vy})", 0]
+				end
+				towns_info << {
+					:x => i / 300, 
+					:y => i % 300, 
+					:info => {
+						:type => tp, 
+						:id => vid, 
+						:name => nm, 
+						:level => lv
+					}
+				}
 			end
+
+			if gold_mine_map[i].to_i > 0
+				gold_mines_info << {
+					:x => i / 300,
+					:y => i % 300,
+					:info => {
+						:type => 3,
+						:id => rand(10001..20000),
+						:name => "Gold Mine",
+						:level => rand(1..2)
+					}
+				}
+			end
+
+
 		end
 
-		render :json => {:country_map => map_info}
+		render :json => {:country_map => towns_info + gold_mines_info}
 	end
 end

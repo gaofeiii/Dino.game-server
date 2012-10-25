@@ -7,6 +7,7 @@ class Village < Ohm::Model
 	attribute :name
 	attribute :x, 									Type::Integer
 	attribute :y, 									Type::Integer
+	attribute :index, 							Type::Integer
 
 	attribute :wood,								Type::Integer
 	attribute :wood_inc, 						Type::Integer
@@ -21,7 +22,7 @@ class Village < Ohm::Model
 		
 
 	attribute :player_id, 					Type::Integer
-	attribute :country_id, 					Type::Integer
+	attribute :country_index,				Type::Integer
 
 	collection :buildings, 					Building
 	collection :dinosaurs, 					Dinosaur
@@ -29,13 +30,27 @@ class Village < Ohm::Model
 
 
 	index :name
+	unique :index
 	index :x
 	index :y
-	index :country_id
+	index :country_index
 
 	# 获取村庄所属的玩家
 	def player
 		Player[player_id]
+	end
+
+	def level
+		case player.level
+		when 1..10
+			1
+		when 11..20
+			2
+		when 21..30
+			3
+		else
+			1
+		end
 	end
 
 	def to_hash(*args)
@@ -45,7 +60,7 @@ class Village < Ohm::Model
 			:x => x,
 			:y => y,
 			:resources => resources,
-			:country_id => country_id
+			:country_index => country_index
 		}
 
 		options = if args.include?(:all)
@@ -109,6 +124,13 @@ class Village < Ohm::Model
 	end
 
 	protected
+
+	def before_save
+		if index.zero?
+			self.index = x * COORD_TRANS_FACTOR + y
+		end
+	end
+
 	def before_create
 		self.wood = 99999
 		self.stone = 99999

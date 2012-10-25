@@ -70,9 +70,9 @@ DinosaurGame::Application.routes.draw do
   end
 
   # 顾问
-  resources :advisers, :only => :index do
+  resources :advisors, :only => :index do
     collection do
-      post "adviser_list"
+      post "advisor_list"
       post "apply"
       post "hire"
       post "fire"

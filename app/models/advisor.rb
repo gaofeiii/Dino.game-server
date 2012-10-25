@@ -18,6 +18,8 @@ class Advisor < Ohm::Model
 
 	index :player_id
 	index :price
+	index :hired
+	index :type
 
 	class << self
 		def apply_advisor(player, prc)
