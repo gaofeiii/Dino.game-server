@@ -1,7 +1,7 @@
 class Country < Ohm::Model
 	include Ohm::DataTypes
 	include Ohm::Callbacks
-	include CountryDataInitHelper
+	include CountryDataHelper
 	include OhmExtension
 
 	attribute :index, Type::Integer
