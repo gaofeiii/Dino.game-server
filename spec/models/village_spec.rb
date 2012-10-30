@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Village do
-  
+
   describe "validations" do
   	
   	before(:each) do
