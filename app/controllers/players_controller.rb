@@ -2,6 +2,10 @@ class PlayersController < ApplicationController
 
 	before_filter :validate_player, :only => [:refresh]
 
+	def deny_access
+		render :text => "Request denied." and return
+	end
+
 	def index
 		player = Session.with(:session_key, params[:session_key]).try(:player)
 		if player.nil?

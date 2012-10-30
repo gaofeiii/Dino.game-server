@@ -2,10 +2,6 @@ class DinosaurController < ApplicationController
 	before_filter :validate_dinosaur, :only => [:update, :hatch_speed_up, :feed]
 	before_filter :validate_player, :only => [:food_list, :feed]
 
-	def dino_test
-		render :text => "Dinosaur!!!"
-	end
-
 	def update
 		@dinosaur.update_status!
 		render :json => {:player => {:dinosaurs => [@dinosaur.to_hash]}}
@@ -29,9 +25,5 @@ class DinosaurController < ApplicationController
 				:food => [food.to_hash]
 			}
 		}
-	end
-
-	def food_list
-		render :json => {:player => {:food => @player.food_list}}
 	end
 end

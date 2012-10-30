@@ -79,7 +79,7 @@ class Dinosaur < Ohm::Model
 	end
 
 	def hatch_speed_up!
-		if event_type == EVENTS[:hatch]
+		if event_type == EVENTS[:hatching]
 			init_atts
 		else
 			false
@@ -120,6 +120,7 @@ class Dinosaur < Ohm::Model
 		self.emotion = EMOTIONS[:normal]
 		self.feed_point = 1
 		self.updated_feed_time = Time.now.to_i
+		self
 	end
 
 	def update_atts

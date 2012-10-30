@@ -19,7 +19,7 @@ class Item < Ohm::Model
 			dino = DINOSAURS[item_info[:type]]
 			Dinosaur.create :type 				=> item_info[:type],
 											:status 			=> Dinosaur::STATUS[:egg],
-											:event_type 	=> Dinosaur::EVENTS[:hatch],
+											:event_type 	=> Dinosaur::EVENTS[:hatching],
 											:start_time 	=> ::Time.now.to_i,
 											:finish_time 	=> ::Time.now.to_i + dino[:property][:hatching_time],
 											:player_id 		=> player_id

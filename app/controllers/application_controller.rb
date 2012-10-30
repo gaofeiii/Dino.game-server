@@ -59,5 +59,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def deny_access
+    render :text => "Request denied."
+  end
+
   
 end

@@ -10,4 +10,8 @@ class ItemsController < ApplicationController
 		obj = @item.use!
 		render :json => {:player => @player.to_hash(:dinosaurs)}
 	end
+
+	def food_list
+		render :json => {:player => {:food => @player.food_list}}
+	end
 end

@@ -1,91 +1,98 @@
 DinosaurGame::Application.routes.draw do
   # 账户模块
-  match 'demo'        => 'sessions#demo',       :via => :post
-  match 'login'       => 'sessions#create',     :via => :post
-  match 'register'    => 'sessions#register',   :via => :post
-  match 'logout'      => 'sessions#logout',     :via => :post
-  match 'update'      => 'sessions#update',     :via => :post
+  scope :path => 'accounts', :as => 'accounts' do
+    post 'demo'        => 'sessions#demo'     # 快速试玩
+    post 'login'       => 'sessions#create'   # 登录
+    post 'register'    => 'sessions#register' # 注册
+    post 'logout'      => 'sessions#logout'   # 登出
+    post 'update'      => 'sessions#update'   # 更新账户
+  end
 
   # 玩家信息
-  resources :players, :only => [:index, :show] do
-    resources :villages, :only => :index do
-    end
+  scope :path => 'players', :as => 'players' do
+    post 'refresh' => 'players#refresh'
   end
-
-  match 'refresh' => 'players#refresh', :via => :post
+  
 
   # 村庄建造相关
-  match 'create_building' => 'buildings#create', :via => :post
-  match 'building_speed_up' => 'buildings#speed_up', :via => :post
-
+  scope :path => 'buildings', :as => 'buildings' do
+    post 'create' => 'buildings#create'
+    post 'speed_up' => 'buildings#speed_up'
+  end
+  
   # 科技研究相关
-  match 'research' => 'research#research', :via => :post
-
+  scope :path => 'techs', :as => 'techs' do
+    post 'research' => 'research#research'
+  end
+  
   # 即时信息的刷新
-  match 'real_time' => 'real_time_info#refresh', :via => :post
+  post 'real_time' => 'real_time_info#refresh'
 
   # 聊天
-  match 'world_chat' => 'chat#world_chat', :via => :post
-  match 'create_chat_message' => 'chat#create_chat_message', :via => :post
-
-  # match 'get_techs' => 'info#get_techs', :via => :get
-
-  # 物品相关
-  match 'items_list' => 'items#my_items_list', :via => :post
-  match 'item_use' => 'items#use', :via => :post
-
-  # 恐龙相关
-  match 'update_dinosaur' => 'dinosaur#update', :via => :post
-  match 'hatch_speed_up' => 'dinosaur#hatch_speed_up', :via => :post
-  match 'feed_dinosaur' => 'dinosaur#feed', :via => :post
-  match 'food_list' => 'dinosaur#food_list', :via => :post
-
-  # 公会
-  resources :leagues, :only => :create do
-    collection do
-      post 'search'
-      post 'member_list'
-      post 'apply'
-      # post 'allow_to_join'
-      # post 'refuse_to_join'
-      post 'handle_apply'
-      post 'apply_list'
-      post 'my_league_info'
-    end
+  scope :path => 'chats', :as => 'chats' do
+    post 'world_chat'           => 'chat#world_chat'
+    post 'create_chat_message'  => 'chat#create_chat_message'
   end
 
-  match 'create_league' => 'leagues#create', :via => :post
+  # 物品相关
+  scope :path => 'items', :as => 'items' do
+    post 'items_list' => 'items#my_items_list'
+    post 'use' => 'items#use'
+    post 'food_list'   => 'items#food_list'
+  end
+
+  # 恐龙相关
+  scope :path => 'dinosaurs', :as => 'dinosaurs' do
+    post 'update_status'    => 'dinosaur#update'
+    post 'hatch_speed_up'   => 'dinosaur#hatch_speed_up'
+    post 'feed'             => 'dinosaur#feed'
+  end
+  
+  # 公会
+  scope :path => 'leagues', :as => 'leagues' do
+    post 'create' => 'leagues#create'
+    post 'search' => 'leagues#search'
+    post 'member_list' => 'leagues#member_list'
+    post 'apply' => 'leagues#apply'
+    post 'handle_apply' => 'leagues#handle_apply'
+    post 'apply_list' => 'leagues#apply_list'
+    post 'my_league_info' => 'leagues#my_league_info'
+  end  
 
   # 地图
-  match 'country_map' => 'world_map#country_map', :via => :post
+  scope :path => 'map', :as => 'map' do
+    post 'country_map' => 'world_map#country_map'
+  end
 
   # 好友
-  resources :friends, :only => :index do
-    collection do
-      post 'add_friend'
-      post 'remove_friend'
-      post 'friend_list'
-      post 'search_friend'
-    end
+  scope :path => 'friends', :as => 'friends' do
+    post 'add_friend'       => 'friends#add_friend'
+    post 'remove_friend'    => 'friends#remove_friend'
+    post 'friend_list'      => 'friends#friend_list'
+    post 'search_friend'    => 'search_friend'
   end
 
   # 顾问
-  resources :advisors, :only => :index do
-    collection do
-      post "advisor_list"
-      post "apply"
-      post "hire"
-      post "fire"
-    end
+  scope :path => 'advisors', :as => 'advisors' do
+    post "advisor_list" => 'advisors#advisor_list'
+    post "apply"        => 'advisors#apply'
+    post "hire"         => 'advisors#hire'
+    post "fire"         => 'advisors#fire'
   end
 
   # 邮件
-  match 'send_mail'     => 'mails#send_mail',     :via => :post
-  match 'receive_mail'  => 'mails#receive_mails',  :via => :post
+  scope :path => 'mails', :as => 'mails' do
+    post 'send_mail'    => 'mails#send_mail'
+    post 'receive_mail' => 'mails#receive_mails'
+  end
 
   # 神灵
-  match 'worship_gods'  => 'god#worship_gods',    :via => :post
-  match 'cancel_worship_gods' => 'god#cancel_worship_gods',   :via => :post
+  scope :path => 'gods', :as => 'gods' do
+    post 'worship'         => 'god#worship_gods'
+    post 'cancel_worship'  => 'god#cancel_worship_gods'
+  end
+
+  root :to => 'players#deny_access'
 
   
   # The priority is based upon order of creation:

@@ -127,7 +127,7 @@ class Village < Ohm::Model
 
 	def before_save
 		if index.zero?
-			self.index = x * COORD_TRANS_FACTOR + y
+			self.index = x * Country::COORD_TRANS_FACTOR + y
 		end
 	end
 
