@@ -33,6 +33,7 @@ class Player < Ohm::Model
 	collection :advise_relations, AdviseRelation
 	collection :buffs, 						Buff
 	collection :gods, 						God
+	collection :troops,						Troops
 
 	reference :league, League
 	
@@ -141,7 +142,7 @@ class Player < Ohm::Model
 			when :techs
 				hash[:techs] = technologies.to_a.map{|t| t.update_status!}.map{|t| t.to_hash}
 			when :dinosaurs
-				hash[:dinosaurs] = dinosaurs.to_a.map{|d| d.to_hash}
+				hash[:dinosaurs] = dinosaurs.map{|d| d.to_hash}
 			when :items
 				hash[:items] = items.map{|i| i.to_hash}
 			when :specialties
@@ -172,6 +173,10 @@ class Player < Ohm::Model
 
 	def league_member_ship
 		LeagueMemberShip[league_member_ship]
+	end
+
+	def foods
+		specialties.to_a
 	end
 
 	def food_list
@@ -211,6 +216,13 @@ class Player < Ohm::Model
 			[]
 		end
 		return result		
+	end
+
+	def make_troops(*dinos)
+		trp = Troops.create :player_id => id
+		dinos.each do |dino|
+			dino.update :troops_id => trp.id
+		end
 	end
 
 	def send_push(message)

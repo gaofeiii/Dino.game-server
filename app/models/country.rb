@@ -7,6 +7,9 @@ class Country < Ohm::Model
 	attribute :index, Type::Integer
 	unique :index
 
+	def refresh_monsters
+		
+	end
 
 
 	protected

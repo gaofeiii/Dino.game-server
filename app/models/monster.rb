@@ -10,4 +10,6 @@ class Monster < Ohm::Model
 	attribute :attack, 	Type::Integer
 	attribute :defense,	Type::Integer
 	attribute :agility,	Type::Integer
+
+	reference :gold_mine, GoldMine
 end

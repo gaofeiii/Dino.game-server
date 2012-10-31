@@ -1,5 +1,7 @@
 class WorldMapController < ApplicationController
 
+	before_filter :validate_player, :only => [:attack]
+
 	def country_map
 		x, y = params[:x], params[:y]
 		last_x, last_y = params[:last_x], params[:last_y]
@@ -110,5 +112,9 @@ class WorldMapController < ApplicationController
 		end
 
 		render :json => {:country_map => towns_info + gold_mines_info}
+	end
+
+	def attack
+		render :json => {:message => 'attack!'}
 	end
 end

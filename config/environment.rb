@@ -2,7 +2,7 @@ p '=== Loading environment.rb ==='
 
 
 # Set time zone to UTC
-ENV['TZ'] = "UTC"
+# ENV['TZ'] = "UTC"
 
 # Load the rails application
 require File.expand_path('../application', __FILE__)

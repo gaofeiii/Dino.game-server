@@ -14,6 +14,13 @@ class Specialty < Ohm::Model
 
 	reference :player, 	:Player
 
+
+	[:name, :feed_point].each do |att|
+		define_method(att) do
+			SPECIALTIES[type][att]
+		end
+	end
+
 	def to_hash
 		hash = {
 			:id => id.to_i,

@@ -16,7 +16,7 @@ DinosaurGame::Application.routes.draw do
 
   # 村庄建造相关
   scope :path => 'buildings', :as => 'buildings' do
-    post 'create' => 'buildings#create'
+    post 'create'   => 'buildings#create'
     post 'speed_up' => 'buildings#speed_up'
   end
   
@@ -36,9 +36,9 @@ DinosaurGame::Application.routes.draw do
 
   # 物品相关
   scope :path => 'items', :as => 'items' do
-    post 'items_list' => 'items#my_items_list'
-    post 'use' => 'items#use'
-    post 'food_list'   => 'items#food_list'
+    post 'items_list'   => 'items#my_items_list'
+    post 'use'          => 'items#use'
+    post 'food_list'    => 'items#food_list'
   end
 
   # 恐龙相关
@@ -50,18 +50,21 @@ DinosaurGame::Application.routes.draw do
   
   # 公会
   scope :path => 'leagues', :as => 'leagues' do
-    post 'create' => 'leagues#create'
-    post 'search' => 'leagues#search'
-    post 'member_list' => 'leagues#member_list'
-    post 'apply' => 'leagues#apply'
-    post 'handle_apply' => 'leagues#handle_apply'
-    post 'apply_list' => 'leagues#apply_list'
+    post 'create'         => 'leagues#create'
+    post 'search'         => 'leagues#search'
+    post 'member_list'    => 'leagues#member_list'
+    post 'apply'          => 'leagues#apply'
+    post 'handle_apply'   => 'leagues#handle_apply'
+    post 'apply_list'     => 'leagues#apply_list'
     post 'my_league_info' => 'leagues#my_league_info'
   end  
 
   # 地图
   scope :path => 'map', :as => 'map' do
-    post 'country_map' => 'world_map#country_map'
+    post 'country_map'  => 'world_map#country_map'
+    scope :path         => 'country_map', :as => 'country_map' do
+      post 'attack' => 'world_map#attack'
+    end
   end
 
   # 好友

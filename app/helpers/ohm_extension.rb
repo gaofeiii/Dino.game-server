@@ -33,6 +33,7 @@ module OhmExtension
     def mapped_gets(id, *args)
     	db.mapped_hmget(key[id], args)
     end
+
 	end
 	
 	module InstanceMethods

@@ -39,6 +39,7 @@ class Dinosaur < Ohm::Model
 
 	reference :player, 		Player
 	reference :village, 	Village
+	reference :troops, 		Troops
 
 	class << self
 		def info
@@ -81,6 +82,7 @@ class Dinosaur < Ohm::Model
 	def hatch_speed_up!
 		if event_type == EVENTS[:hatching]
 			init_atts
+			save
 		else
 			false
 		end
@@ -147,9 +149,11 @@ class Dinosaur < Ohm::Model
 	end
 
 	def consume_food
-		time = Time.now.to_i - updated_feed_time
+		curr_time = Time.now.to_i
+		time = curr_time - updated_feed_time
 		consume = feed_point < time ? feed_point : time
 		self.feed_point -= consume
+		self.updated_feed_time = curr_time
 	end
 
 	def eat!(food)
@@ -158,9 +162,24 @@ class Dinosaur < Ohm::Model
 		else
 			EMOTIONS[:normal]
 		end
-		self.increase(:feed_point, info[:property][:hunger_time])
+		curr_feed_point = feed_point + food.feed_point
+		curr_feed_point = curr_feed_point > hunger_time ? hunger_time : curr_feed_point
+		self.set(:feed_point, curr_feed_point)
 		food.increase(:count, -1)
+		consume_food
 		save
+	end
+
+	def favor_food
+		property[:favor_food]
+	end
+
+	def property
+		info[:property]
+	end
+
+	def hunger_time
+		property[:hunger_time]
 	end
 
 	def is_my_favorite_food(food_type)
