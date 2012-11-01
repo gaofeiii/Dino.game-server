@@ -22,14 +22,14 @@ class Dinosaur < Ohm::Model
 	attribute :feed_weight, 	Type::Integer
 	attribute :feed_count, 		Type::Integer
 
-	attribute :basic_attack, 			Type::Integer			# 基础攻击
-	attribute :basic_defense, 		Type::Integer			# 基础防御
-	attribute :basic_agility,			Type::Integer 		# 基础敏捷
-	attribute :basic_hp,					Type::Integer
-	attribute :total_attack, 			Type::Integer
-	attribute :total_defense, 		Type::Integer
-	attribute :total_agility,			Type::Integer
-	attribute :total_hp,					Type::Integer
+	attribute :basic_attack, 			Type::Float			# 基础攻击
+	attribute :basic_defense, 		Type::Float			# 基础防御
+	attribute :basic_agility,			Type::Float 		# 基础敏捷
+	attribute :basic_hp,					Type::Float
+	attribute :total_attack, 			Type::Float
+	attribute :total_defense, 		Type::Float
+	attribute :total_agility,			Type::Float
+	attribute :total_hp,					Type::Float
 
 
 	attribute :event_type, 		Type::Integer
@@ -45,6 +45,21 @@ class Dinosaur < Ohm::Model
 		def info
 			DINOSAURS
 		end
+
+		def new_by(args = {})
+			if args.has_key?(:type)
+				dino = self.new(:type => args[:type].to_i)
+				dino.init_atts
+				dino.update_attributes(args)
+				dino
+			else
+				raise "Args must include type"
+			end
+		end
+
+		def create_by(args = {})
+			self.new_by(args).save
+		end
 	end
 
 	def info
@@ -53,6 +68,10 @@ class Dinosaur < Ohm::Model
 
 	def next_level_exp
 		DINOSAUR_EXPS[level + 1]
+	end
+
+	def key_name
+		info[:name].to_sym
 	end
 
 	def to_hash
@@ -125,26 +144,35 @@ class Dinosaur < Ohm::Model
 		self
 	end
 
-	def update_atts
-		factor = case status
-		when STATUS[:happy]
-			0.8..1.2
-		when STATUS[:normal]
-			0.5..1.0
+	def upgrade_atts
+		factor = case emotion
+		when EMOTIONS[:happy]
+			Random.rand(8..12) / 10.0
+		when EMOTIONS[:normal]
+			Random.rand(5..10) / 10.0
 		else
 			0
 		end
-		self.basic_attack += info[:enhance_property][:attack_inc] * factor.to_i
-		self.basic_defense += info[:enhance_property][:defense_inc] * factor.to_i
-		self.basic_agility += info[:enhance_property][:agility_inc] * factor.to_i
-		self.basic_hp += info[:enhance_property][:hp_inc] * factor.to_i
+
+		self.basic_attack += (info[:enhance_property][:attack_inc] * factor).round(1)
+		self.basic_defense += (info[:enhance_property][:defense_inc] * factor).round(1)
+		self.basic_agility += (info[:enhance_property][:agility_inc] * factor).round(1)
+		self.basic_hp += (info[:enhance_property][:hp_inc] * factor).round(1)
+		update_main_atts
+		self
+	end
+
+	def update_main_atts
+		[:attack, :defense, :agility, :hp].each do |att|
+			send("total_#{att}=", send("basic_#{att}"))
+		end
 	end
 
 	def update_level
 		if experience > next_level_exp
 			self.experience -= next_level_exp
 			self.level += 1
-			update_atts
+			upgrade_atts
 		end
 	end
 

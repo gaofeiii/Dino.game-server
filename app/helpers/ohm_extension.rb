@@ -34,6 +34,17 @@ module OhmExtension
     	db.mapped_hmget(key[id], args)
     end
 
+    def attribute(name, cast = nil)
+    	@@attributes ||= Hash.new
+    	@@attributes[self.name] ||= Array.new
+    	@@attributes[self.name] << name
+    	super
+    end
+
+    def all_attrs
+    	@@attributes[self.name]
+    end
+
 	end
 	
 	module InstanceMethods
@@ -41,6 +52,10 @@ module OhmExtension
 		def increase(key, count=1)
 			db.hincrby(self.key, key, count)
 			get(key)
+		end
+
+		def attributes
+			super.merge!(:id => id)
 		end
 
 		def _skip_empty(atts)

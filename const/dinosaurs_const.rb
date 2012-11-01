@@ -25,7 +25,7 @@ DINOSAURS = {}
 book.default_sheet = 'dinosaurs'
 2.upto(book.last_row).each do |i|
 	type = book.cell(i, 'A').to_i
-	name = book.cell(i, 'D').downcase
+	name = book.cell(i, 'C').downcase
 	hp = book.cell(i, 'E').to_i
 	attack = book.cell(i, 'F').to_i
 	defense = book.cell(i, 'G').to_i
@@ -41,6 +41,7 @@ book.default_sheet = 'dinosaurs'
 	hunger_time = book.cell(i,'Q').to_i
 	DINOSAURS[type] = {
 		:dinosaur_type => type,
+		:name => name,
 		:property => {
 			:hp => hp,
 			:attack => attack,

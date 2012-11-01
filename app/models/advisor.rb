@@ -27,7 +27,7 @@ class Advisor < Ohm::Model
 		end
 	end
 
-	def player
+	def employer
 		Player[player_id]
 	end
 
