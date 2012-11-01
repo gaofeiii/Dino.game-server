@@ -84,9 +84,9 @@ class Dinosaur < Ohm::Model
 			:status => status,
 			:emotion => emotion,
 			:hungry_time => Time.now.to_i + feed_point,
-			:attack => total_attack,
-			:defense => total_defense,
-			:agility => total_agility,
+			:attack => total_attack.to_i,
+			:defense => total_defense.to_i,
+			:agility => total_agility.to_i,
 			:hp => total_hp
 		}
 
