@@ -1,7 +1,21 @@
 class ServerInfo
 	include OhmExtension
 
+	@@cache = Hash.new
+
 	class << self
+
+		def reload!
+			@@cache = YAML::load_file("#{Rails.root}/config/server_config.yml").deep_symbolize_keys
+		end
+
+		def all
+			if @@cache.blank?
+				reload!
+			else
+				@@cache
+			end
+		end
 
 		def server_name
 			unless Ohm.redis.exists(:server_name)
@@ -16,11 +30,19 @@ class ServerInfo
 		end
 
 		def info
-			SERVER_INFO[server_name]
+			all[server_name]
 		end
 
 		def account_server
 			"http://#{info[:account_server_ip]}:#{info[:account_server_port]}"
 		end
+
+		# def info
+		# 	SERVER_INFO[server_name]
+		# end
+
+		# def account_server
+		# 	"http://#{info[:account_server_ip]}:#{info[:account_server_port]}"
+		# end
 	end
 end

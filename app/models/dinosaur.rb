@@ -181,6 +181,7 @@ class Dinosaur < Ohm::Model
 		time = curr_time - updated_feed_time
 		consume = feed_point < time ? feed_point : time
 		self.feed_point -= consume
+		self.emotion = EMOTIONS[:angry] if feed_point <= 0
 		self.updated_feed_time = curr_time
 	end
 
