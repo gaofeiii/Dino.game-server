@@ -31,11 +31,14 @@ class Dinosaur < Ohm::Model
 	attribute :total_agility,			Type::Float
 	attribute :total_hp,					Type::Float
 
+	attribute :current_hp, 				Type::Float
+
 
 	attribute :event_type, 		Type::Integer
 	attribute :start_time, 		Type::Integer
 	attribute :finish_time, 	Type::Integer
 
+	collection :skills, 	Skill
 
 	reference :player, 		Player
 	reference :village, 	Village
@@ -43,7 +46,7 @@ class Dinosaur < Ohm::Model
 
 	class << self
 		def info
-			DINOSAURS
+			DinosaurInfo.all
 		end
 
 		def new_by(args = {})
@@ -63,11 +66,12 @@ class Dinosaur < Ohm::Model
 	end
 
 	def info
-		DINOSAURS[type]
+		self.class.info[type]
 	end
 
 	def next_level_exp
-		DINOSAUR_EXPS[level + 1]
+		exp = info[:exp][level + 1]
+		exp.nil? ? 99999999 : exp
 	end
 
 	def key_name
@@ -83,6 +87,7 @@ class Dinosaur < Ohm::Model
 			:type => type,
 			:status => status,
 			:emotion => emotion,
+			:feed_point => feed_point,
 			:hungry_time => Time.now.to_i + feed_point,
 			:attack => total_attack.to_i,
 			:defense => total_defense.to_i,
@@ -212,7 +217,7 @@ class Dinosaur < Ohm::Model
 	end
 
 	def is_my_favorite_food(food_type)
-		info[:property][:favor_food] == food_type
+		property[:favor_food] == food_type
 	end
 
 	protected
@@ -223,6 +228,10 @@ class Dinosaur < Ohm::Model
 		# end
 		# self.feed_point -= Time.now.to_i - updated_feed_time
 		self.name = 'Earthquake' if name.blank?
+	end
+
+	def before_create
+		self.current_hp = total_hp
 	end
 
 

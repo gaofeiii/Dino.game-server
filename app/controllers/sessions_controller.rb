@@ -58,7 +58,7 @@ class SessionsController < ApplicationController
 				@player = create_player(result[:account_id], params[:username])
 				data = {:message => 'SUCCESS', :player => @player.to_hash(:all)}
 			rescue Exception => e
-				data = {:message => format_error_message(e)}
+				data = {:message => format_error_message(e.to_s)}
 			end
 		else
 			data = result
