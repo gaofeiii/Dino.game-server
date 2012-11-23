@@ -25,7 +25,7 @@ TECH_20		= 20	# 智慧
 TECHNOLOGIES = {
 	1		=> {:name => :housing},
 	2		=> {:name => :lumbering},
-	3		=> {:name => :QUARRYING},
+	3		=> {:name => :quarrying},
 	4		=> {:name => :hunting},
 	5		=> {:name => :collecting},
 	6		=> {:name => :storing},

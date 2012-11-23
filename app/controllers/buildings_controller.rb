@@ -9,7 +9,7 @@ class BuildingsController < ApplicationController
 			render :json => {:error => "INVALID_BUILDING_TYPE"}, :status => 999 and return
 		end
 
-		cost = BUILDINGS[type][:cost]
+		cost = Building.cost(type)
 
 		if @village.spend!(cost)
 			@village.create_building(params[:building_type], params[:x], params[:y])

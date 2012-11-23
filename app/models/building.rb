@@ -4,6 +4,8 @@ class Building < Ohm::Model
 	include Ohm::Timestamps
 	include OhmExtension
 
+	include BuildingConst
+
 	attribute :type, Type::Integer
 	attribute :level, Type::Integer
 	attribute :x, Type::Integer
@@ -20,43 +22,39 @@ class Building < Ohm::Model
 
 	# Class methods:
 
-	class << self
-		def info
-			BUILDINGS
-		end
+	# class << self
+	# 	def info
+	# 		BUILDINGS
+	# 	end
 
-		def names
-			BUILDING_NAMES
-		end
+	# 	def names
+	# 		BUILDING_NAMES
+	# 	end
 
-		def types
-			BUILDING_TYPES
-		end
+	# 	def types
+	# 		BUILDING_TYPES
+	# 	end
 
-		def cost(type)
-			BUILDINGS[type][:cost]
-		end
-	end
+	# 	def cost(type)
+	# 		BUILDINGS[type][:cost]
+	# 	end
+	# end
 
 	# Instance methods:
-
-	def info
-		self.class.info.type(self.type)
-	end
 
 	def update_status!
 		left_time = (::Time.now.utc.to_i - start_building_time)
 		case status
 		when 0
-			if left_time > self.info.cost[:time]
+			if left_time > self.info[:cost][:time]
 				self.status = 2
 				self.time = 0
-			elsif left_time > 0 && left_time >= self.info.cost[:time]/2
+			elsif left_time > 0 && left_time >= self.info[:cost][:time]/2
 				self.status = 1
-				self.time = left_time - self.info.cost[:time]/2
+				self.time = left_time - self.info[:cost][:time]/2
 			end
 		when 1
-			if left_time > self.info.cost[:time]
+			if left_time > self.info[:cost][:time]
 				self.status = 2				
 			end
 		end
