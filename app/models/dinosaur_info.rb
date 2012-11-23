@@ -6,7 +6,9 @@ class DinosaurInfo
 	class << self
 
 		def all
-			@@dinosaurs.blank? ? load! : @@dinosaurs
+			if @@dinosaurs.blank?
+				load!
+			end
 			@@dinosaurs
 		end
 
@@ -19,7 +21,7 @@ class DinosaurInfo
 			@@dinosaur_exps.clear
 			book = Excelx.new "#{Rails.root}/const/game_numerics/dinosaurs.xlsx"
 
-			# Reading experiece
+			# ===Reading experiece===
 			book.default_sheet = 'experience'
 
 			2.upto(book.last_row) do |i|
@@ -29,7 +31,7 @@ class DinosaurInfo
 			end
 
 
-			# Reading properties
+			# ===Reading properties===
 			book.default_sheet = 'dinosaurs'
 
 			2.upto(book.last_row).each do |i|
@@ -48,6 +50,7 @@ class DinosaurInfo
 				mature_level = book.cell(i, 'O').to_i
 				favor_food = book.cell(i, 'P').to_i
 				hunger_time = book.cell(i,'Q').to_i
+				skill_type = book.cell(i, 'D').to_i
 				@@dinosaurs[type] = {
 					:dinosaur_type => type,
 					:name => name,
@@ -68,13 +71,14 @@ class DinosaurInfo
 						:agility_inc => agility_inc,
 						:hp_inc => hp_inc,
 					},
-					:exp => @@dinosaur_exps
+					:exp => @@dinosaur_exps,
+					:skill_type => skill_type
 				}
 			end
 			@@dinosaurs
 		end
 
-		alias :reload! :load!
+		alias reload! load!
 
 
 	end

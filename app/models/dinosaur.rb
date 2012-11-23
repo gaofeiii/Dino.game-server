@@ -136,7 +136,7 @@ class Dinosaur < Ohm::Model
 
 	def init_atts
 		[:attack, :defense, :agility, :hp].each do |att|
-			send("basic_#{att}=", (info[:property][att] * rand(0.8..1.2)).to_i)
+			send("basic_#{att}=", (info[:property][att] * rand(0.8..1.2)).round(1))
 			send("total_#{att}=", send("basic_#{att}"))
 		end
 		self.level = 1
@@ -164,6 +164,13 @@ class Dinosaur < Ohm::Model
 		self.basic_agility += (info[:enhance_property][:agility_inc] * factor).round(1)
 		self.basic_hp += (info[:enhance_property][:hp_inc] * factor).round(1)
 		update_main_atts
+
+		if skills.blank?
+			Skill.create :type => info[:skill_type], :level => 1
+		else
+			# TODO: Upgrade skill level when dinosaur was upgraded.
+		end
+
 		self
 	end
 
@@ -227,7 +234,7 @@ class Dinosaur < Ohm::Model
 		# 	send("total_#{att}=", send("basic_#{att}"))
 		# end
 		# self.feed_point -= Time.now.to_i - updated_feed_time
-		self.name = 'Earthquake' if name.blank?
+		self.name = info[:name] if name.blank?
 	end
 
 	def before_create

@@ -24,7 +24,7 @@ class League < Ohm::Model
 			:id => id.to_i,
 			:name => name,
 			:desc => desc,
-			:president => president.nickname,
+			:president => president.try(:nickname).to_s,
 		}
 	end
 
