@@ -6,6 +6,7 @@ class Player < Ohm::Model
 	include OhmExtension
 
 	include SessionsHelper
+	include BeginningGuide
 
 	# Player的属性
 	attribute :account_id, 		Type::Integer
@@ -48,6 +49,13 @@ class Player < Ohm::Model
 	index :level
 	index :experience
 	index :country_id
+
+	# def guide_info
+	# 	p "---"
+	# 	@attributes[:guide_info] ||= {}
+	# 	@attributes[:guide_info].extend(BeginningGuideHelper)
+	# 	@attributes[:guide_info]
+	# end
 
 
 	def village
