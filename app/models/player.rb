@@ -50,14 +50,6 @@ class Player < Ohm::Model
 	index :experience
 	index :country_id
 
-	# def guide_info
-	# 	p "---"
-	# 	@attributes[:guide_info] ||= {}
-	# 	@attributes[:guide_info].extend(BeginningGuideHelper)
-	# 	@attributes[:guide_info]
-	# end
-
-
 	def village
 		Village[village_id]
 	end
@@ -138,7 +130,7 @@ class Player < Ohm::Model
 			:country_id => country_id.to_i
 		}
 		opts = if args.include?(:all)
-			args + [:village, :techs, :dinosaurs, :advisors, :league]
+			args | [:village, :techs, :dinosaurs, :advisors, :league]
 		else
 			args
 		end
@@ -162,6 +154,10 @@ class Player < Ohm::Model
 					nk, lvl = Player.gets(ar.advisor_id, :nickname, :level)
 					{:id => ar.advisor_id.to_i, :nickname => nk, :level => lvl}
 				end
+			when :beginning_guide
+				has_beginning_guide = !beginning_guide_finished
+				hash[:has_beginning_guide] = has_beginning_guide
+				hash[:beginning_guide] = guide_info.current if has_beginning_guide
 			end
 		end
 		return hash

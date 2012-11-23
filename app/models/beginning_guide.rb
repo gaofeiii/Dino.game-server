@@ -28,8 +28,11 @@
 # player.guide_info.current_quest
 # => {:index=>2, :finished=>0, :rewarded=>0}
 module BeginningGuide
+	LAST_GUIDE_INDEX = 10
+
 	def self.included(model)
 		model.attribute :guide_info
+		model.attribute :beginning_guide_finished, Ohm::DataTypes::Type::Boolean
 		model.class_eval do
 			remove_method :guide_info
 		end
@@ -58,14 +61,14 @@ end
 module BeginningGuideHelper
 	def [](index)
 		v = super || {:index => index, :finished => 0, :rewarded => 0}.extend(BeginningGuideSingleHelper)
-		if super.blank? && index > 0
+		if super.blank? && index > 0 && index <= BeginningGuide::LAST_GUIDE_INDEX
 			self[index] = v
-		else
-			v
+		elsif index > BeginningGuide::LAST_GUIDE_INDEX
+			self[-1]
 		end
 	end
 
-	def current_quest
+	def current
 		if self.blank?
 			self[1]
 		else
@@ -77,7 +80,7 @@ module BeginningGuideHelper
 		end
 	end
 
-	def next_quest
+	def next
 		i = keys.max || 0
 		self[i + 1]
 	end
@@ -86,14 +89,24 @@ end
 
 module BeginningGuideSingleHelper
 	%w(finished rewarded).each do |name|
-		ind = name == "finished" ? 0 : 1
-
 		define_method("#{name}?") do
 			self[name.to_sym] == 1 ? true : false
 		end
 
 		define_method("#{name}=") do |sig|
-			self[name.to_sym] = (sig ? 1 : 0)
+			self[name.to_sym] = ((sig == true or sig == 1) ? 1 : 0)
+		end
+	end
+
+	def index
+		self[:index]
+	end
+
+	# Check quest if finished. If it does, set finished to true.
+	def check!
+		sig = true # TODO: checking method
+		if sig == true
+			self.finished = true
 		end
 	end
 end

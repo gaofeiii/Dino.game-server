@@ -95,6 +95,11 @@ DinosaurGame::Application.routes.draw do
     post 'cancel_worship'  => 'god#cancel_worship_gods'
   end
 
+  # 新手指引
+  scope :path => 'guide', :as => 'guide' do
+    post 'quest_complete' => 'guide#complete'
+  end
+
   root :to => 'players#deny_access'
 
   
