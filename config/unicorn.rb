@@ -32,6 +32,7 @@ before_fork do |server, worker|
       # someone else did our job for us
     end
   end
+  Ohm.redis.quit
 end
 
 after_fork do |server, worker|
