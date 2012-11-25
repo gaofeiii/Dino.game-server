@@ -28,7 +28,7 @@
 # player.guide_info.current_quest
 # => {:index=>2, :finished=>0, :rewarded=>0}
 module BeginningGuide
-	LAST_GUIDE_INDEX = 10
+	LAST_GUIDE_INDEX = 8
 
 	def self.included(model)
 		model.attribute :guide_info
