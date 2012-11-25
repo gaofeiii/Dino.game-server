@@ -1,25 +1,22 @@
 module DinosaursConst
 	module ClassMethods
-		@@dinosaurs = Hash.new
-		@@dinosaur_exps = Hash.new
+		@@dinosaurs_const = Hash.new
+		@@dinosaurs_exp = Hash.new
 
-		def info
-			if @@dinosaurs.blank?
-				reload!
+		%w(const exp).each do |name|
+			define_method(name) do
+				if eval("@@dinosaurs_#{name}").blank?
+					reload!
+				end
+				eval("@@dinosaurs_#{name}")
 			end
-			@@dinosaurs
 		end
 
-		def exp_info
-			if @@dinosaur_exps.blank?
-				reload!
-			end
-			@@dinosaur_exps
-		end
+		alias info const
 
 		def reload!
-			@@dinosaurs.clear
-			@@dinosaur_exps.clear
+			@@dinosaurs_const.clear
+			@@dinosaurs_exp.clear
 
 			book = Excelx.new "#{Rails.root}/const/dinosaurs.xlsx"
 
@@ -29,7 +26,7 @@ module DinosaursConst
 			2.upto(book.last_row) do |i|
 				level = book.cell(i, "A").to_i
 				exp = book.cell(i, 'B').to_i
-				@@dinosaur_exps[level] = exp
+				@@dinosaurs_exp[level] = exp
 			end
 
 
@@ -53,7 +50,7 @@ module DinosaursConst
 				favor_food = book.cell(i, 'P').to_i
 				hunger_time = book.cell(i,'Q').to_i
 				skill_type = book.cell(i, 'D').to_i
-				@@dinosaurs[type] = {
+				@@dinosaurs_const[type] = {
 					:dinosaur_type => type,
 					:name => name,
 					:property => {
@@ -73,11 +70,11 @@ module DinosaursConst
 						:agility_inc => agility_inc,
 						:hp_inc => hp_inc,
 					},
-					:exp => @@dinosaur_exps,
+					:exp => @@dinosaurs_exp,
 					:skill_type => skill_type
 				}
 			end
-			@@dinosaurs
+			@@dinosaurs_const
 		end
 
 

@@ -4,6 +4,8 @@ class Technology < Ohm::Model
 	include Ohm::Callbacks
 	include OhmExtension
 
+	include TechnologiesConst
+
 	attribute :level, 			Type::Integer
 	attribute :type,				Type::Integer
 	attribute :status, 			Type::Integer
@@ -13,28 +15,6 @@ class Technology < Ohm::Model
 	index :type
 
 	reference :player, :Player
-
-	class << self
-		def info
-			TECHNOLOGIES
-		end
-
-		def names
-			TECHNOLOGY_NAMES
-		end
-
-		def types
-			TECHNOLOGY_TYPES
-		end
-	end
-
-	def info(lv = self.level)
-		TECHNOLOGIES.type(self.type).level(lv)
-	end
-
-	def next_level
-		info(self.level + 1)
-	end
 
 	def research!
 		self.status = 1

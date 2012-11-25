@@ -9,7 +9,7 @@ class ResearchController < ApplicationController
 			tech = Technology.create :type => params[:tech_type].to_i, :level => 0, :player_id => @player.id
 		end
 		tech.research!
-		data = {:message_type => "OK", :player => @player.to_hash(:all)}
+		data = {:message => "SUCCESS", :player => @player.to_hash(:all)}
 		render :json => data
 	end
 end
