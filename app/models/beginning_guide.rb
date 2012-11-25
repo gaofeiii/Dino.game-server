@@ -77,6 +77,10 @@ module BeginningGuideHelper
 		end
 	end
 
+	def remv(index)
+		delete(index)
+	end
+
 	def current
 		if self.blank?
 			self[1]
@@ -94,10 +98,18 @@ module BeginningGuideHelper
 		self[i + 1]
 	end
 
+	def finish_all?
+		self.size >= 10
+	end
+
 end
 
 module BeginningGuideSingleHelper
 	%w(finished rewarded).each do |name|
+		define_method(name) do
+			self[name.to_sym]
+		end
+
 		define_method("#{name}?") do
 			self[name.to_sym] == 1 ? true : false
 		end

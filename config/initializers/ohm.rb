@@ -19,17 +19,19 @@ end
 module Ohm
 
   def self.redis
-    puts "=== Override Ohm.redis ==="
-    $redis_count ||= 0
-    $redis_count += 1
+    unless Rails.env.production?
+      $redis_count ||= 0
+      $redis_count += 1
+    end
     Redis.current
   end
 
   class Model
     def self.db
-      puts "=== Override Ohm::Model.db ==="
-      $redis_count ||= 0
-      $redis_count += 1
+      unless Rails.env.production?
+        $redis_count ||= 0
+        $redis_count += 1
+      end
       Redis.current
     end
 

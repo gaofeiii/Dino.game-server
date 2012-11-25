@@ -98,6 +98,7 @@ DinosaurGame::Application.routes.draw do
   # 新手指引
   scope :path => 'guide', :as => 'guide' do
     post 'quest_complete' => 'guide#complete'
+    post 'get_reward'     => 'guide#get_reward'
   end
 
   root :to => 'players#deny_access'
