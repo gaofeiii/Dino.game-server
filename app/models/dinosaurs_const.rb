@@ -1,25 +1,27 @@
-class DinosaurInfo
+module DinosaursConst
+	module ClassMethods
+		@@dinosaurs = Hash.new
+		@@dinosaur_exps = Hash.new
 
-	@@dinosaurs = Hash.new
-	@@dinosaur_exps = Hash.new
-
-	class << self
-
-		def all
+		def info
 			if @@dinosaurs.blank?
-				load!
+				reload!
 			end
 			@@dinosaurs
 		end
 
-		def experience
+		def exp_info
+			if @@dinosaur_exps.blank?
+				reload!
+			end
 			@@dinosaur_exps
 		end
 
-		def load!
+		def reload!
 			@@dinosaurs.clear
 			@@dinosaur_exps.clear
-			book = Excelx.new "#{Rails.root}/const/game_numerics/dinosaurs.xlsx"
+
+			book = Excelx.new "#{Rails.root}/const/dinosaurs.xlsx"
 
 			# ===Reading experiece===
 			book.default_sheet = 'experience'
@@ -78,10 +80,43 @@ class DinosaurInfo
 			@@dinosaurs
 		end
 
-		alias reload! load!
-
 
 	end
+	
+	module InstanceMethods
+		
+		def info
+			self.class.info[type]
+		end
 
+		def next_level_exp
+			exp = info[:exp][level + 1]
+			exp.nil? ? 99999999 : exp
+		end
 
+		def key_name
+			info[:name].to_sym
+		end
+
+		def property
+			info[:property]
+		end
+
+		def favor_food
+			property[:favor_food]
+		end
+
+		def hunger_time
+			property[:hunger_time]
+		end
+
+		def is_my_favorite_food(food_type)
+			property[:favor_food] == food_type
+		end
+	end
+	
+	def self.included(receiver)
+		receiver.extend         ClassMethods
+		receiver.send :include, InstanceMethods
+	end
 end

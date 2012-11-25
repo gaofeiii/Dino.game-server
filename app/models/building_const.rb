@@ -28,6 +28,8 @@ module BuildingConst
 		def reload!
 			puts '--- Reading buildings const ---'
 			@@building_const.clear
+			@@building_types.clear
+			@@building_keys.clear
 
 			book = Excelx.new("#{Rails.root}/const/buildings.xlsx")
 

@@ -8,6 +8,7 @@ class Dinosaur < Ohm::Model
 	include Ohm::Timestamps
 
 	include OhmExtension
+	include DinosaursConst
 
 	attribute :name
 	attribute :level, 				Type::Integer
@@ -45,10 +46,7 @@ class Dinosaur < Ohm::Model
 	reference :troops, 		Troops
 
 	class << self
-		def info
-			DinosaurInfo.all
-		end
-
+		
 		def new_by(args = {})
 			if args.has_key?(:type)
 				dino = self.new(:type => args[:type].to_i)
@@ -63,19 +61,6 @@ class Dinosaur < Ohm::Model
 		def create_by(args = {})
 			self.new_by(args).save
 		end
-	end
-
-	def info
-		self.class.info[type]
-	end
-
-	def next_level_exp
-		exp = info[:exp][level + 1]
-		exp.nil? ? 99999999 : exp
-	end
-
-	def key_name
-		info[:name].to_sym
 	end
 
 	def to_hash
@@ -209,22 +194,6 @@ class Dinosaur < Ohm::Model
 		food.increase(:count, -1)
 		consume_food
 		save
-	end
-
-	def favor_food
-		property[:favor_food]
-	end
-
-	def property
-		info[:property]
-	end
-
-	def hunger_time
-		property[:hunger_time]
-	end
-
-	def is_my_favorite_food(food_type)
-		property[:favor_food] == food_type
 	end
 
 	protected
