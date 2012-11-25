@@ -77,10 +77,6 @@ module BeginningGuideHelper
 		end
 	end
 
-	def remv(index)
-		delete(index)
-	end
-
 	def current
 		if self.blank?
 			self[1]
