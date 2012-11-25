@@ -39,21 +39,27 @@ module BeginningGuide
 	end
 	
 	def save!
-		self.guide_info = self.guide_info.to_json
+		self.guide_info = self.guide_info.except(:player).to_json
 		super
 	end
 
 	def guide_info
-		if @attributes[:guide_info].kind_of?(Hash)
+		if @attributes[:guide_info].kind_of?(Hash) && @attributes[:guide_info].any?
 			return @attributes[:guide_info]
 		else
 			@attributes[:guide_info] = @attributes[:guide_info].nil? ? {} : JSON.parse(@attributes[:guide_info])
 			@attributes[:guide_info].keys.each do |key|
 				@attributes[:guide_info][(key.to_i rescue key) || key] = @attributes[:guide_info].delete(key).symbolize_keys!.extend(BeginningGuideSingleHelper)
 			end
+			@attributes[:guide_info][:player] = self
 			@attributes[:guide_info].extend(BeginningGuideHelper)
 			return @attributes[:guide_info]
 		end
+	end
+
+	# Check current guide quest.
+	def check_current
+		
 	end
 
 	# The guide reward contains [wood, stone, gold_coin, gem]
@@ -67,6 +73,10 @@ module BeginningGuideHelper
 	# Get or create guide info.
 	def [](index)
 		su = super
+		unless index.kind_of?(Integer)
+			return su
+		end
+
 		if su.blank? && index > 0 && index <= BeginningGuide::LAST_GUIDE_INDEX
 			su ||= {:index => index, :finished => 0, :rewarded => 0}.extend(BeginningGuideSingleHelper)
 			self[index] = su
@@ -77,25 +87,46 @@ module BeginningGuideHelper
 		end
 	end
 
+	def player
+		self[:player]
+	end
+
 	def current
-		if self.blank?
+		info = self.except(:player)
+		curr = if info.blank?
 			self[1]
 		else
-			i = keys.max
+			i = info.keys.max
 			if self[i].finished? && self[i].rewarded?
 				i += 1
 			end
-			return self[i]
+			self[i]
 		end
+		check_finished(curr[:index]) if curr
+		curr
 	end
 
 	def next
-		i = keys.max || 0
+		i = self.except(:player).keys.max || 0
 		self[i + 1]
 	end
 
 	def finish_all?
-		self.size >= 10
+		self.except(:player).size >= BeginningGuide::LAST_GUIDE_INDEX
+	end
+
+	def check_finished(index)
+		quest = self[index]
+
+		case index
+		when 1
+			lumber_mills = player.village.buildings.find(:type => Building.hashes[:lumber_mill])
+			lumber_mills.any? && lumber_mills.max{|b| b.level if b}.try(:level).to_i >= 1
+		when 2
+			
+		else
+			false
+		end
 	end
 
 end
@@ -125,6 +156,14 @@ module BeginningGuideSingleHelper
 
 	# Check quest if finished. If it does, set finished to true.
 	def check!
+		case self[:index]
+		when 1
+
+		else
+			false
+		end
+
+
 		sig = true # TODO: checking method
 		if sig == true
 			self.finished = true

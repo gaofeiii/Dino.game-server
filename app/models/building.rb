@@ -20,26 +20,6 @@ class Building < Ohm::Model
 
 	reference :village, Village
 
-	# Class methods:
-
-	# class << self
-	# 	def info
-	# 		BUILDINGS
-	# 	end
-
-	# 	def names
-	# 		BUILDING_NAMES
-	# 	end
-
-	# 	def types
-	# 		BUILDING_TYPES
-	# 	end
-
-	# 	def cost(type)
-	# 		BUILDINGS[type][:cost]
-	# 	end
-	# end
-
 	# Instance methods:
 
 	def update_status!

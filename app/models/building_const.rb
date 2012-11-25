@@ -2,11 +2,12 @@
 module BuildingConst
 
 	module ClassMethods
-		@@building_const = Hash.new
-		@@building_types = Array.new
-		@@building_keys  = Array.new
+		@@building_const 	= Hash.new
+		@@building_types 	= Array.new
+		@@building_keys  	= Array.new
+		@@building_hashes = Hash.new
 
-		%w(const types names).each do |name|
+		%w(const types keys hashes).each do |name|
 			define_method(name) do
 				if eval("@@building_#{name}").blank?
 					reload!
@@ -51,9 +52,11 @@ module BuildingConst
 				}
 				@@building_const[b_type] = {:key => key}
 				@@building_const[b_type].merge!(:cost => cost, :reward => reward)
+				@@building_hashes[key] = b_type
 			end
 			@@building_types = @@building_const.keys
-			@@building_names = @@building_const.values.map { |v| v[:key] }
+			@@building_keys = @@building_const.values.map { |v| v[:key] }
+			@@building_const
 		end
 	end
 	
@@ -61,6 +64,10 @@ module BuildingConst
 		
 		def info
 			self.class.info[type]
+		end
+
+		def property
+			self.class.info[type][:property]
 		end
 	end
 	
