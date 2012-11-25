@@ -60,11 +60,14 @@ end
 
 module BeginningGuideHelper
 	def [](index)
-		v = super || {:index => index, :finished => 0, :rewarded => 0}.extend(BeginningGuideSingleHelper)
-		if super.blank? && index > 0 && index <= BeginningGuide::LAST_GUIDE_INDEX
-			self[index] = v
+		su = super
+		if su.blank? && index > 0 && index <= BeginningGuide::LAST_GUIDE_INDEX
+			su ||= {:index => index, :finished => 0, :rewarded => 0}.extend(BeginningGuideSingleHelper)
+			self[index] = su
 		elsif index > BeginningGuide::LAST_GUIDE_INDEX
 			self[-1]
+		else
+			super
 		end
 	end
 
