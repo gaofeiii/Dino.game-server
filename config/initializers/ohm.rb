@@ -8,20 +8,34 @@ require 'ohm/contrib'
 
 Redis.current = case Rails.env
 when "production"
-  Redis.new :host => "127.0.0.1", :port => 6379, :driver => :hiredis
+  Redis.new :host => "127.0.0.1", :port => 6379, :driver => :hiredis, :db => 0
 when "development"
-  Redis.new :host => "127.0.0.1", :port => 6379, :driver => :hiredis
+  Redis.new :host => "127.0.0.1", :port => 6379, :driver => :hiredis, :db => 0
 when "test"
-  Redis.new :host => "127.0.0.1", :port => 6377, :driver => :hiredis
+  Redis.new :host => "127.0.0.1", :port => 6377, :driver => :hiredis, :db => 0
 end
 
 
 module Ohm
 
   def self.redis
+    puts "=== Override Ohm.redis ==="
     $redis_count ||= 0
     $redis_count += 1
     Redis.current
+  end
+
+  class Model
+    def self.db
+      puts "=== Override Ohm::Model.db ==="
+      $redis_count ||= 0
+      $redis_count += 1
+      Redis.current
+    end
+
+    def hello
+      puts "world"
+    end
   end
 
   # 重写Timestamps module，让时间戳都为整数格式

@@ -13,18 +13,12 @@ module OhmExtension
 		end
 
 		def sample
-			self[Ohm.redis.srandmember(self.all.key)]
+			self[db.srandmember(self.all.key)]
 		end
 
 		def delete_all
 			self.all.each(&:delete)
 		end
-
-		def db
-      $redis_count ||= 0
-      $redis_count += 1
-      Redis.current
-    end
 
     def gets(id, *args)
     	db.hmget(key[id], args)

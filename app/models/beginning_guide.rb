@@ -55,6 +55,11 @@ module BeginningGuide
 			return @attributes[:guide_info]
 		end
 	end
+
+	# The guide reward contains [wood, stone, gold_coin, gem]
+	def receive_guide_reward
+		
+	end
 	
 end
 

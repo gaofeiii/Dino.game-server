@@ -14,6 +14,7 @@ class Player < Ohm::Model
 	unique 		:nickname
 	attribute :level, 				Type::Integer
 	attribute :sun, 					Type::Integer
+	attribute :gem,						Type::Integer
 	attribute :gold_coin, 		Type::Integer
 	attribute :experience, 		Type::Integer
 	attribute :score, 				Type::Integer
@@ -87,7 +88,7 @@ class Player < Ohm::Model
 				if att.in?([:gold_coin, :sun])
 					return false if send(att) < val || val < 0
 					t.hincrby(key, att, -val)
-				elsif att.in?([:wood, :stone, :population])
+				elsif att.in?([:wood, :stone, :population]) && vil
 					return false if vil.send(att) < val || val < 0
 					t.hincrby(vil.key, att, -val)
 				end
