@@ -8,6 +8,9 @@ class GuideController < ApplicationController
 		data = if @player.guide_info[q_index].finished?
 			# TODO: @player.receive_reward()
 			@player.guide_info[q_index].rewarded = true
+			if @player.guide_info[BegginingGuide::LAST_GUIDE_INDEX].over?
+				@player.beginning_guide_finished = true
+			end
 			@player.save
 			{
 				:message => "SUCCESS",

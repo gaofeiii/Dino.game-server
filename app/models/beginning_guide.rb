@@ -59,6 +59,7 @@ module BeginningGuide
 end
 
 module BeginningGuideHelper
+	# Get or create guide info.
 	def [](index)
 		su = super
 		if su.blank? && index > 0 && index <= BeginningGuide::LAST_GUIDE_INDEX
@@ -99,6 +100,10 @@ module BeginningGuideSingleHelper
 		define_method("#{name}=") do |sig|
 			self[name.to_sym] = ((sig == true or sig == 1) ? 1 : 0)
 		end
+	end
+
+	def over?
+		finished? && rewarded?
 	end
 
 	def index
