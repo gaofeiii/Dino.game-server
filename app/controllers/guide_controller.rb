@@ -4,9 +4,10 @@ class GuideController < ApplicationController
 
 	def complete
 		q_index = params[:index].to_i
-		@player.guide_info[q_index].check!
+		@player.guide_info.check_finished(q_index)
 
 		data = if @player.guide_info[q_index].finished?
+			@player.save
 			{
 				:message => "SUCCESS",
 				:player => @player.to_hash(:beginning_guide)
@@ -23,7 +24,7 @@ class GuideController < ApplicationController
 
 	def get_reward
 		q_index = params[:index].to_i
-		@player.guide_info[q_index].check!
+		@player.guide_info.check_finished(q_index)
 
 		data = if @player.guide_info[q_index].finished?
 			# TODO: @player.receive_reward()

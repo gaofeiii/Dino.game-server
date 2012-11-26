@@ -118,15 +118,16 @@ module BeginningGuideHelper
 	def check_finished(index)
 		quest = self[index]
 
-		case index
+		sig = case index
 		when 1
-			lumber_mills = player.village.buildings.find(:type => Building.hashes[:lumber_mill])
-			lumber_mills.any? && lumber_mills.max{|b| b.level if b}.try(:level).to_i >= 1
+			collecting_farm = player.village.buildings.find(:type => Building.hashes[:collecting_farm])
+			collecting_farm.any?# && collecting_farm.max{|b| b.level if b}.try(:level).to_i >= 1
 		when 2
 			
 		else
 			false
 		end
+		quest.finished = sig
 	end
 
 end
@@ -154,21 +155,6 @@ module BeginningGuideSingleHelper
 		self[:index]
 	end
 
-	# Check quest if finished. If it does, set finished to true.
-	def check!
-		case self[:index]
-		when 1
-
-		else
-			false
-		end
-
-
-		sig = true # TODO: checking method
-		if sig == true
-			self.finished = true
-		end
-	end
 end
 
 

@@ -254,7 +254,11 @@ class Player < Ohm::Model
 	end
 
 	def after_delete
-		delete_village
+		vil = village
+		vil.delete if vil
+		%w(dinosaurs technologies specialties itemsleague_applys advise_relations buffs gods troops).each do |coll|
+			self.send(coll).map(&:delete)
+		end
 	end
 
 	private
@@ -267,11 +271,6 @@ class Player < Ohm::Model
 		vil = Village.create :name => "#{self.nickname}'s village", :player_id => self.id, 
 		:x => x, :y => y, :country_index => 1
 		self.set :village_id, vil.id
-	end
-
-	def delete_village
-		vil = village
-		vil.delete if vil
 	end
 
 end

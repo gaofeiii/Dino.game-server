@@ -108,8 +108,8 @@ class Village < Ohm::Model
 		end
 	end
 
-	def create_building(building_type, level = 1, x, y)
-		Building.create :type => building_type.to_i, :level => level, :village_id => id, :x => x, :y => y
+	def create_building(building_type, level = 1, x, y, st)
+		Building.create :type => building_type.to_i, :level => level, :village_id => id, :x => x, :y => y, :status => st
 	end
 
 	def full_info
@@ -134,5 +134,13 @@ class Village < Ohm::Model
 		self.stone = 99999
 		self.population = 99999
 		self.update_resource_at ||= ::Time.now.utc.to_i
+	end
+
+	def after_create
+		create_building(Building.hashes[:residential], 1, 25, 25, Building::STATUS[:finished])
+	end
+
+	def after_delete
+		self.buildings.map(&:delete)
 	end
 end

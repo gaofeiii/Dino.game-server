@@ -12,7 +12,7 @@ class BuildingsController < ApplicationController
 		cost = Building.cost(type)
 
 		if @village.spend!(cost)
-			@village.create_building(params[:building_type], params[:x], params[:y])
+			@village.create_building(params[:building_type], params[:x], params[:y], Building::STATUS[:new])
 			data = {:message => "OK", :player => {:village => @village.to_hash(:buildings)}}
 			render :json => data
 		else

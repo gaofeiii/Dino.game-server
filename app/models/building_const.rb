@@ -31,6 +31,7 @@ module BuildingConst
 			@@building_const.clear
 			@@building_types.clear
 			@@building_keys.clear
+			@@building_hashes.clear
 
 			book = Excelx.new("#{Rails.root}/const/buildings.xlsx")
 
