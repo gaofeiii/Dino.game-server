@@ -37,7 +37,7 @@ class Building < Ohm::Model
 			end
 		when 1
 			if left_time > self.info[:cost][:time]
-				self.status = STATUS[:finished]			
+				self.status = STATUS[:finished]
 			end
 		end
 		self.save

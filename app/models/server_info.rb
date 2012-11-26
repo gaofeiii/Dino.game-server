@@ -1,3 +1,5 @@
+require 'socket'
+
 class ServerInfo
 	include OhmExtension
 
@@ -18,15 +20,8 @@ class ServerInfo
 		end
 
 		def server_name
-			unless Ohm.redis.exists(:server_name)
-				raise "'server_name' doesn't exist in Redis. Please set it before starting everything."
-			end
-
-			Ohm.redis.get(:server_name).to_sym
-		end
-
-		def server_name=(name)
-			Ohm.redis.set :server_name, name
+			@@server_name ||= Socket.gethostname.to_sym
+			@@server_name
 		end
 
 		def info
