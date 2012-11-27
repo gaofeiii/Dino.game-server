@@ -12,7 +12,7 @@ describe MailsController do
 		post 'send_mail', :sender => @player1.nickname, :receiver => @player2.nickname, :tilte => "hello", 
 		:content => "world", :mail_type => Mail::TYPE[:private]
 		response.should be_success
-		response.body.should include("SUCCESS")
+		response.body.should include(Error.success_message)
 		@player2.mails(Mail::TYPE[:private]).size.should == 1
 	end
 
@@ -26,7 +26,7 @@ describe MailsController do
 		post 'send_mail', :sender => @player1.nickname, :league_id => @league.id, :mail_type => Mail::TYPE[:league],
 		:title => "Hello", :content => "World"
 		response.should be_success
-		response.body.should include("SUCCESS")
+		response.body.should include(Error.success_message)
 		@player2.mails(Mail::TYPE[:league]).size.should == 1
 	end
 

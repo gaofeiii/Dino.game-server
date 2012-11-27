@@ -1,3 +1,4 @@
+# encoding: utf-8
 p "--- Reading items const ---"
 require "#{Rails.root}/const/specialty_const.rb"
 
@@ -15,9 +16,25 @@ ITEMS = {
 			:property => {:dinosaur_type => 1}
 		}
 	},
-
 	2 => SPECIALTIES,
 }
 
+book = Excelx.new("#{Rails.root}/const/dinosaurs.xlsx")
+
+book.default_sheet = "dinosaurs"
+
+2.upto(10).each do |i|
+	type = book.cell(i, 'A').to_i
+	name = book.cell(i, 'C').to_sym
+	cost = {:sun => 1}
+	property = {:dinosaur_type => type}
+
+	ITEMS[1][type] = {
+		:type => 1,
+		:name => name,
+		:cost => cost,
+		:property => property
+	}
+end
 
 ITEMS.extend(ConstHelper::ItemsConstHelper)

@@ -36,6 +36,7 @@ class Player < Ohm::Model
 	collection :buffs, 						Buff
 	collection :gods, 						God
 	collection :troops,						Troops
+	collection :deals,						Deal
 
 	reference :league, League
 	
@@ -140,7 +141,7 @@ class Player < Ohm::Model
 			when :techs
 				hash[:techs] = technologies.to_a.map{|t| t.update_status!}.map{|t| t.to_hash}
 			when :dinosaurs
-				hash[:dinosaurs] = dinosaurs.map{|d| d.to_hash}
+				hash[:dinosaurs] = dinosaurs_info
 			when :items
 				hash[:items] = items.map{|i| i.to_hash}
 			when :specialties
@@ -153,8 +154,8 @@ class Player < Ohm::Model
 					{:id => ar.advisor_id.to_i, :nickname => nk, :level => lvl}
 				end
 			when :beginning_guide
-				has_beginning_guide = false #!beginning_guide_finished
-				hash[:has_beginning_guide] = has_beginning_guide
+				has_beginning_guide = !beginning_guide_finished
+				hash[:has_beginning_guide] = false #has_beginning_guide
 				hash[:beginning_guide] = guide_info.current if has_beginning_guide
 			when :queue_info
 				hash[:max_queue_size] = action_queue_size
@@ -174,6 +175,11 @@ class Player < Ohm::Model
 
 	def league_info
 		league.nil? ? {} : league.to_hash.merge(:level => league_member_ship_id)
+	end
+
+	def dinosaurs_info
+		dinosaurs.find(:status => Dinosaur::STATUS[:infancy]).map(&:to_hash) + 
+			dinosaurs.find(:status => Dinosaur::STATUS[:adult]).map(&:to_hash)
 	end
 
 	def league_member_ship
@@ -236,12 +242,16 @@ class Player < Ohm::Model
 
 	# The queue has already been used.
 	def curr_action_queue_size
-		0#db.sinterstore("Building:indices:village_id:#{village_id}", "Building:indices:status:#{Building::STATUS[:new]}", "Building:indices:status:#{Building::STATUS[:half]}").to_i
+		vil = village
+		bd_queue_size = vil.buildings.find(:status => Building::STATUS[:new]).size + vil.buildings.find(:status => Building::STATUS[:half]).size
+		tech_queue_size = technologies.find(:status => Technology::STATUS[:researching]).size
+		bd_queue_size + tech_queue_size
 	end
 
 	# The size of building or researching queue.
 	def action_queue_size
-		0#db.sinterstore("Building:indices:village_id:#{village_id}", "Building:indices:type:#{Building.hashes[:residential]}").to_i
+		#db.sinterstore("Building:indices:village_id:#{village_id}", "Building:indices:type:#{Building.hashes[:residential]}").to_i
+		village.buildings.find(:type => Building.hashes[:residential]).size
 	end
 
 	# Callbacks
@@ -256,11 +266,12 @@ class Player < Ohm::Model
 	def after_create
 		create_village
 
-		# == Test ==
-		Item.create :item_type => 1, :item_category => 1, :player_id => id
+		# TODO: == Just for Test ==
 		1.upto(8) do |i|
+			Item.create :item_type => i, :item_category => 1, :player_id => id
 			Specialty.create :type => i, :count => 999, :player_id => id
 		end
+		Item.create :item_type => 9, :item_category => 1, :player_id => id
 	end
 
 	def after_delete

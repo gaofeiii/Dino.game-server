@@ -14,13 +14,16 @@ class SessionsController < ApplicationController
 			player = create_player(result[:account_id])
 			Rails.logger.debug("*** New Player_id:#{player.id} ***")
 			{
-				:message => "SUCCESS", 
+				:message => Error.success_message, 
 				:player => player.to_hash(:all), 
 				:username => result[:username],
 				:password => result[:password]
 			}
 		else
-			{:message => "SERVER_BUSY"}
+			{
+				:message => Error.failed_message,
+				:error_type => Error::TYPES[:normal]
+			}
 		end
 		render :json => data
 	end
@@ -39,9 +42,9 @@ class SessionsController < ApplicationController
 			else
 				@player.set :device_token, @device_token
 			end
-			data = {:message => "SUCCESS", :player => @player.to_hash(:all)}
+			data = {:message => Error.success_message, :player => @player.to_hash(:all)}
 		else
-			data = {:message => "FAILED"}
+			data = {:message => Error.failed_message}
 		end
 		render :json => data
 	end

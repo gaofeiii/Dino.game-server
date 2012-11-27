@@ -45,6 +45,9 @@ class Dinosaur < Ohm::Model
 	reference :village, 	Village
 	reference :troops, 		Troops
 
+	index :level
+	index :status
+
 	class << self
 		
 		def new_by(args = {})

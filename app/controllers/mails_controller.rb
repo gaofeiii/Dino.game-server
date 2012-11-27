@@ -16,7 +16,11 @@ class MailsController < ApplicationController
 		when Mail::TYPE[:private]
 			receiver = Player.with(:nickname, params[:receiver])
 			if receiver.nil?
-				render :json => {:error => "Invalid receiver name"} and return
+				render :json => {
+					:message => Error.success_message,
+					:error_type => Error.types[:normal],
+					:error => Error.format_message("Invalid receiver name")
+				} and return
 			end
 
 			Mail.create :mail_type => Mail::TYPE[:private],
@@ -25,7 +29,7 @@ class MailsController < ApplicationController
 									:title => params[:title],
 									:content => params[:content]
 
-			render :json => {:message => "SUCCESS"} and return
+			render :json => {:message => Error.success_message} and return
 		# 公会邮件
 		when Mail::TYPE[:league]
 			league = League[params[:league_id]]
@@ -40,7 +44,7 @@ class MailsController < ApplicationController
 									:content => params[:content],
 									:league_id => params[:league_id]
 
-			render :json => {:message => "SUCCESS"}
+			render :json => {:message => Error.success_message}
 		else
 			render :json => {:error => "Invalid mail type"} and return
 		end
