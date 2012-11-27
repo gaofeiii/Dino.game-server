@@ -18,8 +18,8 @@ module SessionsHelper
 		http_post "#{ServerInfo.account_server}/send_apn", params
 	end
 
-	def trying
-		http_get("#{ServerInfo.account_server}/try_playing")
+	def trying(params = {})
+		http_post("#{ServerInfo.account_server}/try_playing", params)
 	end
 
 	def login(player, session_key)

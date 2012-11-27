@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
 	# TODO:
 	# 试玩
 	def demo
-		result = trying
+		result = trying(:server_id => params[:server_id])
 		data = if result[:success]
 			player = create_player(result[:account_id])
 			Rails.logger.debug("*** New Player_id:#{player.id} ***")
@@ -27,9 +27,10 @@ class SessionsController < ApplicationController
 
 	# 登录
 	def create
-		rcv_msg = account_authenticate :username => params[:username], 
-																	 :email 	 => params[:email], 
-																	 :password => params[:password]
+		rcv_msg = account_authenticate :username 	=> params[:username], 
+																	 :email 	 	=> params[:email], 
+																	 :password 	=> params[:password],
+																	 :server_id => params[:server_id]
 		data = {}
 		if rcv_msg[:success]
 			@player = Player.find(:account_id => rcv_msg[:account_id]).first
@@ -51,7 +52,8 @@ class SessionsController < ApplicationController
 		result = account_register :username => params[:username],
 															:email 		=> params[:email].blank? ? nil : params[:email],
 															:password => params[:password],
-															:password_confirmation => params[:password_confirmation]
+															:password_confirmation => params[:password_confirmation],
+															:server_id => params[:server_id]
 		data = {}
 		p "result", result
 		if result[:success]

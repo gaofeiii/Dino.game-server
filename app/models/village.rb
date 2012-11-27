@@ -139,8 +139,10 @@ class Village < Ohm::Model
 
 	def after_create
 		puts "*** ---Building residential--- [village_id:#{id}, player_id:#{player.id}] ***"
-		if buildings.find(:type => Building.hashes[:residential]).blank?
-			create_building(Building.hashes[:residential], 1, 25, 25, Building::STATUS[:finished])
+		self.mutex do
+			if buildings.find(:type => Building.hashes[:residential]).blank?
+				create_building(Building.hashes[:residential], 1, 25, 25, Building::STATUS[:finished])
+			end
 		end
 	end
 
