@@ -15,6 +15,8 @@ when "test"
   Redis.new :host => "127.0.0.1", :port => 6377, :driver => :hiredis, :db => 0
 end
 
+$my_config = {:redis_access_log => false}
+
 
 module Ohm
 
@@ -22,7 +24,7 @@ module Ohm
     if Rails.env.development?
       $redis_count ||= 0
       $redis_count += 1
-      puts "*--- Ohm.redis ---*"
+      puts "*--- Ohm.redis ---*" if $my_config[:redis_access_log]
     end
     Redis.current
   end
@@ -32,7 +34,7 @@ module Ohm
       if Rails.env.development?
         $redis_count ||= 0
         $redis_count += 1
-        puts "*--- Model.db ---*"
+        puts "*--- Model.db ---*" if $my_config[:redis_access_log]
       end
       Redis.current
     end

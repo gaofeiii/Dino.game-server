@@ -61,5 +61,9 @@ class Building < Ohm::Model
 	def before_create
 		self.start_building_time = Time.now.utc.to_i
 	end
+
+	def before_delete
+		puts "!!!!!%%% I'm deleted!!!!"
+	end
 end
 

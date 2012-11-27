@@ -153,7 +153,7 @@ class Player < Ohm::Model
 					{:id => ar.advisor_id.to_i, :nickname => nk, :level => lvl}
 				end
 			when :beginning_guide
-				has_beginning_guide = !beginning_guide_finished
+				has_beginning_guide = false #!beginning_guide_finished
 				hash[:has_beginning_guide] = has_beginning_guide
 				hash[:beginning_guide] = guide_info.current if has_beginning_guide
 			when :queue_info
@@ -234,12 +234,14 @@ class Player < Ohm::Model
 		send_push_message(:device_token => device_token, :message => message)
 	end
 
+	# The queue has already been used.
 	def curr_action_queue_size
-		db.sinterstore("Building:indices:village_id:#{village_id}", "Building:indices:status:#{Building::STATUS[:new]}", "Building:indices:status:#{Building::STATUS[:half]}").to_i
+		0#db.sinterstore("Building:indices:village_id:#{village_id}", "Building:indices:status:#{Building::STATUS[:new]}", "Building:indices:status:#{Building::STATUS[:half]}").to_i
 	end
 
+	# The size of building or researching queue.
 	def action_queue_size
-		db.sinterstore("Building:indices:village_id:#{village_id}", "Building:indices:type:#{Building.hashes[:residential]}").to_i
+		0#db.sinterstore("Building:indices:village_id:#{village_id}", "Building:indices:type:#{Building.hashes[:residential]}").to_i
 	end
 
 	# Callbacks

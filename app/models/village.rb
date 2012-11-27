@@ -138,13 +138,9 @@ class Village < Ohm::Model
 	end
 
 	def after_create
-		self.mutex do
-			$test_count ||= 0
-			$test_count += 1
-			puts "*** ---Building residential: #{$test_count} times--- ***"
-			if buildings.find(:type => Building.hashes[:residential]).blank?
-				create_building(Building.hashes[:residential], 1, 25, 25, Building::STATUS[:finished])
-			end
+		puts "*** ---Building residential--- [village_id:#{id}, player_id:#{player.id}] ***"
+		if buildings.find(:type => Building.hashes[:residential]).blank?
+			create_building(Building.hashes[:residential], 1, 25, 25, Building::STATUS[:finished])
 		end
 	end
 
