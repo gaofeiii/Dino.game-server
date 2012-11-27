@@ -121,9 +121,10 @@ module BeginningGuideHelper
 		sig = case index
 		when 1
 			collecting_farm = player.village.buildings.find(:type => Building.hashes[:collecting_farm])
-			collecting_farm.any?# && collecting_farm.max{|b| b.level if b}.try(:level).to_i >= 1
+			collecting_farm.any?
 		when 2
-			
+			collecting_farm = player.village.buildings.find(:type => Building.hashes[:collecting_farm])
+			collecting_farm.any? && collecting_farm.max{|b| b.level if b}.try(:status).to_i >= 2
 		else
 			false
 		end

@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
     logger.debug format("| %-60s |", "*")
     logger.debug format("%-64s", '='*64)
     logger.debug "\n"
-    logger.debug '---- Response body ----'
+    # logger.debug '---- Response body ----'
     # logger.debug response.body 
   end
 

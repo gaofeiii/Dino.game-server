@@ -41,9 +41,6 @@ class Player < Ohm::Model
 	
 	set :friends, 	Player
 	
-	
-
-	
 	# indices
 	index :account_id
 	index :nickname
@@ -131,7 +128,7 @@ class Player < Ohm::Model
 			:country_id => country_id.to_i
 		}
 		opts = if args.include?(:all)
-			args | [:village, :techs, :dinosaurs, :advisors, :league, :beginning_guide]
+			args | [:village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
 		else
 			args
 		end
@@ -159,6 +156,9 @@ class Player < Ohm::Model
 				has_beginning_guide = !beginning_guide_finished
 				hash[:has_beginning_guide] = has_beginning_guide
 				hash[:beginning_guide] = guide_info.current if has_beginning_guide
+			when :queue_info
+				hash[:max_queue_size] = action_queue_size
+				hash[:queue_in_use] = curr_action_queue_size
 			end
 		end
 		return hash
@@ -234,6 +234,14 @@ class Player < Ohm::Model
 		send_push_message(:device_token => device_token, :message => message)
 	end
 
+	def curr_action_queue_size
+		db.sinterstore("Building:indices:village_id:#{village_id}", "Building:indices:status:#{Building::STATUS[:new]}", "Building:indices:status:#{Building::STATUS[:half]}").to_i
+	end
+
+	def action_queue_size
+		db.sinterstore("Building:indices:village_id:#{village_id}", "Building:indices:type:#{Building.hashes[:residential]}").to_i
+	end
+
 	# Callbacks
 	protected
 
@@ -256,7 +264,7 @@ class Player < Ohm::Model
 	def after_delete
 		vil = village
 		vil.delete if vil
-		%w(dinosaurs technologies specialties itemsleague_applys advise_relations buffs gods troops).each do |coll|
+		%w(dinosaurs technologies specialties items league_applys advise_relations buffs gods troops).each do |coll|
 			self.send(coll).map(&:delete)
 		end
 	end

@@ -19,18 +19,20 @@ end
 module Ohm
 
   def self.redis
-    unless Rails.env.production?
+    if Rails.env.development?
       $redis_count ||= 0
       $redis_count += 1
+      puts "*--- Ohm.redis ---*"
     end
     Redis.current
   end
 
   class Model
     def self.db
-      unless Rails.env.production?
+      if Rails.env.development?
         $redis_count ||= 0
         $redis_count += 1
+        puts "*--- Model.db ---*"
       end
       Redis.current
     end

@@ -12,6 +12,7 @@ class SessionsController < ApplicationController
 		result = trying
 		data = if result[:success]
 			player = create_player(result[:account_id])
+			Rails.logger.debug("*** New Player_id:#{player.id} ***")
 			{
 				:message => "SUCCESS", 
 				:player => player.to_hash(:all), 

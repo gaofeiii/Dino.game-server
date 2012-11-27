@@ -2,6 +2,7 @@ class Village < Ohm::Model
 	include Ohm::DataTypes
 	include Ohm::Callbacks
 	include Ohm::Timestamps
+	include Ohm::Locking
 	include OhmExtension
 
 	attribute :name
@@ -137,7 +138,14 @@ class Village < Ohm::Model
 	end
 
 	def after_create
-		create_building(Building.hashes[:residential], 1, 25, 25, Building::STATUS[:finished])
+		self.mutex do
+			$test_count ||= 0
+			$test_count += 1
+			puts "*** ---Building residential: #{$test_count} times--- ***"
+			if buildings.find(:type => Building.hashes[:residential]).blank?
+				create_building(Building.hashes[:residential], 1, 25, 25, Building::STATUS[:finished])
+			end
+		end
 	end
 
 	def after_delete

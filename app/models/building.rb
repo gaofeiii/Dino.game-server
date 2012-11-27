@@ -18,6 +18,7 @@ class Building < Ohm::Model
 	attribute :time, Type::Integer
 
 	index :type
+	index :status
 	index :village_id
 
 	reference :village, Village
