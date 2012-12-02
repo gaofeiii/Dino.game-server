@@ -101,6 +101,19 @@ DinosaurGame::Application.routes.draw do
     post 'get_reward'     => 'guide#get_reward'
   end
 
+  # 拍卖行相关方法(交易)
+  scope :path => 'deals', :as => 'deals' do
+    post 'list'    => 'deals#list'
+    post 'buy'     => 'deals#buy'
+    post 'sell'    => 'deals#sell'
+  end
+
+  # 排行榜
+  scope :path => 'rank', :as => 'rank' do
+    post 'score_rank'     => 'rank#score_rank'
+    post 'battle_rank'    => 'rank#battle_rank'
+  end
+
   root :to => 'players#deny_access'
 
   

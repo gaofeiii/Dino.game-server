@@ -36,7 +36,7 @@ class Player < Ohm::Model
 	collection :buffs, 						Buff
 	collection :gods, 						God
 	collection :troops,						Troops
-	collection :deals,						Deal
+	collection :deals,						Deal, 	:seller
 
 	reference :league, League
 	
@@ -155,7 +155,7 @@ class Player < Ohm::Model
 				end
 			when :beginning_guide
 				has_beginning_guide = !beginning_guide_finished
-				hash[:has_beginning_guide] = false #has_beginning_guide
+				hash[:has_beginning_guide] = has_beginning_guide
 				hash[:beginning_guide] = guide_info.current if has_beginning_guide
 			when :queue_info
 				hash[:max_queue_size] = action_queue_size

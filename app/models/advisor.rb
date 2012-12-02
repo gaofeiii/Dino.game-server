@@ -38,6 +38,7 @@ class Advisor < Ohm::Model
 			:player_id => player_id,
 			:nickname => nickname,
 			:level => level.to_i,
+			:type => type,
 			:price => price
 		}
 	end

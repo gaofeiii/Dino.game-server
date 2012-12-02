@@ -19,6 +19,7 @@ class Deal < Ohm::Model
 
 	attribute :status, 		Type::Integer		# Deal的状态，1表示出售者，2表示交易关闭
 	attribute :type,	 		Type::Integer		# 表示出售物品的类型
+	attribute :res_type,	Type::Integer		# 资源的类型
 	attribute :gid, 			Type::Integer		# 非资源性物品的id
 	attribute :count,			Type::Integer		# 资源物品的数量
 	attribute :end_time,	Type::Integer		# 结束时间
@@ -28,5 +29,28 @@ class Deal < Ohm::Model
 
 	index :status
 	index :type
+
+	def self.types
+		TYPES		
+	end
+
+	def to_hash
+		@seller = seller
+		hash = {
+			:id => id.to_i,
+			:type => type,
+			:end_time => end_time,
+			:seller_name => @seller.nickname,
+			:seller_id => @seller.id,
+			:count => count
+		}
+		case type
+		when TYPES[:res]
+			hash[:res_type] = res_type
+		when TYPES[:egg]
+			hash[:gid] = gid
+		end
+		return hash
+	end
 
 end

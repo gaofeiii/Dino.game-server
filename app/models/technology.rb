@@ -28,6 +28,7 @@ class Technology < Ohm::Model
 
 	def to_hash
 		hash = {
+			:id => id.to_i,
 			:level => level,
 			:type => type,
 			:status => status

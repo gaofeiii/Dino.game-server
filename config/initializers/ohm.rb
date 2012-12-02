@@ -39,6 +39,11 @@ module Ohm
       Redis.current
     end
 
+    def id
+      raise MissingID if not defined?(@id)
+      @id.to_i
+    end
+
     def hello
       puts "world"
     end
