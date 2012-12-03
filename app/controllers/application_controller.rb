@@ -59,6 +59,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def validate_building
+    @building = Building[params[:building_id]]
+    if @building.nil?
+      render :json => {:error => Error.format_message("Building not exist")} and return
+    end
+  end
+
   def deny_access
     render :text => "Request denied."
   end

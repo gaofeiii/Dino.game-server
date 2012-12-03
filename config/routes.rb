@@ -18,6 +18,8 @@ DinosaurGame::Application.routes.draw do
   scope :path => 'buildings', :as => 'buildings' do
     post 'create'   => 'buildings#create'
     post 'speed_up' => 'buildings#speed_up'
+    post 'move'     => 'buildings#move'
+    post 'destroy'  => 'buildings#destroy'
   end
   
   # 科技研究相关

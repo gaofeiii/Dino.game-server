@@ -1,7 +1,8 @@
 class BuildingsController < ApplicationController
 
-	before_filter :validate_village, :only => [:create]
+	before_filter :validate_village, :only => [:create, :move, :destroy]
 	before_filter :validate_player, :only => [:speed_up]
+	before_filter :validate_building, :only => [:move, :destroy]
 
 	def create
 		@player = @village.player
@@ -71,5 +72,34 @@ class BuildingsController < ApplicationController
 
 		render :json => {:message => Error.success_message, :player => @player.to_hash(:village)}
 
+	end
+
+	def move
+		coord_x, coord_y = params[:x].to_i, params[:y].to_i
+		if @building.update :x => coord_x, :y => coord_y
+			render :json => {:message => Error.success_message}
+		else
+			render :json => {
+				:message => Error.failed_message, 
+				:error_type => Error.types[:normal],
+				:error => Error.format_message("invalid coordinate")
+			}
+		end
+	end
+
+	def destroy
+		@building.delete
+		if not Building.exists?(@building.id)
+			render :json => {:message => Error.success_message}
+		else
+			# TODO: Some building cannot be destroyed because it is running something, like hatching.
+			# 			Note the reason in error info.
+			err = "Error condition"
+			render :json => {
+				:message => Error.failed_message,
+				:error_type => Error.types[:normal],
+				:error => Error.format_message(err)
+			}
+		end
 	end
 end

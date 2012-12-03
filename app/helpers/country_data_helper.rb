@@ -1,6 +1,6 @@
 module CountryDataHelper
 	# COUNTRY_SZ 					= 2 															# 国家的数量
-	COORD_TRANS_FACTOR 	= 300 														# 坐标的大小
+	COORD_TRANS_FACTOR 	= 600 														# 坐标的大小
 	TOWN_SZ 						= {:length => 3, :width => 3} 		# 城镇节点的大小
 	GOLD_MINE_SZ 				= {:length => 3, :width => 3}			# 金矿节点的大小，默认是正方形
 
@@ -95,8 +95,8 @@ module CountryDataHelper
 				
 
 				# 循环每11*11个矩形格子
-				15.step(289, 11) do |x|
-					15.step(289, 11) do |y|
+				15.step(COORD_TRANS_FACTOR - 11, 11) do |x|
+					15.step(COORD_TRANS_FACTOR - 11, 11) do |y|
 						all_nodes = []						# 所有格子
 						town_blocked_nodes = []		# 计算城镇节点时的阻挡格子
 						town_available_nodes = []	# 可作为城镇节点的格子

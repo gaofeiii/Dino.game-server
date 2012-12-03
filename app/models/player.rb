@@ -19,6 +19,7 @@ class Player < Ohm::Model
 	attribute :experience, 		Type::Integer
 	attribute :score, 				Type::Integer
 	attribute :device_token
+	attribute :avatar_id, 		Type::Integer
 	
 	attribute :village_id, 		Type::Integer
 	attribute :session_id, 		Type::Integer
@@ -178,8 +179,9 @@ class Player < Ohm::Model
 	end
 
 	def dinosaurs_info
-		dinosaurs.find(:status => Dinosaur::STATUS[:infancy]).map(&:to_hash) + 
-			dinosaurs.find(:status => Dinosaur::STATUS[:adult]).map(&:to_hash)
+		# dinosaurs.find(:status => Dinosaur::STATUS[:infancy]).map(&:to_hash) + 
+		# 	dinosaurs.find(:status => Dinosaur::STATUS[:adult]).map(&:to_hash)
+		dinosaurs.map(&:to_hash)
 	end
 
 	def league_member_ship
