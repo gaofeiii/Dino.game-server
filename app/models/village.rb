@@ -16,9 +16,13 @@ class Village < Ohm::Model
 	attribute :stone, 							Type::Integer
 	attribute :stone_inc,						Type::Integer
 	attribute :stone_max,						Type::Integer
+
+	# =========== Expired attributes ============
 	attribute :population, 					Type::Integer
 	attribute :population_inc,			Type::Integer
 	attribute :population_max,			Type::Integer
+	# ===========================================
+	
 	attribute :update_resource_at, 	Type::Integer
 		
 

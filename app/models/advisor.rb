@@ -32,10 +32,11 @@ class Advisor < Ohm::Model
 	end
 
 	def to_hash
-		nickname, level = Player.gets(player_id, :nickname, :level)
+		nickname, level, avatar_id = Player.gets(player_id, :nickname, :level, :avatar_id)
 		{
 			:id => id.to_i,
 			:player_id => player_id,
+			:avatar_id => avatar_id,
 			:nickname => nickname,
 			:level => level.to_i,
 			:type => type,

@@ -19,7 +19,7 @@ class Player < Ohm::Model
 	attribute :experience, 		Type::Integer
 	attribute :score, 				Type::Integer
 	attribute :device_token
-	attribute :avatar_id, 		Type::Integer
+	attribute :avatar_id, 		Type::Integer		# 玩家头像的id
 	
 	attribute :village_id, 		Type::Integer
 	attribute :session_id, 		Type::Integer
@@ -127,7 +127,8 @@ class Player < Ohm::Model
 			:experience => experience,
 			:account_id => account_id,
 			:score => score,
-			:country_id => country_id.to_i
+			:country_id => country_id.to_i,
+			:avatar_id => avatar_id
 		}
 		opts = if args.include?(:all)
 			args | [:village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
@@ -256,6 +257,24 @@ class Player < Ohm::Model
 		village.buildings.find(:type => Building.hashes[:residential]).size
 	end
 
+	def validate_iap(rcp)
+  	uri = URI("https://sandbox.itunes.apple.com/verifyReceipt")
+  	http = Net::HTTP.new(uri.host, uri.port)
+  	http.use_ssl = true
+
+  	request = Net::HTTP::Post.new(uri.request_uri)
+  	request.content_type = 'application/json'
+  	request.body = {'receipt-data' => rcp}.to_json
+
+  	res = http.start{ |h| h.request(request) }
+  	result = JSON.parse(res.body)
+
+    # if result['status'] == 0
+      # self.is_verified = true
+    # end
+    result
+  end
+
 	# Callbacks
 	protected
 
@@ -263,6 +282,7 @@ class Player < Ohm::Model
 		self.gold_coin = 99999
 		self.sun = 9999
 		self.level = 1 if (level.nil? or level == 0)
+		self.avatar_id = 1 if avatar_id.zero?
 	end
 
 	def after_create
@@ -283,6 +303,8 @@ class Player < Ohm::Model
 			self.send(coll).map(&:delete)
 		end
 	end
+
+
 
 	private
 

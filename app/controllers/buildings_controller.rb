@@ -1,6 +1,6 @@
 class BuildingsController < ApplicationController
 
-	before_filter :validate_village, :only => [:create, :move, :destroy]
+	before_filter :validate_village, :only => [:create]
 	before_filter :validate_player, :only => [:speed_up]
 	before_filter :validate_building, :only => [:move, :destroy]
 
