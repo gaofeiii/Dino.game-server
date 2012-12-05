@@ -11,6 +11,7 @@ DinosaurGame::Application.routes.draw do
   # 玩家信息
   scope :path => 'players', :as => 'players' do
     post 'refresh' => 'players#refresh'
+    post 'change_avatar' => 'players#change_avatar'
   end
   
 

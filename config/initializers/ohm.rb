@@ -17,7 +17,6 @@ end
 
 $my_config = {:redis_access_log => false}
 
-
 module Ohm
 
   def self.redis

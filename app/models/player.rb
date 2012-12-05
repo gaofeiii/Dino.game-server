@@ -20,6 +20,9 @@ class Player < Ohm::Model
 	attribute :score, 				Type::Integer
 	attribute :device_token
 	attribute :avatar_id, 		Type::Integer		# 玩家头像的id
+	attribute :is_advisor,		Type::Boolean
+	attribute :is_hired,			Type::Boolean
+	attribute :advisor_type,	Type::Integer
 	
 	attribute :village_id, 		Type::Integer
 	attribute :session_id, 		Type::Integer
@@ -93,7 +96,7 @@ class Player < Ohm::Model
 				end
 			end
 		end
-		load!
+		gets(:gold_coin, :sun)
 	end
 
 	# player的receive!方法：
@@ -109,7 +112,7 @@ class Player < Ohm::Model
 				end
 			end
 		end
-		load!
+		gets(:gold_coin, :sun)
 	end
 
 	# player的to_hash方法，主要用于render的返回值
@@ -151,10 +154,10 @@ class Player < Ohm::Model
 			when :league
 				hash[:league] = league_info
 			when :advisors
-				hash[:advisors] = advise_relations.map do |ar|
-					nk, lvl = Player.gets(ar.advisor_id, :nickname, :level)
-					{:id => ar.advisor_id.to_i, :nickname => nk, :level => lvl}
-				end
+				# hash[:advisors] = advise_relations.map do |ar|
+				# 	nk, lvl = Player.gets(ar.advisor_id, :nickname, :level)
+				# 	{:id => ar.advisor_id.to_i, :nickname => nk, :level => lvl}
+				# end
 			when :beginning_guide
 				has_beginning_guide = !beginning_guide_finished
 				hash[:has_beginning_guide] = has_beginning_guide

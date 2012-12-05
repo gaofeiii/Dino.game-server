@@ -27,7 +27,11 @@ class ApplicationController < ActionController::Base
   def validate_player
   	@player = Player[params[:player_id]]
     if @player.nil?
-      render :json => {:error => "PLAYER_NOT_FOUND"} and return
+      render :json => {
+        :message => Error.failed_message,
+        :error_type => Error.types[:normal],
+        :error => "PLAYER_NOT_FOUND"
+      }
     end
   end
 

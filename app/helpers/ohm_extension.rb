@@ -24,6 +24,17 @@ module OhmExtension
     	db.hmget(key[id], args)
     end
 
+    def sets(id, args = {})
+    	return if args.blank?
+    	atts_ary = Array.new
+    	args.map do |k, v|
+    		if k.in?(all_attrs)
+    			atts_ary += [k, v]
+    		end
+    	end
+    	db.hmset self.key[id], atts_ary
+    end
+
     def mapped_gets(id, *args)
     	db.mapped_hmget(key[id], args)
     end
@@ -42,6 +53,14 @@ module OhmExtension
 	end
 	
 	module InstanceMethods
+
+		def gets(*atts)
+			new_vals = db.hmget(key, atts)
+			atts.each_with_index do |att, idx|
+				self.send("#{att}=", new_vals[idx])
+			end
+			self
+		end
 		
 		def increase(key, count=1)
 			db.hincrby(self.key, key, count)

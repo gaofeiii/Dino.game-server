@@ -29,7 +29,10 @@ class BuildingsController < ApplicationController
 
 		if @village.spend!(cost)
 			@village.create_building(params[:building_type], params[:x], params[:y], Building::STATUS[:new])
-			data = {:message => Error.success_message, :player => {:village => @village.to_hash(:buildings)}}
+			data = {
+				:message => Error.success_message, 
+				:player => @player.to_hash(:queue_info).merge({:village => @village.to_hash(:buildings)})
+			}
 			render :json => data
 		else
 			render :json => {
