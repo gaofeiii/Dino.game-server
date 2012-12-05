@@ -154,10 +154,9 @@ class Player < Ohm::Model
 			when :league
 				hash[:league] = league_info
 			when :advisors
-				# hash[:advisors] = advise_relations.map do |ar|
-				# 	nk, lvl = Player.gets(ar.advisor_id, :nickname, :level)
-				# 	{:id => ar.advisor_id.to_i, :nickname => nk, :level => lvl}
-				# end
+				hash[:advisors] = AdviseRelation.find(:employer_id => id).map do |ar|
+					ar.to_hash
+				end
 			when :beginning_guide
 				has_beginning_guide = !beginning_guide_finished
 				hash[:has_beginning_guide] = has_beginning_guide

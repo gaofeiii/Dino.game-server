@@ -11,8 +11,8 @@ class AdviseRelation < Ohm::Model
 
 	attribute :advisor_id
 	attribute :employer_id
+	unique :advisor_id
 
-	index :advisor_id
 	index :employer_id
 	index :type
 
@@ -27,13 +27,15 @@ class AdviseRelation < Ohm::Model
 
 	def to_hash
 		advisor = Player.new :id => advisor_id
-		advisor.gets(:level)
+		advisor.gets(:level, :nickname, :avatar_id)
 		left_time = start_time + days.days.to_i - ::Time.now.to_i
 		left_time = left_time < 0 ? 0 : left_time
 		{
-			:advisor_id => advisor_id,
-			:advisor_level => level,
-			:advisor_type => type,
+			:player_id => advisor_id,
+			:level => advisor.level,
+			:type => type,
+			:nickname => advisor.nickname,
+			:avatar_id => advisor.avatar_id,
 			:left_time => start_time + days.days.to_i - ::Time.now.to_i
 		}
 	end

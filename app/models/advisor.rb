@@ -42,9 +42,20 @@ class Advisor < Ohm::Model
 																:days => days,
 																:advisor_id => advisor_id,
 																:employer_id => employer_id
+				db.multi do |t|
+					t.hdel(Advisor.key[:type][type], advisor_id)
+					t.hmset("Player:#{advisor_id}", :is_advisor, 1, :is_hired, 1)
+				end
 			end	
 		end
 		alias hire! employ!
+
+		def fire!(employer_id, advisor_id)
+			relation = AdviseRelation.with(:advisor_id, advisor_id)
+			if relation.delete
+				db.hdel("Player:#{advisor_id}", :is_advisor, :is_hired)
+			end
+		end
 
 		def hire_price(level, days)
 			(level ** 1.2) * days

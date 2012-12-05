@@ -1,5 +1,7 @@
 class AdvisorsController < ApplicationController
 
+	before_filter :validate_player, :only => [:fire]
+
 	# 顾问列表
 	def advisor_list
 		start, type = params[:page].to_i, params[:type].to_i
@@ -88,19 +90,7 @@ class AdvisorsController < ApplicationController
 	end
 
 	def fire
-		
-
-
-
-		# advisor = Player[params[:advisor_id]]
-		# if advisor.nil?
-		# 	render :json => {:error => "ADVISOR_NOT_FOUND"} and return
-		# end
-
-		# if @player.include?(advisor)
-		# 	@player.advisors.delete(advisor)
-		# 	advisor.set :master_id, nil
-		# end
+		Advisor.fire!(@player.id, params[:employer_id])
 		render :json => {:player => @player.to_hash(:advisors)}
 	end
 
