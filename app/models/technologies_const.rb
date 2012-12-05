@@ -4,6 +4,7 @@ module TechnologiesConst
 		@@tech_const = Hash.new
 		@@tech_types = Array.new
 		@@tech_names = Array.new
+		@@tech_cost  = Hash.new
 
 		%w(const types names).each do |att|
 			define_method(att) do
@@ -13,6 +14,22 @@ module TechnologiesConst
 				eval("@@tech_#{att}")
 			end
 			
+		end
+
+		def cost(type = nil)
+			if @@tech_cost.blank?
+				const.each do |t_id, val|
+					@@tech_cost[t_id] ||= {}
+					val.each do |lvl, inf|
+						@@tech_cost[t_id][lvl] = inf[:cost]
+					end
+				end
+			end
+			if type.nil?
+				return @@tech_cost
+			else
+				return @@tech_cost[type]
+			end
 		end
 
 		alias info const

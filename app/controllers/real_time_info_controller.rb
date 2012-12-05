@@ -1,8 +1,11 @@
 class RealTimeInfoController < ApplicationController
 
-	before_filter :validate_player
-
-	def refresh
-		render :json => []
+	def info
+		render :json => {
+			:data => {
+					:buildings => Building.cost,
+					:technologies => Technology.cost
+			}
+		}
 	end
 end

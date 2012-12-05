@@ -32,6 +32,10 @@ class ServerInfo
 			"http://#{info[:account_server_ip]}:#{info[:account_server_port]}"
 		end
 
+		def const_version
+			all[server_name][:info_const_version]
+		end
+
 		# def info
 		# 	SERVER_INFO[server_name]
 		# end

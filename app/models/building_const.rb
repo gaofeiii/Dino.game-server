@@ -6,6 +6,7 @@ module BuildingConst
 		@@building_types 	= Array.new
 		@@building_keys  	= Array.new
 		@@building_hashes = Hash.new
+		@@building_cost 	= Hash.new
 
 		%w(const types keys hashes).each do |name|
 			define_method(name) do
@@ -18,7 +19,17 @@ module BuildingConst
 
 		alias info const
 
-		def cost(type)
+		def cost(type = nil)
+			if @@building_cost.blank?
+				info.each do |key, val|
+					@@building_cost[key] = val[:cost]
+				end
+			end
+
+			if type.nil?
+				return @@building_cost
+			end
+
 			if types.include?(type)
 				return const[type][:cost]
 			else
@@ -57,6 +68,7 @@ module BuildingConst
 			end
 			@@building_types = @@building_const.keys
 			@@building_keys = @@building_const.values.map { |v| v[:key] }
+
 			@@building_const
 		end
 	end

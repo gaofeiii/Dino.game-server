@@ -29,7 +29,9 @@ DinosaurGame::Application.routes.draw do
   end
   
   # 即时信息的刷新
-  post 'real_time' => 'real_time_info#refresh'
+  scope :path => 'const', :as => 'real_time_info' do
+    post 'info' => 'real_time_info#info'
+  end
 
   # 聊天
   scope :path => 'chats', :as => 'chats' do

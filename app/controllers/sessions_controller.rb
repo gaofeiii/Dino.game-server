@@ -17,7 +17,8 @@ class SessionsController < ApplicationController
 				:message => Error.success_message, 
 				:player => player.to_hash(:all), 
 				:username => result[:username],
-				:password => result[:password]
+				:password => result[:password],
+				:const_version => ServerInfo.const_version
 			}
 		else
 			{
@@ -34,7 +35,7 @@ class SessionsController < ApplicationController
 																	 :email 	 	=> params[:email], 
 																	 :password 	=> params[:password],
 																	 :server_id => params[:server_id]
-		data = {}
+		data = {:const_version => ServerInfo.const_version}
 		if rcv_msg[:success]
 			@player = Player.find(:account_id => rcv_msg[:account_id]).first
 			if @player.nil?
@@ -42,9 +43,9 @@ class SessionsController < ApplicationController
 			else
 				@player.set :device_token, @device_token
 			end
-			data = {:message => Error.success_message, :player => @player.to_hash(:all)}
+			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all)})
 		else
-			data = {:message => Error.failed_message}
+			data.merge!({:message => Error.failed_message})
 		end
 		render :json => data
 	end
@@ -57,14 +58,13 @@ class SessionsController < ApplicationController
 															:password => params[:password],
 															:password_confirmation => params[:password_confirmation],
 															:server_id => params[:server_id]
-		data = {}
-		p "result", result
+		data = {:const_version => ServerInfo.const_version}
 		if result[:success]
 			begin
 				@player = create_player(result[:account_id], params[:username])
-				data = {:message => 'SUCCESS', :player => @player.to_hash(:all)}
+				data.merge!({:message => 'SUCCESS', :player => @player.to_hash(:all)})
 			rescue Exception => e
-				data = {:message => Error.format_message(e.to_s)}
+				data.merge!({:message => Error.format_message(e.to_s)})
 			end
 		else
 			data = result
@@ -91,7 +91,6 @@ class SessionsController < ApplicationController
 	private
 
 	def create_player(account_id, nickname = nil)
-		p '------- create_player'
 		guest_id = Ohm.redis.get(Player.key[:id]).to_i + 1
 		n_name = nickname.nil? ? "Player_#{guest_id}" : nickname
 		Player.create :account_id => account_id, :nickname => n_name, :device_token => @device_token

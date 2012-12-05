@@ -73,15 +73,6 @@ class AdvisorsController < ApplicationController
 		employer = Player.new :id => params[:employer_id]
 		employer.get(:gold_coin)
 
-		if employer.gold_coin < adv_info[2].to_i
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
-				:error => Error.format_message('not enough gold')
-			}
-			return
-		end
-
 		if employer.spend!(:gold_coin => adv_info[2].to_i)
 			Advisor.employ!(params[:employer_id], params[:advisor_id], params[:type], days)
 			render :json => {
@@ -97,6 +88,10 @@ class AdvisorsController < ApplicationController
 	end
 
 	def fire
+		
+
+
+
 		# advisor = Player[params[:advisor_id]]
 		# if advisor.nil?
 		# 	render :json => {:error => "ADVISOR_NOT_FOUND"} and return

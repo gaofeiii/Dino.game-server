@@ -1,6 +1,6 @@
 class Advisor < Ohm::Model
 
-	TAX = 0.01
+	TAX = 0.0
 	TYPES = {:produce => 1, :military => 2, :business => 3, :technology => 4}
 
 	class << self
@@ -44,6 +44,11 @@ class Advisor < Ohm::Model
 																:employer_id => employer_id
 			end	
 		end
+		alias hire! employ!
+
+		def hire_price(level, days)
+			(level ** 1.2) * days
+		end
 
 		def find_random_by_type(type, count = 1)
 			r_key = Advisor.key[:type][type]
@@ -51,18 +56,20 @@ class Advisor < Ohm::Model
 			advs = db.hmget(r_key, adv_ids)
 
 			result = []
-			advs.each_with_index do |adv,idx|
+			advs.each_with_index do |adv, idx|
 				if adv.nil?
 					next
 				end
 
 				name, lvl, days, avt_id = adv.split(":")
+				level = lvl.to_i
+				ds = days.to_i
 				result << {
 					:nickname => name,
-					:level => lvl.to_i,
-					:days => days.to_i,
+					:level => level,
+					:days => ds,
 					:type => type,
-					:price => [1000, 2800, 5600].sample,
+					:price => hire_price(level, ds),
 					:avatar_id => avt_id.to_i,
 					:player_id => adv_ids[idx].to_i
 				}
@@ -86,12 +93,10 @@ class Advisor < Ohm::Model
 		end
 
 		def clear_all!
-			db.multi do |t|
-				t.del(self.key[:type][1])
-				t.del(self.key[:type][2])
-				t.del(self.key[:type][3])
-				t.del(self.key[:type][4])
-			end
+			db.del(self.key[:type][1])
+			db.del(self.key[:type][2])
+			db.del(self.key[:type][3])
+			db.del(self.key[:type][4])
 		end
 
 		
