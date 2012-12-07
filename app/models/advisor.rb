@@ -4,16 +4,17 @@ class Advisor < Ohm::Model
 	TYPES = {:produce => 1, :military => 2, :business => 3, :technology => 4}
 
 	class << self
-		def apply_advisor(player, prc)
-			self.create :player_id => player.id, :price => prc
-		end
-
 		def types
 			TYPES
 		end
 
+		def is_advisor?(player_id)
+			!Player.get(player_id, :is_advisor).to_i.zero?
+		end
+
 		def create_by_type_and_days(player_id, type, days = 1)
 			return false unless type.to_i.in?(TYPES.values)
+			return false if is_advisor?(player_id)
 
 			name, lvl, avatar_id = Player.gets(player_id, :nickname, :level, :avatar_id)
 			type_key = Advisor.key[:type][type]
@@ -53,7 +54,7 @@ class Advisor < Ohm::Model
 		def fire!(employer_id, advisor_id)
 			relation = AdviseRelation.with(:advisor_id, advisor_id)
 			if relation.delete
-				db.hdel("Player:#{advisor_id}", :is_advisor, :is_hired)
+				db.hdel("Player:#{advisor_id}", [:is_advisor, :is_hired])
 			end
 		end
 
@@ -72,6 +73,11 @@ class Advisor < Ohm::Model
 		def find_random_by_type(type, count = 1)
 			r_key = Advisor.key[:type][type]
 			adv_ids = db.hkeys(r_key).sample(count)
+
+			if adv_ids.empty?
+				return []
+			end
+
 			advs = db.hmget(r_key, adv_ids)
 
 			result = []
@@ -102,12 +108,16 @@ class Advisor < Ohm::Model
 			r_key = Advisor.key[:type][type]
 			info = db.hget(r_key, player_id)
 			return nil if info.nil?
-			adv_info = info.split(':')
+			name, lvl, ds, avatar_id = info.split(':')
+			lvl = lvl.to_i
+			ds = ds.to_i
+			avatar_id = avatar_id.to_i
 			{
-				:nickname => adv_info[0],
-				:level => adv_info[1],
-				:days => adv_info[2],
-				:avatar_id => adv_info[3]
+				:nickname => name,
+				:level => lvl,
+				:days => ds,
+				:avatar_id => avatar_id,
+				:price => hire_price(lvl, ds)
 			}
 		end
 
@@ -116,6 +126,9 @@ class Advisor < Ohm::Model
 			db.del(self.key[:type][2])
 			db.del(self.key[:type][3])
 			db.del(self.key[:type][4])
+			Player.all.ids.each do |ids|
+				db.hdel("Player:#{ids}", [:is_hired, :is_advisor])
+			end
 		end
 
 		

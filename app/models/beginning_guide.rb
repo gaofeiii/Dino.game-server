@@ -119,12 +119,20 @@ module BeginningGuideHelper
 		quest = self[index]
 
 		sig = case index
+		# 建造采集场
 		when 1
 			collecting_farm = player.village.buildings.find(:type => Building.hashes[:collecting_farm])
 			collecting_farm.any?
+		# 采集场加速完成
 		when 2
 			collecting_farm = player.village.buildings.find(:type => Building.hashes[:collecting_farm])
 			collecting_farm.any? && collecting_farm.max{|b| b.level if b}.try(:status).to_i >= 2
+		when 3
+			habitat = player.village.buildings.find(:type => Building.hashes[:habitat])
+			habitat.any?
+		when 4
+			habitat = player.village.buildings.find(:type => Building.hashes[:habitat])
+			habitat.any? && habitat.max{|b| b.level if b}.try(:status).to_i >= 2
 		else
 			false
 		end

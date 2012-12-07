@@ -37,6 +37,10 @@ module BuildingConst
 			end			
 		end
 
+		def names
+			hashes.keys
+		end
+
 		def reload!
 			puts '--- Reading buildings const ---'
 			@@building_const.clear

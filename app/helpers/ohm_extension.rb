@@ -12,12 +12,24 @@ module OhmExtension
 			self[self.all.ids.max]
 		end
 
-		def sample
-			self[db.srandmember(self.all.key)]
+		def sample(n = 1)
+			if n == 1
+				self[db.srandmember(self.all.key)]
+			elsif n > 1
+				db.srandmembers(self.all.key, n).map do |p_id|
+					self[p_id]
+				end
+			else
+				nil
+			end
 		end
 
 		def delete_all
 			self.all.each(&:delete)
+		end
+
+		def get(id, att)
+			db.hget(key[id], att)
 		end
 
     def gets(id, *args)

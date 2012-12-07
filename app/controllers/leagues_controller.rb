@@ -10,7 +10,7 @@ class LeaguesController < ApplicationController
 			lg = League.create :name => name, :desc => params[:desc], :president_id => @player.id
 			lms = LeagueMemberShip.create :player_id => @player.id, 
 																		:league_id => lg.id, 
-																		:level => LEAGUE_MEMBER_LEVELS[:president], 
+																		:level => LeagueMemberShip.levels[:president], 
 																		:nickname => @player.nickname
 			@player.update :league_id => lg.id, :league_member_ship_id => lms.id
 			render :json => {:player => {:league => lg.to_hash}}
@@ -100,7 +100,7 @@ class LeaguesController < ApplicationController
 				membership = LeagueMemberShip.create 	:player_id => apply.player_id,
 																							:league_id => apply.league_id,
 																							:nickname => player.nickname,
-																							:level => LEAGUE_MEMBER_LEVELS[:member]
+																							:level => League.levels[:member]
 				player.update :league_id => apply.league_id, :league_member_ship_id => membership.id
 				render :json => {
 					:player => {

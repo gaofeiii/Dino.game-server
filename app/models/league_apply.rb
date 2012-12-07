@@ -13,7 +13,9 @@ class LeagueApply < Ohm::Model
 	def to_hash
 		{
 			:id => id.to_i,
-			:nickname => player_nickname
+			:nickname => player_nickname,
+			:level => 1,
+			:player_id => player_id
 		}
 	end
 end

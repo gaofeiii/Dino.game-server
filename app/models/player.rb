@@ -177,6 +177,12 @@ class Player < Ohm::Model
 		}
 	end
 
+	def my_advisors_info
+		AdviseRelation.find(:employer_id => id).map do |ar|
+			ar.to_hash
+		end
+	end
+
 	def league_info
 		league.nil? ? {} : league.to_hash.merge(:level => league_member_ship_id)
 	end
@@ -256,7 +262,7 @@ class Player < Ohm::Model
 	# The size of building or researching queue.
 	def action_queue_size
 		#db.sinterstore("Building:indices:village_id:#{village_id}", "Building:indices:type:#{Building.hashes[:residential]}").to_i
-		village.buildings.find(:type => Building.hashes[:residential]).size
+		village.buildings.find(:type => Building.hashes[:residential], :status => Building::STATUS[:finished]).size
 	end
 
 	def validate_iap(rcp)

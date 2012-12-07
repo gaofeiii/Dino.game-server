@@ -31,7 +31,7 @@ class AdviseRelation < Ohm::Model
 		left_time = start_time + days.days.to_i - ::Time.now.to_i
 		left_time = left_time < 0 ? 0 : left_time
 		{
-			:player_id => advisor_id,
+			:player_id => advisor_id.to_i,
 			:level => advisor.level,
 			:type => type,
 			:nickname => advisor.nickname,

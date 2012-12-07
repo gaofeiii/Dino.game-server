@@ -5,11 +5,13 @@ class AdvisorsController < ApplicationController
 	# 顾问列表
 	def advisor_list
 		start, type = params[:page].to_i, params[:type].to_i
-		# advs = Advisor.all.sort(:by => :level, :order => "DESC", :limit => [start, 50])
-		advs = Advisor.find_random_by_type(1, 20)
-		advs += Advisor.find_random_by_type(1, 20)
-		advs += Advisor.find_random_by_type(1, 20)
-		advs += Advisor.find_random_by_type(1, 20)
+
+		advs = Advisor.find_random_by_type(type, 20)
+
+		# advs = Advisor.find_random_by_type(1, 20)
+		# advs += Advisor.find_random_by_type(2, 20)
+		# advs += Advisor.find_random_by_type(3, 20)
+		# advs += Advisor.find_random_by_type(4, 20)
 		render :json => {
 			:message => Error.success_message,
 			:advisors => advs
@@ -51,11 +53,20 @@ class AdvisorsController < ApplicationController
 
 	# 聘用顾问
 	def hire
+		if params[:employer_id].to_i == params[:player_id].to_i
+			render :json => {
+				:message => Error.failed_message,
+				:error_type => Error.types[:normal],
+				:error => Error.format_message("cannot hire yourself")
+			}
+			return
+		end
+		
 		is_adv, is_hired = Player.gets(params[:advisor_id], :is_advisor, :is_hired)
 
 		# adv_info:
 		# => [name, level, days, avatar_id]
-		adv_info = Advisor.get(params[:type], advisor_id).split(':')
+		adv_info = Advisor.get(params[:type], params[:advisor_id])
 
 		err = ''
 		if is_adv.to_i == 0 || adv_info.blank?
@@ -75,10 +86,11 @@ class AdvisorsController < ApplicationController
 		employer = Player.new :id => params[:employer_id]
 		employer.get(:gold_coin)
 
-		if employer.spend!(:gold_coin => adv_info[2].to_i)
-			Advisor.employ!(params[:employer_id], params[:advisor_id], params[:type], days)
+		if employer.spend!(:gold_coin => adv_info[:price])
+			Advisor.employ!(params[:employer_id], params[:advisor_id], params[:type], adv_info[:days])
 			render :json => {
-				:message => Error.success_message
+				:message => Error.success_message,
+				:player => employer.to_hash(:advisors)
 			}
 		else
 			render :json => {

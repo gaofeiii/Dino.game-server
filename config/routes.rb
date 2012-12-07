@@ -78,6 +78,7 @@ DinosaurGame::Application.routes.draw do
     post 'remove_friend'    => 'friends#remove_friend'
     post 'friend_list'      => 'friends#friend_list'
     post 'search_friend'    => 'search_friend'
+    post 'random_friends'   => 'friends#random_friends'
   end
 
   # 顾问
