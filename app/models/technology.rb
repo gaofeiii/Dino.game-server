@@ -22,7 +22,7 @@ class Technology < Ohm::Model
 	def research!
 		self.status = STATUS[:researching]
 		self.start_time = ::Time.now.to_i
-		self.finish_time = ::Time.now.to_i + next_level.cost[:time]
+		self.finish_time = ::Time.now.to_i + next_level[:cost][:time]
 		self.save
 	end
 

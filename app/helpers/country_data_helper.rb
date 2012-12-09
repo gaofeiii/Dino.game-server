@@ -1,8 +1,12 @@
 module CountryDataHelper
 	# COUNTRY_SZ 					= 2 															# 国家的数量
 	COORD_TRANS_FACTOR 	= 600 														# 坐标的大小
+	MAP_MAX_X						= 600
+	MAP_MAX_Y						= 600
 	TOWN_SZ 						= {:length => 3, :width => 3} 		# 城镇节点的大小
 	GOLD_MINE_SZ 				= {:length => 3, :width => 3}			# 金矿节点的大小，默认是正方形
+	GOLD_MINE_X_RANGE		= 250..350												# 高级金矿X坐标范围
+	GOLD_MINE_Y_RANGE		= 250..350												# 高级金矿Y坐标范围
 
 	module ClassMethods
 
@@ -10,14 +14,20 @@ module CountryDataHelper
 	
 	module InstanceMethods
 
-		[:basic_map_info, :town_nodes_info, :gold_mine_info].each do |name|
+		[:basic_map_info, :town_nodes_info, :gold_mine_info, :hl_gold_mine_info].each do |name|
 		
 			define_method("#{name.to_s}_key") do
 				key[name]
 			end
 
 			define_method(name) do
-				eval("$country_#{index}_#{name.to_s} ||= get_#{name.to_s}")
+				code = %Q(
+					if $country_#{index}_#{name.to_s}.blank?
+						$country_#{index}_#{name.to_s} = get_#{name.to_s}
+					end
+					return $country_#{index}_#{name.to_s}
+					)
+				eval(code)
 			end
 
 			define_method("get_#{name.to_s}") do
@@ -65,6 +75,11 @@ module CountryDataHelper
 			get_nodes_matrix(center_x - 1, center_y - 1, TOWN_SZ[:length], TOWN_SZ[:width])
 		end
 
+		# 根据金矿中心点获取城镇所占格子的index信息，返回数组
+		def get_gold_mine_nodes(center_x, center_y)
+			get_nodes_matrix(center_x - 1, center_y - 1, GOLD_MINE_SZ[:length], GOLD_MINE_SZ[:width])
+		end
+
 		# 初始化地图信息
 		def init!
 			## 地图基本信息
@@ -87,6 +102,13 @@ module CountryDataHelper
 			# => 金矿所占格子最大为3*3
 			gold_mine_info = {}
 
+			## 高等级金矿点位置
+			# => 类型：Hash
+			# => key为地图坐标的index
+			# => 1表示有金矿
+			# => 金矿所占格子最大为3*3
+			hl_gold_mine_info = {}
+
 			# 如果基本信息为空，从文件读取地图的基本信息
 			if basic_map_info.nil?
 				
@@ -97,6 +119,10 @@ module CountryDataHelper
 				# 循环每11*11个矩形格子
 				15.step(COORD_TRANS_FACTOR - 11, 11) do |x|
 					15.step(COORD_TRANS_FACTOR - 11, 11) do |y|
+						if x.in?(GOLD_MINE_X_RANGE) && y.in?(GOLD_MINE_Y_RANGE)
+							next
+						end
+
 						all_nodes = []						# 所有格子
 						town_blocked_nodes = []		# 计算城镇节点时的阻挡格子
 						town_available_nodes = []	# 可作为城镇节点的格子
@@ -107,13 +133,13 @@ module CountryDataHelper
 								idx = rx * COORD_TRANS_FACTOR + ry # 地图节点的实际index
 								all_nodes << idx
 								t_nodes = get_town_nodes(rx, ry)
+
 								t_nodes.each do |n_idx|
 									if basic_map_info[n_idx] < 0
 										town_blocked_nodes << n_idx
 										break
 									end
 								end
-
 							end
 						end
 
@@ -131,9 +157,41 @@ module CountryDataHelper
 					end
 				end
 
+				gm_available_nodes = {}
+				gm_blocked_nodes = {}
+
+				GOLD_MINE_X_RANGE.each do |x|
+					GOLD_MINE_Y_RANGE.each do |y|
+						idx = x * COORD_TRANS_FACTOR + y
+						town_nodes_info.delete(idx)
+						gold_mine_info.delete(idx)
+
+						if x.in?([GOLD_MINE_X_RANGE.min, GOLD_MINE_X_RANGE.max]) || y.in?([GOLD_MINE_Y_RANGE.min, GOLD_MINE_Y_RANGE.max])
+							next
+						end
+
+						available = true
+						nodes_token = get_gold_mine_nodes(x, y)
+						nodes_token.each do |n_idx|
+							if basic_map_info[n_idx] < 0 || !gm_blocked_nodes[n_idx].nil?
+								available = false
+								break
+							end
+						end
+						puts "--- (#{x}, #{y})"
+
+						if available
+							puts "--- available!!!"
+							gm_available_nodes[idx] = 1
+							nodes_token.each{|n_idx| gm_blocked_nodes[n_idx] = 1}
+						end
+					end
+				end
+
 				self.set_basic_map_info(basic_map_info)
 				self.set_town_nodes_info(town_nodes_info)
 				self.set_gold_mine_info(gold_mine_info)
+				self.set_hl_gold_mine_info(gm_available_nodes)
 			end
 		end # End of init method.
 

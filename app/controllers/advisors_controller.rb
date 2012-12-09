@@ -61,12 +61,14 @@ class AdvisorsController < ApplicationController
 			}
 			return
 		end
-		
+
 		is_adv, is_hired = Player.gets(params[:advisor_id], :is_advisor, :is_hired)
 
 		# adv_info:
 		# => [name, level, days, avatar_id]
 		adv_info = Advisor.get(params[:type], params[:advisor_id])
+
+		p '-------------', adv_info
 
 		err = ''
 		if is_adv.to_i == 0 || adv_info.blank?
@@ -81,9 +83,10 @@ class AdvisorsController < ApplicationController
 				:error_type => Error.types[:normal],
 				:error => err
 			}
+			return
 		end
 
-		employer = Player.new :id => params[:employer_id]
+		employer = Player[params[:employer_id]]
 		employer.get(:gold_coin)
 
 		if employer.spend!(:gold_coin => adv_info[:price])
@@ -103,7 +106,7 @@ class AdvisorsController < ApplicationController
 
 	def fire
 		Advisor.fire!(@player.id, params[:employer_id])
-		render :json => {:player => @player.to_hash(:advisors)}
+		render :json => {:player => @player.load!.to_hash(:advisors)}
 	end
 
 end

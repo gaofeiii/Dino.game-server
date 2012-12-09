@@ -34,10 +34,13 @@ class Dinosaur < Ohm::Model
 
 	attribute :current_hp, 				Type::Float
 
+	attribute :is_deployed,				Type::Boolean
 
 	attribute :event_type, 		Type::Integer
 	attribute :start_time, 		Type::Integer
 	attribute :finish_time, 	Type::Integer
+
+	attribute :building_id
 
 	collection :skills, 	Skill
 
@@ -86,7 +89,8 @@ class Dinosaur < Ohm::Model
 		if event_type != 0
 			hash[:event_type]  = event_type,
 			hash[:start_time]  = start_time,
-			hash[:finish_time] = finish_time
+			hash[:finish_time] = finish_time,
+			hash[:building_id] = building_id if building_id
 		end
 		return hash
 	end

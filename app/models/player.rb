@@ -41,6 +41,7 @@ class Player < Ohm::Model
 	collection :gods, 						God
 	collection :troops,						Troops
 	collection :deals,						Deal, 	:seller
+	collection :gold_mines,				GoldMine
 
 	reference :league, League
 	

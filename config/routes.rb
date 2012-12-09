@@ -12,6 +12,7 @@ DinosaurGame::Application.routes.draw do
   scope :path => 'players', :as => 'players' do
     post 'refresh' => 'players#refresh'
     post 'change_avatar' => 'players#change_avatar'
+    post 'my_gold_mines' => 'players#my_gold_mines'
   end
   
 
