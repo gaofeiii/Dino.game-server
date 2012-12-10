@@ -1,12 +1,21 @@
 class ChatMessage < Ohm::Model
 	include Ohm::DataTypes
 	include Ohm::Timestamps
+	include Ohm::Callbacks
 	include OhmExtension
+
+	CHANNELS = {
+		:world => 1,
+		:league => 2,
+		:private => 3
+	}
 
 	attribute :channel, 	Type::Integer
 	attribute :speaker
-	attribute :content
 	attribute :player_id
+	attribute :content
+	attribute :to_player_id
+	attribute :to_player_name
 
 	index :channel
 
@@ -16,7 +25,7 @@ class ChatMessage < Ohm::Model
 		else
 			((last_id + 1)..last_id.to_i + number).map do |i|
 				ChatMessage[i]
-			end.compact
+			end.compact	
 		end.map(&:to_hash)
 	end
 
@@ -29,5 +38,16 @@ class ChatMessage < Ohm::Model
 			:content => content,
 			:time => created_at.to_i
 		}
+	end
+
+	protected
+	def before_save
+		if speaker.blank?
+			self.speaker = db.hget("Player:#{player_id}", :nickname)
+		end
+
+		if channel == CHANNELS[:private] && to_player_name.blank?
+			self.to_player_name = db.hget("Player:#{to_player_id}", :nickname)
+		end
 	end
 end

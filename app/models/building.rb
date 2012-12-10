@@ -32,7 +32,7 @@ class Building < Ohm::Model
 			if left_time > self.info[:cost][:time]
 				self.status = STATUS[:finished]
 				self.time = 0
-			elsif left_time > 0 && left_time >= self.info[:cost][:time]/2
+			elsif left_time > 0 && left_time >= 10 # self.info[:cost][:time]/2
 				self.status = STATUS[:half]
 				self.time = left_time - self.info[:cost][:time]/2
 			end

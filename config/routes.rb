@@ -121,6 +121,11 @@ DinosaurGame::Application.routes.draw do
     post 'battle_rank'    => 'rank#battle_rank'
   end
 
+  # 防守策略
+  scope :path => 'strategy', :as => 'strategy' do
+    post 'set_defense' => 'strategy#set_defense'
+  end
+
   root :to => 'players#deny_access'
 
   

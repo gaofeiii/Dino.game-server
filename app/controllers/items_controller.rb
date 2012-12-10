@@ -7,7 +7,7 @@ class ItemsController < ApplicationController
 	end
 
 	def use
-		obj = @item.use!
+		obj = @item.use!(:building_id => params[:building_id])
 		render :json => {:player => @player.to_hash(:dinosaurs, :items)}
 	end
 

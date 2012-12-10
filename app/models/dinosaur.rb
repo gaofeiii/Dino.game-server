@@ -87,10 +87,12 @@ class Dinosaur < Ohm::Model
 		}
 
 		if event_type != 0
-			hash[:event_type]  = event_type,
-			hash[:start_time]  = start_time,
-			hash[:finish_time] = finish_time,
-			hash[:building_id] = building_id if building_id
+			hash[:event_type]  = event_type
+			# hash[:start_time]  = start_time
+			# hash[:finish_time] = finish_time
+			hash[:total_time] = finish_time - start_time
+			hash[:time_pass] = Time.now.to_i - start_time
+			hash[:building_id] = building_id.to_i if building_id
 		end
 		return hash
 	end

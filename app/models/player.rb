@@ -8,6 +8,8 @@ class Player < Ohm::Model
 	include SessionsHelper
 	include BeginningGuide
 
+	include RankModel
+
 	# Player的属性
 	attribute :account_id, 		Type::Integer
 	attribute :nickname
@@ -42,6 +44,7 @@ class Player < Ohm::Model
 	collection :troops,						Troops
 	collection :deals,						Deal, 	:seller
 	collection :gold_mines,				GoldMine
+	collection :strategies, 			Strategy
 
 	reference :league, League
 	
@@ -191,7 +194,10 @@ class Player < Ohm::Model
 	def dinosaurs_info
 		# dinosaurs.find(:status => Dinosaur::STATUS[:infancy]).map(&:to_hash) + 
 		# 	dinosaurs.find(:status => Dinosaur::STATUS[:adult]).map(&:to_hash)
-		dinosaurs.map(&:to_hash)
+		dinosaurs.map do |dino|
+			dino.update_status!
+			dino.to_hash
+		end
 	end
 
 	def league_member_ship

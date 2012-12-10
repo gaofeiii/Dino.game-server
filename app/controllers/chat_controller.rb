@@ -14,10 +14,11 @@ class ChatController < ApplicationController
 		end
 
 
-		chat = ChatMessage.create 	:channel => channel, 
-																:speaker => speaker, 
-																:content => content,
-																:player_id => player_id
+		chat = ChatMessage.new 	:channel => channel, 
+														:content => content,
+														:player_id => player_id
+		chat.to_player_id = params[:to_player_id]
+		chat.save
 		msgs = ChatMessage.world_messages(nil, 10)
 		render :json => msgs
 	end

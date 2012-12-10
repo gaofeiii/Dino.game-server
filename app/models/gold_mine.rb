@@ -11,6 +11,8 @@ class GoldMine < Ohm::Model
 	attribute :type, 	Type::Integer
 	attribute :level,	Type::Integer
 
+	attribute :strategy_id
+
 	collection :monsters, 	Monster
 
 	reference :player, 	Player
@@ -37,6 +39,16 @@ class GoldMine < Ohm::Model
 			
 			monsters.to_a
 		end
+	end
+
+	def to_hash
+		hash = {
+			:x => x,
+			:y => y,
+			:type => type,
+			:level => level
+		}
+		hash[:strategy] = Strategy[strategy_id].try(:to_hash)
 	end
 
 	protected

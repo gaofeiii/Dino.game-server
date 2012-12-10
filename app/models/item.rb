@@ -16,7 +16,7 @@ class Item < Ohm::Model
 		obj = case item_info[:type]
 		when ITEM_TYPES[:egg]
 			dino = Dinosaur.const[item_info[:type]]
-			building_id = params[:building_id]
+			building_id = options[:building_id]
 			dino = Dinosaur.new		:type 				=> item_info[:property][:dinosaur_type],
 														:status 			=> Dinosaur::STATUS[:egg],
 														:event_type 	=> Dinosaur::EVENTS[:hatching],

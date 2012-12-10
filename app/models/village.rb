@@ -29,6 +29,8 @@ class Village < Ohm::Model
 	attribute :player_id, 					Type::Integer
 	attribute :country_index,				Type::Integer
 
+	attribute :strategy_id
+
 	collection :buildings, 					Building
 	collection :dinosaurs, 					Dinosaur
 	collection :buffs, 							Buff
@@ -69,7 +71,7 @@ class Village < Ohm::Model
 		}
 
 		options = if args.include?(:all)
-			args + [:buildings]
+			args + [:buildings, :strategy]
 		else
 			args
 		end
@@ -78,6 +80,8 @@ class Village < Ohm::Model
 			case arg
 			when :buildings
 				hash[:buildings] = buildings.to_a.map(&:update_status!).map(&:to_hash)
+			when :strategy
+				hash[:strategy] = Strategy[strategy_id].try(:to_hash)
 			end
 		end
 
