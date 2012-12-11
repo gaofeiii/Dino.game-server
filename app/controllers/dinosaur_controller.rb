@@ -8,8 +8,15 @@ class DinosaurController < ApplicationController
 	end
 
 	def hatch_speed_up
-		@dinosaur.hatch_speed_up!
-		render :json => {:player => {:dinosaurs => [@dinosaur.to_hash]}}
+		@player = @dinosaur.player
+		if @dinosaur.hatch_speed_up!
+			if !@player.beginning_guide_finished && @player.guide_cache[:hatch_speed_up].nil?
+				cache = @player.guide_cache.merge(:hatch_speed_up => true)
+				@player.set :guide_cache, cache.to_json
+			end
+		end
+
+		render :json => {:player => @player.to_hash.merge({:dinosaurs => [@dinosaur.to_hash]})}
 	end
 
 	def feed
@@ -22,13 +29,14 @@ class DinosaurController < ApplicationController
 		if food.nil? || food.count <= 0
 			render :json => {:error => "NOT_ENOUGH_FOOD"} and return
 		else
-			@dinosaur.eat!(food)	
+			@dinosaur.eat!(food)
+			if !@player.beginning_guide_finished && !@player.guide_cache[:feed_dino]
+				cache = @player.guide_cache.merge(:feed_dino => true)
+				@player.set :guide_cache, cache
+			end
 		end
 		render :json => {
-			:player => {
-				:dinosaurs => [@dinosaur.to_hash],
-				:food => [food.to_hash]
-			}
+			:player => @player.to_hash(:dinosaurs, :food)
 		}
 	end
 end

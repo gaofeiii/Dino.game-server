@@ -30,6 +30,10 @@ class Item < Ohm::Model
 		return obj
 	end
 
+	def is_egg?
+		item_category == ITEM_TYPES[:egg]
+	end
+
 	def to_hash
 		{
 			:id => id.to_i,

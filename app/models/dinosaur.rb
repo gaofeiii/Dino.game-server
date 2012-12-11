@@ -31,6 +31,8 @@ class Dinosaur < Ohm::Model
 	attribute :total_agility,			Type::Float
 	attribute :total_hp,					Type::Float
 
+	attribute :quality,						Type::Integer
+
 	attribute :current_hp, 				Type::Float
 
 	attribute :is_deployed,				Type::Boolean
@@ -81,7 +83,8 @@ class Dinosaur < Ohm::Model
 			:attack => total_attack.to_i,
 			:defense => total_defense.to_i,
 			:agility => total_agility.to_i,
-			:hp => total_hp
+			:hp => total_hp,
+			:quality => quality
 		}
 
 		if event_type != 0

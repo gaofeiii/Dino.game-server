@@ -49,7 +49,7 @@ class ChatController < ApplicationController
 			end
 			chat.to_player_id = params[:to_player_id]
 			chat.save
-			ChatMessage.private_messages(params[:player_id], last_id, 10)
+			ChatMessage.private_messages(params[:player_id], params[:to_player_id], last_id, 10)
 		end
 
 		render :json => data

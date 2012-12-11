@@ -1,5 +1,6 @@
 # Only included by player model.
 # Require ohm, ohm-contrib gems.
+# Player model must inhert from Ohm::Model.
 
 ## === Example ===
 # 
@@ -33,6 +34,8 @@ module BeginningGuide
 	def self.included(model)
 		model.attribute :guide_info
 		model.attribute :beginning_guide_finished, Ohm::DataTypes::Type::Boolean
+		model.attribute :has_hatched_dino, Ohm::DataTypes::Type::Boolean
+		model.attribute :guide_cache, Ohm::DataTypes::Type::Hash
 		model.class_eval do
 			remove_method :guide_info
 		end
@@ -40,6 +43,7 @@ module BeginningGuide
 	
 	def save!
 		self.guide_info = self.guide_info.except(:player).to_json
+		self.guide_cache = {}.to_json if self.guide_cache.nil?
 		super
 	end
 
@@ -127,12 +131,22 @@ module BeginningGuideHelper
 		when 2
 			collecting_farm = player.village.buildings.find(:type => Building.hashes[:collecting_farm])
 			collecting_farm.any? && collecting_farm.max{|b| b.level if b}.try(:status).to_i >= 2
+		# 建造孵化园并加速完成
 		when 3
 			habitat = player.village.buildings.find(:type => Building.hashes[:habitat])
-			habitat.any?
-		when 4
-			habitat = player.village.buildings.find(:type => Building.hashes[:habitat])
 			habitat.any? && habitat.max{|b| b.level if b}.try(:status).to_i >= 2
+		# 孵化并加速完成
+		when 4
+			ret = player.guide_cache['has_hatched_dino'] && player.guide_cache['hatch_speed_up']
+			ret.nil? ? false : ret
+		# 建造兽栏并加速完成
+		when 5
+			beastiary = player.village.buildings.find(:type => Building.hashes[:beastiary])
+			beastiary.any? && beastiary.max{ |b| b.level if b }.try(:status).to_i >= 2
+		# 喂养恐龙
+		when 6
+			ret = player.guide_cache['feed_dino']
+			ret.nil? ? false : ret
 		else
 			false
 		end

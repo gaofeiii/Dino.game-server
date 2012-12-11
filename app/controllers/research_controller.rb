@@ -13,6 +13,10 @@ class ResearchController < ApplicationController
 		
 		tech = @player.technologies.find(:type => params[:tech_type].to_i).first
 
+		if tech.nil?
+			tech = Technology.create :type => params[:tech_type].to_i, :level => 0, :player_id => @player.id
+		end
+
 		unless tech.research_finished?
 			render :json => {
 				:message => Error.failed_message,
@@ -21,10 +25,7 @@ class ResearchController < ApplicationController
 			}
 			return
 		end
-
-		if tech.nil?
-			tech = Technology.create :type => params[:tech_type].to_i, :level => 0, :player_id => @player.id
-		end
+		
 		tech.research!
 		data = {:message => Error.success_message, :player => @player.to_hash(:techs)}
 		render :json => data
