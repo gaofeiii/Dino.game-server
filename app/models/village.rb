@@ -81,7 +81,7 @@ class Village < Ohm::Model
 			when :buildings
 				hash[:buildings] = buildings.to_a.map(&:update_status!).map(&:to_hash)
 			when :strategy
-				hash[:strategy] = Strategy[strategy_id].try(:to_hash)
+				hash[:strategy] = strategy.try(:to_hash)
 			end
 		end
 
@@ -128,6 +128,10 @@ class Village < Ohm::Model
 	# TODO: 刷新资源
 	def update_resource
 		
+	end
+
+	def strategy
+		Strategy[strategy_id]
 	end
 
 	protected

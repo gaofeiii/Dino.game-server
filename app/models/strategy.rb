@@ -5,7 +5,7 @@ class Strategy < Ohm::Model
 	include Ohm::Locking
 	include OhmExtension
 
-	attribute :village_id
+	attribute :village_id, 		Type::Integer
 	attribute :gold_mine_id
 	attribute :dinosaurs
 	reference :player, 	Player
@@ -19,5 +19,6 @@ class Strategy < Ohm::Model
 		hash[:village_id] = village_id if village_id
 		hash[:gold_mine_id] = gold_mine_id if gold_mine_id
 		hash[:dinosaurs] = JSON.parse(dinosaurs)
+		hash
 	end
 end

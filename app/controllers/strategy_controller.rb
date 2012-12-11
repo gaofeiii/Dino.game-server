@@ -1,16 +1,29 @@
 class StrategyController < ApplicationController
 
+	before_filter :validate_village, :only => [:set_defense]
+
 	def set_defense
 
-		sta = if params[:village_id]
-			Strategy.create :village_id => params[:village_id],
-											:player_id => params[:player_id],
-											:dinosaurs => params[:dinosaurs].to_json
-		elsif params[:gold_mine_id]
-			Strategy.create :gold_mine_id => params[:gold_mine_id],
-											:player_id => params[:player_id],
-											:dinosaurs => params[:dinosaurs].to_json
+		sta = @village.strategy
+
+		if sta.nil?
+			sta = if params[:village_id]
+				Strategy.create :village_id => params[:village_id],
+												:player_id => @village.player_id,
+												:dinosaurs => params[:dinosaurs].to_json
+			elsif params[:gold_mine_id]
+				Strategy.create :gold_mine_id => params[:gold_mine_id],
+												:player_id => @village.player_id,
+												:dinosaurs => params[:dinosaurs].to_json
+			else
+				nil
+			end
+			@village.set(:strategy_id, sta.id) if sta && @village.strategy_id.blank?
 		else
+			sta.set :dinosaurs, params[:dinosaurs].to_json
+		end
+		
+		if sta.nil?
 			render :json => {
 				:message => Error.failed_message,
 				:error_type => Error.types[:normal],
