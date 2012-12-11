@@ -5,7 +5,7 @@ class Troops < Ohm::Model
 	include Ohm::Locking
 	include OhmExtension
 
-	collection :dinosaurs, Dinosaur
+	attribute :dinosaurs, 	Type::Array
 
 	reference :player, Player
 

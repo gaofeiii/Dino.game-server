@@ -16,7 +16,6 @@ class Dinosaur < Ohm::Model
 	attribute :type, 					Type::Integer
 	attribute :status, 				Type::Integer
 	attribute :emotion, 			Type::Integer
-	# attribute :hungry_time,		Type::Integer
 	attribute :feed_point, 		Type::Integer
 	attribute :updated_feed_time, Type::Integer
 
@@ -46,7 +45,6 @@ class Dinosaur < Ohm::Model
 
 	reference :player, 		Player
 	reference :village, 	Village
-	reference :troops, 		Troops
 
 	index :level
 	index :status

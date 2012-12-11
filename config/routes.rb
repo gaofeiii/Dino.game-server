@@ -124,6 +124,7 @@ DinosaurGame::Application.routes.draw do
   # 防守策略
   scope :path => 'strategy', :as => 'strategy' do
     post 'set_defense' => 'strategy#set_defense'
+    post 'attack' => 'strategy#attack'
   end
 
   root :to => 'players#deny_access'

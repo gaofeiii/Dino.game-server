@@ -14,7 +14,7 @@ class StrategyController < ApplicationController
 			render :json => {
 				:message => Error.failed_message,
 				:error_type => Error.types[:normal],
-				:error => Error.format("wrong type of host")
+				:error => Error.format_message("wrong type of host")
 			}
 			return
 		end
@@ -25,5 +25,29 @@ class StrategyController < ApplicationController
 				:strategy => sta.to_hash
 			}
 		}
+	end
+
+	def attack
+		player = Player[player_id]
+		target = if params[:village_id]
+			Village[params[:village_id]]
+		elsif params[:gold_mine_id]
+			GoldMine[params[:gold_mine_id]]
+		else
+			nil
+		end
+
+		if target.nil?
+			render :json => {
+				:message => Error.failed_message,
+				:error_type => Error.types[:normal],
+				:error => Error.format_message("Invalid target")
+			}
+			return
+		end
+
+		troops = Troops.create  :dinosaurs => params[:dinosaurs].to_json,
+														:player_id => player.id
+
 	end
 end
