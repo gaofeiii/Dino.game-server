@@ -64,7 +64,7 @@ class PlayersController < ApplicationController
 				:id => mine.id,
 				:x => mine.x,
 				:y => mine.y,
-				:level => mine.level
+				:level => mine.level,
 				:type => mine.type
 			}
 		end.compact
