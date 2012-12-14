@@ -51,21 +51,23 @@ class StrategyController < ApplicationController
 		end
 
 		if target.nil?
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
-				:error => Error.format_message("Invalid target")
-			}
-			return
+			render_error(Error.types[:normal], "Invalid target")
+			# render :json => {
+			# 	:message => Error.failed_message,
+			# 	:error_type => Error.types[:normal],
+			# 	:error => Error.format_message("Invalid target")
+			# }
+			# return
 		end
 
 		if target.player_id.to_i == player.id
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
-				:error => Error.format_message("The gold mine is yours")
-			}
-			return
+			# render :json => {
+			# 	:message => Error.failed_message,
+			# 	:error_type => Error.types[:normal],
+			# 	:error => Error.format_message("The gold mine is yours")
+			# }
+			# return
+			render_error(Error.types[:normal], "The gold mine is yours") and return
 		end
 
 		# army = params[:dinosaurs].to_a.map do |dino_id|
@@ -82,6 +84,9 @@ class StrategyController < ApplicationController
 			:army => army
 		}
 
+		p "target", target
+		p "defender_army",target.defense_troops
+
 		defender = {
 			:owner_info => {
 				:type => target.class.name,
@@ -93,7 +98,7 @@ class StrategyController < ApplicationController
 
 		result = BattleModel.attack_calc(attacker, defender)
 
-		if result["winner"] = "attacker"
+		if result["winner"] == "attacker"
 			target.update :player_id => player.id
 		end
 

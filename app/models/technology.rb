@@ -13,16 +13,18 @@ class Technology < Ohm::Model
 	attribute :status, 			Type::Integer
 	attribute :start_time, 	Type::Integer
 	attribute :finish_time, Type::Integer
+	attribute :building_id, Type::Integer
 
 	index :type
 	index :status
 
 	reference :player, :Player
 
-	def research!
+	def research!(bid)
 		self.status = STATUS[:researching]
 		self.start_time = ::Time.now.to_i
 		self.finish_time = ::Time.now.to_i + next_level[:cost][:time]
+		self.building_id = bid
 		self.save
 	end
 
@@ -33,8 +35,9 @@ class Technology < Ohm::Model
 			:status => status
 		}
 		if status == STATUS[:researching]
-			hash[:start_time] = start_time
-			hash[:finish_time] = finish_time
+			hash[:total_time] = self.info[:cost][:time]
+			hash[:time_pass] = ::Time.now.to_i - start_time
+			hash[:building_id] = building_id
 		end
 		hash
 	end
@@ -57,6 +60,17 @@ class Technology < Ohm::Model
 			end
 		end
 		self
+	end
+
+	def speed_up_cost
+		{:sun => level}
+	end
+
+	def speed_up!
+		if status == STATUS[:researching]
+			self.finish_time = ::Time.now.to_i
+			update_status!
+		end
 	end
 
 	protected

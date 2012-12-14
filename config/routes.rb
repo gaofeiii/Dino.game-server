@@ -27,6 +27,8 @@ DinosaurGame::Application.routes.draw do
   # 科技研究相关
   scope :path => 'techs', :as => 'techs' do
     post 'research' => 'research#research'
+    post 'speed_up' => 'research#speed_up'
+    post 'complete' => 'research#complete'
   end
   
   # 即时信息的刷新

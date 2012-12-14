@@ -42,6 +42,9 @@ class GoldMine < Ohm::Model
 			end
 			
 			monsters.to_a
+		elsif owner.is_a?(Player)
+			# TODO:
+			[]
 		end
 	end
 

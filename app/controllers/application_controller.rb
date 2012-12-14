@@ -22,6 +22,15 @@ class ApplicationController < ActionController::Base
     # logger.debug response.body 
   end
 
+  # Render error message.
+  def render_error(error_type = nil, error_message = nil)
+    render :json => {
+      :message => Error.failed_message,
+      :error_type => error_type.to_i,
+      :error => Error.format_message(error_message)
+    }
+  end
+
   # === Validation methods ===
 
   def validate_player

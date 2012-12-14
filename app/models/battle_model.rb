@@ -19,63 +19,16 @@ class BattleModel
 		# Note: Bofore calling this method, the params should extend :extend_batthe_army method.
 		# 
 		# Parameters:
-		# => attacker: must be an array, including one or more figters. Each fighter has included XXXFighterMethod.
-		# => defender: the same as attacker
-		# 
-		def attack!(attacker = [], defender = [])
-			# 保存战斗结果的hash
-			# Result data structure: one round of a pair of fighters, no matter friend or enemy
-			# - source(hash)
-			# - dest(hash)
-			# - skill
-			# - skill_effect
-			# - damage
-			# - healed
-			# 
-			# Result sample:
-			# result = {
-			# 	1 => [
-			# 		{
-			# 			:
-			# 		}
-			# 	]
-			# }
-
-
-			# result[0] = {
-				
-			# }
-
-			1.upto(TOTAL_ROUNDS) do |round|
-				# Reorder attacker and defender by fighter's speed, the dead fighter(hp <= 0) will be placed in the end of army.
-				attacker.ordered_by!(:speed)
-				defender.ordered_by!(:speed)
-
-				## By default, the attacker side is the first to act.
-				# Attacker action!
-				puts "[Round #{round}]\n"
-				puts "--- Attacker Action: ---"
-				attacker.attack_army(defender)
-
-				# Defender action!
-				puts "--- Defender Action: ---"
-				defender.attack_army(attacker)
-
-				puts "[Round #{round} end]\n\n"
-
-				if attacker.all_curr_hp <= 0
-					puts "\n Defender wins!"
-					return "Defender wins"
-				end
-
-				if defender.all_curr_hp <= 0
-					puts "\n Attacker wins!"
-					return "Attacker wins"
-				end
-			end
-			puts "\n Draw!"
-		end # End of method: attack
-
+		# => attacker structure:
+		# {
+		# 	:owner_info => {
+		# 		:type => integer,
+		# 		:id => integer or string
+		# 	},
+		# 	:buff_info => {},
+		# 	:army => fihgters(dinosaurs) array
+		# }
+		# => defender: The same as attacker
 		def attack_calc(attacker = {}, defender = {})
 			[attacker, defender].each do |er|
 				er.extend(BattlePlayerModule)
@@ -119,10 +72,10 @@ class BattleModel
 
 					if dest.nil?
 						if attacker[:army].all_curr_hp.zero?
-							result[:winner] = 'attacker'
+							result[:winner] = 'defender'
 							puts "$$ Defender win!!! $$"
 						elsif defender[:army].all_curr_hp.zero?
-							result[:winner] = 'defender'
+							result[:winner] = 'attacker'
 							puts "$$ Attacker win!!! $$"
 						end
 
@@ -304,10 +257,8 @@ end
 module BattleArmyModule
 	attr_accessor :team_buffs, :team
 
-	# Sort army self by given attribute, in ASC order. The element who's hp <= 0 will be placed in the end.
+	# Sort army self by given attribute, in ASC order.
 	def ordered_by!(att)
-		# self.sort! { |element| element.is_dead? ? 0 : element.send(att) }
-		# self.reverse!
 		self.sort_by! { |element| element.send(att).to_f }.reverse!
 	end
 
@@ -336,78 +287,10 @@ module BattleArmyModule
 		end
 	end
 
-	def attack_army(army)
-		self.each do |fighter|
-			if fighter.is_dead?
-				next
-			end
+	def write_hp!
 
-			dest = army.find_an_alive
-			if dest.nil?
-				return
-			end
-
-			# puts "find_an_alive:#{dest.curr_hp}"
-
-			hp_before = dest.curr_hp
-
-			## 伤害计算模型公式
-
-			# 1 - 判断技能触发
-			trig_skills = fighter.skills.select { |skill| skill.taken_effect_count == 0 && skill.trigger? }
-			skill_effects = {}
-			trig_skills.map do |skill|
-				if skill_effects[skill.effect_key].nil?
-					skill_effects[skill.effect_key] = skill.effect_value
-				else
-					skill_effects[skill.effect_key] += skill.effect_value
-				end
-			end
-
-			# 2 - 计算真实伤害
-			speed_ratio = (fighter.curr_speed / (fighter.curr_speed + dest.curr_speed))
-			factor_k = if speed_ratio < 0.5
-				rand(1.01..1.2)
-			elsif speed_ratio == 0.5
-				1.0
-			else
-				rand(0.8..0.99)
-			end
-
-			# puts "--- factor_k: #{factor_k}"
-
-			damage = (fighter.curr_attack * 5 * (1 / (1 + dest.curr_defense / 10)) * factor_k).to_i
-			# p "===== The origin damage: #{damage} ====="
-
-			if skill_effects[:damage_inc].to_f > 0
-				old_damage = damage
-				damage *= skill_effects[:damage_inc].to_f
-				puts "[[[$$$ triggered skill: damage X2 (#{old_damage}->#{damage})]]]"
-			end
-			# skill_effects.each do |s_key, s_val|
-			# 	case s_key
-			# 	when :damage_inc
-			# 		old_damage = damage
-			# 		damage *= s_val
-			# 		puts "[[[$$$ triggered skill: damage X2 (#{old_damage}->#{damage})]]]"
-			# 	end
-			# end
-
-			if damage < 0
-				next
-			end
-
-			if damage > dest.curr_hp
-				damage = dest.curr_hp
-			end
-
-			dest.curr_hp -= damage
-			hp_later = dest.curr_hp
-			puts "$ - A kills B: #{damage.to_i} hp!"
-			puts "    B's hp: #{hp_before.to_i}->#{hp_later.to_i}"
-		end
-		
 	end
+
 end
 
 # Used for extending skill

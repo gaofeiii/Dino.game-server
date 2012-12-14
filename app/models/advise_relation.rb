@@ -14,6 +14,7 @@ class AdviseRelation < Ohm::Model
 	unique :advisor_id
 
 	index :employer_id
+	index :advisor_id
 	index :type
 
 	def advisor_level

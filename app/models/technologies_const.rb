@@ -601,7 +601,8 @@ module TechnologiesConst
 					:reward => reward
 				}
 			end
-		end
+			@@tech_types = @@tech_const.keys
+		end # End of reload!
 	end
 	
 	module InstanceMethods

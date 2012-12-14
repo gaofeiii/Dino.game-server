@@ -215,12 +215,15 @@ class Player < Ohm::Model
 	# 好友列表
 	def friend_list
 		friends.map do |friend|
+			village_coords = Village.gets(friend.village_id, :x, :y)
 			{
 				:id => friend.id.to_i,
 				:nickname => friend.nickname,
 				:level => friend.level,
 				:score => friend.score,
-				:rank => rand(1..1000)
+				:rank => rand(1..1000),
+				:x => village_coords[0].to_i,
+				:y => village_coords[1].to_i
 			}
 		end
 	end
@@ -314,9 +317,10 @@ class Player < Ohm::Model
 	def after_delete
 		vil = village
 		vil.delete if vil
-		%w(dinosaurs technologies specialties items league_applys advise_relations buffs gods troops).each do |coll|
+		%w(dinosaurs technologies specialties items league_applys buffs gods troops).each do |coll|
 			self.send(coll).map(&:delete)
 		end
+		AdviseRelation.find(:employer_id => id).union(:advisor_id => id).each(&:delete)
 	end
 
 
