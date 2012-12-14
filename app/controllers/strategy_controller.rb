@@ -41,7 +41,7 @@ class StrategyController < ApplicationController
 	end
 
 	def attack
-		player = Player[player_id]
+		player = Player[params[:player_id]]
 		target = if params[:village_id]
 			Village[params[:village_id]]
 		elsif params[:gold_mine_id]
@@ -59,8 +59,35 @@ class StrategyController < ApplicationController
 			return
 		end
 
-		troops = Troops.create  :dinosaurs => params[:dinosaurs].to_json,
-														:player_id => player.id
+		# army = params[:dinosaurs].to_a.map do |dino_id|
+		# 	Dinosaur[dino_id]
+		# end.compact
+		army = player.dinosaurs.to_a
+
+		attacker = {
+			:owner_info => {
+				:type => 'Player',
+				:id => params[:player_id]
+			},
+			:buff_info => {},
+			:army => army
+		}
+
+		defender = {
+			:owner_info => {
+				:type => target.class.name,
+				:id => target.id
+			},
+			:buff_info => {},
+			:army => target.defense_troops
+		}
+
+		result = BattleModel.attack_calc(attacker, defender)
+		render :json => {
+			:message => Error.success_message,
+			:result => result
+		}
+		
 
 	end
 end

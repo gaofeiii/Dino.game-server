@@ -68,7 +68,7 @@ DinosaurGame::Application.routes.draw do
   # 地图
   scope :path => 'map', :as => 'map' do
     post 'country_map'  => 'world_map#country_map'
-    scope :path         => 'country_map', :as => 'country_map' do
+    scope :path => 'country_map', :as => 'country_map' do
       post 'attack' => 'world_map#attack'
     end
   end
@@ -78,7 +78,7 @@ DinosaurGame::Application.routes.draw do
     post 'add_friend'       => 'friends#add_friend'
     post 'remove_friend'    => 'friends#remove_friend'
     post 'friend_list'      => 'friends#friend_list'
-    post 'search_friend'    => 'search_friend'
+    post 'search_friend'    => 'friends#search_friend'
     post 'random_friends'   => 'friends#random_friends'
   end
 

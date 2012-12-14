@@ -31,7 +31,7 @@ module DinosaursConst
 
 
 			# ===Reading properties===
-			book.default_sheet = 'dinosaurs'
+			book.default_sheet = 'dinosaurs_avai'
 
 			2.upto(book.last_row).each do |i|
 				type = book.cell(i, 'A').to_i

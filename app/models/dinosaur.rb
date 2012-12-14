@@ -83,14 +83,14 @@ class Dinosaur < Ohm::Model
 			:attack => total_attack.to_i,
 			:defense => total_defense.to_i,
 			:agility => total_agility.to_i,
-			:hp => total_hp,
+			:hp => current_hp.to_i,
+			:total_hp => total_hp.to_i,
+			:total_feed_point => property[:hunger_time],
 			:quality => quality
 		}
 
 		if event_type != 0
 			hash[:event_type]  = event_type
-			# hash[:start_time]  = start_time
-			# hash[:finish_time] = finish_time
 			hash[:total_time] = finish_time - start_time
 			hash[:time_pass] = Time.now.to_i - start_time
 			hash[:building_id] = building_id.to_i if building_id
@@ -180,6 +180,9 @@ class Dinosaur < Ohm::Model
 			self.experience -= next_level_exp
 			self.level += 1
 			upgrade_atts
+			if self.level.in?([1, 2])
+				self.total_hp = self.basic_hp
+			end
 		end
 	end
 
@@ -214,6 +217,7 @@ class Dinosaur < Ohm::Model
 		# end
 		# self.feed_point -= Time.now.to_i - updated_feed_time
 		self.name = info[:name] if name.blank?
+		self.current_hp = self.total_hp
 	end
 
 	def before_create

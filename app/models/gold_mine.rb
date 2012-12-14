@@ -17,20 +17,24 @@ class GoldMine < Ohm::Model
 
 	reference :player, 	Player
 
+	index :x
+	index :y
+	index :level
+
 	def defense_troops
 		owner = self.player
 		if owner.nil?
 
 			if monsters.blank?
 				# 创建两只属于此金矿的monster
-				2.times do |i|
+				3.times do |i|
 					case level
 					when 1
-						m_type = Random.rand(1..5)
+						m_type = Random.rand(1..2)
 					when 2
-						m_type = Random.rand(6..10)
+						m_type = Random.rand(2..3)
 					when 3
-						m_type = Random.rand(11.15)
+						m_type = Random.rand(3..5)
 					end
 
 					Monster.create_by(:type => m_type, :status => Monster::STATUS[:adult], :gold_mine_id => id)

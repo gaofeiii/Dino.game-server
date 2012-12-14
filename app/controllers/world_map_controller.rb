@@ -11,7 +11,7 @@ class WorldMapController < ApplicationController
 		x_max = x + 10 >= Country::MAP_MAX_X - 1 ? Country::MAP_MAX_X - 1 : x + 10
 		y_max = y + 10 >= Country::MAP_MAX_Y - 1 ? Country::MAP_MAX_Y - 1 : y + 10
 
-		puts "=== range: -from(#{x_min},#{y_min}), -to(#{x_max}, #{y_max})"
+		# puts "=== range: -from(#{x_min},#{y_min}), -to(#{x_max}, #{y_max})"
 
 
 		towns_info = []
@@ -30,11 +30,11 @@ class WorldMapController < ApplicationController
 
 		ids.each do |i|
 			if country_map[i].to_i > 0
-				puts "--- index: #{i}"
+				# puts "--- index: #{i}"
 				vil = Village.with(:index, i)
 				vx = i / Country::COORD_TRANS_FACTOR
 				vy = i % Country::COORD_TRANS_FACTOR
-				puts "--- coords: (#{vx}, #{vy})"
+				# puts "--- coords: (#{vx}, #{vy})"
 				tp, vid, nm, lv = if vil
 					[1, vil.id.to_i, vil.name, vil.level]
 				else
@@ -53,27 +53,39 @@ class WorldMapController < ApplicationController
 			end
 
 			if gold_mine_map[i].to_i > 0
+				x = i / Country::COORD_TRANS_FACTOR
+				y = i % Country::COORD_TRANS_FACTOR
+
+				g_mine = GoldMine.find(:x => x, :y => y).first
+				break if g_mine.nil?
+
 				gold_mines_info << {
 					:x => i / Country::COORD_TRANS_FACTOR,
 					:y => i % Country::COORD_TRANS_FACTOR,
 					:info => {
 						:type => 3,
-						:id => rand(10001..20000),
+						:id => g_mine.id,
 						:name => "Gold Mine",
-						:level => rand(1..2)
+						:level => g_mine.level
 					}
 				}
 			end
 
 			if country.hl_gold_mine_info[i].to_i > 0
+				x = i / Country::COORD_TRANS_FACTOR
+				y = i % Country::COORD_TRANS_FACTOR
+
+				g_mine = GoldMine.find(:x => x, :y => y).first
+				break if g_mine.nil?
+
 				hl_gold_mine_info << {
-					:x => i / Country::COORD_TRANS_FACTOR,
-					:y => i % Country::COORD_TRANS_FACTOR,
+					:x => x,
+					:y => y,
 					:info => {
 						:type => 3,
-						:id => rand(20000..4000000),
+						:id => g_mine.id,
 						:name => "Gold Mine(Difficult)",
-						:level => 3
+						:level => g_mine.level
 					}
 				}
 			end

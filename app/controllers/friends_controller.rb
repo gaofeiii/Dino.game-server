@@ -3,6 +3,7 @@ class FriendsController < ApplicationController
 	before_filter :validate_friend, :only => [:add_friend, :remove_friend]
 
 	def search_friend
+		# TODO: Should not use 'keys' method.
 		ids = Ohm.redis.keys("Player:indices:nickname:*#{params[:name]}*").map do |key|
 			Ohm.redis.smembers(key)
 		end.flatten
@@ -24,14 +25,15 @@ class FriendsController < ApplicationController
 
 	def random_friends
 		result = Ohm.redis.srandmembers(Player.all.key, 5).map do |p_id|
-			info = Player.gets(p_id, :nickname, :level, :score)
+			info = Player.gets(p_id, :nickname, :level, :score, :avatar_id)
 			rank = rand(1..1000)
 			{
 				:id => p_id.to_i,
 				:nickname => info[0],
 				:level => info[1].to_i,
 				:score => info[2].to_i,
-				:rank => rank
+				:rank => rank,
+				:avatar_id => info[3].to_i
 			}
 		end
 

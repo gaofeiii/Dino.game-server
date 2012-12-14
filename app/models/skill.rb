@@ -12,4 +12,8 @@ class Skill < Ohm::Model
 
 	index :type
 	index :level
+
+	def trigger_chance
+		0
+	end
 end
