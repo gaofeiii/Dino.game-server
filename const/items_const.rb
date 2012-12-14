@@ -19,9 +19,9 @@ ITEMS = {
 	2 => SPECIALTIES,
 }
 
-book = Excelx.new("#{Rails.root}/const/dinosaurs_avai.xlsx")
+book = Excelx.new("#{Rails.root}/const/dinosaurs.xlsx")
 
-book.default_sheet = "dinosaurs"
+book.default_sheet = "dinosaurs_avai"
 
 2.upto(10).each do |i|
 	type = book.cell(i, 'A').to_i
