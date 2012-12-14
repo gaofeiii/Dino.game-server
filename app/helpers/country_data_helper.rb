@@ -178,7 +178,6 @@ module CountryDataHelper
 								break
 							end
 						end
-						puts "--- (#{x}, #{y})"
 
 						if available
 							puts "--- available!!!"

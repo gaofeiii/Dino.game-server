@@ -205,7 +205,7 @@ class Player < Ohm::Model
 	end
 
 	def foods
-		specialties.to_a
+		specialties
 	end
 
 	def food_list

@@ -59,6 +59,15 @@ class StrategyController < ApplicationController
 			return
 		end
 
+		if target.player_id.to_i == player.id
+			render :json => {
+				:message => Error.failed_message,
+				:error_type => Error.types[:normal],
+				:error => Error.format_message("The gold mine is yours")
+			}
+			return
+		end
+
 		# army = params[:dinosaurs].to_a.map do |dino_id|
 		# 	Dinosaur[dino_id]
 		# end.compact
@@ -83,6 +92,11 @@ class StrategyController < ApplicationController
 		}
 
 		result = BattleModel.attack_calc(attacker, defender)
+
+		if result["winner"] = "attacker"
+			target.update :player_id => player.id
+		end
+
 		render :json => {
 			:message => Error.success_message,
 			:result => result
