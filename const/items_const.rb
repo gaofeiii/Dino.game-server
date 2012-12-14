@@ -19,7 +19,7 @@ ITEMS = {
 	2 => SPECIALTIES,
 }
 
-book = Excelx.new("#{Rails.root}/const/dinosaurs.xlsx")
+book = Excelx.new("#{Rails.root}/const/dinosaurs_avai.xlsx")
 
 book.default_sheet = "dinosaurs"
 
