@@ -17,11 +17,17 @@ class Mail < Ohm::Model
 	attribute :title
 	attribute :content
 	attribute :league_id
+	attribute :is_read, 	Type::Boolean
 
 	index :mail_type
 	index :sender_name
 	index :receiver_name
 	index :league_id
+	index :is_read
+
+	def self.types
+		TYPE
+	end
 
 	def to_hash
 		{

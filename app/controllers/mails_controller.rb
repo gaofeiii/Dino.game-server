@@ -1,12 +1,12 @@
 class MailsController < ApplicationController
 
-	before_filter :validate_player, :only => :receive_mails
+	before_filter :validate_player, :only => [:receive_mails]
 
 	def send_mail
 
 		sender = Player.with(:nickname, params[:sender])
 		if sender.nil?
-			render :json => {:error => "Invalid sender name"} and return
+			render_error(Error.types[:normal], "Invalid sender name") and return
 		end
 
 		mail_type = params[:mail_type].to_i
@@ -16,11 +16,7 @@ class MailsController < ApplicationController
 		when Mail::TYPE[:private]
 			receiver = Player.with(:nickname, params[:receiver])
 			if receiver.nil?
-				render :json => {
-					:message => Error.success_message,
-					:error_type => Error.types[:normal],
-					:error => Error.format_message("Invalid receiver name")
-				} and return
+				render_error(Error.types[:normal], "Invalid receiver name") and return
 			end
 
 			Mail.create :mail_type => Mail::TYPE[:private],
@@ -35,7 +31,7 @@ class MailsController < ApplicationController
 			league = League[params[:league_id]]
 
 			if league.nil?
-				render :json => {:error => "Invalid league id"} and return
+				render_error(Error.types[:normal], "Invalid league id") and return
 			end
 
 			Mail.create :mail_type => Mail::TYPE[:league],
@@ -44,9 +40,9 @@ class MailsController < ApplicationController
 									:content => params[:content],
 									:league_id => params[:league_id]
 
-			render :json => {:message => Error.success_message}
+			render_success
 		else
-			render :json => {:error => "Invalid mail type"} and return
+			render_error(Error.types[:normal], "Invalid mail type") and return
 		end
 	end
 
@@ -54,11 +50,22 @@ class MailsController < ApplicationController
 		mail_type = params[:mail_type].to_i
 
 		if mail_type <= 0
-			render :json => {:error => "Invalid mail type"} and return
+			render_error(Error.types[:normal], "Invalid mail type") and return
 		end
 
 		mails = @player.mails(mail_type).to_a
-		render :json => {:mails => mails}
+		render_success(:mails => mails)
+	end
+
+	def check_new_mails
+		if not Player.exists?(params[:player_id])
+			render_error(Error.types[:normal], "Invalid player id") and return
+		end
+
+		player = Player.new :id => params[:player_id]
+		player.get(:nickname)
+
+		render_success(player.check_mails)
 	end
 end
 

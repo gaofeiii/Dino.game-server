@@ -35,11 +35,14 @@ class WorldMapController < ApplicationController
 				vx = i / Country::COORD_TRANS_FACTOR
 				vy = i % Country::COORD_TRANS_FACTOR
 				# puts "--- coords: (#{vx}, #{vy})"
-				tp, vid, nm, lv = if vil
-					[1, vil.id.to_i, vil.name, vil.level]
+				tp, vid, nm, lv, l_name = if vil
+					l_id = Ohm.redis.hget(Player.key[vil.player_id], :league_id)
+					[1, vil.id.to_i, vil.name, vil.level, League.get(l_id, :name).to_s]
 				else
-					[0, 0, "Blank Village", 0]
+					[0, 0, "Blank Village", 0, ""]
 				end
+
+
 				towns_info << {
 					:x => i / Country::COORD_TRANS_FACTOR, 
 					:y => i % Country::COORD_TRANS_FACTOR, 
@@ -47,7 +50,8 @@ class WorldMapController < ApplicationController
 						:type => tp, 
 						:id => vid, 
 						:name => nm, 
-						:level => lv
+						:level => lv,
+						:league_name => l_name
 					}
 				}
 			end

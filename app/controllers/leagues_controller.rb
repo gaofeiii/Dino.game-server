@@ -1,7 +1,7 @@
 class LeaguesController < ApplicationController
 
-	before_filter :validate_player, :only => [:create, :apply, :my_league_info, :member_list]
-	before_filter :validate_league, :only => [:apply, :apply_list]
+	before_filter :validate_player, :only => [:create, :apply, :apply_list, :my_league_info, :member_list]
+	before_filter :validate_league, :only => [:apply]
 
 	def create
 		if @player.spend!(:sun => 10)
@@ -77,7 +77,7 @@ class LeaguesController < ApplicationController
 			render :json => {
 				:player => {
 					:league => {
-						:apply_list => @league.apply_list
+						:apply_list => league.apply_list
 					}
 				}
 			}

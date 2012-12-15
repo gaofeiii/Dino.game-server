@@ -31,51 +31,51 @@ class ApplicationController < ActionController::Base
     }
   end
 
+  def render_success(data = {})
+    render :json => {:message => Error.success_message}.merge!(data)
+  end
+
   # === Validation methods ===
 
   def validate_player
   	@player = Player[params[:player_id]]
     if @player.nil?
-      render :json => {
-        :message => Error.failed_message,
-        :error_type => Error.types[:normal],
-        :error => "PLAYER_NOT_FOUND"
-      }
+      render_error(Error.types[:normal], "Invalid player id") and return
     end
   end
 
   def validate_village
     @village = Village[params[:village_id]]
     if @village.nil?
-      render :json => {:error => "VILLAGE_NOT_FOUND"} and return
+      render_error(Error.types[:normal], "Invalid village id") and return
     end
   end
 
   def validate_item
     @item = Item[params[:item_id]]
     if @item.nil?
-      render :json => {:error => "ITEM_NOT_FOUND"} and return
+      render_error(Error.types[:normal], "Invalid item id") and return
     end
   end
 
   def validate_dinosaur
     @dinosaur = Dinosaur[params[:dinosaur_id]]
     if @dinosaur.nil?
-      render :json => {:error => "Invalid_dinosaur_id"} and return
+      render_error(Error.types[:normal], "Invalid dinosaur id") and return
     end
   end
 
   def validate_league
     @league = League[params[:league_id]]
     if @league.nil?
-      render :json => {:error => "LEAGUE_NOT_FOUND"} and return
+      render_error(Error.types[:normal], "Invalid league id") and return
     end
   end
 
   def validate_building
     @building = Building[params[:building_id]]
     if @building.nil?
-      render :json => {:error => Error.format_message("Building not exist")} and return
+      rrender_error(Error.types[:normal], "Invalid building id") and return
     end
   end
 

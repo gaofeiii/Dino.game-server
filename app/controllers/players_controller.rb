@@ -59,14 +59,15 @@ class PlayersController < ApplicationController
 			next unless GoldMine.exists?(g_id)
 
 			mine = GoldMine.new :id => g_id
-			mine.gets(:x, :y, :type, :level)
-			{
-				:id => mine.id,
-				:x => mine.x,
-				:y => mine.y,
-				:level => mine.level,
-				:type => mine.type
-			}
+			mine.gets(:x, :y, :type, :level, :player_id)
+			# {
+			# 	:id => mine.id,
+			# 	:x => mine.x,
+			# 	:y => mine.y,
+			# 	:level => mine.level,
+			# 	:type => mine.type
+			# }
+			mine.to_hash
 		end.compact
 
 		render :json => {

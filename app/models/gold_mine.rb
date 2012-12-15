@@ -13,6 +13,9 @@ class GoldMine < Ohm::Model
 
 	attribute :strategy_id
 
+	attribute :start_time, 	Type::Integer
+	attribute :finish_time, Type::Integer
+
 	collection :monsters, 	Monster
 
 	reference :player, 	Player
@@ -48,14 +51,49 @@ class GoldMine < Ohm::Model
 		end
 	end
 
+	def owner_name
+		if player_id
+			db.hget(Player.key[player_id], :nickname)
+		else
+			"Monster"
+		end
+	end
+
 	def to_hash
 		hash = {
 			:x => x,
 			:y => y,
 			:type => type,
-			:level => level
+			:level => level,
+			:gold_output => GoldMine.gold_output(level),
+			:owner => owner_name
 		}
-		hash[:strategy] = Strategy[strategy_id].try(:to_hash)
+		stra = Strategy[strategy_id]
+		hash[:strategy] = stra.to_hash if stra
+
+		left_time = if player_id
+			t = finish_time - Time.now.to_i
+			t = t < 0 ? -1 : t
+		else
+			-1
+		end
+
+		hash[:left_time] = left_time
+
+		return hash
+	end
+
+	def self.gold_output(lvl = 0)
+		case lvl
+		when 1
+			100
+		when 2
+			400
+		when 3
+			800
+		else
+			0
+		end
 	end
 
 	protected

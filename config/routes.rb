@@ -96,6 +96,7 @@ DinosaurGame::Application.routes.draw do
   scope :path => 'mails', :as => 'mails' do
     post 'send_mail'    => 'mails#send_mail'
     post 'receive_mail' => 'mails#receive_mails'
+    post 'check_new_mails' => 'mails#check_new_mails'
   end
 
   # 神灵

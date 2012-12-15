@@ -65,7 +65,13 @@ class StrategyController < ApplicationController
 		# army = params[:dinosaurs].to_a.map do |dino_id|
 		# 	Dinosaur[dino_id]
 		# end.compact
-		army = @player.dinosaurs.to_a
+		army = if params[:dinosaurs].blank?
+			@player.dinosaurs.to_a
+		else
+			params[:dinosaurs].to_a.map do |dino_id|
+				Dinosaur[dino_id]
+			end.compact
+		end
 
 		attacker = {
 			:owner_info => {
@@ -95,7 +101,6 @@ class StrategyController < ApplicationController
 			:message => Error.success_message,
 			:result => result
 		}
-		
 
 	end
 end

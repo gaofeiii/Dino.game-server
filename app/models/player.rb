@@ -25,6 +25,7 @@ class Player < Ohm::Model
 	attribute :is_advisor,		Type::Boolean
 	attribute :is_hired,			Type::Boolean
 	attribute :advisor_type,	Type::Integer
+	attribute :battle_power,	Type::Integer
 	
 	attribute :village_id, 		Type::Integer
 	attribute :session_id, 		Type::Integer
@@ -135,10 +136,11 @@ class Player < Ohm::Model
 			:account_id => account_id,
 			:score => score,
 			:country_id => country_id.to_i,
-			:avatar_id => avatar_id
+			:avatar_id => avatar_id,
+			:player_power => battle_power
 		}
 		opts = if args.include?(:all)
-			args | [:specialties, :village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
+			args | [:new_mails, :specialties, :village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
 		else
 			args
 		end
@@ -168,6 +170,10 @@ class Player < Ohm::Model
 			when :queue_info
 				hash[:max_queue_size] = action_queue_size
 				hash[:queue_in_use] = curr_action_queue_size
+			when :buff_info
+				hash[:buffs] = buffs.to_a
+			when :new_mails
+				hash[:mail_status] = check_mails
 			end
 		end
 		return hash
@@ -248,6 +254,20 @@ class Player < Ohm::Model
 			[]
 		end
 		return result		
+	end
+
+	def check_mails
+		unread_sys_mails_count = Mail.find(:nickname => nickname, :type => Mmail.types[:system]).size
+		unread_prv_mails_count = Mail.find(:nickname => nickname, :type => Mmail.types[:private]).size
+		unread_lea_mails_count = Mail.find(:nickname => nickname, :type => Mmail.types[:league]).size
+		new_mails_count = unread_sys_mails_count + unread_prv_mails_count + unread_lea_mails_count
+
+		hash = {}
+		hash[:has_new_mails] = new_mails_count > 0 ? true : false
+		hash[:has_sys_mails] = unread_sys_mails_count > 0 ? true :false
+		hash[:has_private_mails] = unread_prv_mails_count > 0 ? true :false
+		hash[:has_league_mails] = unread_lea_mails_count > 0 ? true :false
+		return hash
 	end
 
 	def make_troops(*dinos)
