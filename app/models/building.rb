@@ -61,5 +61,14 @@ class Building < Ohm::Model
 	def before_create
 		self.start_building_time = Time.now.utc.to_i
 	end
+
+	def before_save
+		if level > 0
+			case type
+			when Building.hashes[:lumber_mill]
+				self.village.set :wood_inc, 100
+			end
+		end
+	end
 end
 

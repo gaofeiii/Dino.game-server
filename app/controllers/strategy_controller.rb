@@ -1,6 +1,7 @@
 class StrategyController < ApplicationController
 
 	before_filter :validate_village, :only => [:set_defense]
+	before_filter :validate_player, :only => [:attack]
 
 	def set_defense
 
@@ -41,7 +42,6 @@ class StrategyController < ApplicationController
 	end
 
 	def attack
-		player = Player[params[:player_id]]
 		target = if params[:village_id]
 			Village[params[:village_id]]
 		elsif params[:gold_mine_id]
@@ -51,29 +51,21 @@ class StrategyController < ApplicationController
 		end
 
 		if target.nil?
-			render_error(Error.types[:normal], "Invalid target")
-			# render :json => {
-			# 	:message => Error.failed_message,
-			# 	:error_type => Error.types[:normal],
-			# 	:error => Error.format_message("Invalid target")
-			# }
-			# return
+			render_error(Error.types[:normal], "Invalid target") and return
 		end
 
-		if target.player_id.to_i == player.id
-			# render :json => {
-			# 	:message => Error.failed_message,
-			# 	:error_type => Error.types[:normal],
-			# 	:error => Error.format_message("The gold mine is yours")
-			# }
-			# return
+		if target.is_a?(Village) && target.player_id.to_i = @player.id
+			render_error(Error.types[:normal], "Cannot attack your own village") and return
+		end
+
+		if target.is_a?(GoldMine) && target.player_id.to_i == @player.id
 			render_error(Error.types[:normal], "The gold mine is yours") and return
 		end
 
 		# army = params[:dinosaurs].to_a.map do |dino_id|
 		# 	Dinosaur[dino_id]
 		# end.compact
-		army = player.dinosaurs.to_a
+		army = @player.dinosaurs.to_a
 
 		attacker = {
 			:owner_info => {
@@ -83,9 +75,6 @@ class StrategyController < ApplicationController
 			:buff_info => {},
 			:army => army
 		}
-
-		p "target", target
-		p "defender_army",target.defense_troops
 
 		defender = {
 			:owner_info => {
@@ -98,8 +87,8 @@ class StrategyController < ApplicationController
 
 		result = BattleModel.attack_calc(attacker, defender)
 
-		if result["winner"] == "attacker"
-			target.update :player_id => player.id
+		if result[:winner] == "attacker"
+			target.update :player_id => @player.id
 		end
 
 		render :json => {

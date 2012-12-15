@@ -3,6 +3,10 @@ class ResearchController < ApplicationController
 	before_filter :validate_player
 
 	def research
+		if @player.curr_research_queue_size >= @player.total_research_queue_size
+			render_error(Error.types[:normal], "research queue is full") and return
+		end
+
 		tech = @player.technologies.find(:type => params[:tech_type].to_i).first
 
 		if tech.nil?

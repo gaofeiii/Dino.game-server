@@ -138,7 +138,7 @@ class Player < Ohm::Model
 			:avatar_id => avatar_id
 		}
 		opts = if args.include?(:all)
-			args | [:village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
+			args | [:specialties, :village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
 		else
 			args
 		end
@@ -265,7 +265,7 @@ class Player < Ohm::Model
 	def curr_action_queue_size
 		vil = village
 		bd_queue_size = vil.buildings.find(:status => Building::STATUS[:new]).size + vil.buildings.find(:status => Building::STATUS[:half]).size
-		tech_queue_size = technologies.find(:status => Technology::STATUS[:researching]).size
+		tech_queue_size = 0#technologies.find(:status => Technology::STATUS[:researching]).size
 		bd_queue_size + tech_queue_size
 	end
 
@@ -273,6 +273,14 @@ class Player < Ohm::Model
 	def action_queue_size
 		#db.sinterstore("Building:indices:village_id:#{village_id}", "Building:indices:type:#{Building.hashes[:residential]}").to_i
 		village.buildings.find(:type => Building.hashes[:residential], :status => Building::STATUS[:finished]).size
+	end
+
+	def curr_research_queue_size
+		technologies.find(:status => Technology::STATUS[:researching]).size
+	end
+
+	def total_research_queue_size
+		village.buildings.find(:type => Building.hashes[:workshop]).size
 	end
 
 	def validate_iap(rcp)

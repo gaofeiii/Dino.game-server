@@ -80,6 +80,12 @@ module CountryDataHelper
 			get_nodes_matrix(center_x - 1, center_y - 1, GOLD_MINE_SZ[:length], GOLD_MINE_SZ[:width])
 		end
 
+		def get_random_node_in_a_matrix(start_x, start_y, delta_x, delta_y)
+			ran_x = rand(start_x..(start_x + delta_x))
+			ran_y = rand(start_y..(start_y + delta_y))
+			return [ran_x, ran_y]
+		end
+
 		# 初始化地图信息
 		def init!
 			## 地图基本信息
@@ -180,7 +186,6 @@ module CountryDataHelper
 						end
 
 						if available
-							puts "--- available!!!"
 							gm_available_nodes[idx] = 1
 							nodes_token.each{|n_idx| gm_blocked_nodes[n_idx] = 1}
 						end
@@ -193,6 +198,17 @@ module CountryDataHelper
 				self.set_hl_gold_mine_info(gm_available_nodes)
 			end
 		end # End of init method.
+
+		# 刷新地图野怪
+		def refresh_creeps!
+			15.step(COORD_TRANS_FACTOR - 11, 11) do |x|
+				15.step(COORD_TRANS_FACTOR - 11, 11) do |y|
+					idx = x * COORD_TRANS_FACTOR + y
+
+				end
+			end
+		end
+
 
 		# 清除地图城镇、金矿信息
 		def clear!
