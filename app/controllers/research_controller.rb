@@ -43,7 +43,7 @@ class ResearchController < ApplicationController
 
 		render :json => {
 			:message => Error.success_message,
-			:player => @player.to_hash(:techs)
+			:player => @player.to_hash(:techs, :village)
 		}
 
 	end
@@ -51,7 +51,7 @@ class ResearchController < ApplicationController
 	def complete
 		render :json => {
 			:message => Error.success_message,
-			:player => @player.to_hash(:techs)
+			:player => @player.to_hash(:techs, :village)
 		}
 	end
 

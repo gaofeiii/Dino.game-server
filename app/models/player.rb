@@ -140,7 +140,7 @@ class Player < Ohm::Model
 			:player_power => battle_power
 		}
 		opts = if args.include?(:all)
-			args | [:new_mails, :specialties, :village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
+			args | [:specialties, :village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
 		else
 			args
 		end
@@ -256,10 +256,15 @@ class Player < Ohm::Model
 		return result		
 	end
 
+	def has_new_mail
+		count = Mail.find(:receiver_name => nickname, :is_read => false).size
+		return count > 0
+	end
+
 	def check_mails
-		unread_sys_mails_count = Mail.find(:nickname => nickname, :type => Mmail.types[:system]).size
-		unread_prv_mails_count = Mail.find(:nickname => nickname, :type => Mmail.types[:private]).size
-		unread_lea_mails_count = Mail.find(:nickname => nickname, :type => Mmail.types[:league]).size
+		unread_sys_mails_count = Mail.find(:receiver_name => nickname, :mail_type => Mail.types[:system]).size
+		unread_prv_mails_count = Mail.find(:receiver_name => nickname, :mail_type => Mail.types[:private]).size
+		unread_lea_mails_count = Mail.find(:receiver_name => nickname, :mail_type => Mail.types[:league]).size
 		new_mails_count = unread_sys_mails_count + unread_prv_mails_count + unread_lea_mails_count
 
 		hash = {}
@@ -301,6 +306,10 @@ class Player < Ohm::Model
 
 	def total_research_queue_size
 		village.buildings.find(:type => Building.hashes[:workshop]).size
+	end
+
+	def update_resource!
+		self.village.refresh_resource!
 	end
 
 	def validate_iap(rcp)

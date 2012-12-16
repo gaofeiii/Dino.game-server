@@ -40,8 +40,12 @@ module SessionsHelper
 
 	def http_post(address, params = {})
 		uri = URI.parse create_url(address)
+		start_time = Time.now.to_f
 		res = Net::HTTP.post_form uri, params
+		finish_time = Time.now.to_f
+		time_cost = format "%.2f", (finish_time - start_time) * 1000
 		p "response: ", res.body
+		p "=== Access account server: #{time_cost} ms. ==="
 		data = JSON.parse(res.body).deep_symbolize_keys
 	end
 

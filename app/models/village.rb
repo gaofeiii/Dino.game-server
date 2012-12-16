@@ -11,9 +11,11 @@ class Village < Ohm::Model
 	attribute :index, 							Type::Integer
 
 	attribute :wood,								Type::Integer
+	attribute :basic_wood_inc,			Type::Integer
 	attribute :wood_inc, 						Type::Integer
 	attribute :wood_max, 						Type::Integer
 	attribute :stone, 							Type::Integer
+	attribute :basic_stone_inc,			Type::Integer
 	attribute :stone_inc,						Type::Integer
 	attribute :stone_max,						Type::Integer
 
@@ -91,9 +93,11 @@ class Village < Ohm::Model
 	def resources
 		{
 			:wood => wood,
+			:basic_wood_inc => basic_wood_inc,
 			:wood_inc => wood_inc,
 			:wood_max => wood_max,
-			:stone => stone, 		
+			:stone => stone,
+			:basic_stone_inc => basic_stone_inc,
 			:stone_inc => stone_inc,	
 			:stone_max => stone_max,
 			:population => population, 		
@@ -132,6 +136,49 @@ class Village < Ohm::Model
 
 	def strategy
 		Strategy[strategy_id]
+	end
+
+	def technology_ids
+		db.smembers("Technology:indices:player_id:#{player_id}")
+	end
+
+	# Always return a Technology instance.
+	def find_tech_by_type(tech_type)
+		return nil if not tech_type.in?(Technology.types)
+
+		tech = self.player.technologies.find(:type => tech_type).first
+		if tech.nil?
+			tech = Technology.create :type => tech_type, :player_id => player_id, :level => 0
+		end
+		return tech
+	end
+
+	def refresh_resource_output
+		tech_lumbering = find_tech_by_type(Technology.hashes[:lumbering])
+		tech_mining = find_tech_by_type(Technology.hashes[:mining])
+		self.basic_wood_inc = tech_lumbering.property[:wood_inc]
+		self.basic_stone_inc = tech_mining.property[:stone_inc]
+
+		buffs_inc = buffs.sum do |buff|
+			buff.res_inc
+		end
+
+		self.wood_inc = self.basic_wood_inc * (1 + buffs_inc)
+		self.stone_inc = self.basic_stone_inc * (1 + buffs_inc)
+		self.update_resource_at = Time.now.to_i
+	end
+
+	def refresh_resource!
+		refresh_resource_output
+		if self.sets 	:basic_wood_inc => basic_wood_inc,
+									:wood_inc => wood_inc,
+									:basic_stone_inc => basic_stone_inc,
+									:stone_inc => stone_inc,
+									:update_resource_at => update_resource_at
+			return self
+		else
+			return false
+		end
 	end
 
 	protected

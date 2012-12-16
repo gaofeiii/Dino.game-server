@@ -97,6 +97,7 @@ DinosaurGame::Application.routes.draw do
     post 'send_mail'    => 'mails#send_mail'
     post 'receive_mail' => 'mails#receive_mails'
     post 'check_new_mails' => 'mails#check_new_mails'
+    post 'mark_as_read' => 'mark_as_read'
   end
 
   # 神灵

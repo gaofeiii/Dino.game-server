@@ -64,8 +64,15 @@ class MailsController < ApplicationController
 
 		player = Player.new :id => params[:player_id]
 		player.get(:nickname)
+		
+		render_success(:has_new_mail => player.has_new_mail)
+	end
 
-		render_success(player.check_mails)
+	def mark_as_read
+		params[:mail_ids].to_a.each do |m_id|
+			Ohm.redis.hset(Mail.key[m_id], :is_read, 1) if Mail.exists?(m_id)
+		end
+		render_success
 	end
 end
 

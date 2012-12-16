@@ -31,8 +31,17 @@ class Buff < Ohm::Model
 
 	attribute :buff_type, 		Type::Integer
 	attribute :buff_level, 		Type::Integer
+	attribute :buff_value, 		Type::Float
 	attribute :buff_source
 
 	reference :player, 		Player
 	reference :village, 	Village
+
+	def res_inc
+		if buff_type == TYPES[:research_inc]
+			buff_value
+		else
+			0
+		end
+	end
 end

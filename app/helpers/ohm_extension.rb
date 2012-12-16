@@ -73,6 +73,23 @@ module OhmExtension
 			end
 			self
 		end
+
+		def sets(args = {})
+			return false if args.blank?
+
+			if (args.keys & self.class.all_attrs).size < args.size
+				raise "Invalid attribute for #{self.class.name}"
+			end
+
+			if db.hmset(key, args.to_a.flatten) == "OK"
+				args.each do |att, val|
+					self.send("#{att}=", val)
+				end
+				return self
+			else
+				false
+			end
+		end
 		
 		def increase(key, count=1)
 			db.hincrby(self.key, key, count)

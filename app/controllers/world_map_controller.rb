@@ -35,11 +35,11 @@ class WorldMapController < ApplicationController
 				vx = i / Country::COORD_TRANS_FACTOR
 				vy = i % Country::COORD_TRANS_FACTOR
 				# puts "--- coords: (#{vx}, #{vy})"
-				tp, vid, nm, lv, l_name = if vil
-					l_id = Ohm.redis.hget(Player.key[vil.player_id], :league_id)
-					[1, vil.id.to_i, vil.name, vil.level, League.get(l_id, :name).to_s]
+				tp, vid, nm, lv, l_name, avatar_id, battle_power = if vil
+					l_id, ava_id, bp = Ohm.redis.hmget(Player.key[vil.player_id], :league_id, :avatar_id, :battle_power)
+					[1, vil.id.to_i, vil.name, vil.level, League.get(l_id, :name).to_s, ava_id, bp]
 				else
-					[0, 0, "Blank Village", 0, ""]
+					[0, 0, "Blank Village", 0, "", 0, 0]
 				end
 
 
@@ -51,7 +51,9 @@ class WorldMapController < ApplicationController
 						:id => vid, 
 						:name => nm, 
 						:level => lv,
-						:league_name => l_name
+						:league_name => l_name,
+						:avatar_id => avatar_id.to_i,
+						:battle_power => battle_power.to_i
 					}
 				}
 			end
@@ -70,7 +72,10 @@ class WorldMapController < ApplicationController
 						:type => 3,
 						:id => g_mine.id,
 						:name => "Gold Mine",
-						:level => g_mine.level
+						:level => g_mine.level,
+						:owner_name => g_mine.owner_name,
+						:output => g_mine.output,
+						:left_time => 0
 					}
 				}
 			end
@@ -89,7 +94,10 @@ class WorldMapController < ApplicationController
 						:type => 3,
 						:id => g_mine.id,
 						:name => "Gold Mine(Difficult)",
-						:level => g_mine.level
+						:level => g_mine.level,
+						:owner_name => g_mine.owner_name,
+						:output => g_mine.output,
+						:left_time => 0
 					}
 				}
 			end

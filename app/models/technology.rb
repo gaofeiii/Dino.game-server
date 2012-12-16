@@ -1,3 +1,23 @@
+# 1	住宅
+# 2	伐木
+# 3	采石
+# 4	狩猎
+# 5	采集
+# 6	储藏
+# 7	孵化
+# 8	驯养
+# 9	商业
+# 10	科研
+# 11	祭祀
+# 12	炼金
+# 13	勇气
+# 14	刚毅
+# 15	忠诚
+# 16	仁义
+# 17	寻宝
+# 18	残暴
+# 19	掠夺
+# 20	智慧
 class Technology < Ohm::Model
 	STATUS = {:idle => 0, :researching => 1}
 
@@ -49,6 +69,10 @@ class Technology < Ohm::Model
 		return true
 	end
 
+	def village
+		Village[db.hget(Player.key[player_id], :village_id)]
+	end
+
 	def update_status!
 		if status == STATUS[:researching]
 			if ::Time.now.to_i >= finish_time
@@ -57,6 +81,7 @@ class Technology < Ohm::Model
 				self.start_time = 0
 				self.finish_time = 0
 				self.save
+				self.village.refresh_resource!
 			end
 		end
 		self

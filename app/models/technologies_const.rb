@@ -1,12 +1,33 @@
 # encoding: utf-8
+# 1	住宅
+# 2	伐木
+# 3	采石
+# 4	狩猎
+# 5	采集
+# 6	储藏
+# 7	孵化
+# 8	驯养
+# 9	商业
+# 10	科研
+# 11	祭祀
+# 12	炼金
+# 13	勇气
+# 14	刚毅
+# 15	忠诚
+# 16	仁义
+# 17	寻宝
+# 18	残暴
+# 19	掠夺
+# 20	智慧
 module TechnologiesConst
 	module ClassMethods
-		@@tech_const = Hash.new
-		@@tech_types = Array.new
-		@@tech_names = Array.new
-		@@tech_cost  = Hash.new
+		@@tech_const 	= Hash.new
+		@@tech_types 	= Array.new
+		@@tech_names 	= Array.new
+		@@tech_cost  	= Hash.new
+		@@tech_hashes	= Hash.new
 
-		%w(const types names).each do |att|
+		%w(const types names hashes).each do |att|
 			define_method(att) do
 				if eval("@@tech_#{att}").blank?
 					reload!
@@ -47,8 +68,11 @@ module TechnologiesConst
 
 			2.upto(book.last_row).each do |i|
 				number = book.cell(i, 'A').to_i
+				key_name = book.cell(i, 'C').to_s
 				definition[book.cell(i, 'B')] = number
-				@@tech_const[number] = {}
+				@@tech_const[number] = {:name => key_name}
+				@@tech_names << key_name
+				@@tech_hashes[key_name.to_sym] = number
 			end
 
 			book.default_sheet = '住宅'

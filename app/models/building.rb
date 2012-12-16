@@ -56,6 +56,17 @@ class Building < Ohm::Model
 		}
 	end
 
+	def player_id
+		if @player_id.nil?
+			@player_id = db.hget(Village.key[village_id], :player_id).to_i
+		end
+		return @player_id
+	end
+
+	def technology_ids
+		db.smembers("Technology:indices:player_id:#{player_id}")
+	end
+
 	protected
 
 	def before_create
@@ -66,7 +77,7 @@ class Building < Ohm::Model
 		if level > 0
 			case type
 			when Building.hashes[:lumber_mill]
-				self.village.set :wood_inc, 100
+				self.village.set :wood_inc, 100 if technology_ids.empty?
 			end
 		end
 	end

@@ -42,6 +42,10 @@ class SessionsController < ApplicationController
 				@player = create_player(rcv_msg[:account_id])
 			else
 				@player.set :device_token, @device_token
+				s_time = Time.now.to_f
+				@player.update_resource!
+				f_time = Time.now.to_f
+				p "=== Update Resource Time: #{format("%.2f", (f_time - s_time) * 1000)}"
 			end
 			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all)})
 		else

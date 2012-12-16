@@ -96,6 +96,10 @@ class GoldMine < Ohm::Model
 		end
 	end
 
+	def output
+		self.class.gold_output(level)
+	end
+
 	protected
 
 	def before_save

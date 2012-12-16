@@ -36,7 +36,8 @@ class Mail < Ohm::Model
 			:receiver => receiver_name,
 			:title => title,
 			:content => content,
-			:time => created_at.to_i
+			:time => created_at.to_i,
+			:is_read => is_read
 		}
 	end
 
