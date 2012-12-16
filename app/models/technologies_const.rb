@@ -42,7 +42,7 @@ module TechnologiesConst
 				const.each do |t_id, val|
 					@@tech_cost[t_id] ||= {}
 					val.each do |lvl, inf|
-						@@tech_cost[t_id][lvl] = inf[:cost]
+						@@tech_cost[t_id][lvl] = inf[:cost] if lvl.is_a?(Integer)
 					end
 				end
 			end
