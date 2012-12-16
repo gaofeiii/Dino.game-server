@@ -62,16 +62,11 @@ class StrategyController < ApplicationController
 			render_error(Error.types[:normal], "The gold mine is yours") and return
 		end
 
-		# army = params[:dinosaurs].to_a.map do |dino_id|
-		# 	Dinosaur[dino_id]
-		# end.compact
-		army = if params[:dinosaurs].blank?
-			@player.dinosaurs.to_a
-		else
-			params[:dinosaurs].to_a.map do |dino_id|
-				Dinosaur[dino_id]
-			end.compact
-		end
+		army = params[:dinosaurs].to_a.map do |dino_id|
+			Dinosaur[dino_id]
+		end.compact
+
+		army = army.blank? ? @player.dinosaurs.to_a : army
 
 		attacker = {
 			:owner_info => {
