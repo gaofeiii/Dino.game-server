@@ -63,10 +63,15 @@ class StrategyController < ApplicationController
 		end
 
 		army = params[:dinosaurs].to_a.map do |dino_id|
-			Dinosaur[dino_id]
+			dino = Dinosaur[dino_id]
+			if dino && dino.status > 0
+				dino
+			else
+				nil
+			end
 		end.compact
 
-		army = army.blank? ? @player.dinosaurs.to_a : army
+		army = army.blank? ? @player.dinosaurs.to_a.select{|d| d.status > 0} : army
 
 		attacker = {
 			:owner_info => {
