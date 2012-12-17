@@ -51,6 +51,7 @@ class Building < Ohm::Model
 			:level => level,
 			:status => status,
 			:time => time,
+			:time_pass => Time.now.to_i - start_building_time,
 			:x => x,
 			:y => y
 		}

@@ -17,6 +17,7 @@ class WorldMapController < ApplicationController
 		towns_info = []
 		gold_mines_info = []
 		hl_gold_mine_info = []
+		creeps_info = []
 
 		ids = (x_min..x_max).map do |i|
 			(y_min..y_max).map do |j|
@@ -102,10 +103,28 @@ class WorldMapController < ApplicationController
 				}
 			end
 
+			if country.creeps_info[i].to_i > 0
+				x = i / Country::COORD_TRANS_FACTOR
+				y = i % Country::COORD_TRANS_FACTOR
+
+				creeps_info << {
+					:x => x,
+					:y => y,
+					:info =>{
+						:type => 2,
+						:id => rand(1..1000000),
+						:name => 'Creeps',
+						:level => rand(1..4),
+						:monster_type => rand(1..4),
+						:owner_name => 'Creeps'
+					}
+				}
+			end
+
 
 		end
 
-		render :json => {:country_map => towns_info + gold_mines_info + hl_gold_mine_info}
+		render :json => {:country_map => towns_info + gold_mines_info + hl_gold_mine_info + creeps_info}
 	end
 
 	def attack

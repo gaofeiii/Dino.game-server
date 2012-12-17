@@ -71,7 +71,7 @@ class StrategyController < ApplicationController
 			end
 		end.compact
 
-		army = army.blank? ? @player.dinosaurs.to_a.select{|d| d.status > 0} : army
+		army = army.blank? ? @player.dinosaurs.to_a.select{|d| d.status > 0}[0, 5] : army
 
 		attacker = {
 			:owner_info => {

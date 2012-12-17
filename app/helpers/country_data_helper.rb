@@ -14,7 +14,7 @@ module CountryDataHelper
 	
 	module InstanceMethods
 
-		[:basic_map_info, :town_nodes_info, :gold_mine_info, :hl_gold_mine_info].each do |name|
+		[:basic_map_info, :town_nodes_info, :gold_mine_info, :hl_gold_mine_info, :creeps_info].each do |name|
 		
 			define_method("#{name.to_s}_key") do
 				key[name]
@@ -192,6 +192,9 @@ module CountryDataHelper
 					end
 				end
 
+				# 刷新野怪
+				
+
 				self.set_basic_map_info(basic_map_info)
 				self.set_town_nodes_info(town_nodes_info)
 				self.set_gold_mine_info(gold_mine_info)
@@ -201,12 +204,20 @@ module CountryDataHelper
 
 		# 刷新地图野怪
 		def refresh_creeps!
+			creeps_info = {}
 			15.step(COORD_TRANS_FACTOR - 11, 11) do |x|
 				15.step(COORD_TRANS_FACTOR - 11, 11) do |y|
-					idx = x * COORD_TRANS_FACTOR + y
-
+					m_x, m_y = nil, nil 
+					until !m_x.nil? && !m_y.nil?
+						m_x, m_y = get_random_node_in_a_matrix(x, y, 9, 9)
+						m_idx = m_x * COORD_TRANS_FACTOR + m_y
+						if basic_map_info[m_idx] >= 0 && town_nodes_info[m_idx].nil? && gold_mine_info[m_idx].nil? && hl_gold_mine_info[m_idx].nil?
+							creeps_info[m_idx] = 1
+						end
+					end
 				end
 			end
+			set_creeps_info(creeps_info)
 		end
 
 

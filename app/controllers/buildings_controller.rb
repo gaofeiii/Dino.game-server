@@ -2,7 +2,7 @@ class BuildingsController < ApplicationController
 
 	before_filter :validate_village, :only => [:create]
 	before_filter :validate_player, :only => [:speed_up]
-	before_filter :validate_building, :only => [:move, :destroy]
+	before_filter :validate_building, :only => [:move, :complete, :destroy]
 
 	def create
 		@player = @village.player
@@ -75,6 +75,11 @@ class BuildingsController < ApplicationController
 
 		render :json => {:message => Error.success_message, :player => @player.to_hash(:village)}
 
+	end
+
+	def complete
+		@building.update_status!
+		render_success(:player => {:village => {:buildings => [@building.to_hash]}})
 	end
 
 	def move

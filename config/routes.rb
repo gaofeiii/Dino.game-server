@@ -22,6 +22,7 @@ DinosaurGame::Application.routes.draw do
     post 'speed_up' => 'buildings#speed_up'
     post 'move'     => 'buildings#move'
     post 'destroy'  => 'buildings#destroy'
+    post 'complete' => 'buildings#complete'
   end
   
   # 科技研究相关
@@ -97,7 +98,7 @@ DinosaurGame::Application.routes.draw do
     post 'send_mail'    => 'mails#send_mail'
     post 'receive_mail' => 'mails#receive_mails'
     post 'check_new_mails' => 'mails#check_new_mails'
-    post 'mark_as_read' => 'mark_as_read'
+    post 'mark_as_read' => 'mails#mark_as_read'
   end
 
   # 神灵

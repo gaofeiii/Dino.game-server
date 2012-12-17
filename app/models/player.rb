@@ -253,7 +253,7 @@ class Player < Ohm::Model
 		else
 			[]
 		end
-		return result		
+		return result
 	end
 
 	def has_new_mail

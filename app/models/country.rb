@@ -8,7 +8,10 @@ class Country < Ohm::Model
 	unique :index
 
 	def refresh_monsters
-		
+		refresh_creeps!
+		creeps_info.each do |idx, val|
+			
+		end
 	end
 
 	def create_gold_mines
