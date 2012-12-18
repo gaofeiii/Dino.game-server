@@ -8,6 +8,6 @@ class RealTimeInfoController < ApplicationController
 			}
 		}
 			
-		render_sucess(data)
+		render_success(data)
 	end
 end
