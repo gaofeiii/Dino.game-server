@@ -74,6 +74,13 @@ class Building < Ohm::Model
 		self.start_building_time = Time.now.utc.to_i
 	end
 
+	def after_save
+		case type
+		when Building.hashes[:warehouse]
+			self.village.update_warehouse!
+		end
+	end
+
 	def before_save
 		if level > 0
 			case type

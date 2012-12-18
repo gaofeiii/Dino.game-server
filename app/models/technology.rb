@@ -105,4 +105,11 @@ class Technology < Ohm::Model
 		self.start_time = 0
 		self.finish_time = 0
 	end
+
+	def after_save
+		case type
+		when Technology.hashes[:storing]
+			self.village.update_warehouse!
+		end
+	end
 end

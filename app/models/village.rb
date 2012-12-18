@@ -174,6 +174,15 @@ class Village < Ohm::Model
 		end
 		self.wood += (self.wood_inc * (1 + delta_t)).to_i
 		self.stone += (self.stone_inc * (1 + delta_t)).to_i
+		
+		if self.wood > self.wood_max
+			self.wood = wood_max
+		end
+
+		if self.stone > stone_max
+			self.stone = stone_max
+		end
+
 		self.update_resource_at = time
 		self
 	end
