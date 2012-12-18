@@ -1,7 +1,5 @@
 class RealTimeInfoController < ApplicationController
 
-	before_filter :validate_player, :only => [:info]
-
 	def info
 		data = {
 			:data => {
