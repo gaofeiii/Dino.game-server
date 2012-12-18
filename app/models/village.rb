@@ -203,6 +203,23 @@ class Village < Ohm::Model
 		end
 	end
 
+	def update_warehouse
+		wh_size = self.buildings.find(:type => Building.hashes[:warehouse]).size
+		wh_size = wh_size < 1 ? 1 : wh_size
+		tech = find_tech_by_type(Technology.hashes[:storing])
+		tech_size = tech.info[:property][:resource_max]
+		total_size = wh_size * tech_size
+		self.wood_max = total_size
+		self.stone_max = total_size
+	end
+
+	def update_warehouse!
+		update_warehouse
+		self.sets :wood_max 	=> wood_max,
+							:stone_max 	=> stone_max
+		self
+	end
+
 	protected
 
 	def before_save
