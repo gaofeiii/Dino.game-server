@@ -1,7 +1,7 @@
 class StrategyController < ApplicationController
 
 	before_filter :validate_village, :only => [:set_defense]
-	before_filter :validate_player, :only => [:attack]
+	before_filter :validate_player, :only => [:attack, :get_battle_report, :refresh_battle]
 
 	def set_defense
 
@@ -46,6 +46,8 @@ class StrategyController < ApplicationController
 			Village[params[:village_id]]
 		elsif params[:gold_mine_id]
 			GoldMine[params[:gold_mine_id]]
+		elsif params[:creeps_id]
+			Creeps[params[:creeps_id]]
 		else
 			nil
 		end
@@ -73,34 +75,66 @@ class StrategyController < ApplicationController
 
 		army = army.blank? ? @player.dinosaurs.to_a.select{|d| d.status > 0}[0, 5] : army
 
-		attacker = {
-			:owner_info => {
-				:type => 'Player',
-				:id => params[:player_id]
-			},
-			:buff_info => {},
-			:army => army
-		}
+		# attacker = {
+		# 	:owner_info => {
+		# 		:type => 'Player',
+		# 		:id => params[:player_id]
+		# 	},
+		# 	:buff_info => {},
+		# 	:army => army
+		# }
 
-		defender = {
-			:owner_info => {
-				:type => target.class.name,
-				:id => target.id
-			},
-			:buff_info => {},
-			:army => target.defense_troops
-		}
+		# defender = {
+		# 	:owner_info => {
+		# 		:type => target.class.name,
+		# 		:id => target.id
+		# 	},
+		# 	:buff_info => {},
+		# 	:army => target.defense_troops
+		# }
 
-		result = BattleModel.attack_calc(attacker, defender)
+		# result = BattleModel.attack_calc(attacker, defender)
+		# @player.save_battle_report(Time.now.to_i, result.to_json)
 
-		if result[:winner] == "attacker"
-			target.update :player_id => @player.id
+		# if result[:winner] == "attacker"
+		# 	if target.is_a?(GoldMine)
+		# 		target.update :player_id => @player.id
+		# 	elsif target.is_a?(Creeps)
+		# 		target.delete
+		# 	end
+		# end
+
+		target_type = case target.class.name
+			when "Village"
+				1
+			when "Creeps"
+				2
+			when "GoldMine"
+				3
+			else
+				0
 		end
+
+		Troops.create :player_id => @player.id, 
+									:dinosaurs => params[:dinosaurs].to_json,
+									:target_type => target_type,
+									:target_id => target.id,
+									:start_time => Time.now.to_i,
+									:arrive_time => Time.now.to_i + 30.seconds
 
 		render :json => {
 			:message => Error.success_message,
-			:result => result
+			:player => @player.to_hash(:troops)
 		}
+	end
 
+	def refresh_battle
+		@player.troops.each do |trps|
+			trps.refresh!
+		end
+	end
+
+	def get_battle_report
+		render_success(:report => @player.get_battle_report)
 	end
 end

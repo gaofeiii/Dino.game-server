@@ -227,9 +227,11 @@ module CountryDataHelper
 				t.del(self.basic_map_info_key)
 				t.del(self.town_nodes_info_key)
 				t.del(self.gold_mine_info_key)
+				t.del(self.creeps_info_key)
 				eval("$country_#{index}_basic_map_info = nil")
 				eval("$country_#{index}_town_nodes_info = nil")
 				eval("$country_#{index}_gold_mine_info = nil")
+				eval("$country_#{index}_creeps_info = nil")
 			end
 		end
 

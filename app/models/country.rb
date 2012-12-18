@@ -8,9 +8,22 @@ class Country < Ohm::Model
 	unique :index
 
 	def refresh_monsters
+		db.del(creeps_info_key)
+		eval("$country_#{index}_creeps_info = nil")
 		refresh_creeps!
+		create_monsters
+	end
+
+	def create_monsters
 		creeps_info.each do |idx, val|
-			
+			x = idx / COORD_TRANS_FACTOR
+			y = idx % COORD_TRANS_FACTOR
+
+			if Creeps.find(:x => x, :y => y).blank?
+				m_type = rand(1..4)
+				m_level = rand(1..4)
+				Creeps.create :x => x, :y => y, :type => m_type, :level => m_level
+			end
 		end
 	end
 

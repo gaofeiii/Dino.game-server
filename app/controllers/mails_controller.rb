@@ -1,6 +1,6 @@
 class MailsController < ApplicationController
 
-	before_filter :validate_player, :only => [:receive_mails]
+	before_filter :validate_player, :only => [:receive_mails, :check_new_mails]
 
 	def send_mail
 
@@ -47,25 +47,28 @@ class MailsController < ApplicationController
 	end
 
 	def receive_mails
-		mail_type = params[:mail_type].to_i
+		# mail_type = params[:mail_type].to_i
 
-		if mail_type <= 0
-			render_error(Error.types[:normal], "Invalid mail type") and return
-		end
+		# if mail_type <= 0
+		# 	render_error(Error.types[:normal], "Invalid mail type") and return
+		# end
 
-		mails = @player.mails(mail_type).to_a
-		render_success(:mails => mails)
+		# mails = @player.mails(mail_type).to_a
+		mails = @player.all_mails
+		render_success(:mails => mails, :has_new_mail => @player.has_new_mail)
 	end
 
 	def check_new_mails
-		if not Player.exists?(params[:player_id])
-			render_error(Error.types[:normal], "Invalid player id") and return
+		render_success(:has_new_mail => @player.has_new_mail, :mails => @player.all_mails(:last_id => params[:last_id]))
+	end
+
+	def read_mail
+		@mail = Mail[params[:mail_id]]
+		if @mail.nil?
+			render_error(Error.types[:normal], "Mail not exist") and return
 		end
 
-		player = Player.new :id => params[:player_id]
-		player.get(:nickname)
-		
-		render_success(:has_new_mail => player.has_new_mail)
+		render_success(@mail.to_hash)
 	end
 
 	def mark_as_read

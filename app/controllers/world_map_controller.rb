@@ -106,17 +106,20 @@ class WorldMapController < ApplicationController
 			if country.creeps_info[i].to_i > 0
 				x = i / Country::COORD_TRANS_FACTOR
 				y = i % Country::COORD_TRANS_FACTOR
-
+				creeps = Creeps.find(:x => x, :y => y).first
+				break if creeps.nil?
 				creeps_info << {
 					:x => x,
 					:y => y,
 					:info =>{
 						:type => 2,
-						:id => rand(1..1000000),
+						:id => creeps.id,
 						:name => 'Creeps',
-						:level => rand(1..4),
-						:monster_type => rand(1..4),
-						:owner_name => 'Creeps'
+						:level => creeps.level,
+						:monster_type => creeps.type,
+						:owner_name => 'Creeps',
+						:monster_number => creeps.monster_number,
+						:under_attack => creeps.under_attack
 					}
 				}
 			end
