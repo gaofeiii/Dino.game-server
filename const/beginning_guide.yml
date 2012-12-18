@@ -1,0 +1,50 @@
+Reward:
+ 1:
+  wood: 100
+  stone: 100
+  gold_coin: 100
+ 2:
+  wood: 200
+  stone: 200
+  gold_coin: 200
+  gem: 5
+ 3:
+  wood: 300
+  stone: 300
+  gold_coin: 300
+ 4:
+  wood: 400
+  stone: 400
+  gold_coin: 400
+ 5:
+  wood: 500
+  stone: 500
+  gold_coin: 500
+ 6:
+  wood: 600
+  stone: 600
+  gold_coin: 600
+ 7:
+  wood: 700
+  stone: 700
+  gold_coin: 700
+ 8:
+  wood: 800
+  stone: 800
+  gold_coin: 800
+ 9:
+  wood: 900
+  stone: 900
+  gold_coin: 900
+ 10:
+  wood: 1000
+  stone: 1000
+  gold_coin: 1000
+ 11:
+  wood: 1100
+  stone: 1100
+  gold_coin: 1100
+ 12:
+  wood: 1200
+  stone: 1200
+  gold_coin: 1200

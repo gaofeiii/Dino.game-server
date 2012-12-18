@@ -17,6 +17,11 @@ class Deal < Ohm::Model
 		:egg => 2
 	}
 
+	RES_TPYES = {
+		:wood => 1,
+		:stone => 2
+	}
+
 	attribute :status, 		Type::Integer		# Deal的状态，1表示出售者，2表示交易关闭
 	attribute :type,	 		Type::Integer		# 表示出售物品的类型
 	attribute :res_type,	Type::Integer		# 资源的类型

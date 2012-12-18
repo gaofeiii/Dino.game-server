@@ -91,30 +91,36 @@ class Player < Ohm::Model
 	# player.spend!(:gold_coin => 10, :sun => 5, :wood => 100)
 	#
 	def spend!(args = {})
-		vil = (args.include?(:wood) or args.include?(:stone) or args.include?(:population)) ? village : nil
+		# vil = (args.include?(:wood) or args.include?(:stone) or args.include?(:population)) ? village : nil
+		vil = Village.new :id => village_id
+		vil.gets(:wood, :stone)
+
 		db.multi do |t|
 			args.each do |att, val|
 				if att.in?([:gold_coin, :sun])
 					return false if send(att) < val || val < 0
 					t.hincrby(key, att, -val)
-				elsif att.in?([:wood, :stone, :population]) && vil
+				elsif att.in?([:wood, :stone]) && vil
 					return false if vil.send(att) < val || val < 0
 					t.hincrby(vil.key, att, -val)
 				end
 			end
 		end
+
 		gets(:gold_coin, :sun)
 	end
 
 	# player的receive!方法：
 	# 参数与返回值同spend!方法
 	def receive!(args = {})
-		vil = (args.include?(:wood) or args.include?(:stone) or args.include?(:population)) ? village : nil
+		vil = Village.new(:id => village_id)
+		vil.gets(:wood, :stone)
+		
 		db.multi do |t|
 			args.each do |att, val|
 				if att.in?([:gold_coin, :sun])
 					t.hincrby(key, att, val)
-				elsif att.in?([:wood, :stone, :population])
+				elsif att.in?([:wood, :stone])
 					t.hincrby(vil.key, att, val)
 				end
 			end
@@ -306,8 +312,8 @@ class Player < Ohm::Model
 	protected
 
 	def before_create
-		self.gold_coin = 99999
-		self.sun = 9999
+		self.gold_coin = 1000
+		self.sun = 100
 		self.level = 1 if (level.nil? or level == 0)
 		self.avatar_id = 1 if avatar_id.zero?
 	end

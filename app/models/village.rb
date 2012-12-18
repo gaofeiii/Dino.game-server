@@ -110,7 +110,7 @@ class Village < Ohm::Model
 		define_method("#{name}!") do |args = {}|
 			db.multi do |t|
 				args.each do |att, val|
-					if self.respond_to?(att)
+					if att.in?(:wood, :stone)
 						return false if send(att) < val
 						v = name == :spend ? -val : val
 						t.hincrby(self.key, att, v)
@@ -130,7 +130,7 @@ class Village < Ohm::Model
 	end
 
 	# TODO: 刷新资源
-	def update_resource
+	def update_resource(time = Time.now.to_i)
 		
 	end
 
@@ -153,7 +153,7 @@ class Village < Ohm::Model
 		return tech
 	end
 
-	def refresh_resource_output
+	def refresh_resource_output(time = Time.now.to_i)
 		tech_lumbering = find_tech_by_type(Technology.hashes[:lumbering])
 		tech_mining = find_tech_by_type(Technology.hashes[:mining])
 		self.basic_wood_inc = tech_lumbering.property[:wood_inc]
@@ -163,21 +163,46 @@ class Village < Ohm::Model
 			buff.res_inc
 		end
 
-		self.wood_inc = self.basic_wood_inc * (1 + buffs_inc)
-		self.stone_inc = self.basic_stone_inc * (1 + buffs_inc)
-		self.update_resource_at = Time.now.to_i
+		self.wood_inc = (self.basic_wood_inc * (1 + buffs_inc)).to_i
+		self.stone_inc = (self.basic_stone_inc * (1 + buffs_inc)).to_i
+		self
 	end
 
-	def refresh_resource!
-		refresh_resource_output
-		if self.sets 	:basic_wood_inc => basic_wood_inc,
-									:wood_inc => wood_inc,
-									:basic_stone_inc => basic_stone_inc,
-									:stone_inc => stone_inc,
-									:update_resource_at => update_resource_at
+	def calc_resources_increase(time = Time.now.to_i)
+		delta_t = time - update_resource_at
+		if delta_t < 10
+			return
+		else
+			delta_t = delta_t / 3600.0 # seconds to hours
+		end
+		self.wood += (self.wood_inc * (1 + delta_t)).to_i
+		self.stone += (self.stone_inc * (1 + delta_t)).to_i
+		self.update_resource_at = time
+		self
+	end
+
+	def refresh_resource(time = Time.now.to_i)
+		refresh_resource_output(time)
+		calc_resources_increase(time)
+		self
+	end
+
+	def refresh_resource!(time = Time.now.to_i)
+		refresh_resource(time)
+		write_back_resources!
+	end
+
+	def write_back_resources!
+		if self.sets 	:basic_wood_inc 		=> basic_wood_inc,
+									:wood_inc 					=> wood_inc,
+									:basic_stone_inc 		=> basic_stone_inc,
+									:stone_inc 					=> stone_inc,
+									:update_resource_at => update_resource_at,
+									:wood 							=> wood,
+									:stone 							=> stone
 			return self
 		else
-			return false
+			false
 		end
 	end
 
@@ -190,9 +215,8 @@ class Village < Ohm::Model
 	end
 
 	def before_create
-		self.wood = 99999
-		self.stone = 99999
-		self.population = 99999
+		self.wood = 5000
+		self.stone = 5000
 		self.update_resource_at ||= ::Time.now.utc.to_i
 	end
 

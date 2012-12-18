@@ -37,6 +37,8 @@ class Buff < Ohm::Model
 	reference :player, 		Player
 	reference :village, 	Village
 
+	index :buff_type
+
 	def res_inc
 		if buff_type == TYPES[:research_inc]
 			buff_value

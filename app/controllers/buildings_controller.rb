@@ -6,8 +6,7 @@ class BuildingsController < ApplicationController
 
 	def create
 		@player = @village.player
-		puts "$$$ @player.curr_action_queue_size: #{@player.curr_action_queue_size}"
-		puts "$$$ @player.action_queue_size: #{@player.action_queue_size}"
+
 		if @player.curr_action_queue_size >= @player.action_queue_size
 			render :json => {
 				:message => Error.failed_message,

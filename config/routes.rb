@@ -135,6 +135,13 @@ DinosaurGame::Application.routes.draw do
     post 'get_battle_report' => 'strategy#get_battle_report'
   end
 
+  # 商城
+  scope :path => 'shopping', :as => 'shopping' do
+    post 'buy_resource'     => 'shopping#buy_resource'
+    post 'buy_gems'         => 'shopping#buy_gems'
+    post 'buy_item'         => 'shopping#buy_item'
+  end
+
   root :to => 'players#deny_access'
 
   

@@ -30,6 +30,29 @@
 # => {:index=>2, :finished=>0, :rewarded=>0}
 module BeginningGuide
 	LAST_GUIDE_INDEX = 8
+	module ClassMethods
+		@@cache = Hash.new
+		@@reward = Hash.new
+
+		def beginning_guide_info
+			if @@cache.empty?
+				@@cache = YAML::load_file("#{Rails.root}/const/beginning_guide.yml").deep_symbolize_keys
+			end
+			@@cache
+		end
+
+		def beginning_guide_reward(index = nil)
+			if @@reward.empty?
+				@@reward = beginning_guide_info[:Reward]
+			end
+			
+			if index.nil?
+				return @@reward
+			else
+				return @@reward[index.to_i]
+			end
+		end
+	end
 
 	def self.included(model)
 		model.attribute :guide_info
@@ -39,6 +62,7 @@ module BeginningGuide
 		model.class_eval do
 			remove_method :guide_info
 		end
+		model.extend(ClassMethods)
 	end
 	
 	def save!
@@ -67,8 +91,8 @@ module BeginningGuide
 	end
 
 	# The guide reward contains [wood, stone, gold_coin, gem]
-	def receive_guide_reward
-		
+	def receive_guide_reward!(rwd = {})
+		receive!(rwd)
 	end
 	
 end

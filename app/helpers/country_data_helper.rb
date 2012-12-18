@@ -9,7 +9,7 @@ module CountryDataHelper
 	GOLD_MINE_Y_RANGE		= 250..350												# 高级金矿Y坐标范围
 
 	module ClassMethods
-
+		
 	end
 	
 	module InstanceMethods
