@@ -100,9 +100,6 @@ class Village < Ohm::Model
 			:basic_stone_inc => basic_stone_inc,
 			:stone_inc => stone_inc,	
 			:stone_max => stone_max,
-			:population => population, 		
-			:population_inc => population_inc,
-			:population_max => population_max,
 		}
 	end
 

@@ -29,7 +29,7 @@ class DealsController < ApplicationController
 			@player.receive!(goods)
 			deal.set :status, Deal::STATUS[:closed]
 		end
-		render_success(:player => @player.to_hash(:village, :items))
+		render_success(:player => @player.to_hash(:resources, :items))
 	end
 
 	def sell
@@ -61,6 +61,6 @@ class DealsController < ApplicationController
 									:gid => params[:gid],
 									:end_time => Time.now.to_i + 7.days
 		end
-		render_success		
+		render_success(:player => @player.to_hash(:resources, :items))		
 	end
 end

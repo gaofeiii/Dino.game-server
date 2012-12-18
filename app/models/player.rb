@@ -184,7 +184,11 @@ class Player < Ohm::Model
 				hash[:mail_status] = check_mails
 			when :troops
 				hash[:troops] = troops
+			when :resources
+				hash[:village] ||= {}
+				hash[:village].merge!(:resources => village.resources)
 			end
+
 		end
 		return hash
 	end
