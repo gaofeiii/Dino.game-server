@@ -109,7 +109,7 @@ class Technology < Ohm::Model
 	def after_save
 		case type
 		when Technology.hashes[:storing]
-			self.village.update_warehouse!
+			self.village.update_warehouse! if level > 0
 		end
 	end
 end

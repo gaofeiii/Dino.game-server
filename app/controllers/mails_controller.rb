@@ -59,7 +59,7 @@ class MailsController < ApplicationController
 	end
 
 	def check_new_mails
-		render_success(:has_new_mail => @player.has_new_mail, :mails => @player.all_mails(:last_id => params[:last_id]))
+		render_success(:mails => @player.all_mails(:last_id => params[:last_id]))
 	end
 
 	def read_mail
@@ -68,7 +68,7 @@ class MailsController < ApplicationController
 			render_error(Error.types[:normal], "Mail not exist") and return
 		end
 
-		render_success(@mail.to_hash)
+		render_success(:mails => @mail.to_hash, :battle_report => @player.get_battle_report)
 	end
 
 	def mark_as_read

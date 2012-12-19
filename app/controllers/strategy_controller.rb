@@ -121,7 +121,9 @@ class StrategyController < ApplicationController
 									:target_id => target.id,
 									:start_time => Time.now.to_i,
 									:arrive_time => Time.now.to_i + 30.seconds
-
+		if !@player.beginning_guide_finished && !@player.guide_cache['attack_monster']
+			@player.set :guide_cache, @player.guide_cache.merge('attack_monster' => true)
+		end
 		render :json => {
 			:message => Error.success_message,
 			:player => @player.to_hash(:troops)

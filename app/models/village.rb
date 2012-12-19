@@ -172,33 +172,42 @@ class Village < Ohm::Model
 		else
 			delta_t = delta_t / 3600.0 # seconds to hours
 		end
-		self.wood += (self.wood_inc * (1 + delta_t)).to_i
-		self.stone += (self.stone_inc * (1 + delta_t)).to_i
+
+		wood_delta = (self.wood_inc * (1 + delta_t)).to_i
+		stone_delta = (self.stone_inc * (1 + delta_t)).to_i
+
+		if (self.wood + wood_delta) > self.wood_max
+			wood_delta = 0
+		end
+
+		if (self.stone + stone_delta) > self.stone_max
+			stone_delta = 0
+		end
+
+		self.wood += wood_delta
+		self.stone += stone_delta
 		
-		if self.wood > self.wood_max
-			self.wood = wood_max
-		end
-
-		if self.stone > stone_max
-			self.stone = stone_max
-		end
-
 		self.update_resource_at = time
 		self
 	end
 
 	def refresh_resource(time = Time.now.to_i)
+		p "--- before wood: #{self.wood}"
 		refresh_resource_output(time)
+		p "--- after wood: #{self.wood}"
 		calc_resources_increase(time)
 		self
 	end
 
 	def refresh_resource!(time = Time.now.to_i)
+		
 		refresh_resource(time)
+		
 		write_back_resources!
 	end
 
 	def write_back_resources!
+		p "+++ write wood: #{self.wood} +++"
 		if self.sets 	:basic_wood_inc 		=> basic_wood_inc,
 									:wood_inc 					=> wood_inc,
 									:basic_stone_inc 		=> basic_stone_inc,
@@ -229,6 +238,11 @@ class Village < Ohm::Model
 		self
 	end
 
+	def has_built_building?(building_type)
+		result = buildings.find(:type => building_type)
+		result.any? && result.max{ |b| b.level if b }.try(:status).to_i >= 2
+	end
+
 	protected
 
 	def before_save
@@ -240,7 +254,7 @@ class Village < Ohm::Model
 	def before_create
 		self.wood = 5000
 		self.stone = 5000
-		self.update_resource_at ||= ::Time.now.utc.to_i
+		self.update_resource_at = ::Time.now.utc.to_i
 	end
 
 	def after_create

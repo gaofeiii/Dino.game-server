@@ -113,14 +113,17 @@ class Player < Ohm::Model
 	# player的receive!方法：
 	# 参数与返回值同spend!方法
 	def receive!(args = {})
+		p "=== In receive method args: ", args
 		vil = Village.new(:id => village_id)
 		vil.gets(:wood, :stone)
 		
 		db.multi do |t|
 			args.each do |att, val|
 				if att.in?([:gold_coin, :sun])
+					return false if val < 0
 					t.hincrby(key, att, val)
 				elsif att.in?([:wood, :stone])
+					return false if val < 0
 					t.hincrby(vil.key, att, val)
 				end
 			end

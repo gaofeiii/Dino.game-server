@@ -55,6 +55,7 @@ DinosaurGame::Application.routes.draw do
     post 'update_status'    => 'dinosaur#update'
     post 'hatch_speed_up'   => 'dinosaur#hatch_speed_up'
     post 'feed'             => 'dinosaur#feed'
+    post 'heal'             => 'dinosaur#heal'
   end
   
   # 公会

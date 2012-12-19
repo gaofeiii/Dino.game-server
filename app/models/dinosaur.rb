@@ -209,6 +209,14 @@ class Dinosaur < Ohm::Model
 		save
 	end
 
+	def heal_speed_up_cost
+		{:sun => level * 1}
+	end
+
+	def heal_speed_up!
+		self.set :current_hp, total_hp
+	end
+
 	protected
 
 	def before_save

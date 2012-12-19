@@ -57,7 +57,6 @@ module BeginningGuide
 	def self.included(model)
 		model.attribute :guide_info
 		model.attribute :beginning_guide_finished, Ohm::DataTypes::Type::Boolean
-		model.attribute :has_hatched_dino, Ohm::DataTypes::Type::Boolean
 		model.attribute :guide_cache, Ohm::DataTypes::Type::Hash
 		model.class_eval do
 			remove_method :guide_info
@@ -143,34 +142,80 @@ module BeginningGuideHelper
 		self.except(:player).size >= BeginningGuide::LAST_GUIDE_INDEX
 	end
 
+	# New a village instance with id, no need to query redis.
+	def village_with_id
+		if @village_with_id.nil?
+			@village_with_id = Village.new(:id => player.village_id)
+		end
+		@village_with_id
+	end
+
 	def check_finished(index)
 		quest = self[index]
 
 		sig = case index
 		# 建造采集场
 		when 1
-			collecting_farm = player.village.buildings.find(:type => Building.hashes[:collecting_farm])
+			collecting_farm = village_with_id.buildings.find(:type => Building.hashes[:collecting_farm])
 			collecting_farm.any?
 		# 采集场加速完成
 		when 2
-			collecting_farm = player.village.buildings.find(:type => Building.hashes[:collecting_farm])
-			collecting_farm.any? && collecting_farm.max{|b| b.level if b}.try(:status).to_i >= 2
+			village_with_id.has_built_building?(Building.hashes[:collecting_farm])
 		# 建造孵化园并加速完成
 		when 3
-			habitat = player.village.buildings.find(:type => Building.hashes[:habitat])
-			habitat.any? && habitat.max{|b| b.level if b}.try(:status).to_i >= 2
+			village_with_id.has_built_building?(Building.hashes[:habitat])
 		# 孵化并加速完成
 		when 4
 			ret = player.guide_cache['has_hatched_dino'] && player.guide_cache['hatch_speed_up']
 			ret.nil? ? false : ret
 		# 建造兽栏并加速完成
 		when 5
-			beastiary = player.village.buildings.find(:type => Building.hashes[:beastiary])
-			beastiary.any? && beastiary.max{ |b| b.level if b }.try(:status).to_i >= 2
+			village_with_id.has_built_building?(Building.hashes[:beastiary])
 		# 喂养恐龙
 		when 6
 			ret = player.guide_cache['feed_dino']
 			ret.nil? ? false : ret
+		# 攻打野怪
+		when 7
+			ret = player.guide_cache['attack_monster']
+			ret.nil? ? false : ret
+		# 恐龙疗伤
+		when 8
+			ret = player.guide_cache['heal_dino']
+			ret.nil? ? false : ret
+		# 布防村落
+		when 9
+			ret = player.guide_cache['set_defense']
+			ret.nil? ? false : ret
+		# 建造工坊
+		when 10
+			village_with_id.has_built_building?(Building.hashes[:workshop])
+		# 研究科技
+		when 11
+			ret = player.guide_cache['has_researched']
+			ret.nil? ? false : ret
+		# 建造神庙
+		when 12
+			village_with_id.has_built_building?(Building.hashes[:temple])
+		# 供奉神灵
+		when 13
+			ret = player.guide_cache['has_worshiped']
+			ret.nil? ? false : ret
+		# 聘用顾问
+		when 14
+			ret = player.guide_cache['has_advisor']
+			ret.nil? ? false : ret
+		# 建造所有资源建筑
+		when 15
+			village_with_id.has_built_building?(Building.hashes[:lumber_mill]) &&
+				village_with_id.has_built_building?(Building.hashes[:hunting_field]) &&
+					village_with_id.has_built_building?(Building.hashes[:quarry])
+		# 建造仓库
+		when 16
+			village_with_id.has_built_building?(Building.hashes[:warehouse])
+		# 建造市场
+		when 17
+			village_with_id.has_built_building?(Building.hashes[:market])
 		else
 			false
 		end

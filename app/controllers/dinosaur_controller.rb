@@ -1,5 +1,5 @@
 class DinosaurController < ApplicationController
-	before_filter :validate_dinosaur, :only => [:update, :hatch_speed_up, :feed]
+	before_filter :validate_dinosaur, :only => [:update, :hatch_speed_up, :feed, :heal]
 	before_filter :validate_player, :only => [:food_list, :feed]
 
 	def update
@@ -30,13 +30,20 @@ class DinosaurController < ApplicationController
 			render :json => {:error => "NOT_ENOUGH_FOOD"} and return
 		else
 			@dinosaur.eat!(food)
-			if !@player.beginning_guide_finished && !@player.guide_cache[:feed_dino]
-				cache = @player.guide_cache.merge(:feed_dino => true)
+			if !@player.beginning_guide_finished && !@player.guide_cache['feed_dino']
+				cache = @player.guide_cache.merge('feed_dino' => true)
 				@player.set :guide_cache, cache
 			end
 		end
 		render :json => {
 			:player => @player.to_hash(:dinosaurs, :food)
 		}
+	end
+
+	def heal
+		if @player.spend!(:sun => @dinosaur.heal_speed_up_cost)
+			@dinosaur.heal_speed_up!
+		end
+		render_success(:player => @player.to_hash(:dinosaurs))
 	end
 end
