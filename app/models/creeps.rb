@@ -12,6 +12,8 @@ class Creeps < Ohm::Model
 	attribute :y, 			Type::Integer
 	attribute :index, 	Type::Integer
 	attribute :under_attack, Type::Boolean
+	attribute :is_quest_monster, 	Type::Boolean
+	attribute :player_id
 
 	index :x
 	index :y
@@ -39,6 +41,12 @@ class Creeps < Ohm::Model
 			defense_troops
 		end
 		number
+	end
+
+	def before_save
+		if index.zero?
+			self.index = x * Country::COORD_TRANS_FACTOR + y
+		end
 	end
 
 end

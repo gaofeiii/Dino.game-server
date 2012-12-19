@@ -323,6 +323,7 @@ class Player < Ohm::Model
 		self.sun = 100
 		self.level = 1 if (level.nil? or level == 0)
 		self.avatar_id = 1 if avatar_id.zero?
+		self.country_id = Country.first.id
 	end
 
 	def after_create

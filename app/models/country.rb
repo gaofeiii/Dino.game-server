@@ -47,6 +47,22 @@ class Country < Ohm::Model
 		end
 	end
 
+	def quest_monster
+		code = %Q(
+			if $country_#{index}_quest_monster.nil?
+				$country_#{index}_quest_monster = db.smembers(self.key[:quest_monster]).map{|idx| idx.to_i}
+			end
+			$country_#{index}_quest_monster
+		)
+		eval(code)
+	end
+
+	def add_quest_monster(m_id)
+		quest_monster << m_id
+		db.sadd(self.key[:quest_monster], m_id)
+		eval("$country_#{index}_quest_monste")
+	end
+
 
 	protected
 

@@ -108,10 +108,10 @@ class WorldMapController < ApplicationController
 				y = i % Country::COORD_TRANS_FACTOR
 				creeps = Creeps.find(:x => x, :y => y).first
 				break if creeps.nil?
-				creeps_info << {
+				c_info = {
 					:x => x,
 					:y => y,
-					:info =>{
+					:info => {
 						:type => 2,
 						:id => creeps.id,
 						:name => 'Creeps',
@@ -122,7 +122,35 @@ class WorldMapController < ApplicationController
 						:under_attack => creeps.under_attack
 					}
 				}
+				creeps_info << c_info
 			end
+
+			# 新手野怪
+			if country.quest_monster.include?(i)
+				begin_x = i / Country::COORD_TRANS_FACTOR
+				begin_y = i % Country::COORD_TRANS_FACTOR
+				creeps = Creeps.find(:x => begin_x, :y => begin_y).first
+				if !creeps.nil?
+					creeps_info << {
+						:x => begin_x,
+						:y => begin_y,
+						:info => {
+							:type => 2,
+							:id => creeps.id,
+							:name => 'Creeps',
+							:level => creeps.level,
+							:monster_type => creeps.type,
+							:owner_name => 'Creeps',
+							:monster_number => creeps.monster_number,
+							:under_attack => creeps.under_attack,
+							:is_quest_monster => creeps.is_quest_monster,
+							:player_id => creeps.player_id.to_i
+						}
+					}
+				end
+			end
+			
+			
 
 
 		end

@@ -192,9 +192,7 @@ class Village < Ohm::Model
 	end
 
 	def refresh_resource(time = Time.now.to_i)
-		p "--- before wood: #{self.wood}"
 		refresh_resource_output(time)
-		p "--- after wood: #{self.wood}"
 		calc_resources_increase(time)
 		self
 	end
@@ -207,7 +205,6 @@ class Village < Ohm::Model
 	end
 
 	def write_back_resources!
-		p "+++ write wood: #{self.wood} +++"
 		if self.sets 	:basic_wood_inc 		=> basic_wood_inc,
 									:wood_inc 					=> wood_inc,
 									:basic_stone_inc 		=> basic_stone_inc,
@@ -243,6 +240,13 @@ class Village < Ohm::Model
 		result.any? && result.max{ |b| b.level if b }.try(:status).to_i >= 2
 	end
 
+	def country
+		if @country.nil?
+			@country = Country[db.hget("Player:#{player_id}", :country_id)]
+		end
+		@country
+	end
+
 	protected
 
 	def before_save
@@ -258,6 +262,9 @@ class Village < Ohm::Model
 	end
 
 	def after_create
+		creeps = Creeps.create :x => x + 2, :y => y + 2, :is_quest_monster => true, :type => 1, :player_id => player_id
+		country.add_quest_monster(creeps.index)
+
 		self.mutex do
 			if buildings.find(:type => Building.hashes[:residential]).blank?
 				create_building(Building.hashes[:residential], 1, 25, 25, Building::STATUS[:finished])
