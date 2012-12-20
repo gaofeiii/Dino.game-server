@@ -35,20 +35,16 @@ class StrategyController < ApplicationController
 		end
 		
 		if sta.nil?
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
-				:error => Error.format_message("wrong type of host")
-			}
-			return
+			render_error(Error.types[:normal], "wrong type of host")
+		else
+			@player = Player.new(:id => @village.player_id)
+			@player.get :guide_cache, :beginning_guide_finished
+			if !@player.beginning_guide_finished && !@player.guide_cache['set_defense']
+				cache = @player.guide_cache.merge(:set_defense => true)
+				@player.set :guide_cache, cache
+			end
+			render_success(:village => {:strategy => sta.to_hash})
 		end
-
-		render :json => {
-			:message => Error.success_message,
-			:village => {
-				:strategy => sta.to_hash
-			}
-		}
 	end
 
 	def attack

@@ -42,6 +42,10 @@ class DinosaurController < ApplicationController
 
 	def heal
 		if @player.spend!(:sun => @dinosaur.heal_speed_up_cost)
+			if !@player.beginning_guide_finished && !@player.guide_cache['heal_dino']
+				cache = @player.guide_cache.merge('heal_dino' => true)
+				@player.set :guide_cache, cache
+			end
 			@dinosaur.heal_speed_up!
 		end
 		render_success(:player => @player.to_hash(:dinosaurs))

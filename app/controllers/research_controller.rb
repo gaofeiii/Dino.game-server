@@ -18,6 +18,10 @@ class ResearchController < ApplicationController
 		end
 		
 		tech.research!(params[:building_id])
+		if !@player.beginning_guide_finished && !@player.guide_cache['has_researched']
+			cache = @player.guide_cache.merge(:has_researched => true)
+			@player.set :guide_cache, cache
+		end
 		data = {:message => Error.success_message, :player => @player.to_hash(:techs)}
 		render :json => data
 	end

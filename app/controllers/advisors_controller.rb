@@ -68,8 +68,6 @@ class AdvisorsController < ApplicationController
 		# => [name, level, days, avatar_id]
 		adv_info = Advisor.get(params[:type], params[:advisor_id])
 
-		p '-------------', adv_info
-
 		err = ''
 		if is_adv.to_i == 0 || adv_info.blank?
 			err = Error.format_message("advisor not exist")
@@ -78,29 +76,20 @@ class AdvisorsController < ApplicationController
 		end
 
 		if not err.empty?
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
-				:error => err
-			}
-			return
+			render_error(Error.types[:normal], err) and	return
 		end
 
 		employer = Player[params[:employer_id]]
-		employer.get(:gold_coin)
 
 		if employer.spend!(:gold_coin => adv_info[:price])
 			Advisor.employ!(params[:employer_id], params[:advisor_id], params[:type], adv_info[:days])
-			render :json => {
-				:message => Error.success_message,
-				:player => employer.to_hash(:advisors)
-			}
+			if !employer.beginning_guide_finished && !employer.guide_cache['has_researched']
+				cache = employer.guide_cache.merge(:has_researched => true)
+				employer.set :guide_cache, cache
+			end
+			render_success(:player => employer.to_hash(:advisors))
 		else
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
-				:error => Error.format_message('not enough gold')
-			}
+			render_error(Error.types[:normal], "not enough gold")
 		end
 	end
 
