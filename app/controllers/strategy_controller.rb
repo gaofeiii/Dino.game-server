@@ -21,7 +21,17 @@ class StrategyController < ApplicationController
 			end
 			@village.set(:strategy_id, sta.id) if sta && @village.strategy_id.blank?
 		else
+			JSON.parse(sta.dinosaurs).each do |dino_id|
+				if Dinosaur.exists?(dino_id)
+					Ohm.redis.hset("Dinosaur:#{dino_id}", :is_deployed, 0)
+				end
+			end
 			sta.set :dinosaurs, params[:dinosaurs].to_json
+			params[:dinosaurs].each do |dino_id|
+				if Dinosaur.exists?(dino_id)
+					Ohm.redis.hset("Dinosaur:#{dino_id}", :is_deployed, 1)
+				end
+			end
 		end
 		
 		if sta.nil?
@@ -115,12 +125,19 @@ class StrategyController < ApplicationController
 				0
 		end
 
-		Troops.create :player_id => @player.id, 
-									:dinosaurs => params[:dinosaurs].to_json,
-									:target_type => target_type,
-									:target_id => target.id,
-									:start_time => Time.now.to_i,
-									:arrive_time => Time.now.to_i + 30.seconds
+		if Troops.create 	:player_id => @player.id, 
+											:dinosaurs => params[:dinosaurs].to_json,
+											:target_type => target_type,
+											:target_id => target.id,
+											:start_time => Time.now.to_i,
+											:arrive_time => Time.now.to_i + 10.seconds
+			target.set(:under_attack, 1)
+			params[:dinosaurs].each do |dino_id|
+				if Dinosaur.exists?(dino_id)
+					Ohm.redis.hset("Dinosaur:#{dino_id}", :is_attacking, 1)
+				end
+			end
+		end
 		if !@player.beginning_guide_finished && !@player.guide_cache['attack_monster']
 			@player.set :guide_cache, @player.guide_cache.merge('attack_monster' => true)
 		end

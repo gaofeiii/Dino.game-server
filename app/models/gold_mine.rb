@@ -15,6 +15,7 @@ class GoldMine < Ohm::Model
 
 	attribute :start_time, 	Type::Integer
 	attribute :finish_time, Type::Integer
+	attribute :under_attack, Type::Boolean
 
 	collection :monsters, 	Monster
 

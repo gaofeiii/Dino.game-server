@@ -59,7 +59,12 @@ class MailsController < ApplicationController
 	end
 
 	def check_new_mails
-		render_success(:mails => @player.all_mails(:last_id => params[:last_id]))
+		@player.troops.map(&:refresh!)
+		last_report_time = params["last_report_time"]
+		last_report_time = last_report_time < 0 ? 0 : last_report_time
+		battle_report = @player.battle_report_mails(:last_report_time => "(#{last_report_time}")
+		p "====== battle_report.size", battle_report.size
+		render_success(:mails => (@player.all_mails(:last_id => params[:last_id]) + battle_report))
 	end
 
 	def read_mail
@@ -68,7 +73,7 @@ class MailsController < ApplicationController
 			render_error(Error.types[:normal], "Mail not exist") and return
 		end
 
-		render_success(:mails => @mail.to_hash, :battle_report => @player.get_battle_report)
+		render_success(@mail.to_hash)
 	end
 
 	def mark_as_read

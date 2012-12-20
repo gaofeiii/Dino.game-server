@@ -29,7 +29,7 @@
 # player.guide_info.current_quest
 # => {:index=>2, :finished=>0, :rewarded=>0}
 module BeginningGuide
-	LAST_GUIDE_INDEX = 8
+	LAST_GUIDE_INDEX = 12
 	module ClassMethods
 		@@cache = Hash.new
 		@@reward = Hash.new
@@ -176,48 +176,48 @@ module BeginningGuideHelper
 			ret = player.guide_cache['feed_dino']
 			ret.nil? ? false : ret
 		# 攻打野怪
-		when 7
-			ret = player.guide_cache['attack_monster']
-			ret.nil? ? false : ret
-		# 恐龙疗伤
-		when 8
-			ret = player.guide_cache['heal_dino']
-			ret.nil? ? false : ret
-		# 布防村落
-		when 9
-			ret = player.guide_cache['set_defense']
-			ret.nil? ? false : ret
-		# 建造工坊
-		when 10
-			village_with_id.has_built_building?(Building.hashes[:workshop])
-		# 研究科技
-		when 11
-			ret = player.guide_cache['has_researched']
-			ret.nil? ? false : ret
-		# 建造神庙
-		when 12
-			village_with_id.has_built_building?(Building.hashes[:temple])
-		# 供奉神灵
-		when 13
-			ret = player.guide_cache['has_worshiped']
-			ret.nil? ? false : ret
-		# 聘用顾问
-		when 14
-			ret = player.guide_cache['has_advisor']
-			ret.nil? ? false : ret
-		# 建造所有资源建筑
-		when 15
-			village_with_id.has_built_building?(Building.hashes[:lumber_mill]) &&
-				village_with_id.has_built_building?(Building.hashes[:hunting_field]) &&
-					village_with_id.has_built_building?(Building.hashes[:quarry])
-		# 建造仓库
-		when 16
-			village_with_id.has_built_building?(Building.hashes[:warehouse])
-		# 建造市场
-		when 17
-			village_with_id.has_built_building?(Building.hashes[:market])
+		# when 7
+		# 	ret = player.guide_cache['attack_monster']
+		# 	ret.nil? ? false : ret
+		# # 恐龙疗伤
+		# when 8
+		# 	ret = player.guide_cache['heal_dino']
+		# 	ret.nil? ? false : ret
+		# # 布防村落
+		# when 9
+		# 	ret = player.guide_cache['set_defense']
+		# 	ret.nil? ? false : ret
+		# # 建造工坊
+		# when 10
+		# 	village_with_id.has_built_building?(Building.hashes[:workshop])
+		# # 研究科技
+		# when 11
+		# 	ret = player.guide_cache['has_researched']
+		# 	ret.nil? ? false : ret
+		# # 建造神庙
+		# when 12
+		# 	village_with_id.has_built_building?(Building.hashes[:temple])
+		# # 供奉神灵
+		# when 13
+		# 	ret = player.guide_cache['has_worshiped']
+		# 	ret.nil? ? false : ret
+		# # 聘用顾问
+		# when 14
+		# 	ret = player.guide_cache['has_advisor']
+		# 	ret.nil? ? false : ret
+		# # 建造所有资源建筑
+		# when 15
+		# 	village_with_id.has_built_building?(Building.hashes[:lumber_mill]) &&
+		# 		village_with_id.has_built_building?(Building.hashes[:hunting_field]) &&
+		# 			village_with_id.has_built_building?(Building.hashes[:quarry])
+		# # 建造仓库
+		# when 16
+		# 	village_with_id.has_built_building?(Building.hashes[:warehouse])
+		# # 建造市场
+		# when 17
+		# 	village_with_id.has_built_building?(Building.hashes[:market])
 		else
-			false
+			true
 		end
 		quest.finished = sig
 	end

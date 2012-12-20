@@ -61,6 +61,22 @@ module MailsModule
 			end
 		end
 
+		def battle_report_mails(args = {})
+			get_battle_report(args[:last_report_time]).map do |report|
+				{
+					:id => report['time'],
+					:mail_type => Mail::TYPE[:system],
+					:sender => "System",
+					:title => "Battle Report",
+					:content => "",
+					:time => report["time"],
+					:is_read => false,
+					:sys_type => 2,
+					:data => report
+				}
+			end
+		end
+
 		def all_mails(args = {})
 			last_id = args[:last_id].to_i
 			private_mails(args) + league_mails(args) + system_mails(args)

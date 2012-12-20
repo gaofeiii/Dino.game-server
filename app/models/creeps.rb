@@ -11,7 +11,7 @@ class Creeps < Ohm::Model
 	attribute :x, 			Type::Integer
 	attribute :y, 			Type::Integer
 	attribute :index, 	Type::Integer
-	attribute :under_attack, Type::Boolean
+	attribute :under_attack, 			Type::Boolean
 	attribute :is_quest_monster, 	Type::Boolean
 	attribute :player_id
 

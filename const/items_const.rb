@@ -2,7 +2,7 @@
 p "--- Reading items const ---"
 require "#{Rails.root}/const/specialty_const.rb"
 
-ITEM_TYPES = {
+ITEM_CATEGORY = {
 	:egg => 1,
 	:specialty => 2,
 }
@@ -29,7 +29,7 @@ book.default_sheet = "dinosaurs_avai"
 	cost = {:sun => 1}
 	property = {:dinosaur_type => type}
 
-	ITEMS[1][type] = {
+	ITEMS[ITEM_CATEGORY[:egg]][type] = {
 		:type => 1,
 		:name => name,
 		:cost => cost,

@@ -7,6 +7,21 @@ class Item < Ohm::Model
 	attribute :item_type, 			Type::Integer
 	reference :player, :Player
 
+	class << self
+
+		def categories
+			ITEM_CATEGORY.values
+		end
+
+		def types(cat = 0)
+			if cat == 0
+				return []
+			else
+				ITEMS[cat].keys
+			end
+		end
+	end
+
 	def info
 		ITEMS[item_category][item_type]
 	end
@@ -14,7 +29,7 @@ class Item < Ohm::Model
 	def use!(options = {})
 		item_info = info
 		obj = case item_info[:type]
-		when ITEM_TYPES[:egg]
+		when ITEM_CATEGORY[:egg]
 			dino = Dinosaur.const[item_info[:type]]
 			building_id = options[:building_id]
 			dino = Dinosaur.new		:type 				=> item_info[:property][:dinosaur_type],
@@ -31,7 +46,7 @@ class Item < Ohm::Model
 	end
 
 	def is_egg?
-		item_category == ITEM_TYPES[:egg]
+		item_category == ITEM_CATEGORY[:egg]
 	end
 
 	def to_hash

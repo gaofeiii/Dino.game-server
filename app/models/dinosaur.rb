@@ -34,8 +34,10 @@ class Dinosaur < Ohm::Model
 	attribute :quality,						Type::Integer
 
 	attribute :current_hp, 				Type::Float
+	attribute :updated_hp_time, 	Type::Integer
 
 	attribute :is_deployed,				Type::Boolean
+	attribute :is_attacking,			Type::Boolean
 
 	attribute :event_type, 		Type::Integer
 	attribute :start_time, 		Type::Integer
@@ -70,6 +72,7 @@ class Dinosaur < Ohm::Model
 	end
 
 	def to_hash
+		self.auto_heal!
 		hash = {
 			:id => id.to_i,
 			:name => name,
@@ -86,7 +89,9 @@ class Dinosaur < Ohm::Model
 			:hp => current_hp.to_i,
 			:total_hp => total_hp.to_i,
 			:total_feed_point => property[:hunger_time],
-			:quality => quality
+			:quality => quality,
+			:is_attacking => is_attacking,
+			:is_deployed => is_deployed
 		}
 
 		if event_type != 0
@@ -209,6 +214,22 @@ class Dinosaur < Ohm::Model
 		save
 	end
 
+	def auto_heal!(time = ::Time.now.to_i)
+		dt = time - updated_hp_time
+		if dt < 1
+			return false
+		else
+			d_hp = dt / 2
+			c_hp = current_hp + d_hp
+			if c_hp > total_hp
+				c_hp = total_hp
+			end
+			self.sets :current_hp => c_hp,
+								:updated_hp_time => time
+			return current_hp
+		end
+	end
+
 	def heal_speed_up_cost
 		{:sun => level * 1}
 	end
@@ -225,11 +246,13 @@ class Dinosaur < Ohm::Model
 		# end
 		# self.feed_point -= Time.now.to_i - updated_feed_time
 		self.name = info[:name] if name.blank?
-		self.current_hp = self.total_hp
+		# self.current_hp = self.total_hp if total_hp.zero?
+		self.updated_hp_time = Time.now.to_i if updated_hp_time.zero?
 	end
 
 	def before_create
 		self.current_hp = total_hp
+		self.updated_hp_time = Time.now.to_i if updated_hp_time.zero?
 	end
 
 

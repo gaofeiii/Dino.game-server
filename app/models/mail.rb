@@ -30,7 +30,7 @@ class Mail < Ohm::Model
 	end
 
 	def to_hash
-		{
+		hash = {
 			:id => id.to_i,
 			:sender => sender_name,
 			:receiver => receiver_name,
@@ -40,6 +40,10 @@ class Mail < Ohm::Model
 			:is_read => is_read,
 			:mail_type => mail_type
 		}
+		if mail_type == TYPE[:system]
+			hash[:sys_type] = 1
+		end
+		hash
 	end
 
 	def sender

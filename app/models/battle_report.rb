@@ -13,10 +13,15 @@ module BattleReport
 			db.zadd(battle_report_key, time, result_json)
 		end
 
-		def get_battle_report(s_time = 0, e_time = -1)
-			db.zrevrange(battle_report_key, s_time, e_time, :with_scores => true).map do |result|
+		# Get battle report in period: s_time to e_time.
+		def get_battle_report(s_time = '-inf', e_time = '+inf')
+			db.zrevrangebyscore(battle_report_key, e_time, s_time, :with_scores => true).map do |result|
 				re = JSON.parse(result[0]).merge('time' => result[1].to_i)
 			end
+		end
+
+		def delete_battle_report(max = '+inf', min = '-inf')
+			db.zremrangebyscore(battle_report_key, min, max)
 		end
 	end
 	

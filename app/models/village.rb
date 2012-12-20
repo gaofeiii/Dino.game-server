@@ -26,6 +26,8 @@ class Village < Ohm::Model
 	# ===========================================
 	
 	attribute :update_resource_at, 	Type::Integer
+
+	attribute :under_attack, 				Type::Boolean
 		
 
 	attribute :player_id, 					Type::Integer
