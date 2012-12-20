@@ -10,11 +10,12 @@ class Troops < Ohm::Model
 	attribute :target_id
 	attribute :start_time,	Type::Integer
 	attribute :arrive_time, Type::Integer
+	attribute :monster_type, Type::Integer
 
 	reference :player, Player
 
 	def to_hash
-		{
+		hash = {
 			:id => id,
 			:dinosaurs => dinosaurs,
 			:target_type => target_type,
@@ -22,6 +23,10 @@ class Troops < Ohm::Model
 			:total_time => arrive_time - start_time,
 			:time_pass => Time.now.to_i - start_time
 		}
+		if target.is_a?(Creeps)
+			hash[:monster_type] = monster_type
+		end
+		hash
 	end
 
 	def target
@@ -66,14 +71,15 @@ class Troops < Ohm::Model
 			result = BattleModel.attack_calc(attacker, defender)
 			if result[:winner] = 'attacker'
 				reward = case target_type
-				when 1
+				when BattleModel::TARGET_TYPE[:village]
 					rwd = {:wood => 1000, :stone => 2000, :gold_coin => 100, :items => []}
 					i_cat = Item.categories.sample
 					i_type = Item.types(i_cat).sample
 					i_count = i_cat == 1 ? 1 : 100
 					rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
+					target.set(:under_attack, 0)
 					rwd
-				when 2
+				when BattleModel::TARGET_TYPE[:creeps]
 					target.delete
 					rwd = {:wood => 1000, :stone => 1200, :gold_coin => 150, :items => []}
 					i_cat = Item.categories.sample
@@ -81,8 +87,8 @@ class Troops < Ohm::Model
 					i_count = i_cat == 1 ? 1 : 100
 					rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
 					rwd
-				when 3
-					target.update :player_id => player.id
+				when BattleModel::TARGET_TYPE[:gold_mine]
+					target.update :player_id => player.id, :under_attack => false
 					rwd = {:wood => 1500, :stone => 1500, :gold_coin => 200, :items => []}
 					i_cat = Item.categories.sample
 					i_type = Item.types(i_cat).sample
@@ -95,7 +101,6 @@ class Troops < Ohm::Model
 				player.receive!(reward)
 			end
 			result.merge!(:reward => reward)
-			target.set :under_attack, 0 if !target.is_a?(Creeps)
 			army.each do |dino|
 				dino.set :is_attacking, 0
 			end

@@ -38,7 +38,7 @@ class StrategyController < ApplicationController
 			render_error(Error.types[:normal], "wrong type of host")
 		else
 			@player = Player.new(:id => @village.player_id)
-			@player.get :guide_cache, :beginning_guide_finished
+			@player.gets :guide_cache, :beginning_guide_finished
 			if !@player.beginning_guide_finished && !@player.guide_cache['set_defense']
 				cache = @player.guide_cache.merge(:set_defense => true)
 				@player.set :guide_cache, cache
@@ -81,44 +81,15 @@ class StrategyController < ApplicationController
 
 		army = army.blank? ? @player.dinosaurs.to_a.select{|d| d.status > 0}[0, 5] : army
 
-		# attacker = {
-		# 	:owner_info => {
-		# 		:type => 'Player',
-		# 		:id => params[:player_id]
-		# 	},
-		# 	:buff_info => {},
-		# 	:army => army
-		# }
-
-		# defender = {
-		# 	:owner_info => {
-		# 		:type => target.class.name,
-		# 		:id => target.id
-		# 	},
-		# 	:buff_info => {},
-		# 	:army => target.defense_troops
-		# }
-
-		# result = BattleModel.attack_calc(attacker, defender)
-		# @player.save_battle_report(Time.now.to_i, result.to_json)
-
-		# if result[:winner] == "attacker"
-		# 	if target.is_a?(GoldMine)
-		# 		target.update :player_id => @player.id
-		# 	elsif target.is_a?(Creeps)
-		# 		target.delete
-		# 	end
-		# end
-
+		target_monster_type = nil
 		target_type = case target.class.name
 			when "Village"
-				1
+				BattleModel::TARGET_TYPE[:village]
 			when "Creeps"
-				2
+				target_monster_type = target.monsters.first.type
+				BattleModel::TARGET_TYPE[:creeps]
 			when "GoldMine"
-				3
-			else
-				0
+				BattleModel::TARGET_TYPE[:gold_mine]
 		end
 
 		if Troops.create 	:player_id => @player.id, 
@@ -126,7 +97,8 @@ class StrategyController < ApplicationController
 											:target_type => target_type,
 											:target_id => target.id,
 											:start_time => Time.now.to_i,
-											:arrive_time => Time.now.to_i + 10.seconds
+											:arrive_time => Time.now.to_i + 10.seconds,
+											:monster_type => target_monster_type
 			target.set(:under_attack, 1)
 			params[:dinosaurs].each do |dino_id|
 				if Dinosaur.exists?(dino_id)

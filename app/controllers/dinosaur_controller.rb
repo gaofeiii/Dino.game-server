@@ -1,6 +1,6 @@
 class DinosaurController < ApplicationController
 	before_filter :validate_dinosaur, :only => [:update, :hatch_speed_up, :feed, :heal]
-	before_filter :validate_player, :only => [:food_list, :feed]
+	before_filter :validate_player, :only => [:food_list, :feed, :heal]
 
 	def update
 		@dinosaur.update_status!
@@ -41,7 +41,7 @@ class DinosaurController < ApplicationController
 	end
 
 	def heal
-		if @player.spend!(:sun => @dinosaur.heal_speed_up_cost)
+		if @player.spend!(@dinosaur.heal_speed_up_cost)
 			if !@player.beginning_guide_finished && !@player.guide_cache['heal_dino']
 				cache = @player.guide_cache.merge('heal_dino' => true)
 				@player.set :guide_cache, cache

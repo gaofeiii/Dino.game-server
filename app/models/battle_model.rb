@@ -1,5 +1,10 @@
 class BattleModel
 	TOTAL_ROUNDS = 20
+	TARGET_TYPE = {
+		:village 		=> 1,
+		:creeps 		=> 2,
+		:gold_mine 	=> 3
+	}
 
 	class << self
 

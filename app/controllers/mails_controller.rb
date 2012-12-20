@@ -63,7 +63,6 @@ class MailsController < ApplicationController
 		last_report_time = params["last_report_time"]
 		last_report_time = last_report_time < 0 ? 0 : last_report_time
 		battle_report = @player.battle_report_mails(:last_report_time => "(#{last_report_time}")
-		p "====== battle_report.size", battle_report.size
 		render_success(:mails => (@player.all_mails(:last_id => params[:last_id]) + battle_report))
 	end
 
