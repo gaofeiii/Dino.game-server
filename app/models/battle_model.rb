@@ -1,5 +1,5 @@
 class BattleModel
-	TOTAL_ROUNDS = 20
+	TOTAL_ROUNDS = 50
 	TARGET_TYPE = {
 		:village 		=> 1,
 		:creeps 		=> 2,
@@ -152,9 +152,11 @@ class BattleModel
 				if attacker[:army].all_curr_hp.zero?
 					puts "$$ Defender win!!! $$"
 					result[:winner] = 'defender'
+					write_result(attacker, defender)
 					return result
 				elsif defender[:army].all_curr_hp.zero?
 					result[:winner] = 'attacker'
+					write_result(attacker, defender)
 					puts "$$ Attacker win!!! $$"
 					return result
 				end
@@ -162,6 +164,12 @@ class BattleModel
 
 			return result
 		end # End of method: attack_calc
+
+		def write_result(attacker = {}, defender = {})
+			[attacker[:army], defender[:army]].each do |army|
+				army.write_hp!
+			end
+		end
 	end
 
 end
@@ -293,7 +301,15 @@ module BattleArmyModule
 	end
 
 	def write_hp!
-
+		puts "=== Writing hp... ==="
+		self.each do |fighter|
+			if fighter.is_a?(Monster)
+				return
+			end
+			puts "-- fighter: #{fighter.current_hp} => #{fighter.curr_hp}"
+			fighter.sets 	:current_hp => fighter.curr_hp,
+										:updated_hp_time => Time.now.to_i
+		end
 	end
 
 end

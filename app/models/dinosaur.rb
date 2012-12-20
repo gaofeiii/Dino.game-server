@@ -2,6 +2,8 @@ class Dinosaur < Ohm::Model
 	STATUS = {:egg => 0, :infancy => 1, :adult => 2}
 	EVENTS = {:hatching => 1}
 	EMOTIONS = {:happy => 2, :normal => 1, :angry => 0}
+	COMSUME_PER_SECOND = 10
+	HEALED_PER_SECOND = 10
 
 	include Ohm::DataTypes
 	include Ohm::Callbacks
@@ -72,7 +74,6 @@ class Dinosaur < Ohm::Model
 	end
 
 	def to_hash
-		self.auto_heal!
 		hash = {
 			:id => id.to_i,
 			:name => name,
@@ -121,6 +122,7 @@ class Dinosaur < Ohm::Model
 		elsif status > 0
 			consume_food
 			update_level
+			auto_heal
 		else
 			return false
 		end
@@ -189,15 +191,16 @@ class Dinosaur < Ohm::Model
 				self.total_hp = self.basic_hp
 			end
 		end
+		self
 	end
 
-	def consume_food
-		curr_time = Time.now.to_i
-		time = curr_time - updated_feed_time
-		consume = feed_point < time ? feed_point : time
-		self.feed_point -= consume
+	def consume_food(time = Time.now.to_i)
+		dt = time - updated_feed_time
+		consume = dt > feed_point ? feed_point : dt
+		self.feed_point -= consume / COMSUME_PER_SECOND
 		self.emotion = EMOTIONS[:angry] if feed_point <= 0
-		self.updated_feed_time = curr_time
+		self.updated_feed_time = time
+		consume
 	end
 
 	def eat!(food)
@@ -214,19 +217,28 @@ class Dinosaur < Ohm::Model
 		save
 	end
 
-	def auto_heal!(time = ::Time.now.to_i)
+	def auto_heal(time = ::Time.now.to_i)
+		return false if current_hp == total_hp
 		dt = time - updated_hp_time
-		if dt < 1
+		if dt < HEALED_PER_SECOND
 			return false
 		else
-			d_hp = dt / 2
+			d_hp = dt / HEALED_PER_SECOND
 			c_hp = current_hp + d_hp
 			if c_hp > total_hp
 				c_hp = total_hp
 			end
-			self.sets :current_hp => c_hp,
+			c_hp
+		end
+	end
+
+	def auto_heal!(time = ::Time.now.to_i)
+		if auto_heal(time)
+			self.sets :current_hp => self.current_hp,
 								:updated_hp_time => time
 			return current_hp
+		else
+			return false
 		end
 	end
 

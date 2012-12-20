@@ -48,7 +48,8 @@ class Troops < Ohm::Model
 					dino
 				end
 			end.compact
-			army = army.blank? ? player.dinosaurs.to_a.select{|d| d.status > 0}[0, 5] : army
+			attacker_army = army.blank? ? player.dinosaurs.to_a.select{|d| d.status > 0}[0, 5] : army
+			defender_army = target.defense_troops
 
 			attacker = {
 				:owner_info => {
@@ -56,7 +57,7 @@ class Troops < Ohm::Model
 					:id => player_id.to_i
 				},
 				:buff_info => {},
-				:army => army
+				:army => attacker_army
 			}
 
 			defender = {
@@ -65,7 +66,7 @@ class Troops < Ohm::Model
 					:id => target.id
 				},
 				:buff_info => {},
-				:army => target.defense_troops
+				:army => defender_army
 			}
 
 			result = BattleModel.attack_calc(attacker, defender)

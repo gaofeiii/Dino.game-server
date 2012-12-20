@@ -22,6 +22,9 @@ class DinosaurController < ApplicationController
 	def feed
 		food = @player.foods.find(:type => params[:food_type].to_i).first
 
+		p "=== hunger_time: #{@dinosaur.hunger_time}"
+		p "=== feed_point: #{@dinosaur.feed_point}"
+
 		if (@dinosaur.hunger_time - @dinosaur.feed_point) < 10
 			render :json => {:error => "BABY_IS_FULL"} and return
 		end
