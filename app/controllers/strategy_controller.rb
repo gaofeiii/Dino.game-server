@@ -98,7 +98,9 @@ class StrategyController < ApplicationController
 											:target_id => target.id,
 											:start_time => Time.now.to_i,
 											:arrive_time => Time.now.to_i + 10.seconds,
-											:monster_type => target_monster_type
+											:monster_type => target_monster_type,
+											:target_x => target.x,
+											:target_y => target.y
 			target.set(:under_attack, 1)
 			params[:dinosaurs].each do |dino_id|
 				if Dinosaur.exists?(dino_id)
@@ -122,6 +124,12 @@ class StrategyController < ApplicationController
 	end
 
 	def get_battle_report
-		render_success(:report => @player.get_battle_report)
+		@player.troops.map(&:refresh!)
+		report = @player.get_battle_report_with_troops_id(params[:troops_id])
+		if report
+			render_success(report)
+		else
+			render_error(Error.types[:normal], "Report has been cleaned")
+		end
 	end
 end

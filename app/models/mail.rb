@@ -5,6 +5,11 @@ class Mail < Ohm::Model
 		:league => 3
 	}
 
+	SYS_TYPE = {
+		:normal => 1,
+		:battle_report => 2
+	}
+
 	include Ohm::DataTypes
 	include Ohm::Timestamps
 	include Ohm::Callbacks
@@ -18,6 +23,7 @@ class Mail < Ohm::Model
 	attribute :content
 	attribute :league_id
 	attribute :is_read, 	Type::Boolean
+	attribute :sys_mail_type, 	Type::Integer
 
 	index :mail_type
 	index :sender_name
@@ -29,21 +35,27 @@ class Mail < Ohm::Model
 		TYPE
 	end
 
-	def to_hash
+	def to_hash(*args)
 		hash = {
 			:id => id.to_i,
 			:sender => sender_name,
 			:receiver => receiver_name,
 			:title => title,
-			:content => content,
 			:time => created_at.to_i,
 			:is_read => is_read,
-			:mail_type => mail_type
+			:mail_type => mail_type,
+			:sys_mail_type => sys_mail_type
 		}
-		if mail_type == TYPE[:system]
-			hash[:sys_type] = 1
-		end
 		hash
+	end
+
+	def get_content
+		case sys_mail_type
+		when SYS_TYPE[:battle_report]
+			JSON.parse(content)
+		else
+			content
+		end
 	end
 
 	def sender

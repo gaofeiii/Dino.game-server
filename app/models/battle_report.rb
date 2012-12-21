@@ -1,22 +1,47 @@
+# Included by Player model.
+
 module BattleReport
 	module ClassMethods
 		
 	end
 	
 	module InstanceMethods
-		def battle_report_key
-			self.key[:battle_report]
+		def battle_report_key_with_time
+			self.key[:battle_report_with_time]
 		end
 
-		def save_battle_report(time, result)
-			result_json = result.is_a?(Hash) ? result.to_json : result
-			db.zadd(battle_report_key, time, result_json)
+		def battle_report_with_troops_key
+			self.key[:battle_report_with_troops]
+		end
+
+		def save_battle_report(troops_id, result)
+			result_json = result.to_json
+			tm = result['time']
+			battle_mail = Mail.create :mail_type => Mail::TYPE[:system],
+																:sys_mail_type => Mail::SYS_TYPE[:battle_report],
+																:receiver_name => nickname, 
+																:content => result_json,
+																:title => "Battle Report",
+																:sender_name => "System"
+			db.multi do |t|
+				t.zadd(battle_report_key_with_time, tm, battle_mail.id)
+				t.hset(battle_report_with_troops_key, troops_id, battle_mail.id)
+			end
 		end
 
 		# Get battle report in period: s_time to e_time.
-		def get_battle_report(s_time = '-inf', e_time = '+inf')
-			db.zrevrangebyscore(battle_report_key, e_time, s_time, :with_scores => true).map do |result|
-				re = JSON.parse(result[0]).merge('time' => result[1].to_i)
+		def get_battle_report_with_time(s_time = '-inf', e_time = '+inf')
+			db.zrevrangebyscore(battle_report_key_with_time, e_time, s_time).map do |mail_id|
+				mail = Mail[mail_id]
+			end.compact
+		end
+
+		# Return battle report: hash
+		def get_battle_report_with_troops_id(troops_id = 0)
+			battle_mail_id = db.hget(battle_report_with_troops_key, troops_id)
+			mail = Mail[battle_mail_id]
+			if mail
+				return mail.get_content
 			end
 		end
 

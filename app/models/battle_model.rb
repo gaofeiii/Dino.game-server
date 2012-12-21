@@ -153,12 +153,12 @@ class BattleModel
 					puts "$$ Defender win!!! $$"
 					result[:winner] = 'defender'
 					write_result(attacker, defender)
-					return result
+					return result.merge!(:time => Time.now.to_f)
 				elsif defender[:army].all_curr_hp.zero?
 					result[:winner] = 'attacker'
 					write_result(attacker, defender)
 					puts "$$ Attacker win!!! $$"
-					return result
+					return result.merge!(:time => Time.now.to_f)
 				end
 			end # End all rounds
 

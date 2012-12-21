@@ -33,6 +33,8 @@ class Player < Ohm::Model
 	attribute :session_id, 		Type::Integer
 	attribute :country_id, 		Type::Integer
 
+	attribute :locale
+
 	attribute :league_member_ship_id
 
 
@@ -55,7 +57,7 @@ class Player < Ohm::Model
 	
 	# indices
 	index :account_id
-	index :nickname
+	# index :nickname
 	index :level
 	index :experience
 	index :country_id
@@ -313,6 +315,13 @@ class Player < Ohm::Model
       # self.is_verified = true
     # end
     result
+  end
+
+  def locale
+  	if @locale.blank?
+  		@locale = 'cn'
+  	end
+  	@locale
   end
 
 	# Callbacks

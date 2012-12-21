@@ -2,7 +2,7 @@ class Dinosaur < Ohm::Model
 	STATUS = {:egg => 0, :infancy => 1, :adult => 2}
 	EVENTS = {:hatching => 1}
 	EMOTIONS = {:happy => 2, :normal => 1, :angry => 0}
-	COMSUME_PER_SECOND = 10
+	COMSUME_PER_SECOND = 5
 	HEALED_PER_SECOND = 10
 
 	include Ohm::DataTypes

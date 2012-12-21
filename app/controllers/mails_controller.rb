@@ -63,7 +63,8 @@ class MailsController < ApplicationController
 		last_report_time = params["last_report_time"]
 		last_report_time = last_report_time < 0 ? 0 : last_report_time
 		battle_report = @player.battle_report_mails(:last_report_time => "(#{last_report_time}")
-		render_success(:mails => (@player.all_mails(:last_id => params[:last_id]) + battle_report))
+		mails = @player.all_mails(:last_id => params[:last_id])
+		render_success(:mails => mails)
 	end
 
 	def read_mail
@@ -72,7 +73,20 @@ class MailsController < ApplicationController
 			render_error(Error.types[:normal], "Mail not exist") and return
 		end
 
-		render_success(@mail.to_hash)
+		result = {
+			:id => @mail.id,
+			:mail_type => @mail.mail_type,
+			:content => @mail.get_content
+		}
+		render_success(result)
+	end
+
+	def delete_mail
+		@mail = Mail[params[:mail_id]]
+		if @mail
+			@mail.delete
+		end
+		render_success
 	end
 
 	def mark_as_read

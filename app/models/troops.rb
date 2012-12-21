@@ -11,6 +11,8 @@ class Troops < Ohm::Model
 	attribute :start_time,	Type::Integer
 	attribute :arrive_time, Type::Integer
 	attribute :monster_type, Type::Integer
+	attribute :target_x,		Type::Integer
+	attribute :target_y,		Type::Integer
 
 	reference :player, Player
 
@@ -21,7 +23,9 @@ class Troops < Ohm::Model
 			:target_type => target_type,
 			:target_id => target_id.to_i,
 			:total_time => arrive_time - start_time,
-			:time_pass => Time.now.to_i - start_time
+			:time_pass => Time.now.to_i - start_time,
+			:x => target_x,
+			:y => target_y
 		}
 		if target.is_a?(Creeps)
 			hash[:monster_type] = monster_type
@@ -105,7 +109,7 @@ class Troops < Ohm::Model
 			army.each do |dino|
 				dino.set :is_attacking, 0
 			end
-			player.save_battle_report(arrive_time, result)
+			player.save_battle_report(self.id, result)
 			self.delete
 		end
 	end
