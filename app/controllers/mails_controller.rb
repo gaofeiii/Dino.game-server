@@ -60,10 +60,7 @@ class MailsController < ApplicationController
 
 	def check_new_mails
 		@player.troops.map(&:refresh!)
-		last_report_time = params["last_report_time"]
-		last_report_time = last_report_time < 0 ? 0 : last_report_time
-		battle_report = @player.battle_report_mails(:last_report_time => "(#{last_report_time}")
-		mails = @player.all_mails(:last_id => params[:last_id])
+		mails = @player.all_mails(:last_id => params[:last_id], :last_report_time => params[:last_report_time])
 		render_success(:mails => mails)
 	end
 

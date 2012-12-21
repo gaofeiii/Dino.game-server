@@ -74,7 +74,8 @@ class Troops < Ohm::Model
 			}
 
 			result = BattleModel.attack_calc(attacker, defender)
-			if result[:winner] = 'attacker'
+
+			if result[:winner] == 'attacker'
 				reward = case target_type
 				when BattleModel::TARGET_TYPE[:village]
 					rwd = {:wood => 1000, :stone => 2000, :gold_coin => 100, :items => []}
@@ -116,6 +117,8 @@ class Troops < Ohm::Model
 				dino.set :is_attacking, 0
 			end
 			player.save_battle_report(self.id, result)
+			p 'result', result
+			p "result time", result[:time]
 			self.delete
 		end
 	end

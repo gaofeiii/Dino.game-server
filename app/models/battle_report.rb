@@ -16,7 +16,7 @@ module BattleReport
 
 		def save_battle_report(troops_id, result)
 			result_json = result.to_json
-			tm = result['time']
+			tm = result[:time].to_i
 			battle_mail = Mail.create :mail_type => Mail::TYPE[:system],
 																:sys_mail_type => Mail::SYS_TYPE[:battle_report],
 																:receiver_name => nickname, 
@@ -32,6 +32,13 @@ module BattleReport
 		# Get battle report in period: s_time to e_time.
 		def get_battle_report_with_time(s_time = '-inf', e_time = '+inf')
 			db.zrevrangebyscore(battle_report_key_with_time, e_time, s_time).map do |mail_id|
+				mail = Mail[mail_id]
+			end.compact
+		end
+
+		def get_battle_report_with_mail_id(last_mail_id = -1)
+			p "last_mail_id: #{last_mail_id}"
+			db.zrevrange(battle_report_key_with_time, 0, last_mail_id).map do |mail_id|
 				mail = Mail[mail_id]
 			end.compact
 		end
