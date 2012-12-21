@@ -107,6 +107,7 @@ class Dinosaur < Ohm::Model
 	def hatch_speed_up!
 		if event_type == EVENTS[:hatching]
 			init_atts
+			self.current_hp = total_hp
 			save
 		else
 			false

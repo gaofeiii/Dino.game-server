@@ -43,7 +43,8 @@ class StrategyController < ApplicationController
 				cache = @player.guide_cache.merge(:set_defense => true)
 				@player.set :guide_cache, cache
 			end
-			render_success(:village => {:strategy => sta.to_hash})
+			data = {:player => {:village => {:strategy => sta.to_hash}}}
+			render_success(data)
 		end
 	end
 
@@ -108,9 +109,9 @@ class StrategyController < ApplicationController
 				end
 			end
 		end
-		if !@player.beginning_guide_finished && !@player.guide_cache['attack_monster']
-			@player.set :guide_cache, @player.guide_cache.merge('attack_monster' => true)
-		end
+		# if !@player.beginning_guide_finished && !@player.guide_cache['attack_monster']
+		# 	@player.set :guide_cache, @player.guide_cache.merge('attack_monster' => true)
+		# end
 		render :json => {
 			:message => Error.success_message,
 			:player => @player.to_hash(:troops)

@@ -27,12 +27,9 @@ class GuideController < ApplicationController
 		@player.guide_info.check_finished(q_index)
 
 		data = if @player.guide_info[q_index].finished?
-			puts "=== before wood: #{@player.village.wood}"
 			if @player.receive_guide_reward!(Player.beginning_guide_reward(q_index))
-				p "---- receieved reward", Player.beginning_guide_reward(q_index)
 				@player.guide_info[q_index].rewarded = true
 			end
-			puts "=== after: wood: #{@player.village.wood}"
 
 			if @player.guide_info.finish_all?
 				@player.beginning_guide_finished = true

@@ -192,6 +192,10 @@ class Player < Ohm::Model
 			when :resources
 				hash[:village] ||= {}
 				hash[:village].merge!(:resources => village.resources)
+			when :god
+				if not gods.blank?
+					hash[:god] = gods.first.to_hash
+				end
 			end
 
 		end

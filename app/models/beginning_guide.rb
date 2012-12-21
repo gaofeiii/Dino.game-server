@@ -29,7 +29,7 @@
 # player.guide_info.current_quest
 # => {:index=>2, :finished=>0, :rewarded=>0}
 module BeginningGuide
-	LAST_GUIDE_INDEX = 12
+	LAST_GUIDE_INDEX = 17
 	module ClassMethods
 		@@cache = Hash.new
 		@@reward = Hash.new
@@ -197,7 +197,7 @@ module BeginningGuideHelper
 		# 建造神庙
 		when 12
 			village_with_id.has_built_building?(Building.hashes[:temple])
-		# TODO: 供奉神灵
+		# 供奉神灵
 		when 13
 			ret = player.guide_cache['has_worshiped']
 			ret.nil? ? false : ret
@@ -217,7 +217,7 @@ module BeginningGuideHelper
 		when 17
 			village_with_id.has_built_building?(Building.hashes[:market])
 		else
-			true
+			false
 		end
 		quest.finished = sig
 	end

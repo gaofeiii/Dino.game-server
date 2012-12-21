@@ -104,7 +104,13 @@ class Troops < Ohm::Model
 					{}
 				end
 				player.receive!(reward)
+			end # End of winner reward
+
+			# Check beginning guide
+			if !player.beginning_guide_finished && !player.guide_cache['attack_monster']
+				player.set :guide_cache, player.guide_cache.merge('attack_monster' => true)
 			end
+			
 			result.merge!(:reward => reward)
 			army.each do |dino|
 				dino.set :is_attacking, 0

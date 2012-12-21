@@ -3,3 +3,5 @@
 
 cn:
   hello: "Hello 你妹"
+  error:
+   INVALID_PLAYER_ID: "错误的用户ID"

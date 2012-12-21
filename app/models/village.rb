@@ -264,7 +264,7 @@ class Village < Ohm::Model
 	end
 
 	def after_create
-		creeps = Creeps.create :x => x + 2, :y => y + 2, :is_quest_monster => true, :type => 1, :player_id => player_id
+		creeps = Creeps.create :x => x - 2, :y => y - 2, :is_quest_monster => true, :type => 1, :player_id => player_id
 		country.add_quest_monster(creeps.index)
 
 		self.mutex do
