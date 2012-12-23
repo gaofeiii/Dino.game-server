@@ -103,6 +103,14 @@ module OhmExtension
 		def _skip_empty(atts)
       atts
     end
+
+    def exists?
+    	if @id.nil?
+    		return false
+    	else
+    		self.class[@id].nil? ? false : true
+    	end
+    end
 	end
 	
 	def self.included(receiver)

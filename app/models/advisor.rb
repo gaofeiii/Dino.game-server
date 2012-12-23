@@ -14,7 +14,12 @@ class Advisor < Ohm::Model
 
 		def create_by_type_and_days(player_id, type, days = 1)
 			return false unless type.to_i.in?(TYPES.values)
-			return false if is_advisor?(player_id)
+			player = Player.new :id => player_id
+			player.get :player_type
+
+			if is_advisor?(player_id)
+				return false if player.player_type != Player::TYPE[:npc]
+			end
 
 			name, lvl, avatar_id = Player.gets(player_id, :nickname, :level, :avatar_id)
 			type_key = Advisor.key[:type][type]
@@ -43,8 +48,10 @@ class Advisor < Ohm::Model
 																:days => days,
 																:advisor_id => advisor_id,
 																:employer_id => employer_id
+				advisor = Player.new(:id => advisor_id)
+				advisor.get :player_type
 				db.multi do |t|
-					t.hdel(Advisor.key[:type][type], advisor_id)
+					t.hdel(Advisor.key[:type][type], advisor_id) if !advisor.is_npc?
 					t.hmset("Player:#{advisor_id}", :is_advisor, 1, :is_hired, 1)
 				end
 			end	

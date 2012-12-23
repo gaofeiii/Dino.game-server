@@ -7,17 +7,22 @@ class GodController < ApplicationController
 			render_error(Error.types[:normal], "Invalid god type") and return
 		end
 
+		god = @player.gods.first
 		cost = {:wood => 1000, :stone => 1000, :gold_coin => 100}
+
 		if @player.spend!(cost)
-			God.create(:type => params[:god_type], :level => 1, :start_time => Time.now.to_i, :player_id => @player.id)
-			if !@player.beginning_guide_finished && !@player.guide_cache['has_worshiped']
-				cache = @player.guide_cache.merge(:has_worshiped => true)
-				@player.set :guide_cache, cache
+			if god
+				god.set :type, params[:god_type]
+			else
+				God.create(:type => params[:god_type], :level => 1, :start_time => Time.now.to_i, :player_id => @player.id)
 			end
-			render_success(:player => @player.to_hash(:resources, :god))
-		else
-			render_error(Error.types[:normal], "Not enough resources")
 		end
+
+		if !@player.beginning_guide_finished && !@player.guide_cache['has_worshiped']
+			cache = @player.guide_cache.merge(:has_worshiped => true)
+			@player.set :guide_cache, cache
+		end
+		render_success(:player => @player.to_hash(:resources, :god))
 	end
 
 	# 取消供奉神灵

@@ -5,6 +5,7 @@ class Item < Ohm::Model
 
 	attribute :item_category, 	Type::Integer
 	attribute :item_type, 			Type::Integer
+	attribute :can_sell,				Type::Boolean
 	reference :player, :Player
 
 	class << self
@@ -53,7 +54,8 @@ class Item < Ohm::Model
 		{
 			:id => id.to_i,
 			:category => item_category,
-			:type => item_type
+			:type => item_type,
+			:can_sell => false
 		}
 	end
 end

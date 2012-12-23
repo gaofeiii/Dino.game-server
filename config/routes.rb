@@ -121,6 +121,9 @@ DinosaurGame::Application.routes.draw do
     post 'list'    => 'deals#list'
     post 'buy'     => 'deals#buy'
     post 'sell'    => 'deals#sell'
+    post 'my_selling_list' => 'deals#my_selling_list'
+    post 'cancel'  => 'deals#cancel_deal'
+    post 'my_items_list' => 'deals#my_items_list'
   end
 
   # 排行榜

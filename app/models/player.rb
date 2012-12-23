@@ -12,6 +12,12 @@ class Player < Ohm::Model
 
 	include RankModel
 
+	TYPE = {
+		:normal => 0,
+		:vip => 1,
+		:npc => 2
+	}
+
 	# Player的属性
 	attribute :account_id, 		Type::Integer
 	attribute :nickname
@@ -28,6 +34,8 @@ class Player < Ohm::Model
 	attribute :is_hired,			Type::Boolean
 	attribute :advisor_type,	Type::Integer
 	attribute :battle_power,	Type::Integer
+
+	attribute :player_type, 	Type::Integer
 	
 	attribute :village_id, 		Type::Integer
 	attribute :session_id, 		Type::Integer
@@ -61,6 +69,10 @@ class Player < Ohm::Model
 	index :level
 	index :experience
 	index :country_id
+
+	def is_npc?
+		player_type == TYPE[:npc]
+	end
 
 	def village
 		Village[village_id]
@@ -98,7 +110,7 @@ class Player < Ohm::Model
 		vil.gets(:wood, :stone)
 
 		db.multi do |t|
-			args.each do |att, val|
+			args.symbolize_keys.each do |att, val|
 				if att.in?([:gold_coin, :sun])
 					return false if send(att) < val || val < 0
 					t.hincrby(key, att, -val)
@@ -115,12 +127,11 @@ class Player < Ohm::Model
 	# player的receive!方法：
 	# 参数与返回值同spend!方法
 	def receive!(args = {})
-		p "=== In receive method args: ", args
 		vil = Village.new(:id => village_id)
 		vil.gets(:wood, :stone)
 		
 		db.multi do |t|
-			args.each do |att, val|
+			args.symbolize_keys.each do |att, val|
 				if att.in?([:gold_coin, :sun])
 					return false if val < 0
 					t.hincrby(key, att, val)
@@ -153,7 +164,7 @@ class Player < Ohm::Model
 			:player_power => battle_power
 		}
 		opts = if args.include?(:all)
-			args | [:troops, :specialties, :village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
+			args | [:god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
 		else
 			args
 		end
@@ -326,6 +337,10 @@ class Player < Ohm::Model
   		@locale = 'cn'
   	end
   	@locale
+  end
+
+  def my_selling_list
+  	p.deals
   end
 
 	# Callbacks

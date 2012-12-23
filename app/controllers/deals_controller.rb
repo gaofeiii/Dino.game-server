@@ -1,8 +1,11 @@
 class DealsController < ApplicationController
-	before_filter :validate_player, :only => [:buy, :sell]
+	before_filter :validate_player, :only => [:buy, :sell, :my_selling_list, :my_items_list]
 
 	def list
-		deals = Deal.all.sort_by(:created_at, :order => 'DESC', :limit => [0, 20])
+		# deals = Deal.all.sort_by(:created_at, :order => 'DESC', :limit => [0, 20])
+		# render_success(:deals => deals)
+		page = params[:page].to_i
+		deals = Deal.find(:status => Deal::STATUS[:selling], :category => params[:cat]).sort_by(:created_at, :order => 'DESC', :limit => [page, 20])
 		render_success(:deals => deals)
 	end
 
@@ -14,53 +17,141 @@ class DealsController < ApplicationController
 		end
 
 		deal.mutex(0.5) do
-			goods = case deal.type
-			when Deal::TYPES[:res]
-				if deal.res_type = Deal::RES_TYPES[:wood]
+			case deal.type
+			when Deal::CATEGORIES[:res]
+				goods = if deal.res_type = Deal::RES_TYPES[:wood]
 					{:wood => deal.count}
 				elsif deal.res_type = Deal::RES_TYPES[:stone]
 					{:stone => deal.count}
 				else
 					{}
 				end
-			when Deal::TYPES[:egg]
-				Item[deal.gid]
+				if !goods.blank?
+					@player.spend!(:gold_coin => price)
+					@player.receive!(goods)
+				end
+			when Deal::CATEGORIES[:egg]
+				i = Item[deal.gid]
+				i.update :player_id => @player.id
+			when Deal::CATEGORIES[:food]
+				food = @player.foods.find(:type => deal.type)
+				return nil if food.nil?
+				food.increase(:count, deal.count)
+			else
+				render_error(Error.types[:normal], "Invalid cate id") and return
 			end
-			@player.receive!(goods)
+
 			deal.set :status, Deal::STATUS[:closed]
 		end
 		render_success(:player => @player.to_hash(:resources, :items))
 	end
 
 	def sell
-		g_type = params[:type].to_i
-		goods = case g_type
-		when Deal.types[:res]
-			if params[:res_type] == Deal::TYPES[:wood]
-				{:wood => params[:count].to_i}
-			elsif params[:res_type] == Deal::TYPES[:stone]
-				{:stone => params[:count].to_i}
+		goods_cat = params[:cat]
+		goods_type = params[:type]
+
+		price = params[:price].to_f
+
+		case goods_cat
+		when Deal::CATEGORIES[:res]
+			type = params[:type]
+			res_name = if type == 1
+				'wood'
+			elsif type == 2
+				'stone'
 			else
-				{}
+				nil
 			end
-		when Deal.types[:egg]
-			{}
-		else
-			{}
+			count = params[:count].to_i
+			
+
+			error = if res_name.nil? || count <= 0 || price <= 0.0
+				"invalid resource type"
+			elsif count <= 0
+				"count should be more than zero"
+			elsif price <= 0.0
+				"price shoudl be more than zero"
+			else
+				nil
+			end
+			if error
+				render_error(Error.types[:normal], error) and return
+			end
+
+			if @player.spend!(res_name => count)
+				Deal.create :status => Deal::STATUS[:selling],
+										:category => goods_cat,
+										:type => goods_type,
+										:count => count,
+										:price => price * count,
+										:end_time => Time.now.to_i + 3.days,
+										:seller_id => @player.id
+			end
+		when Deal::CATEGORIES[:egg]
+			gid = params[:gid]
+			egg = Item[gid]
+			if egg.nil?
+				render_error(Error.types[:normal], "Invalid Item Id") and return
+			end
+			if !egg.is_egg?
+				render_error(Error.types[:normal], "It is not a egg") and return
+			end
+
+			Deal.create :status => Deal::STATUS[:selling],
+									:category => goods_cat,
+									:type => egg.item_type,
+									:count => 1,
+									:price => price,
+									:gid => gid,
+									:end_time => Time.now.to_i + 3.days,
+									:seller_id => @player.id
+		when Deal::CATEGORIES[:food]
+			type = params[:type].to_i
+			count = params[:count].to_i
+
+			error = if !type.in?(Dinosaur.const.keys)
+				"Invalid egg type"
+			elsif count <= 0
+				"count should be more than zero"
+			else
+				nil
+			end
+			if error
+				render_error(Error.types[:normal], error) and return
+			end
+
+			food = @player.foods.find(:type => type).first
+			if food.nil? || food.count < count
+				render_error(Error.types[:normal], "Not enough food") and return
+			else
+				food.increase(:count, -count)
+				Deal.create :status => Deal::STATUS[:selling],
+										:category => goods_cat,
+										:type => food.type,
+										:count => count,
+										:price => price * count,
+										:gid => gid,
+										:end_time => Time.now.to_i + 3.days,
+										:seller_id => @player.id
+			end
 		end
 
-		if goods.empty?
-			render_error(Error.types[:normal], "Invalid goods type") and return
-		end
+		render_success(:player => @player.to_hash(:resources, :items, :specialties))
+	end
 
-		if @player.spend!(goods)
-			Deal.create :status => 1,
-									:type => params[:type],
-									:res_type => params[:res_type],
-									:count => params[:count],
-									:gid => params[:gid],
-									:end_time => Time.now.to_i + 7.days
+	def my_items_list
+		render_success(:player => @player.to_hash(:resources, :items, :specialties))
+	end
+
+	def my_selling_list
+		render_success(:deals => @player.deals)
+	end
+
+	def cancel_deal
+		deal = Deal[params[:deal_id]]
+		if !deal.nil?
+			deal.cancel!
+			render_success(:deals => deal.seller.deals.to_a)
 		end
-		render_success(:player => @player.to_hash(:resources, :items))		
 	end
 end

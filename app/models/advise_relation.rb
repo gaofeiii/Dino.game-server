@@ -11,7 +11,7 @@ class AdviseRelation < Ohm::Model
 
 	attribute :advisor_id
 	attribute :employer_id
-	unique :advisor_id
+	# unique :advisor_id
 
 	index :employer_id
 	index :advisor_id

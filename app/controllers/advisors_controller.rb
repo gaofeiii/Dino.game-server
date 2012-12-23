@@ -29,8 +29,10 @@ class AdvisorsController < ApplicationController
 			return
 		end
 
-		is_adv, is_hired = Player.gets(params[:player_id], :is_advisor, :is_hired)
-		if is_adv.to_i == 1 || is_hired.to_i == 1
+		advisor = Player.new(:id => params[:player_id])
+		advisor.gets(:is_advisor, :is_hired, :player_type)
+
+		if !advisor.is_npc? && advisor.is_advisor && advisor.is_hired
 			render :json => {
 				:message => Error.failed_message,
 				:error_type => Error.types[:normal],
@@ -67,12 +69,16 @@ class AdvisorsController < ApplicationController
 		# adv_info:
 		# => [name, level, days, avatar_id]
 		adv_info = Advisor.get(params[:type], params[:advisor_id])
-
+		advisor = Player.new(:id => params[:advisor_id])
+		advisor.gets(:player_type)
 		err = ''
-		if is_adv.to_i == 0 || adv_info.blank?
-			err = Error.format_message("advisor not exist")
-		elsif is_hired.to_i == 1
-			err = Error.format_message("advisor has been hired")
+
+		if !advisor.is_npc?
+			if is_adv.to_i == 0 || adv_info.blank?
+				err = Error.format_message("advisor not exist")
+			elsif is_hired.to_i == 1
+				err = Error.format_message("advisor has been hired")
+			end
 		end
 
 		if not err.empty?
