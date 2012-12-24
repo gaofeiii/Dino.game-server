@@ -26,6 +26,7 @@ class Mail < Ohm::Model
 	attribute :sys_mail_type, 	Type::Integer
 
 	index :mail_type
+	index :sys_mail_type
 	index :sender_name
 	index :receiver_name
 	index :league_id

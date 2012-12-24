@@ -5,6 +5,7 @@ require "#{Rails.root}/const/specialty_const.rb"
 ITEM_CATEGORY = {
 	:egg => 1,
 	:specialty => 2,
+	:scoll => 3
 }
 
 ITEMS = {

@@ -144,7 +144,7 @@ DinosaurGame::Application.routes.draw do
   scope :path => 'shopping', :as => 'shopping' do
     post 'buy_resource'     => 'shopping#buy_resource'
     post 'buy_gems'         => 'shopping#buy_gems'
-    post 'buy_item'         => 'shopping#buy_item'
+    post 'buy'              => 'shopping#buy'
   end
 
   root :to => 'players#deny_access'

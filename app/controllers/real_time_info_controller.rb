@@ -5,7 +5,8 @@ class RealTimeInfoController < ApplicationController
 			:data => {
 				:buildings => Building.cost,
 				:technologies => Technology.cost,
-				:guide_reward => Player.beginning_guide_reward
+				:guide_reward => Player.beginning_guide_reward,
+				:shopping_list => Shopping.list
 			}
 		}
 			

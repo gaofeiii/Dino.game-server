@@ -340,7 +340,11 @@ class Player < Ohm::Model
   end
 
   def my_selling_list
-  	p.deals
+  	deals
+  end
+
+  def find_food_by_type(type)
+  	foods.find(:type => type).first
   end
 
 	# Callbacks
