@@ -103,17 +103,52 @@ module DailyQuest
 		module SingleQuestMethods
 
 		end
+
+		def update_daily_quest_status!
+			self.daily_quest.each do |quest|
+				case quest[:number]
+				when 1
+					quest[:finished_steps] = self.daily_quest_cache[:research_times]
+				when 2
+					quest[:finished_steps] = self.daily_quest_cache[:sell_woods]
+				when 3
+					quest[:finished_steps] = self.daily_quest_cache[:hatch_dinosaurs]
+				when 4
+					quest[:finished_steps] = self.daily_quest_cache[:occupy_gold_mines]
+				when 5
+					quest[:finished_steps] = self.daily_quest_cache[:kill_monsters]
+				when 6
+					quest[:finished_steps] = self.daily_quest_cache[:research_times]
+				when 7
+					quest[:finished_steps] = self.daily_quest_cache[:sell_woods]
+				when 8
+					quest[:finished_steps] = self.daily_quest_cache[:hatch_dinosaurs]
+				when 9
+					quest[:finished_steps] = self.daily_quest_cache[:occupy_gold_mines]
+				when 10
+					quest[:finished_steps] = self.daily_quest_cache[:kill_monsters]
+				end
+			end
+			self.set :daily_quest, self.daily_quest.to_json
+		end
 		
-		def update_daily_quest
+		def reset_daily_quest
 			if daily_quest_updated_time < Time.now.beginning_of_day.to_i
 				# DO update!!!
 				self.daily_quest = []
-				self.daily_quest_cache = {}
+				self.daily_quest_cache = {
+					:hatch_dinosaurs => 0,
+					:sell_woods => 0,
+					:sell_stones => 0,
+					:kill_monsters => 0,
+					:occupy_gold_mines => 0,
+					:research_times => 0
+				}
 
 				new_quests_ids = self.class.random_daily_quests_by_level_range(:max => level, :limit => 5)
 				self.daily_quest = new_quests_ids.map do |q_id|
 					q_info = self.class.find_daily_quest_info_by_index(q_id)
-					{:number => q_id, :rewarded => false, :finshed_steps => 0, :total_steps => q_info[:total_steps]}
+					{:number => q_id, :rewarded => false, :finished_steps => 0, :total_steps => q_info[:total_steps]}
 				end
 
 				self.daily_quest_updated_time = Time.now.to_i
@@ -121,10 +156,12 @@ module DailyQuest
 			end
 		end
 
-		def update_daily_quest!
-			if update_daily_quest
+		def reset_daily_quest!
+			if reset_daily_quest
 				self.sets :daily_quest => daily_quest.to_json,
-									:daily_quest_cache => daily_quest_cache.to_json
+									:daily_quest_cache => daily_quest_cache.to_json,
+									:daily_quest_updated_time => daily_quest_updated_time,
+									:finish_daily_quest => 0
 			end
 		end
 
@@ -135,6 +172,7 @@ module DailyQuest
 			end
 		end
 
+		# Rewrite the "get" method of attribute.
 		def daily_quest
 			if @attributes[:daily_quest].kind_of?(Array)# && @attributes[:daily_quest].any?
 				return @attributes[:daily_quest]
@@ -150,8 +188,22 @@ module DailyQuest
 			end
 		end
 
+		# Rewrite the "get" method of attribute.
+		def daily_quest_cache
+			if @attributes[:daily_quest_cache].kind_of?(Hash)
+				return @attributes[:daily_quest_cache]
+			else
+				@attributes[:daily_quest_cache] = if @attributes[:daily_quest_cache].nil?
+					{}
+				else
+					JSON(@attributes[:daily_quest_cache]).deep_symbolize_keys
+				end
+			end
+		end
+
 		def save!
-			self.daily_quest = self.daily_quest.to_json
+			self.daily_quest = daily_quest.to_json
+			self.daily_quest_cache = daily_quest_cache.to_json
 			super
 		end
 
@@ -160,9 +212,11 @@ module DailyQuest
 	
 	def self.included(model)
 		model.attribute :daily_quest
-		model.attribute :daily_quest_cache, Ohm::DataTypes::Type::Hash
+		model.attribute :daily_quest_cache
+		model.attribute :finish_daily_quest,		Ohm::DataTypes::Type::Boolean
 		model.class_eval do
 			remove_method :daily_quest
+			remove_method :daily_quest_cache
 		end
 		model.attribute :daily_quest_updated_time, Ohm::DataTypes::Type::Integer
 		model.extend         ClassMethods

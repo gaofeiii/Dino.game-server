@@ -2,7 +2,8 @@ class DailyQuestController < ApplicationController
 	before_filter :validate_player, :only => [:refresh, :get_reward]
 
 	def refresh
-		@player.update_daily_quest!
+		@player.update_daily_quest_status!
+		@player.reset_daily_quest!
 		render_success(:player => @player.to_hash(:daily_quest))
 	end
 
