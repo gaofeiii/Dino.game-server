@@ -45,6 +45,8 @@ class Troops < Ohm::Model
 	end
 
 	def refresh!
+		return if target.nil?
+		self.dissolve!
 		if Time.now.to_i >= arrive_time
 			army = dinosaurs.map do |dino_id|
 				dino = Dinosaur[dino_id]
@@ -124,6 +126,12 @@ class Troops < Ohm::Model
 	end
 
 	def dissolve!
+		self.dinosaurs.each do |dino_id|
+			dino = Dinosaur[dino_id]
+			if dino
+				dino.set :is_attacking, 0
+			end
+		end
 		delete
 	end
 

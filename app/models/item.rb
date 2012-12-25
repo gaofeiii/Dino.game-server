@@ -15,6 +15,7 @@ class Item < Ohm::Model
 		end
 
 		def types(cat = 0)
+			p "cat: #{cat}"
 			if cat == 0
 				return []
 			else
