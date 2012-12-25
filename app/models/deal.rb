@@ -18,7 +18,7 @@ class Deal < Ohm::Model
 		:food => 3
 	}
 
-	TYPES = {
+	RES_TYPES = {
 		CATEGORIES[:res] => {
 			:wood => 1,
 			1 => :wood,

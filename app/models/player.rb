@@ -12,6 +12,8 @@ class Player < Ohm::Model
 
 	include RankModel
 
+	include DailyQuest
+
 	TYPE = {
 		:normal => 0,
 		:vip => 1,
@@ -207,6 +209,9 @@ class Player < Ohm::Model
 				if not gods.blank?
 					hash[:god] = gods.first.to_hash
 				end
+			when :daily_quest
+				update_daily_quest!
+				hash[:daily_quests] = daily_quests_full_info
 			end
 
 		end

@@ -12,6 +12,7 @@ class SessionsController < ApplicationController
 		result = trying(:server_id => params[:server_id])
 		data = if result[:success]
 			player = create_player(result[:account_id])
+			player.update_daily_quest!
 			Rails.logger.debug("*** New Player_id:#{player.id} ***")
 			{
 				:message => Error.success_message, 
@@ -43,6 +44,7 @@ class SessionsController < ApplicationController
 			else
 				@player.set :device_token, @device_token
 				@player.update_resource!
+				@player.update_daily_quest!
 			end
 			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all)})
 		else
@@ -63,6 +65,7 @@ class SessionsController < ApplicationController
 		if result[:success]
 			begin
 				@player = create_player(result[:account_id], params[:username])
+				@player.update_daily_quest!
 				data.merge!({:message => 'SUCCESS', :player => @player.to_hash(:all)})
 			rescue Exception => e
 				data.merge!({:message => Error.format_message(e.to_s)})

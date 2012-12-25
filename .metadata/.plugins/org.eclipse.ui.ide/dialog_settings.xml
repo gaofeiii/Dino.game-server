@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<list key="installedFeatures">
+		<item value="com.aptana.feature:3.0.0.1277330550-8L48b9L6rD3m9Ve9040234995BA2"/>
+		<item value="com.aptana.php.feature:3.0.0.1277316288-7D--7BBQQEAHEQL09M59cAM7sE4n"/>
+		<item value="com.aptana.radrails.feature.rcp:3.0.0.201006241248-7e7W8kFDaG6K3IBGvo0_iyFOnUFG"/>
+		<item value="org.eclipse.help:1.1.2.R35x_v20100119-7e7eFAnFEx2X_fZltJhDjz-D"/>
+		<item value="org.eclipse.platform:3.5.2.R35x_v20100210-0800-9hEiFzmFst-TiEn9hNYgDWg1XN8ulH_JvCNGB"/>
+		<item value="org.eclipse.rcp:3.5.2.R35x_v20100119-9SA0FxwFnoCU5XxWItFdXXb27BA6"/>
+		<item value="org.radrails.rails.feature:3.0.0.201006241242-7A--7ELIIIPQhhZSb-eWz-fwgU6T"/>
+	</list>
+	<section name="org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog">
+		<item value="false" key="ShowDerived"/>
+		<item value="true" key="ShowStatusLine"/>
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;workingSet workingSetName=&quot;&quot;/&gt;" key="WorkingSet"/>
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;History&gt;&#x0A;&lt;historyRootNode/&gt;&#x0A;&lt;/History&gt;" key="History"/>
+		<section name="DialogBoundsSettings">
+			<item value="600" key="DIALOG_WIDTH"/>
+			<item value="137" key="DIALOG_Y_ORIGIN"/>
+			<item value="300" key="DIALOG_X_ORIGIN"/>
+			<item value="500" key="DIALOG_HEIGHT"/>
+			<item value="1|Lucida Grande|11.0|0|COCOA|1|LucidaGrande" key="DIALOG_FONT_NAME"/>
+		</section>
+	</section>
+	<section name="ExternalProjectImportWizard">
+	</section>
+	<section name="NewWizardAction">
+	</section>
+</section>

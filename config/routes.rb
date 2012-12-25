@@ -147,6 +147,12 @@ DinosaurGame::Application.routes.draw do
     post 'buy'              => 'shopping#buy'
   end
 
+  # 日常任务
+  scope :path => 'daily_quest', :as => 'daily_quest' do
+    post 'refresh'   => 'daily_quest#refresh'
+    post 'get_reward' => 'daily_quest#get_reward'
+  end
+
   root :to => 'players#deny_access'
 
   

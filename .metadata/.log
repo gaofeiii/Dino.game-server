@@ -1,0 +1,50 @@
+!SESSION 2012-12-25 10:39:46.070 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_37
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=zh_CN
+Framework arguments:  -keyring /Users/gaofei/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -data /Users/gaofei/magic/dinosaur/game-server/dinosaur-game -keyring /Users/gaofei/.eclipse_keyring -consoleLog -showlocation
+
+!ENTRY org.eclipse.osgi 2 1 2012-12-25 10:39:51.291
+!MESSAGE NLS unused message: SingleProjectView_CaseSensitive in: com.aptana.explorer.internal.ui.messages
+
+!ENTRY org.eclipse.core.net 1 0 2012-12-25 10:39:52.250
+!MESSAGE System property http.nonProxyHosts has been set to localhost|*.localhost|127.0.0.1|0.0.0.0 by an external source. This value will be overwritten using the values from the preferences
+
+!ENTRY com.aptana.db 4 0 2012-12-25 10:40:03.688
+!MESSAGE IO Exception when contacting server
+!STACK 0
+java.io.IOException: Server returned HTTP response code: 500 for URL: https://ping.aptana.com/ping.php
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1436)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:234)
+	at com.aptana.usage.PingStartup.sendUpdate(PingStartup.java:277)
+	at com.aptana.usage.PingStartup.updateAnonymousId(PingStartup.java:148)
+	at com.aptana.usage.PingStartup.access$0(PingStartup.java:106)
+	at com.aptana.usage.PingStartup$1.run(PingStartup.java:92)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2012-12-25 10:40:07.716 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_37
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=zh_CN
+Framework arguments:  -keyring /Users/gaofei/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -data /Users/gaofei/magic/dinosaur/game-server/dinosaur-game -keyring /Users/gaofei/.eclipse_keyring -consoleLog -showlocation
+
+!ENTRY org.eclipse.core.net 1 0 2012-12-25 10:40:12.456
+!MESSAGE System property http.nonProxyHosts has been set to localhost|*.localhost|127.0.0.1|0.0.0.0 by an external source. This value will be overwritten using the values from the preferences
+
+!ENTRY org.eclipse.osgi 2 1 2012-12-25 10:40:19.823
+!MESSAGE NLS unused message: SingleProjectView_CaseSensitive in: com.aptana.explorer.internal.ui.messages
+
+!ENTRY com.aptana.db 4 0 2012-12-25 10:40:24.152
+!MESSAGE IO Exception when contacting server
+!STACK 0
+java.io.IOException: Server returned HTTP response code: 500 for URL: https://ping.aptana.com/ping.php
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1436)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:234)
+	at com.aptana.usage.PingStartup.sendUpdate(PingStartup.java:277)
+	at com.aptana.usage.PingStartup.updateAnonymousId(PingStartup.java:148)
+	at com.aptana.usage.PingStartup.access$0(PingStartup.java:106)
+	at com.aptana.usage.PingStartup$1.run(PingStartup.java:92)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)

@@ -78,7 +78,7 @@ module ShoppingConst
 				item_cat = book.cell(i, 'F').to_i
 				item_type = book.cell(i, 'G').to_i
 
-				record = {:sid => sid, :count => 1, :gem => gem_price, :cat => item_cat, :type => item_type}
+				record = {:sid => sid, :count => count, :gem => gem_price, :cat => item_cat, :type => item_type}
 				case name
 				when "恐龙蛋"
 					@@all_goods[:eggs] << record

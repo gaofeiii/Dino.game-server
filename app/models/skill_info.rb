@@ -13,7 +13,7 @@ class SkillInfo
 
 		def load!
 			@@skills.clear
-			book = Excelx.new "#{Rails.root}/const/game_numerics/dinosaurs.xlsx"
+			book = Excelx.new "#{Rails.root}/const/dinosaurs.xlsx"
 			book.default_sheet = 'skills'
 
 			2.upto(book.last_row) do |i|
