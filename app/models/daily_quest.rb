@@ -104,6 +104,21 @@ module DailyQuest
 
 		end
 
+		def find_quest_by_index(idx)
+			self.daily_quest.each do |d_quest|
+				if d_quest[:number] == idx
+					return d_quest
+				end
+			end
+		end
+
+		def set_rewarded(idx)
+			quest = find_quest_by_index(idx)
+			if quest && quest[:total_steps] > quest[:finished_steps]
+				quest[:rewarded] = true
+			end
+		end
+
 		def update_daily_quest_status!
 			self.daily_quest.each do |quest|
 				case quest[:number]
