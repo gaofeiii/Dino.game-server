@@ -5,10 +5,14 @@ class Resource
 	GEM = 4
 
 	TYPE = {
-		:wood => WOOD, 
+		:wood => WOOD,
+		WOOD => :wood,
 		:stone => STONE,
+		STONE => :stone,
 		:gold_coin => GOLD_COIN,
-		:gem => GEM
+		GOLD_COIN => :gold_coin,
+		:sun => GEM,
+		GEM => :sun
 	}
 
 	def self.types

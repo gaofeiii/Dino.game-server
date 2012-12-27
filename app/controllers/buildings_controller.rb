@@ -73,7 +73,7 @@ class BuildingsController < ApplicationController
 		data = {
 			:player => @player.to_hash.merge(
 				:village => @player.village.to_hash.merge(
-					:buildings => [@building.to_hash]
+					:buildings => [@building.to_hash(:harvest_info)]
 				)
 			)
 		}
@@ -82,7 +82,7 @@ class BuildingsController < ApplicationController
 
 	def complete
 		@building.update_status!
-		render_success(:player => {:village => {:buildings => [@building.to_hash]}})
+		render_success(:player => {:village => {:buildings => [@building.to_hash(:harvest_info)]}})
 	end
 
 	def move
@@ -119,16 +119,30 @@ class BuildingsController < ApplicationController
 			render_error(Error.types[:normal], "This building cannot be harvested") and return
 		end
 		@building.update_harvest
-		@player.receive_food!(@building.harvest_type, @building.harvest_count)
+		if @building.is_lumber_mill? || @building.is_quarry?
+			res = Resource::TYPE[@building.harvest_type]
+			@player.receive!(res => @building.harvest_count)
+		elsif @building.is_collecting_farm? || @building.is_hunting_field?
+			@player.receive_food!(@building.harvest_type, @building.harvest_count)
+		end
 
 		now_time = ::Time.now.to_i
 		@building.harvest_count = 0
 		@building.harvest_receive_time = @building.harvest_updated_time
 		@building.harvest_updated_time = now_time
-		if now_time > @building.harvest_start_time + Building::HARVEST_CHANGE_TIME
-			@building.harvest_type = rand(1..4)
-			@building.harvest_start_time = now_time
+
+		if @building.is_collecting_farm?
+			if now_time > @building.harvest_start_time + Building::HARVEST_CHANGE_TIME
+				@building.harvest_type = rand(1..4)
+				@building.harvest_start_time = now_time
+			end
+		elsif @building.is_hunting_field?
+			if now_time > @building.harvest_start_time + Building::HARVEST_CHANGE_TIME
+				@building.harvest_type = rand(5..8)
+				@building.harvest_start_time = now_time
+			end
 		end
+
 		@building.save
 
 		data = {:player => @player.to_hash(:resources, :specialties)}

@@ -315,9 +315,6 @@ class Player < Ohm::Model
 		village.buildings.find(:type => Building.hashes[:workshop]).size
 	end
 
-	def update_resource!
-		self.village.refresh_resource!
-	end
 
 	def validate_iap(rcp)
   	uri = URI("https://sandbox.itunes.apple.com/verifyReceipt")

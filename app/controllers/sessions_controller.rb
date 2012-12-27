@@ -42,7 +42,6 @@ class SessionsController < ApplicationController
 				@player = create_player(rcv_msg[:account_id])
 			else
 				@player.set :device_token, @device_token
-				@player.update_resource!
 			end
 			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all)})
 		else

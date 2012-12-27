@@ -81,7 +81,6 @@ class Technology < Ohm::Model
 				self.start_time = 0
 				self.finish_time = 0
 				self.save
-				self.village.refresh_resource!
 			end
 		end
 		self

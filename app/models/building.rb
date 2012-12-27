@@ -82,12 +82,12 @@ class Building < Ohm::Model
 			:total_time => HARVEST_AVAILABLE_TIME,
 			:count => harvest_count
 		}
-		if resource_type > 0
-			hash[:resource_type] = resource_type
+		if is_collecting_farm? || is_hunting_field?
+			hash[:food_type] = harvest_type
 		end
 
-		if harvest_type > 0
-			hash[:food_type] = harvest_type
+		if is_lumber_mill? || is_quarry?
+			hash[:res_type] = harvest_type
 		end
 		hash
 	end
@@ -116,7 +116,32 @@ class Building < Ohm::Model
 			end
 			self
 		when Building.hashes[:hunting_field]
-			
+			produce_rate = HARVEST_AVAILABLE_TIME # TODO
+			delta_t = now_time - harvest_updated_time
+			count_inc = delta_t / produce_rate # 5.minutes
+			if count_inc > 0
+				self.harvest_updated_time = now_time - delta_t % produce_rate #5.minutes
+				self.harvest_count += count_inc
+			end
+			self
+		when Building.hashes[:lumber_mill]
+			produce_rate = 0.5 # TODO
+			delta_t = now_time - harvest_updated_time
+			count_inc = delta_t / produce_rate # 5.minutes
+			if count_inc > 0
+				self.harvest_updated_time = now_time - delta_t % produce_rate #5.minutes
+				self.harvest_count += count_inc.to_i
+			end
+			self
+		when Building.hashes[:quarry]
+			produce_rate = 0.5 # TODO
+			delta_t = now_time - harvest_updated_time
+			count_inc = delta_t / produce_rate # 5.minutes
+			if count_inc > 0
+				self.harvest_updated_time = now_time - delta_t % produce_rate #5.minutes
+				self.harvest_count += count_inc.to_i
+			end
+			self
 		else
 			return false
 		end
