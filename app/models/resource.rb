@@ -1,7 +1,17 @@
 class Resource
-	TYPES = {:wood => 1, :stone => 2}
+	WOOD = 1
+	STONE = 2
+	GOLD_COIN = 3
+	GEM = 4
+
+	TYPE = {
+		:wood => WOOD, 
+		:stone => STONE,
+		:gold_coin => GOLD_COIN,
+		:gem => GEM
+	}
 
 	def self.types
-		TYPES
+		TYPE
 	end
 end

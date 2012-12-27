@@ -19,6 +19,10 @@ module BuildingConst
 
 		alias info const
 
+		def resource_building_types
+			[2, 3, 4, 5]
+		end
+
 		def cost(type = nil)
 			if @@building_cost.blank?
 				info.each do |key, val|

@@ -1,8 +1,8 @@
 class BuildingsController < ApplicationController
 
 	before_filter :validate_village, :only => [:create]
-	before_filter :validate_player, :only => [:speed_up]
-	before_filter :validate_building, :only => [:move, :complete, :destroy]
+	before_filter :validate_player, :only => [:speed_up, :harvest]
+	before_filter :validate_building, :only => [:move, :complete, :destroy, :harvest]
 
 	def create
 		@player = @village.player
@@ -40,7 +40,6 @@ class BuildingsController < ApplicationController
 				:error => Error.format_message('NOT_ENOUGH_RESOURCES')
 			}
 		end
-
 	end
 
 	def speed_up
@@ -73,7 +72,6 @@ class BuildingsController < ApplicationController
 		end
 
 		render :json => {:message => Error.success_message, :player => @player.to_hash(:village)}
-
 	end
 
 	def complete
@@ -108,5 +106,25 @@ class BuildingsController < ApplicationController
 				:error => Error.format_message(err)
 			}
 		end
+	end
+
+	def harvest
+		if @building.type != Building.hashes[:collecting_farm] || @building.type != Building.hashes[:hunting_field]
+			render_error(Error.types[:normal], "This building cannot be harvested") and return
+		end
+
+		@player.receive_food!(@building.harvest_type, @building.harvest_count)
+		now_time = ::Time.now.to_i
+		@building.harvest_count = 0
+		@building.harvest_updated_time = now_time
+		if now_time > harvest_start_time
+			@building.harvest_type = rand(1..4)
+			@building.harvest_start_time = now_time
+		end
+		@building.update_harvest
+		@building.save
+
+		data = {:player => @player.to_hash(:village, :specialties)}
+		render_success(data)
 	end
 end

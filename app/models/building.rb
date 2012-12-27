@@ -17,6 +17,13 @@ class Building < Ohm::Model
 	attribute :start_building_time, 	Type::Integer
 	attribute :time, Type::Integer
 
+	# Farm attributes:
+	attribute :harvest_start_time, 		Type::Integer
+	attribute :harvest_updated_time,	Type::Integer
+	attribute :harvest_type,					Type::Integer	# Specialty(Item category: 2)
+	attribute :resource_type,					Type::Integer
+	attribute :harvest_count,					Type::Integer
+
 	index :type
 	index :status
 	index :village_id
@@ -45,7 +52,10 @@ class Building < Ohm::Model
 	end
 
 	def to_hash
-		{
+		if is_resource_building?
+			update_harvest
+		end
+		hash = {
 			:id => id.to_i,
 			:type => type,
 			:level => level,
@@ -55,6 +65,28 @@ class Building < Ohm::Model
 			:x => x,
 			:y => y
 		}
+		if [Building.hashes[:collecting_farm], Building.hashes[:hunting_field]].include?(type)
+			hash[:harvest_info] = harvest_info
+		end
+		hash
+	end
+
+	def harvest_info
+		pass_time = ::Time.now.to_i - harvest_start_time
+		pass_time = pass_time > 2.hours ? 2.hours : pass_time
+		hash = {
+			:time_pass => pass_time,
+			:total_time => 2.hours,
+			:count => harvest_count
+		}
+		if resource_type > 0
+			hash[:resource_type] = resource_type
+		end
+
+		if harvest_type > 0
+			hash[:food_type] = harvest_type
+		end
+		hash
 	end
 
 	def player_id
@@ -68,10 +100,46 @@ class Building < Ohm::Model
 		db.smembers("Technology:indices:player_id:#{player_id}")
 	end
 
+	def is_resource_building?
+		Building.resource_building_types.include?(self.type)
+	end
+
+	def update_harvest
+		now_time = ::Time.now.to_i
+		case type
+		when Building.hashes[:collecting_farm]
+			delta_t = now_time - harvest_updated_time
+			count_inc = delta_t / 5.minutes
+			if count_inc > 0
+				self.harvest_updated_time = now_time - delta_t % 5.minutes
+				self.harvest_count += count_inc
+			end
+			self
+		when Building.hashes[:hunting_field]
+			
+		end
+	end
+
 	protected
 
 	def before_create
-		self.start_building_time = Time.now.utc.to_i
+		self.start_building_time = ::Time.now.utc.to_i
+
+		if self.is_resource_building?
+			self.harvest_start_time = ::Time.now.to_i
+			self.harvest_updated_time = ::Time.now.to_i
+
+			case type
+			when Building.hashes[:collecting_farm]
+				self.harvest_type = rand(1..4)
+			when Building.hashes[:hunting_field]
+				self.harvest_type = rand(5..8)
+			when Building.hashes[:lumber_mill]
+				self.harvest_type = Resource::WOOD
+			when Building.hashes[:quarry]
+				self.harvest_type = Resource::STONE
+			end
+		end
 	end
 
 	def after_save

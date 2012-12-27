@@ -16,6 +16,7 @@ class ItemsController < ApplicationController
 			end
 
 			if !@player.finish_daily_quest
+				@player.daily_quest_cache[:hatch_dinosaurs] ||= 0
 				@player.daily_quest_cache[:hatch_dinosaurs] += 1
 				@player.set :daily_quest_cache, @player.daily_quest_cache.to_json
 			end

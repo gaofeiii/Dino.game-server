@@ -18,6 +18,16 @@ ITEMS = {
 		}
 	},
 	2 => SPECIALTIES,
+	3 => {
+		1 => {
+			:type => 1,
+			:level => 1
+		},
+		2 => {
+			:type => 2,
+			:level => 1
+		}
+	}
 }
 
 book = Excelx.new("#{Rails.root}/const/dinosaurs.xlsx")

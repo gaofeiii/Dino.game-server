@@ -98,7 +98,7 @@ class StrategyController < ApplicationController
 											:target_type => target_type,
 											:target_id => target.id,
 											:start_time => Time.now.to_i,
-											:arrive_time => Time.now.to_i + 10.seconds,
+											:arrive_time => Time.now.to_i + 2.seconds,
 											:monster_type => target_monster_type,
 											:target_x => target.x,
 											:target_y => target.y
