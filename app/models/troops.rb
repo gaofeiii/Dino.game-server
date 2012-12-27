@@ -60,7 +60,9 @@ class Troops < Ohm::Model
 			attacker = {
 				:owner_info => {
 					:type => 'Player',
-					:id => player_id.to_i
+					:id => player_id.to_i,
+					:name => player.nickname,
+					:avatar_id => player.avatar_id
 				},
 				:buff_info => {},
 				:army => attacker_army

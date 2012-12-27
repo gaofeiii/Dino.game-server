@@ -75,7 +75,7 @@ class Village < Ohm::Model
 		}
 
 		options = if args.include?(:all)
-			args + [:buildings, :strategy]
+			args + [:strategy, :buildings_with_harvest]
 		else
 			args
 		end
@@ -84,6 +84,8 @@ class Village < Ohm::Model
 			case arg
 			when :buildings
 				hash[:buildings] = buildings.to_a.map(&:update_status!).map(&:to_hash)
+			when :buildings_with_harvest
+				hash[:buildings] = buildings.to_a.map(&:update_status!).map { |b| b.to_hash(:harvest_info) }
 			when :strategy
 				hash[:strategy] = strategy.try(:to_hash)
 			end

@@ -2,6 +2,7 @@
 module BuildingConst
 
 	module ClassMethods
+		HELLO = "world"
 		@@building_const 	= Hash.new
 		@@building_types 	= Array.new
 		@@building_keys  	= Array.new
@@ -90,6 +91,7 @@ module BuildingConst
 		def property
 			self.class.info[type][:property]
 		end
+
 	end
 	
 	def self.included(receiver)

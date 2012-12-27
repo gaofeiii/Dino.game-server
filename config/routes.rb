@@ -24,6 +24,7 @@ DinosaurGame::Application.routes.draw do
     post 'destroy'  => 'buildings#destroy'
     post 'complete' => 'buildings#complete'
     post 'harvest'  => 'buildings#harvest'
+    post 'get_info' => 'buildings#get_info'
   end
   
   # 科技研究相关

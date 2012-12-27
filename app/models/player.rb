@@ -378,7 +378,7 @@ class Player < Ohm::Model
 		# TODO: == Just for Test ==
 		1.upto(8) do |i|
 			Item.create :item_type => i, :item_category => 1, :player_id => id
-			Specialty.create :type => i, :count => 999, :player_id => id
+			Specialty.create :type => i, :count => 80, :player_id => id
 		end
 		Item.create :item_type => 9, :item_category => 1, :player_id => id
 	end

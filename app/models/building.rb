@@ -7,6 +7,8 @@ class Building < Ohm::Model
 	include BuildingConst
 
 	STATUS = {:new => 0, :half => 1, :finished => 2}
+	HARVEST_AVAILABLE_TIME = 30.seconds
+	HARVEST_CHANGE_TIME = 2.minute
 
 	attribute :type, Type::Integer
 	attribute :level, Type::Integer
@@ -20,6 +22,7 @@ class Building < Ohm::Model
 	# Farm attributes:
 	attribute :harvest_start_time, 		Type::Integer
 	attribute :harvest_updated_time,	Type::Integer
+	attribute :harvest_receive_time, 			Type::Integer
 	attribute :harvest_type,					Type::Integer	# Specialty(Item category: 2)
 	attribute :resource_type,					Type::Integer
 	attribute :harvest_count,					Type::Integer
@@ -51,7 +54,7 @@ class Building < Ohm::Model
 		self.save
 	end
 
-	def to_hash
+	def to_hash(*args)
 		if is_resource_building?
 			update_harvest
 		end
@@ -65,18 +68,18 @@ class Building < Ohm::Model
 			:x => x,
 			:y => y
 		}
-		if [Building.hashes[:collecting_farm], Building.hashes[:hunting_field]].include?(type)
+		if args.include?(:harvest_info) && is_resource_building?
 			hash[:harvest_info] = harvest_info
 		end
 		hash
 	end
 
 	def harvest_info
-		pass_time = ::Time.now.to_i - harvest_start_time
-		pass_time = pass_time > 2.hours ? 2.hours : pass_time
+		pass_time = ::Time.now.to_i - harvest_updated_time
+		pass_time = pass_time > HARVEST_AVAILABLE_TIME ? HARVEST_AVAILABLE_TIME : pass_time
 		hash = {
 			:time_pass => pass_time,
-			:total_time => 2.hours,
+			:total_time => HARVEST_AVAILABLE_TIME,
 			:count => harvest_count
 		}
 		if resource_type > 0
@@ -100,34 +103,52 @@ class Building < Ohm::Model
 		db.smembers("Technology:indices:player_id:#{player_id}")
 	end
 
-	def is_resource_building?
-		Building.resource_building_types.include?(self.type)
-	end
-
 	def update_harvest
 		now_time = ::Time.now.to_i
 		case type
 		when Building.hashes[:collecting_farm]
+			produce_rate = HARVEST_AVAILABLE_TIME # TODO
 			delta_t = now_time - harvest_updated_time
-			count_inc = delta_t / 5.minutes
+			count_inc = delta_t / produce_rate # 5.minutes
 			if count_inc > 0
-				self.harvest_updated_time = now_time - delta_t % 5.minutes
+				self.harvest_updated_time = now_time - delta_t % produce_rate #5.minutes
 				self.harvest_count += count_inc
 			end
 			self
 		when Building.hashes[:hunting_field]
 			
+		else
+			return false
 		end
+	end
+
+	def update_harvest!
+		if update_harvest
+			self.sets :harvest_updated_time => harvest_updated_time,
+								:harvest_count => harvest_count
+		end
+	end
+
+	self.names.each do |name|
+		define_method("is_#{name}?") do
+			self.type == self.class.hashes[name]
+		end
+	end
+
+	def is_resource_building?
+		self.class.resource_building_types.include?(type)
 	end
 
 	protected
 
 	def before_create
-		self.start_building_time = ::Time.now.utc.to_i
+		now_time = ::Time.now.to_i
+		self.start_building_time = now_time
 
 		if self.is_resource_building?
-			self.harvest_start_time = ::Time.now.to_i
-			self.harvest_updated_time = ::Time.now.to_i
+			self.harvest_start_time = now_time
+			self.harvest_updated_time = now_time
+			self.harvest_receive_time = now_time
 
 			case type
 			when Building.hashes[:collecting_farm]

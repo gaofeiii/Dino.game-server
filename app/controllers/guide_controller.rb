@@ -37,7 +37,7 @@ class GuideController < ApplicationController
 			@player.save
 			{
 				:message => Error.success_message,
-				:player => @player.to_hash(:all)
+				:player => @player.to_hash(:resources)
 			}
 		else
 			{
