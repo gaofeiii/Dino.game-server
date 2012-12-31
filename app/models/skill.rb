@@ -5,6 +5,8 @@ class Skill < Ohm::Model
 	include Ohm::Locking
 	include OhmExtension
 
+	include SkillConst
+
 	attribute :type, 		Type::Integer
 	attribute :level,		Type::Integer
 
@@ -13,7 +15,11 @@ class Skill < Ohm::Model
 	index :type
 	index :level
 
-	def trigger_chance
-		0
+	def to_hash
+		{
+			:type => type,
+			:level => level
+		}
 	end
+
 end

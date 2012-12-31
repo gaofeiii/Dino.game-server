@@ -40,9 +40,16 @@ class Item < Ohm::Model
 														:finish_time 	=> ::Time.now.to_i + dino[:property][:hatching_time],
 														:player_id 		=> player_id
 			dino.building_id = building_id if building_id
-			dino.save
+			if dino.save
+				self.delete
+			end
+		when ITEM_CATEGORY[:scroll]
+			if self.delete
+				return true
+			else
+				return false
+			end
 		end
-		self.delete
 		return obj
 	end
 

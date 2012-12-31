@@ -79,14 +79,18 @@ class Dinosaur < Ohm::Model
 			:name => name,
 			:level => level,
 			:experience => experience,
+			:next_exp => next_level_exp,
 			:type => type,
 			:status => status,
 			:emotion => emotion,
 			:feed_point => feed_point,
 			:hungry_time => Time.now.to_i + feed_point,
 			:attack => total_attack.to_i,
+			:max_attack => max_attack,
 			:defense => total_defense.to_i,
+			:max_defense => max_defense.to_i,
 			:agility => total_agility.to_i,
+			:max_agility => max_agility,
 			:hp => current_hp.to_i,
 			:total_hp => total_hp.to_i,
 			:total_feed_point => property[:hunger_time],
@@ -100,6 +104,10 @@ class Dinosaur < Ohm::Model
 			hash[:total_time] = finish_time - start_time
 			hash[:time_pass] = Time.now.to_i - start_time
 			hash[:building_id] = building_id.to_i if building_id
+		end
+
+		if skills.any?
+			hash[:skill_type] = self.skills.first.type
 		end
 		return hash
 	end
@@ -251,6 +259,18 @@ class Dinosaur < Ohm::Model
 		self.set :current_hp, total_hp
 	end
 
+	def max_attack
+		255
+	end
+
+	def max_agility
+		255
+	end
+
+	def max_defense
+		255
+	end
+
 	protected
 
 	def before_save
@@ -266,6 +286,12 @@ class Dinosaur < Ohm::Model
 	def before_create
 		self.current_hp = total_hp
 		self.updated_hp_time = Time.now.to_i if updated_hp_time.zero?
+	end
+
+	def after_create
+		if self.skills.blank?
+			Skill.create :type => Skill.types.sample, :level => 1, :dinosaur_id => id
+		end
 	end
 
 

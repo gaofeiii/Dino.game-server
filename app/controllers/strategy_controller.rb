@@ -101,7 +101,8 @@ class StrategyController < ApplicationController
 											:arrive_time => Time.now.to_i + 2.seconds,
 											:monster_type => target_monster_type,
 											:target_x => target.x,
-											:target_y => target.y
+											:target_y => target.y,
+											:scroll_id => params[:scroll_id]
 			target.set(:under_attack, 1)
 			params[:dinosaurs].each do |dino_id|
 				if Dinosaur.exists?(dino_id)

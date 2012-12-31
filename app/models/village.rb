@@ -51,6 +51,10 @@ class Village < Ohm::Model
 		Player[player_id]
 	end
 
+	def player_name
+		db.hget("Player:#{player_id}", :nickname)
+	end
+
 	def level
 		case player.level
 		when 1..10

@@ -83,7 +83,7 @@ class MailsController < ApplicationController
 		if @mail
 			@mail.delete
 		end
-		render_success
+		render_success(:mail_id => params[:mail_id])
 	end
 
 	def mark_as_read

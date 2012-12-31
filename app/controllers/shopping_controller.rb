@@ -1,12 +1,31 @@
 class ShoppingController < ApplicationController
-	before_filter :validate_player, :only => [:buy]
+	before_filter :validate_player, :only => [:buy, :buy_gems]
 
 	def buy_resource
 		
 	end
 
 	def buy_gems
-		
+		order = AppStoreOrder.find(:transaction_id => params[:transaction_id]).first
+		if order.nil?
+			order = AppStoreOrder.create 	:base64_receipt => params[:base64_receipt], 
+																		:transaction_id => params[:transaction_id],
+																		:player_id => @player.id
+		end
+
+		if order.validate!
+			@player.get(:sun)
+			render_success 	:player => @player.to_hash,
+											:transaction_id => params[:transaction_id],
+											:is_finished => true
+		else
+			render :json => {
+				:message => "FAILED",
+				:error_type => Error.types[:iap_error],
+				:transaction_id => params[:transaction_id],
+				:is_finished => true
+			}
+		end
 	end
 
 	def buy

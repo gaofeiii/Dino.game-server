@@ -60,6 +60,7 @@ class Player < Ohm::Model
 	collection :deals,						Deal, 	:seller
 	collection :gold_mines,				GoldMine
 	collection :strategies, 			Strategy
+	collection :app_store_orders,	AppStoreOrder
 
 	reference :league, League
 	
@@ -331,7 +332,7 @@ class Player < Ohm::Model
     # if result['status'] == 0
       # self.is_verified = true
     # end
-    result
+    result.deep_symbolize_keys
   end
 
   def locale

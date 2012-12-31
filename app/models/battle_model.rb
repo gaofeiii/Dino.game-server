@@ -40,6 +40,7 @@ class BattleModel
 				er[:army].extend(BattleArmyModule)
 				er[:army].each do |fighter|
 					fighter.extend(BattleFighterModule)
+					fighter.army = er[:army]
 					fighter.skills.each{ |skl| skl.extend(SkillModule) }
 				end
 			end
@@ -56,9 +57,43 @@ class BattleModel
 				puts "*********** Round #{round} ***********"
 				round_info = []
 				all_fighters.each do |fighter|
+					puts "*-*- Start -*-*\n"
+
+					one_round = {:attacker_id => fighter.id}
+
+					if fighter.in?(attacker[:army])
+						one_round[:camp] = false
+					else
+						one_round[:camp] = true
+					end
+
+					bleeding_result = nil
+					if fighter.is_bleeding?
+						fighter.bleeding_count -= 1
+						fighter.curr_hp -= fighter.bleeding_val
+						one_round[:attacker_bleeding] = fighter.bleeding_val.to_i
+						if fighter.curr_hp < 0
+							fighter.curr_hp = 0
+							round_info << one_round
+						end
+						puts "----- I'm Bleeding, lost #{fighter.bleeding_val} blood"
+					else
+						one_round[:attacker_bleeding] = 0
+					end
+
 					if fighter.is_dead?
 						next
 					end
+
+					if fighter.is_stunned?
+						puts "------- I'm Stunned!!! -------\n\n"
+						fighter.stunned_count -= 1
+						one_round[:attacker_stunned] = true
+						next
+					else
+						one_round[:attacker_stunned] = false
+					end
+
 
 					# 随机找出对方一名hp大于0的对象
 					camp = false
@@ -89,20 +124,94 @@ class BattleModel
 
 					hp_before = dest.curr_hp
 
-					one_round = {}
-
 					## 伤害计算模型公式
 
 					# 1 - 判断技能触发
-					trig_skills = fighter.skills.select { |skill| skill.taken_effect_count == 0 && skill.trigger? }
-					skill_effects = {}
-					trig_skills.map do |skill|
-						if skill_effects[skill.effect_key].nil?
-							skill_effects[skill.effect_key] = skill.effect_value
-						else
-							skill_effects[skill.effect_key] += skill.effect_value
+					# trig_skills = fighter.skills.select { |skill| skill.taken_effect_count == 0 && skill.trigger? }
+					# skill_effects = {}
+					# trig_skills.map do |skill|
+					# 	if skill_effects[skill.effect_key].nil?
+					# 		skill_effects[skill.effect_key] = skill.effect_value
+					# 	else
+					# 		skill_effects[skill.effect_key] += skill.effect_value
+					# 	end
+					# end
+					skill_effect = nil
+					skill_result = nil
+					fighter.skills.map do |skill|
+						if not skill.triggered
+							if skill.trigger?
+								puts "~~~~~~~ Skill Triggered! ~~~~~~"
+								puts "~~~~~~~ Type:#{skill.type} ~~~~~~"
+								case skill.effect_key
+								when :double_damage
+									puts "<<< Double Damage >>>"
+									skill_effect = skill.effect
+								when :stun
+									puts "<<< Stun Enemy >>>"
+									dest.stunned_count = skill.effect_value
+									nil
+								when :defense_inc_all
+									puts "<<< Increase All Defense >>>"
+									puts "<<<--- Before self.defense: #{fighter.curr_defense} --->>>"
+									fighter.army.each do |fr|
+										fr.curr_defense = fr.curr_defense * (1 + skill.effect_value)
+									end
+									puts "<<<--- After self.defense: #{fighter.curr_defense} --->>>"
+									nil
+								when :attack_inc_all
+									puts "<<< Increase All Attack >>>"
+									puts "<<<--- Before self.attack: #{fighter.curr_attack} --->>>"
+									fighter.army.each do |fr|
+										fr.curr_attack = fr.curr_attack * (1 + skill.effect_value)
+									end
+									puts "<<<--- After self.attack: #{fighter.curr_attack} --->>>"
+									nil
+								when :attack_inc_self_bleeding
+									extra_damage = (((fighter.total_hp - fighter.curr_hp) / fighter.total_hp) * 100).to_i
+									puts "<<< Attack Increase when Bleeding >>>"
+									puts "<<<--- Extra Damage: #{extra_damage} --->>>"
+									skill_effect = {:extra_damage => extra_damage}
+								when :attack_inc_enemy_bleeding
+									puts "<<< Attack Bleeding Increase >>>"
+									extra_damage = (((dest.total_hp - dest.curr_hp) / dest.total_hp) * 100).to_i
+									puts "<<<--- Extra Damage: #{extra_damage} --->>>"
+									skill_effect = {:extra_damage => extra_damage}
+								when :attack_desc
+									puts "<<< Descrease All Attack >>>"
+									puts "<<<--- Before enemy.attack: #{dest.curr_attack} --->>>"
+									dest.army.each do |fr|
+										fr.curr_attack = fr.total_attack * (1 - skill.effect_value)
+									end
+									puts "<<<--- After enemy.attack: #{dest.curr_attack} --->>>"
+									nil
+								when :defense_desc
+									puts "<<< Descrease All Attack >>>"
+									puts "<<<--- Before enemy.defense: #{dest.curr_defense} --->>>"
+									dest.army.each do |fr|
+										fr.curr_defense = fr.curr_defense * (1 - skill.effect_value)
+									end
+									puts "<<<--- After enemy.defense: #{dest.curr_defense} --->>>"
+									nil
+								when :bleeding
+									puts "<<< Make Bleeding >>>"
+									dest.bleeding_count = 1
+									dest.bleeding_val = skill.effect_value
+									nil
+								when :attack_desc
+									puts "<<< Descrease Attack >>>"
+									dest.curr_attack = dest.curr_attack * (1 - skill.effect_value)
+									nil
+								when :defense_desc
+									# puts "<<< Descrease Defense >>>"
+									dest.curr_defense = dest.curr_defense * (1 - skill.effect_value)
+									nil
+								end
+								skill_result = skill.type
+							end
 						end
-					end
+					end.compact # End of skill judging
+					p '++= skill_effect', skill_effect
 
 					# 2 - 计算真实伤害
 					speed_ratio = (fighter.curr_speed / (fighter.curr_speed + dest.curr_speed))
@@ -117,13 +226,25 @@ class BattleModel
 					# puts "--- factor_k: #{factor_k}"
 
 					damage = (fighter.curr_attack * 5 * (1 / (1 + dest.curr_defense / 10)) * factor_k).to_i
-					# p "===== The origin damage: #{damage} ====="
+					puts "===== The Origin Damage: #{damage} ====="
 
-					if skill_effects[:damage_inc].to_f > 0
-						old_damage = damage
-						damage *= skill_effects[:damage_inc].to_f
-						puts "[[[$$$ triggered skill: damage X2 (#{old_damage}->#{damage})]]]"
+					# if skill_effects[:damage_inc].to_f > 0
+					# 	old_damage = damage
+					# 	damage *= skill_effects[:damage_inc].to_f
+					# 	puts "[[[$$$ triggered skill: damage X2 (#{old_damage}->#{damage})]]]"
+					# end
+					if skill_effect
+						skill_effect.each do |effect_k, effect_v|
+							case effect_k
+							when :double_damage
+								damage *= effect_v
+							when :extra_damage
+								damage += effect_v
+							end
+						end
 					end
+						
+					puts "===== The Final Damage: #{damage} ====="
 
 					if damage < 0
 						next
@@ -135,15 +256,16 @@ class BattleModel
 
 					dest.curr_hp -= damage
 					hp_later = dest.curr_hp
-					one_round = {
-						:attacker_id => fighter.id,
+					one_round.merge!({
 						:target_id => dest.id,
 						:damage => damage.to_i,
 						:camp => camp
-					}
+					})
+					one_round[:skill_type] = skill_result if skill_result
+
 					round_info << one_round
 					puts "$ - #{fighter_name} kills #{d_name}: #{damage.to_i} hp!"
-					puts "    #{d_name}'s hp: #{hp_before.to_i}->#{hp_later.to_i}"
+					puts "    #{d_name}'s hp: #{hp_before.to_i}->#{hp_later.to_i}\n\n"
 					result[:total_rounds] = round
 				end # End of each fighters
 				result[:all_rounds] << round_info
@@ -152,7 +274,7 @@ class BattleModel
 				if attacker[:army].all_curr_hp.zero?
 					puts "$$ Defender win!!! $$"
 					result[:winner] = 'defender'
-					write_result(attacker, defender)
+					# write_result(attacker, defender)
 					return result.merge!(:time => Time.now.to_f)
 				elsif defender[:army].all_curr_hp.zero?
 					result[:winner] = 'attacker'
@@ -187,7 +309,8 @@ module BattlePlayerModule
 end
 
 module BattleFighterModule
-	attr_accessor :curr_attack, :curr_defense, :curr_speed, :curr_hp, :total_hp, :skills, :key, :stunned_count
+	attr_accessor :curr_attack, :curr_defense, :curr_speed, :curr_hp, :total_hp, :skills, :stunned_count,
+		:bleeding_count, :bleeding_val, :army
 
 	def curr_attack
 		@curr_attack ||= self.total_attack
@@ -223,18 +346,31 @@ module BattleFighterModule
 		@skills
 	end
 
-	def key
-		@key ||= super
-		@key
-	end
-
 	def stunned_count
 		@stunned_count ||= 0
 		@stunned_count
 	end
 
+	def is_stunned?
+		stunned_count > 0
+	end
+
 	def is_dead?
 		return curr_hp.zero?
+	end
+
+	def is_bleeding?
+		bleeding_count > 0
+	end
+
+	def bleeding_count
+		@bleeding_count ||= 0
+		@bleeding_count
+	end
+
+	def bleeding_val
+		@bleeding_val ||= 0
+		@bleeding_val
 	end
 
 	def curr_info
@@ -316,11 +452,16 @@ end
 
 # Used for extending skill
 module SkillModule
-	attr_accessor :taken_effect_count
+	attr_accessor :taken_effect_count, :triggered
 
 	def taken_effect_count
 		@taken_effect_count ||= 0
 		@taken_effect_count
+	end
+
+	def triggered
+		@triggered ||= false
+		@triggered
 	end
 
 	def trigger?
@@ -329,36 +470,43 @@ module SkillModule
 		elsif trigger_chance <= 0
 			return false
 		else
-			trig_factor = trigger_chance * 10000
-			rand(1..10000) <= trig_factor ? true : false
+			Tool.rate(trigger_chance)
 		end
 	end
 
 	def effect
 		case type
 		when 1
-			{:damage_inc => 2.0}
+			{:double_damage => 2.0}
 		when 2
-			{:attack => 10}
+			{:stun => 1}
+		when 3
+			{:defense_inc_all => 0.1}
+		when 4
+			{:attack_inc_all => 0.1}
+		when 5
+			{:attack_inc_self_bleeding => 1.0}
+		when 6
+			{:attack_inc_enemy_bleeding => 1.0}
+		when 7
+			{:attack_desc => 0.1}
+		when 8
+			{:defense_desc => 0.1}
+		when 9
+			{:bleeding => 10}
+		when 10
+			{:attack_desc => 0.1}
+		when 11
+			{:defense_desc => 0.1}
 		end
 	end
 
 	def effect_key
-		case type
-		when 1
-			:damage_inc
-		when 2
-			:attack
-		end
+		effect.keys.first
 	end
 
 	def effect_value
-		case type
-		when 1
-			2.0
-		when 2
-			10			
-		end
+		effect.values.first
 	end
 
 end

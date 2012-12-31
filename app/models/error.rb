@@ -1,6 +1,8 @@
 class Error
+	NORMAL = 1
 	TYPES = {
-		:normal => 1
+		:normal => 1,
+		:iap_error => 2
 	}
 
 	class << self

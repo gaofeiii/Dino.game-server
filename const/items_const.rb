@@ -5,7 +5,7 @@ require "#{Rails.root}/const/specialty_const.rb"
 ITEM_CATEGORY = {
 	:egg => 1,
 	:specialty => 2,
-	:scoll => 3
+	:scroll => 3
 }
 
 ITEMS = {
@@ -18,7 +18,7 @@ ITEMS = {
 		}
 	},
 	2 => SPECIALTIES,
-	3 => {
+	ITEM_CATEGORY[:scroll] => {
 		1 => {
 			:type => 1,
 			:level => 1
@@ -47,5 +47,3 @@ book.default_sheet = "dinosaurs_avai"
 		:property => property
 	}
 end
-
-ITEMS.extend(ConstHelper::ItemsConstHelper)

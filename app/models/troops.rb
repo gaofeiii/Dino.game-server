@@ -13,6 +13,7 @@ class Troops < Ohm::Model
 	attribute :monster_type, Type::Integer
 	attribute :target_x,		Type::Integer
 	attribute :target_y,		Type::Integer
+	attribute :scroll_id
 
 	reference :player, Player
 
@@ -46,7 +47,8 @@ class Troops < Ohm::Model
 
 	def refresh!
 		return if target.nil?
-		self.dissolve!
+		scroll = Item[scroll_id]
+
 		if Time.now.to_i >= arrive_time
 			army = dinosaurs.map do |dino_id|
 				dino = Dinosaur[dino_id]
@@ -64,16 +66,29 @@ class Troops < Ohm::Model
 					:name => player.nickname,
 					:avatar_id => player.avatar_id
 				},
-				:buff_info => {},
+				:buff_info => [],
 				:army => attacker_army
 			}
+			attacker[:buff_info] << scroll.to_hash if scroll
 
+			defender_name = nil
+			dfender_type = nil
+			if target_type == 1
+				defender_name = target.player_name
+			elsif target_type == 2
+				defender_name = "Creeps"
+				dfender_type = target.type
+			elsif target_type == 3
+				defender_name = target.owner_name
+			end
 			defender = {
 				:owner_info => {
 					:type => target.class.name,
-					:id => target.id
+					:id => target.id,
+					:name => defender_name,
+					:monster_type => target.type
 				},
-				:buff_info => {},
+				:buff_info => [],
 				:army => defender_army
 			}
 

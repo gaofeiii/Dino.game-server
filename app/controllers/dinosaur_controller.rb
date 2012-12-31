@@ -1,5 +1,5 @@
 class DinosaurController < ApplicationController
-	before_filter :validate_dinosaur, :only => [:update, :hatch_speed_up, :feed, :heal]
+	before_filter :validate_dinosaur, :only => [:update, :hatch_speed_up, :feed, :heal, :rename, :reborn, :release]
 	before_filter :validate_player, :only => [:food_list, :feed, :heal]
 
 	def update
@@ -49,5 +49,36 @@ class DinosaurController < ApplicationController
 			@dinosaur.heal_speed_up!
 		end
 		render_success(:player => @player.to_hash(:dinosaurs))
+	end
+
+	def rename
+		new_name = params[:name].to_s
+		if new_name.sensitive?
+			render_error(Error::NORMAL, "Invalid dino name") and return
+		end
+
+		@dinosaur.set :name, new_name
+		data = {
+			:player => {
+				:dinosaurs => [@dinosaur.to_hash]
+			}
+		}
+		render_success(data)
+	end
+
+	def reborn
+		@dinosaur.init_atts.save
+		data = {
+			:player => {
+				:dinosaurs => [@dinosaur.to_hash]
+			}
+		}
+		render_success(data)
+	end
+
+	def release
+		Ohm.redis.hset("Player:#{@dinosaur.player_id}:released_dinosaurs", @dinosaur.id)
+		@dinosaur.update :player_id => nil
+		render_success(:dinosaur_id => @dinosaur.id)
 	end
 end

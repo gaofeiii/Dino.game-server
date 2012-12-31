@@ -40,10 +40,18 @@ module ShoppingConst
 			2.upto(book.last_row).each do |i|
 				sid = book.cell(i, 'C').to_i
 				count = book.cell(i, 'D').to_i
-				usd_price = book.cell(i, 'E').to_f
-				cny_price = book.cell(i, 'F').to_f
+				product_id = book.cell(i, 'E')
+				reference_name = book.cell(i,'F')
+				usd_price = book.cell(i, 'G').to_f
+				cny_price = book.cell(i, 'H').to_f
 
-				@@all_goods[:gems] << {:sid => sid, :count => count, :price => usd_price}
+				@@all_goods[:gems] << {
+					:sid => sid, 
+					:count => count,
+					:product_id => product_id,
+					:reference_name => reference_name,
+					:price => usd_price
+				}
 			end
 
 			book.default_sheet = "资源"
@@ -95,7 +103,8 @@ module ShoppingConst
 					:count => count
 				}
 
-			end			
+			end
+			@@all_goods		
 		end # End of reload!
 
 		def find_by_sid(sid)
