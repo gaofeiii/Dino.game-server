@@ -275,7 +275,7 @@ class Village < Ohm::Model
 
 		self.mutex do
 			if buildings.find(:type => Building.hashes[:residential]).blank?
-				create_building(Building.hashes[:residential], 1, 25, 25, Building::STATUS[:finished])
+				create_building(Building.hashes[:residential], 1, 25, 29, Building::STATUS[:finished])
 			end
 		end
 	end
