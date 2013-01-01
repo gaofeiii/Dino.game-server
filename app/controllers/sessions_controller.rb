@@ -2,8 +2,8 @@ include SessionsHelper
 
 class SessionsController < ApplicationController
 
-	skip_before_filter :find_player
 	before_filter :get_device_token, :only => [:demo, :create, :register]
+	before_filter :validate_player, :only => [:update]
 
 
 	# TODO:
@@ -79,12 +79,16 @@ class SessionsController < ApplicationController
 
 	# 更新账号
 	def update
-		result = account_update :account_id => params[:account_id],
+		result = account_update :account_id => @player.account_id,
 														:username		=> params[:username],
 														:email 			=> params[:email],
 														:password		=> params[:password],
 														:password_confirmation => params[:password_confirmation]
-		render :json => result
+		if result[:success]
+			render_success(:password => params[:password])
+		else
+			render_error(Error.types[:normal], "Invalid password")
+		end
 	end
 
 

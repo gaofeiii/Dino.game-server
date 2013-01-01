@@ -1,6 +1,7 @@
+include SessionsHelper
 class PlayersController < ApplicationController
 
-	before_filter :validate_player, :only => [:refresh]
+	before_filter :validate_player, :only => [:refresh, :modify_nickname, :modify_password]
 
 	def deny_access
 		render :text => "Request denied." and return
@@ -60,13 +61,6 @@ class PlayersController < ApplicationController
 
 			mine = GoldMine.new :id => g_id
 			mine.gets(:x, :y, :type, :level, :player_id)
-			# {
-			# 	:id => mine.id,
-			# 	:x => mine.x,
-			# 	:y => mine.y,
-			# 	:level => mine.level,
-			# 	:type => mine.type
-			# }
 			mine.to_hash
 		end.compact
 
@@ -74,5 +68,28 @@ class PlayersController < ApplicationController
 			:message => Error.success_message,
 			:gold_mines => result
 		}
+	end
+
+	def modify_nickname
+		nkname = params[:nickname]
+		if nkname.sensitive?
+			render_error(Error.types[:normal], "Invalid nickname") and return
+		end
+
+		if Player.find(:nickname => nkname).any?
+			render_error(Error.types[:normal], "nickname exists") and return
+		end
+
+		result = account_update :account_id => @player.account_id,
+														:username => nkname,
+														:password => params[:password]
+
+		if result[:success]
+			@player.sets(:nickname => nkname, :is_set_nickname => true)
+			render_success(:player => {:nickname => @player.nickname}, :username => @player.nickname)
+		else
+			render_error(Error.types[:normal], "Set nickname failed")
+		end
+		
 	end
 end

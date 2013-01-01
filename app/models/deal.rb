@@ -19,20 +19,24 @@ class Deal < Ohm::Model
 	}
 
 	RES_TYPES = {
-		CATEGORIES[:res] => {
-			:wood => 1,
-			1 => :wood,
-			:stone => 2,
-			2 => :stone
-		},
+		:wood => 1,
+		1 => :wood,
+		:stone => 2,
+		2 => :stone
+		# CATEGORIES[:res] => {
+		# 	:wood => 1,
+		# 	1 => :wood,
+		# 	:stone => 2,
+		# 	2 => :stone
+		# },
 
-		CATEGORIES[:egg] => {
+		# CATEGORIES[:egg] => {
 
-		},
+		# },
 
-		CATEGORIES[:food] => {
+		# CATEGORIES[:food] => {
 
-		},
+		# },
 	}
 
 	attribute :status, 		Type::Integer		# Deal的状态，1表示出售者，2表示交易关闭

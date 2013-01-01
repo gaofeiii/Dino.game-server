@@ -274,7 +274,7 @@ class BattleModel
 				if attacker[:army].all_curr_hp.zero?
 					puts "$$ Defender win!!! $$"
 					result[:winner] = 'defender'
-					# write_result(attacker, defender)
+					write_result(attacker, defender)
 					return result.merge!(:time => Time.now.to_f)
 				elsif defender[:army].all_curr_hp.zero?
 					result[:winner] = 'attacker'

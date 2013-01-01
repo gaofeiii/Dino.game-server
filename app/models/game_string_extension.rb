@@ -60,7 +60,3 @@ module GameStringExtension
 		receiver.send :include, InstanceMethods
 	end
 end
-
-class String
-	include GameStringExtension
-end

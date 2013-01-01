@@ -23,7 +23,6 @@ class Player < Ohm::Model
 	# Player的属性
 	attribute :account_id, 		Type::Integer
 	attribute :nickname
-	unique 		:nickname
 	attribute :level, 				Type::Integer
 	attribute :sun, 					Type::Integer
 	attribute :gem,						Type::Integer
@@ -47,6 +46,8 @@ class Player < Ohm::Model
 
 	attribute :league_member_ship_id
 
+	attribute :is_set_nickname, 	Type::Boolean
+
 
 	collection :dinosaurs, 				Dinosaur
 	collection :technologies, 		Technology
@@ -68,10 +69,11 @@ class Player < Ohm::Model
 	
 	# indices
 	index :account_id
-	# index :nickname
+	index :nickname
 	index :level
 	index :experience
 	index :country_id
+	index :player_type
 
 	def is_npc?
 		player_type == TYPE[:npc]
@@ -154,7 +156,7 @@ class Player < Ohm::Model
 	# 只要包含:all参数，返回所有的信息
 	def to_hash(*args)
 		hash = {
-			:id => id.to_s,
+			:id => id.to_i,
 			:nickname => nickname,
 			:level => level,
 			:sun => sun,
@@ -164,7 +166,8 @@ class Player < Ohm::Model
 			:score => score,
 			:country_id => country_id.to_i,
 			:avatar_id => avatar_id,
-			:player_power => battle_power
+			:player_power => battle_power,
+			:is_set_nickname => is_set_nickname
 		}
 		opts = if args.include?(:all)
 			args | [:god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
@@ -363,6 +366,7 @@ class Player < Ohm::Model
 	protected
 
 	def before_create
+		return if player_type == TYPE[:npc]
 		self.gold_coin = 1000
 		self.sun = 100
 		self.level = 1 if (level.nil? or level == 0)
@@ -371,6 +375,7 @@ class Player < Ohm::Model
 	end
 
 	def after_create
+		return if player_type == TYPE[:npc]
 		create_village
 
 		# TODO: == Just for Test ==

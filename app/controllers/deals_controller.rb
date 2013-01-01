@@ -4,8 +4,12 @@ class DealsController < ApplicationController
 	def list
 		# deals = Deal.all.sort_by(:created_at, :order => 'DESC', :limit => [0, 20])
 		# render_success(:deals => deals)
+		cat = params[:cat]
+		if cat.zero?
+			cat = 1
+		end
 		page = params[:page].to_i
-		deals = Deal.find(:status => Deal::STATUS[:selling], :category => params[:cat]).sort_by(:created_at, :order => 'DESC', :limit => [page, 20])
+		deals = Deal.find(:status => Deal::STATUS[:selling], :category => cat).sort_by(:created_at, :order => 'DESC', :limit => [page, 20])
 		render_success(:deals => deals)
 	end
 
@@ -17,17 +21,21 @@ class DealsController < ApplicationController
 		end
 
 		deal.mutex(0.5) do
-			case deal.type
+			case deal.category
 			when Deal::CATEGORIES[:res]
-				goods = if deal.res_type = Deal::RES_TYPES[:wood]
+				goods = if deal.type = Deal::RES_TYPES[:wood]
 					{:wood => deal.count}
-				elsif deal.res_type = Deal::RES_TYPES[:stone]
+				elsif deal.type = Deal::RES_TYPES[:stone]
 					{:stone => deal.count}
 				else
 					{}
 				end
+				p "======== goods: ", goods
 				if !goods.blank?
-					@player.spend!(:gold_coin => price)
+					# p "--- deal.price: #{deal.price.to_i}"
+					cost = {:gold_coin => deal.price.to_i}
+					p "cost", cost
+					@player.spend!(cost)
 					@player.receive!(goods)
 				end
 			when Deal::CATEGORIES[:egg]

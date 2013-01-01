@@ -15,3 +15,7 @@ DinosaurGame::Application.initialize!
 
 init_dir = "#{Rails.root}/init_data"
 Dir[init_dir + '/*.rb', init_dir + '/**/*.rb'].each{|file| require file}
+
+class String
+	include GameStringExtension
+end

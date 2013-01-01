@@ -13,6 +13,7 @@ DinosaurGame::Application.routes.draw do
     post 'refresh' => 'players#refresh'
     post 'change_avatar' => 'players#change_avatar'
     post 'my_gold_mines' => 'players#my_gold_mines'
+    post 'modify_nickname' => 'players#modify_nickname'
   end
   
 
