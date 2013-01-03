@@ -442,9 +442,11 @@ module BattleArmyModule
 			if fighter.is_a?(Monster)
 				return
 			end
+			exp = fighter.curr_hp > 0 ? fighter.experience + 10 : fihgter.experience
 			puts "-- fighter: #{fighter.current_hp} => #{fighter.curr_hp}"
 			fighter.sets 	:current_hp => fighter.curr_hp,
-										:updated_hp_time => Time.now.to_i
+										:updated_hp_time => Time.now.to_i,
+										:experience => exp
 		end
 	end
 

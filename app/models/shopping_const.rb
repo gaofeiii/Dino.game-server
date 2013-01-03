@@ -66,13 +66,13 @@ module ShoppingConst
 				record = {:sid => sid, :count => count, :type => res_type, :gem => gem_price}
 				if name == "金币"
 					@@all_goods[:gold] << record
-					@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :gold_coin => count, :sun => gem_price}
+					@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :gold_coin => count, :gems => gem_price}
 				else
 					@@all_goods[:resources] << record
 					if name == "石料"
-						@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :stone => count, :sun => gem_price}
+						@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :stone => count, :gems => gem_price}
 					else
-						@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :wood => count, :sun => gem_price}
+						@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :wood => count, :gems => gem_price}
 					end
 				end
 			end
@@ -99,7 +99,7 @@ module ShoppingConst
 					:goods_type => GOODS_TYPE[:item], 
 					:item_type => item_type, 
 					:item_category => item_cat,
-					:sun => gem_price,
+					:gems => gem_price,
 					:count => count
 				}
 

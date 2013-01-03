@@ -13,7 +13,7 @@ ITEMS = {
 		1 => {
 			:type => 1,
 			:name => :scud,
-			:cost => {:sun => 1},
+			:cost => {:gems => 1},
 			:property => {:dinosaur_type => 1}
 		}
 	},
@@ -37,7 +37,7 @@ book.default_sheet = "dinosaurs_avai"
 2.upto(10).each do |i|
 	type = book.cell(i, 'A').to_i
 	name = book.cell(i, 'C').to_sym
-	cost = {:sun => 1}
+	cost = {:gems => 1}
 	property = {:dinosaur_type => type}
 
 	ITEMS[ITEM_CATEGORY[:egg]][type] = {

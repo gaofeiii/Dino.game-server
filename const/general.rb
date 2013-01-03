@@ -4,4 +4,4 @@ CHANNELS = {
 	:private => 3
 }
 
-BUILDING_SPEED_UP_COST = {:sun => 1}
+BUILDING_SPEED_UP_COST = {:gems => 1}

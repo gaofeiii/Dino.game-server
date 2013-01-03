@@ -28,6 +28,12 @@ module OhmExtension
 			self.all.each(&:delete)
 		end
 
+		def delete_attrs(*atts)
+			self.all.ids.each do |id|
+				db.hdel(self.key[id], atts)
+			end
+		end
+
 		def get(id, att)
 			db.hget(key[id], att)
 		end

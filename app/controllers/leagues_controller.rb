@@ -4,7 +4,7 @@ class LeaguesController < ApplicationController
 	before_filter :validate_league, :only => [:apply]
 
 	def create
-		if @player.spend!(:sun => 10)
+		if @player.spend!(:gems => 10)
 			# name = "League#{rand(1..10000000)}"
 			name = params[:name]
 			lg = League.create :name => name, :desc => params[:desc], :president_id => @player.id

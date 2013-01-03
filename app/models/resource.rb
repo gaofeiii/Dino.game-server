@@ -11,8 +11,8 @@ class Resource
 		STONE => :stone,
 		:gold_coin => GOLD_COIN,
 		GOLD_COIN => :gold_coin,
-		:sun => GEM,
-		GEM => :sun
+		:gems => GEM,
+		GEM => :gems
 	}
 
 	def self.types

@@ -55,7 +55,7 @@ class AdvisorsController < ApplicationController
 
 	# 聘用顾问
 	def hire
-		if params[:employer_id].to_i == params[:player_id].to_i
+		if params[:employer_id].to_i == params[:advisor_id].to_i
 			render :json => {
 				:message => Error.failed_message,
 				:error_type => Error.types[:normal],

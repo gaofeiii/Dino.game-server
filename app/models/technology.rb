@@ -87,7 +87,7 @@ class Technology < Ohm::Model
 	end
 
 	def speed_up_cost
-		{:sun => level}
+		{:gems => level}
 	end
 
 	def speed_up!

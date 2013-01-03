@@ -6,10 +6,10 @@ class WorldMapController < ApplicationController
 		x, y = params[:x], params[:y]
 		last_x, last_y = params[:last_x], params[:last_y]
 
-		x_min = x - 10 <= 0 ? 0 : x - 10
-		y_min = y - 10 <= 0 ? 0 : y - 10
-		x_max = x + 10 >= Country::MAP_MAX_X - 1 ? Country::MAP_MAX_X - 1 : x + 10
-		y_max = y + 10 >= Country::MAP_MAX_Y - 1 ? Country::MAP_MAX_Y - 1 : y + 10
+		x_min = x - 8 <= 0 ? 0 : x - 8
+		y_min = y - 8 <= 0 ? 0 : y - 8
+		x_max = x + 8 >= Country::MAP_MAX_X - 1 ? Country::MAP_MAX_X - 1 : x + 8
+		y_max = y + 8 >= Country::MAP_MAX_Y - 1 ? Country::MAP_MAX_Y - 1 : y + 8
 
 		# puts "=== range: -from(#{x_min},#{y_min}), -to(#{x_max}, #{y_max})"
 
@@ -24,7 +24,6 @@ class WorldMapController < ApplicationController
 				i * Country::COORD_TRANS_FACTOR + j
 			end
 		end.flatten
-
 		country = Country.first
 		country_map = country.town_nodes_info
 		gold_mine_map = country.gold_mine_info
@@ -35,7 +34,7 @@ class WorldMapController < ApplicationController
 				vil = Village.with(:index, i)
 				vx = i / Country::COORD_TRANS_FACTOR
 				vy = i % Country::COORD_TRANS_FACTOR
-				# puts "--- coords: (#{vx}, #{vy})"
+				puts "--- village coords: (#{vx}, #{vy})"
 				tp, vid, nm, lv, l_name, avatar_id, battle_power = if vil
 					l_id, ava_id, bp = Ohm.redis.hmget(Player.key[vil.player_id], :league_id, :avatar_id, :battle_power)
 					[1, vil.id.to_i, vil.name, vil.level, League.get(l_id, :name).to_s, ava_id, bp]
@@ -64,7 +63,7 @@ class WorldMapController < ApplicationController
 				y = i % Country::COORD_TRANS_FACTOR
 
 				g_mine = GoldMine.find(:x => x, :y => y).first
-				break if g_mine.nil?
+				next if g_mine.nil?
 
 				gold_mines_info << {
 					:x => i / Country::COORD_TRANS_FACTOR,
@@ -86,7 +85,7 @@ class WorldMapController < ApplicationController
 				y = i % Country::COORD_TRANS_FACTOR
 
 				g_mine = GoldMine.find(:x => x, :y => y).first
-				break if g_mine.nil?
+				next if g_mine.nil?
 
 				hl_gold_mine_info << {
 					:x => x,
@@ -107,7 +106,7 @@ class WorldMapController < ApplicationController
 				x = i / Country::COORD_TRANS_FACTOR
 				y = i % Country::COORD_TRANS_FACTOR
 				creeps = Creeps.find(:x => x, :y => y).first
-				break if creeps.nil?
+				next if creeps.nil?
 				c_info = {
 					:x => x,
 					:y => y,

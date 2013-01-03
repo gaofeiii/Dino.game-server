@@ -43,7 +43,7 @@ class AppStoreOrder < Ohm::Model
  			self.is_validated = true
 			if self.save
 				gems = Shopping.find_gems_count_by_product_id(self.product_id)
-				self.player.receive!(:sun => gems)
+				self.player.receive!(:gems => gems)
 			end
   	end
   end

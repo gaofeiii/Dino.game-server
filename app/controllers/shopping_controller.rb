@@ -14,7 +14,7 @@ class ShoppingController < ApplicationController
 		end
 
 		if order.validate!
-			@player.get(:sun)
+			@player.get(:gems)
 			render_success 	:player => @player.to_hash,
 											:transaction_id => params[:transaction_id],
 											:is_finished => true
@@ -36,7 +36,7 @@ class ShoppingController < ApplicationController
 			render_error(Error.types[:normal], "Invalid serial id") and return
 		end
 
-		if @player.spend!(goods.slice(:sun))
+		if @player.spend!(goods.slice(:gems))
 			case goods[:goods_type]
 			when Shopping::GOODS_TYPE[:res]
 				tmp = goods.slice(:stone, :wood, :gold_coin)

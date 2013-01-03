@@ -24,8 +24,7 @@ class Player < Ohm::Model
 	attribute :account_id, 		Type::Integer
 	attribute :nickname
 	attribute :level, 				Type::Integer
-	attribute :sun, 					Type::Integer
-	attribute :gem,						Type::Integer
+	attribute :gems,					Type::Integer
 	attribute :gold_coin, 		Type::Integer
 	attribute :experience, 		Type::Integer
 	attribute :score, 				Type::Integer
@@ -107,7 +106,7 @@ class Player < Ohm::Model
 	# player.village.wood
 	# => 200
 	#
-	# player.spend!(:gold_coin => 10, :sun => 5, :wood => 100)
+	# player.spend!(:gold_coin => 10, :gems => 5, :wood => 100)
 	#
 	def spend!(args = {})
 		# vil = (args.include?(:wood) or args.include?(:stone) or args.include?(:population)) ? village : nil
@@ -116,7 +115,7 @@ class Player < Ohm::Model
 
 		db.multi do |t|
 			args.symbolize_keys.each do |att, val|
-				if att.in?([:gold_coin, :sun])
+				if att.in?([:gold_coin, :gems])
 					return false if send(att) < val || val < 0
 					t.hincrby(key, att, -val)
 				elsif att.in?([:wood, :stone]) && vil
@@ -126,7 +125,9 @@ class Player < Ohm::Model
 			end
 		end
 
-		gets(:gold_coin, :sun)
+		self.gold_coin = gold_coin - args[:gold_coin] if args[:gold_coin]
+		self.gems = gems - args[:gems] if args[:gems]
+		self
 	end
 
 	# player的receive!方法：
@@ -137,7 +138,7 @@ class Player < Ohm::Model
 		
 		db.multi do |t|
 			args.symbolize_keys.each do |att, val|
-				if att.in?([:gold_coin, :sun])
+				if att.in?([:gold_coin, :gems])
 					return false if val < 0
 					t.hincrby(key, att, val)
 				elsif att.in?([:wood, :stone])
@@ -146,7 +147,10 @@ class Player < Ohm::Model
 				end
 			end
 		end
-		gets(:gold_coin, :sun)
+		
+		self.gold_coin = gold_coin + args[:gold_coin] if args[:gold_coin]
+		self.gems = gems + args[:gems] if args[:gems]
+		self
 	end
 
 	# player的to_hash方法，主要用于render的返回值
@@ -159,7 +163,7 @@ class Player < Ohm::Model
 			:id => id.to_i,
 			:nickname => nickname,
 			:level => level,
-			:sun => sun,
+			:gems => gems,
 			:gold_coin => gold_coin,
 			:experience => experience,
 			:account_id => account_id,
@@ -194,7 +198,7 @@ class Player < Ohm::Model
 					ar.to_hash
 				end
 			when :beginning_guide
-				has_beginning_guide = !beginning_guide_finished
+				has_beginning_guide = false#!beginning_guide_finished
 				hash[:has_beginning_guide] = has_beginning_guide
 				hash[:beginning_guide] = guide_info.current if has_beginning_guide
 			when :queue_info
@@ -368,7 +372,7 @@ class Player < Ohm::Model
 	def before_create
 		return if player_type == TYPE[:npc]
 		self.gold_coin = 1000
-		self.sun = 100
+		self.gems = 100
 		self.level = 1 if (level.nil? or level == 0)
 		self.avatar_id = 1 if avatar_id.zero?
 		self.country_id = Country.first.id
