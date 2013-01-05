@@ -45,4 +45,9 @@ class League < Ohm::Model
 		league_applys.map(&:delete)
 		self.delete
 	end
+
+	protected
+	def before_create
+		self.level = 1
+	end
 end

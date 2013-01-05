@@ -1,11 +1,12 @@
 DinosaurGame::Application.routes.draw do
   # 账户模块
   scope :path => 'accounts', :as => 'accounts' do
-    post 'demo'        => 'sessions#demo'     # 快速试玩
-    post 'login'       => 'sessions#create'   # 登录
-    post 'register'    => 'sessions#register' # 注册
-    post 'logout'      => 'sessions#logout'   # 登出
-    post 'update'      => 'sessions#update'   # 更新账户
+    post 'demo'        => 'sessions#demo'             # 快速试玩
+    post 'login'       => 'sessions#create'           # 登录
+    post 'register'    => 'sessions#register'         # 注册
+    post 'logout'      => 'sessions#logout'           # 登出
+    post 'update'      => 'sessions#update'           # 更新账户
+    post 'change_pass' => 'sessions#change_password'  # 修改密码
   end
 
   # 玩家信息
@@ -14,6 +15,11 @@ DinosaurGame::Application.routes.draw do
     post 'change_avatar' => 'players#change_avatar'
     post 'my_gold_mines' => 'players#my_gold_mines'
     post 'modify_nickname' => 'players#modify_nickname'
+  end
+
+  # 村落
+  scope :path => 'villages', :as => 'villages' do
+    post 'move' => 'villages#move'
   end
   
 

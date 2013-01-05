@@ -36,6 +36,14 @@ class ServerInfo
 			all[server_name][:info_const_version]
 		end
 
+		def account_server_private_key
+			"HYidrqowAYYhTtYK8UthqBIO6bPBRcAzbEeQHyhehW0c2Rmm53zYyqteoJX3lFKqTTpPT5Y0mk8uoY"
+		end
+
+		def cli_pri_key
+			"PZAaCr854VtQNcDrTSwBYyvfus0zZauY1Dg3WO4A45lL60LwBA1LbBXxmmAltcLqzhhMImi48oq7iK"
+		end
+
 		# def info
 		# 	SERVER_INFO[server_name]
 		# end

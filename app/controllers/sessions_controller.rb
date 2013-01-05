@@ -41,11 +41,12 @@ class SessionsController < ApplicationController
 			if @player.nil?
 				@player = create_player(rcv_msg[:account_id])
 			else
-				@player.set :device_token, @device_token
+				@player.sets 	:device_token => @device_token,
+											:locale => LocaleHelper.get_server_locale_name(request.env["HTTP_CLIENT_LOCALE"])
 			end
 			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all)})
 		else
-			data.merge!({:message => Error.failed_message})
+			data.merge!({:message => Error.failed_message, :error => I18n.t('login_error.INCORRECT_USERNAME_OR_PASSWORD')})
 		end
 		render :json => data
 	end
@@ -91,13 +92,33 @@ class SessionsController < ApplicationController
 		end
 	end
 
+	def change_password
+		username, old_pass, new_pass = params[:username], params[:old_pass], params[:new_pass]
+		if username.blank? || old_pass.blank? || new_pass.blank?
+			render_error(Error.types[:normal], I18n.t("login_error.EMPTY_USERNAME_OR_PASSWORD")) and return
+		end
+
+		result = account_change_pass 	:username => username,
+																	:old_pass => old_pass,
+																	:new_pass => new_pass
+
+		if result[:success]
+			render_success(:password => new_pass)
+		else
+			render_error(Error.types[:normal], result[:error])
+		end
+	end
+
 
 	private
 
 	def create_player(account_id, nickname = nil)
 		guest_id = Ohm.redis.get(Player.key[:id]).to_i + 1
 		n_name = nickname.nil? ? "Player_#{guest_id}" : nickname
-		Player.create :account_id => account_id, :nickname => n_name, :device_token => @device_token
+		Player.create :account_id => account_id, 
+									:nickname => n_name, 
+									:device_token => @device_token,
+									:locale => LocaleHelper.get_server_locale_name(request.env["HTTP_CLIENT_LOCALE"])
 	end
 
 	def get_device_token

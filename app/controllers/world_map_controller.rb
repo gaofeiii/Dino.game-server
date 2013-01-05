@@ -137,7 +137,7 @@ class WorldMapController < ApplicationController
 							:type => 2,
 							:id => creeps.id,
 							:name => 'Creeps',
-							:level => creeps.level,
+							:level => 1,
 							:monster_type => creeps.type,
 							:owner_name => 'Creeps',
 							:monster_number => creeps.monster_number,
