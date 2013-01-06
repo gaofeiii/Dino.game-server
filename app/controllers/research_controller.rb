@@ -17,13 +17,16 @@ class ResearchController < ApplicationController
 			render_error(Error.types[:normal], "Researching not complete") and return
 		end
 		
-		tech.research!(params[:building_id])
-		if !@player.beginning_guide_finished && !@player.guide_cache['has_researched']
-			cache = @player.guide_cache.merge(:has_researched => true)
-			@player.set :guide_cache, cache
+		if @player.spend!(tech.next_level[:cost])
+			tech.research!(params[:building_id])
+			if !@player.beginning_guide_finished && !@player.guide_cache['has_researched']
+				cache = @player.guide_cache.merge(:has_researched => true)
+				@player.set :guide_cache, cache
+			end
+			render_success(:player => @player.to_hash(:techs, :resources))
+		else
+			render_error(Error.types[:normal], "NOT_ENOUGH_RESOURCES")
 		end
-		data = {:message => Error.success_message, :player => @player.to_hash(:techs)}
-		render :json => data
 	end
 
 	def speed_up
@@ -38,6 +41,8 @@ class ResearchController < ApplicationController
 		if tech.nil?
 			tech = Technology.create :type => params[:tech_type].to_i, :level => 0, :player_id => @player.id
 		end
+
+		p "--- gem: #{tech.speed_up_cost}"
 
 		if @player.spend!(tech.speed_up_cost)
 			tech.speed_up!

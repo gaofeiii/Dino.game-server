@@ -55,7 +55,7 @@ class Technology < Ohm::Model
 			:status => status
 		}
 		if status == STATUS[:researching]
-			hash[:total_time] = self.info[:cost][:time]
+			hash[:total_time] = next_level[:cost][:time]
 			hash[:time_pass] = ::Time.now.to_i - start_time
 			hash[:building_id] = building_id
 		end
@@ -86,8 +86,15 @@ class Technology < Ohm::Model
 		self
 	end
 
+	def speed_up_gem_cost
+		l_time = finish_time - start_time
+		l_time = 0 if l_time < 0
+		p "=== l_time: #{l_time}"
+		(l_time / 300.0).ceil
+	end
+
 	def speed_up_cost
-		{:gems => level}
+		{:gems => speed_up_gem_cost}
 	end
 
 	def speed_up!

@@ -54,6 +54,12 @@ class Building < Ohm::Model
 		self.save
 	end
 
+	def build_speed_up_gem_cost
+		l_time = info[:cost][:time] - (::Time.now.to_i - start_building_time)
+		l_time = 0 if l_time < 0
+		(l_time / 300.0).ceil
+	end
+
 	def to_hash(*args)
 		if is_resource_building?
 			update_harvest
@@ -104,6 +110,7 @@ class Building < Ohm::Model
 	end
 
 	def update_harvest
+		return false if status < STATUS[:finished]
 		now_time = ::Time.now.to_i
 		case type
 		when Building.hashes[:collecting_farm]

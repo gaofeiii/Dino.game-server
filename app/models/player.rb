@@ -9,6 +9,7 @@ class Player < Ohm::Model
 	include BeginningGuide
 	include MailsModule
 	include BattleReport
+	include PlayerExp
 
 	include RankModel
 
@@ -166,6 +167,7 @@ class Player < Ohm::Model
 			:gems => gems,
 			:gold_coin => gold_coin,
 			:experience => experience,
+			:next_level_exp => next_level_exp,
 			:account_id => account_id,
 			:score => score,
 			:country_id => country_id.to_i,

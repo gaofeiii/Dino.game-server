@@ -6,6 +6,7 @@ class League < Ohm::Model
 
 	attribute :name
 	attribute :desc
+	attribute :level, 	Type::Integer
 	attribute :president_id
 
 

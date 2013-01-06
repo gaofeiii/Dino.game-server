@@ -39,10 +39,10 @@ class ApplicationController < ActionController::Base
     cdate = request.env['HTTP_DATE'].to_i
     sig  = request.env['HTTP_SIG'].to_s.downcase
 
-    p "=== request.raw_post ===", request.raw_post
-    p '=== request.url ===', request.fullpath
-    p '=== date ===', cdate
-    p "=== request.env['HTTP_SIG'] ===", cli_sig
+    # p "=== request.raw_post ===", request.raw_post
+    # p '=== request.url ===', request.fullpath
+    # p '=== date ===', cdate
+    # p "=== request.env['HTTP_SIG'] ===", cli_sig
 
     my_sig = case request.method
     when "GET"
@@ -54,7 +54,6 @@ class ApplicationController < ActionController::Base
     else
       ""
     end
-    p '=== MY_SIG ===', my_sig
 
     if my_sig != cli_sig
       render_error(Error.types[:normal], "INVALID_REQUEST") and return

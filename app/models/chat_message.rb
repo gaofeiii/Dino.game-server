@@ -20,5 +20,6 @@ class ChatMessage < Ohm::Model
 		if speaker.blank?
 			self.speaker = db.hget("Player:#{player_id}", :nickname)
 		end
+		self.content = content.filter!
 	end
 end

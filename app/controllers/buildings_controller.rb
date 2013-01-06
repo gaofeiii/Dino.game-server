@@ -61,7 +61,7 @@ class BuildingsController < ApplicationController
 			} and return
 		end
 
-		if @player.spend!(BUILDING_SPEED_UP_COST)
+		if @player.spend!(:gems => @building.build_speed_up_gem_cost)
 			@building.update :status => 2, :start_building_time => 0
 		else
 			render :json => {

@@ -29,7 +29,10 @@ module GameStringExtension
 
 		def load_sensitive_words!
 			@@sensitive_words.clear
-			@@sensitive_words = ["fuck", "ass", "操你妈"].map do |word|
+			book = Excelx.new("#{Rails.root}/const/sensitive_words.xlsx")
+
+			@@sensitive_words = 1.upto(book.last_row).map do |i|
+				word = book.cell(i, 'A')
 				Regexp.new word
 			end
 		end
