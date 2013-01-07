@@ -44,12 +44,18 @@ module DinosaursConst
 				attack_inc = book.cell(i, 'J').to_f
 				defense_inc = book.cell(i, 'K').to_f
 				agility_inc = book.cell(i, 'L').to_f
-				hatching_time = book.cell(i, 'M').to_i
-				unlock_level = book.cell(i, 'N').to_i
-				mature_level = book.cell(i, 'O').to_i
-				favor_food = book.cell(i, 'P').to_i
-				hunger_time = book.cell(i,'Q').to_i
-				skill_type = book.cell(i, 'D').to_i
+				# Quality:
+				quality_A = book.cell(i, 'M').to_f
+				quality_B = book.cell(i, 'N').to_f
+				quality_C = book.cell(i, 'O').to_f
+				quality_D = book.cell(i, 'P').to_f
+				quality_E = book.cell(i, 'Q').to_f
+				# End of Quality
+				hatching_time = book.cell(i, 'R').to_i
+				unlock_level = book.cell(i, 'S').to_i
+				favor_food = book.cell(i, 'U').to_i
+				hunger_time = book.cell(i,'V').to_i
+
 				@@dinosaurs_const[type] = {
 					:dinosaur_type => type,
 					:name => name,
@@ -60,9 +66,15 @@ module DinosaursConst
 						:agility => agility,
 						:hatching_time => hatching_time,
 						:unlock_level => unlock_level,
-						:mature_level => mature_level,
 						:favor_food => favor_food,
-						:hunger_time => hunger_time
+						:hunger_time => hunger_time,
+					},
+					:quality => {
+						1 => quality_A,
+						2 => quality_B,
+						3 => quality_C,
+						4 => quality_D,
+						5 => quality_E
 					},
 					:enhance_property => {
 						:attack_inc => attack_inc,
@@ -70,8 +82,7 @@ module DinosaursConst
 						:agility_inc => agility_inc,
 						:hp_inc => hp_inc,
 					},
-					:exp => @@dinosaurs_exp,
-					:skill_type => skill_type
+					:exp => @@dinosaurs_exp
 				}
 			end
 			@@dinosaurs_const
@@ -97,6 +108,10 @@ module DinosaursConst
 
 		def property
 			info[:property]
+		end
+
+		def quality_value(qua = self.quality)
+			info[:quality][qua]
 		end
 
 		def favor_food

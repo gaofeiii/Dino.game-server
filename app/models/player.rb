@@ -114,8 +114,11 @@ class Player < Ohm::Model
 		vil = Village.new :id => village_id
 		vil.gets(:wood, :stone)
 
+		args_dup = args.dup
+		args_dup[:gold_coin] = args[:gold] if args[:gold]
+
 		db.multi do |t|
-			args.symbolize_keys.each do |att, val|
+			args_dup.symbolize_keys.each do |att, val|
 				if att.in?([:gold_coin, :gems])
 					return false if send(att) < val || val < 0
 					t.hincrby(key, att, -val)
@@ -126,8 +129,8 @@ class Player < Ohm::Model
 			end
 		end
 
-		self.gold_coin = gold_coin - args[:gold_coin] if args[:gold_coin]
-		self.gems = gems - args[:gems] if args[:gems]
+		self.gold_coin = gold_coin - args_dup[:gold_coin] if args_dup[:gold_coin]
+		self.gems = gems - args_dup[:gems] if args_dup[:gems]
 		self
 	end
 
@@ -137,8 +140,11 @@ class Player < Ohm::Model
 		vil = Village.new(:id => village_id)
 		vil.gets(:wood, :stone)
 		
+		args_dup = args.dup
+		args_dup[:gold_coin] = args[:gold] if args[:gold]
+
 		db.multi do |t|
-			args.symbolize_keys.each do |att, val|
+			args_dup.symbolize_keys.each do |att, val|
 				if att.in?([:gold_coin, :gems])
 					return false if val < 0
 					t.hincrby(key, att, val)
@@ -149,8 +155,8 @@ class Player < Ohm::Model
 			end
 		end
 		
-		self.gold_coin = gold_coin + args[:gold_coin] if args[:gold_coin]
-		self.gems = gems + args[:gems] if args[:gems]
+		self.gold_coin = gold_coin + args_dup[:gold_coin] if args_dup[:gold_coin]
+		self.gems = gems + args_dup[:gems] if args_dup[:gems]
 		self
 	end
 

@@ -286,6 +286,7 @@ class Dinosaur < Ohm::Model
 	def before_create
 		self.current_hp = total_hp
 		self.updated_hp_time = Time.now.to_i if updated_hp_time.zero?
+		self.quality = 1 if quality.zero?
 	end
 
 	def after_create

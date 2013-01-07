@@ -82,11 +82,11 @@ module TechnologiesConst
 				condition = {:player_level => book.cell(i, 'K').to_i}
 
 				cost = {
-					:wood => book.cell(i, 'D').to_i,
-					:stone => book.cell(i, 'E').to_i,
-					:gold => book.cell(i, 'F').to_i,
+					:wood => book.cell(i, 'b').to_i,
+					:stone => book.cell(i, 'c').to_i,
+					:gold => book.cell(i, 'D').to_i,
 					:population => book.cell(i, 'G').to_i,
-					:time => book.cell(i, 'H').to_i,
+					:time => book.cell(i, 'E').to_i,
 				}
 
 				property = {
