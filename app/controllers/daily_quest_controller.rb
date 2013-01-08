@@ -11,7 +11,7 @@ class DailyQuestController < ApplicationController
 		quest = @player.find_quest_by_index(params[:quest_id])
 
 		if quest.nil?
-			render_error(Error.types[:normal], "Invalid quest id") and return
+			render_error(Error::NORMAL, "Invalid quest id") and return
 		end
 
 		if @player.set_rewarded(params[:quest_id])

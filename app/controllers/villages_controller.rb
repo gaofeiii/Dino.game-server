@@ -18,7 +18,7 @@ class VillagesController < ApplicationController
 			@village.update :x => params[:x], :y => params[:y], :index => 0
 			render_success(:player => {:village => @village.to_hash})
 		else
-			render_error(Error.types[:normal], "NOT_ENOUGH_GEMS")
+			render_error(Error::NORMAL, "NOT_ENOUGH_GEMS")
 		end
 	end
 

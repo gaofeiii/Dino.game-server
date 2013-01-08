@@ -17,7 +17,7 @@ class DealsController < ApplicationController
 		deal = Deal[params[:deal_id]]
 
 		if deal.nil? || deal.status == Deal::STATUS[:closed]
-			render_error(Error.types[:normal], "Trade has been finished") and return
+			render_error(Error::NORMAL, "Trade has been finished") and return
 		end
 
 		deal.mutex(0.5) do
@@ -46,7 +46,7 @@ class DealsController < ApplicationController
 				return nil if food.nil?
 				food.increase(:count, deal.count)
 			else
-				render_error(Error.types[:normal], "Invalid cate id") and return
+				render_error(Error::NORMAL, "Invalid cate id") and return
 			end
 
 			deal.set :status, Deal::STATUS[:closed]
@@ -83,7 +83,7 @@ class DealsController < ApplicationController
 				nil
 			end
 			if error
-				render_error(Error.types[:normal], error) and return
+				render_error(Error::NORMAL, error) and return
 			end
 
 			if @player.spend!(res_name => count)
@@ -99,10 +99,10 @@ class DealsController < ApplicationController
 			gid = params[:gid]
 			egg = Item[gid]
 			if egg.nil?
-				render_error(Error.types[:normal], "Invalid Item Id") and return
+				render_error(Error::NORMAL, "Invalid Item Id") and return
 			end
 			if !egg.is_egg?
-				render_error(Error.types[:normal], "It is not a egg") and return
+				render_error(Error::NORMAL, "It is not a egg") and return
 			end
 
 			Deal.create :status => Deal::STATUS[:selling],
@@ -125,12 +125,12 @@ class DealsController < ApplicationController
 				nil
 			end
 			if error
-				render_error(Error.types[:normal], error) and return
+				render_error(Error::NORMAL, error) and return
 			end
 
 			food = @player.foods.find(:type => type).first
 			if food.nil? || food.count < count
-				render_error(Error.types[:normal], "Not enough food") and return
+				render_error(Error::NORMAL, "Not enough food") and return
 			else
 				food.increase(:count, -count)
 				Deal.create :status => Deal::STATUS[:selling],

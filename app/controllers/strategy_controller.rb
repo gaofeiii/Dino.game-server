@@ -35,7 +35,7 @@ class StrategyController < ApplicationController
 		end
 		
 		if sta.nil?
-			render_error(Error.types[:normal], "wrong type of host")
+			render_error(Error::NORMAL, "wrong type of host")
 		else
 			@player = Player.new(:id => @village.player_id)
 			@player.gets :guide_cache, :beginning_guide_finished
@@ -60,15 +60,15 @@ class StrategyController < ApplicationController
 		end
 
 		if target.nil?
-			render_error(Error.types[:normal], "Invalid target") and return
+			render_error(Error::NORMAL, "Invalid target") and return
 		end
 
 		if target.is_a?(Village) && target.player_id.to_i = @player.id
-			render_error(Error.types[:normal], "Cannot attack your own village") and return
+			render_error(Error::NORMAL, "Cannot attack your own village") and return
 		end
 
 		if target.is_a?(GoldMine) && target.player_id.to_i == @player.id
-			render_error(Error.types[:normal], "The gold mine is yours") and return
+			render_error(Error::NORMAL, "The gold mine is yours") and return
 		end
 
 		army = params[:dinosaurs].to_a.map do |dino_id|
@@ -131,7 +131,7 @@ class StrategyController < ApplicationController
 		if report
 			render_success(report)
 		else
-			render_error(Error.types[:normal], "Report has been cleaned")
+			render_error(Error::NORMAL, "Report has been cleaned")
 		end
 	end
 end

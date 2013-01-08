@@ -68,6 +68,7 @@ DinosaurGame::Application.routes.draw do
     post 'release'          => 'dinosaur#release'
     post 'rename'           => 'dinosaur#rename'
     post 'reborn'           => 'dinosaur#reborn'
+    post 'expand_capacity'  => 'dinosaur#expand_capacity'
   end
   
   # 公会

@@ -29,7 +29,7 @@ class ChatController < ApplicationController
 		end
 
 		if !error.empty?
-			render_error(Error.types[:normal], error) and return
+			render_error(Error::NORMAL, error) and return
 		end
 
 		data = case params[:channel].to_i
@@ -40,7 +40,7 @@ class ChatController < ApplicationController
 			WorldChat.messages(:last_id => params[:world_chat_last_id], :count => 10)
 		when ChatMessage::CHANNELS[:league]
 			if !League.exists?(params[:league_id])
-				render_error(Error.types[:normal], "Invalid league id") and return
+				render_error(Error::NORMAL, "Invalid league id") and return
 			end
 			LeagueChat.create :channel => params[:channel],
 												:content => params[:content],
@@ -49,7 +49,7 @@ class ChatController < ApplicationController
 			LeagueChat.messages(:league_id => params[:league_id], :last_id => params[:league_chat_last_id], :count => 10)
 		when ChatMessage::CHANNELS[:private]
 			if !Player.exists?(params[:listener_id])
-				render_error(Error.types[:normal], "To player not exist") and return
+				render_error(Error::NORMAL, "To player not exist") and return
 			end
 			PrivateChat.create 	:channel => params[:channel],
 													:content => params[:content],
@@ -75,7 +75,7 @@ class ChatController < ApplicationController
 		# 	if not Player.exists?(params[:to_player_id])
 		# 		render :json => {
 		# 			:message => Error.success_message,
-		# 			:error_type => Error.types[:normal],
+		# 			:error_type => Error::NORMAL,
 		# 			:error => Error.format_message("to player does not exist")
 		# 		}
 		# 		return

@@ -15,7 +15,7 @@ class GuideController < ApplicationController
 		else
 			{
 				:message => Error.failed_message,
-				:error_type => Error::TYPES[:normal],
+				:error_type => Error::NORMAL,
 				:error => "QUEST_NOT_FINISHED"
 			}
 		end
@@ -42,7 +42,7 @@ class GuideController < ApplicationController
 		else
 			{
 				:message => Error.failed_message,
-				:error_type => Error::TYPES[:normal],
+				:error_type => Error::NORMAL,
 				:error => "QUEST_NOT_FINISHED"
 			}
 		end

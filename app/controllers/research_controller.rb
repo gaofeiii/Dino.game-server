@@ -4,7 +4,7 @@ class ResearchController < ApplicationController
 
 	def research
 		if @player.curr_research_queue_size >= @player.total_research_queue_size
-			render_error(Error.types[:normal], "research queue is full") and return
+			render_error(Error::NORMAL, "research queue is full") and return
 		end
 
 		tech = @player.technologies.find(:type => params[:tech_type].to_i).first
@@ -14,7 +14,7 @@ class ResearchController < ApplicationController
 		end
 
 		unless tech.research_finished?
-			render_error(Error.types[:normal], "Researching not complete") and return
+			render_error(Error::NORMAL, "Researching not complete") and return
 		end
 		
 		if @player.spend!(tech.next_level[:cost])
@@ -25,7 +25,7 @@ class ResearchController < ApplicationController
 			end
 			render_success(:player => @player.to_hash(:techs, :resources))
 		else
-			render_error(Error.types[:normal], "NOT_ENOUGH_RESOURCES")
+			render_error(Error::NORMAL, "NOT_ENOUGH_RESOURCES")
 		end
 	end
 
@@ -33,7 +33,7 @@ class ResearchController < ApplicationController
 		tech_type = params[:tech_type].to_i
 
 		if not tech_type.in?(Technology.types)
-			render_error(Error.types[:normal], "Wrong type of technology") and return
+			render_error(Error::NORMAL, "Wrong type of technology") and return
 		end
 
 		tech = @player.technologies.find(:type => tech_type).first
@@ -47,7 +47,7 @@ class ResearchController < ApplicationController
 		if @player.spend!(tech.speed_up_cost)
 			tech.speed_up!
 		else
-			render_error(Error.types[:normal], "Not enough gems") and return
+			render_error(Error::NORMAL, "Not enough gems") and return
 		end
 
 		render :json => {

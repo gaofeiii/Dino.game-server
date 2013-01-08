@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
     end
 
     if my_sig != cli_sig
-      render_error(Error.types[:normal], "INVALID_REQUEST") and return
+      render_error(Error::NORMAL, "INVALID_REQUEST") and return
     end
 
   end
@@ -79,42 +79,42 @@ class ApplicationController < ActionController::Base
   def validate_player
   	@player = Player[params[:player_id]]
     if @player.nil?
-      render_error(Error.types[:normal], "Invalid player id") and return
+      render_error(Error::NORMAL, "Invalid player id") and return
     end
   end
 
   def validate_village
     @village = Village[params[:village_id]]
     if @village.nil?
-      render_error(Error.types[:normal], "Invalid village id") and return
+      render_error(Error::NORMAL, "Invalid village id") and return
     end
   end
 
   def validate_item
     @item = Item[params[:item_id]]
     if @item.nil?
-      render_error(Error.types[:normal], "Invalid item id") and return
+      render_error(Error::NORMAL, "Invalid item id") and return
     end
   end
 
   def validate_dinosaur
     @dinosaur = Dinosaur[params[:dinosaur_id]]
     if @dinosaur.nil?
-      render_error(Error.types[:normal], "Invalid dinosaur id") and return
+      render_error(Error::NORMAL, "Invalid dinosaur id") and return
     end
   end
 
   def validate_league
     @league = League[params[:league_id]]
     if @league.nil?
-      render_error(Error.types[:normal], "Invalid league id") and return
+      render_error(Error::NORMAL, "Invalid league id") and return
     end
   end
 
   def validate_building
     @building = Building[params[:building_id]]
     if @building.nil?
-      rrender_error(Error.types[:normal], "Invalid building id") and return
+      rrender_error(Error::NORMAL, "Invalid building id") and return
     end
   end
 

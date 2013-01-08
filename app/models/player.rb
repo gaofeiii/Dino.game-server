@@ -48,6 +48,8 @@ class Player < Ohm::Model
 
 	attribute :is_set_nickname, 	Type::Boolean
 
+	attribute :dinosaurs_capacity, 		Type::Integer
+
 
 	collection :dinosaurs, 				Dinosaur
 	collection :technologies, 		Technology
@@ -179,7 +181,9 @@ class Player < Ohm::Model
 			:country_id => country_id.to_i,
 			:avatar_id => avatar_id,
 			:player_power => battle_power,
-			:is_set_nickname => is_set_nickname
+			:is_set_nickname => is_set_nickname,
+			:dinosaurs_capacity => dinosaurs_capacity,
+			:dinosaurs_count => dinosaurs.size
 		}
 		opts = if args.include?(:all)
 			args | [:god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
@@ -374,6 +378,10 @@ class Player < Ohm::Model
   	end
   end
 
+  def next_dino_space_gems
+  	dinosaurs_capacity % 5 + 1
+  end
+
 	# Callbacks
 	protected
 
@@ -384,6 +392,7 @@ class Player < Ohm::Model
 		self.level = 1 if (level.nil? or level == 0)
 		self.avatar_id = 1 if avatar_id.zero?
 		self.country_id = Country.first.id
+		self.dinosaurs_capacity = 5 if dinosaurs_capacity.zero?
 	end
 
 	def after_create
@@ -405,6 +414,11 @@ class Player < Ohm::Model
 			self.send(coll).map(&:delete)
 		end
 		AdviseRelation.find(:employer_id => id).union(:advisor_id => id).each(&:delete)
+	end
+
+	def before_save
+		# Just for test
+		self.dinosaurs_capacity = 5 if dinosaurs_capacity.zero?
 	end
 
 

@@ -12,7 +12,7 @@ class PlayersController < ApplicationController
 		if player.nil?
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message("Player not found")
 				}, :status => 999 and return
 		end
@@ -36,7 +36,7 @@ class PlayersController < ApplicationController
 		if params[:avatar_id].to_i < 0
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message("Wrong type of avatar_id")
 			}
 			return
@@ -48,7 +48,7 @@ class PlayersController < ApplicationController
 		else
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message("Invalid player id")
 			}
 		end
@@ -73,11 +73,11 @@ class PlayersController < ApplicationController
 	def modify_nickname
 		nkname = params[:nickname]
 		if nkname.sensitive?
-			render_error(Error.types[:normal], "Invalid nickname") and return
+			render_error(Error::NORMAL, "Invalid nickname") and return
 		end
 
 		if Player.find(:nickname => nkname).any?
-			render_error(Error.types[:normal], "nickname exists") and return
+			render_error(Error::NORMAL, "nickname exists") and return
 		end
 
 		result = account_update :account_id => @player.account_id,
@@ -88,7 +88,7 @@ class PlayersController < ApplicationController
 			@player.sets(:nickname => nkname, :is_set_nickname => true)
 			render_success(:player => {:nickname => @player.nickname}, :username => @player.nickname)
 		else
-			render_error(Error.types[:normal], "Set nickname failed")
+			render_error(Error::NORMAL, "Set nickname failed")
 		end
 		
 	end

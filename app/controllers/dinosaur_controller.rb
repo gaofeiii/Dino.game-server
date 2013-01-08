@@ -1,6 +1,6 @@
 class DinosaurController < ApplicationController
 	before_filter :validate_dinosaur, :only => [:update, :hatch_speed_up, :feed, :heal, :rename, :reborn, :release]
-	before_filter :validate_player, :only => [:food_list, :feed, :heal]
+	before_filter :validate_player, :only => [:food_list, :feed, :heal, :expand_capacity]
 
 	def update
 		@dinosaur.update_status!
@@ -54,7 +54,7 @@ class DinosaurController < ApplicationController
 	def rename
 		new_name = params[:name].to_s
 		if new_name.sensitive?
-			render_error(Error::NORMAL, "Invalid dino name") and return
+			render_error(Error::NORMAL, "INVALID_DINO_NAME") and return
 		end
 
 		@dinosaur.set :name, new_name
@@ -80,5 +80,14 @@ class DinosaurController < ApplicationController
 		Ohm.redis.hset("Player:#{@dinosaur.player_id}:released_dinosaurs", @dinosaur.id)
 		@dinosaur.update :player_id => nil
 		render_success(:dinosaur_id => @dinosaur.id)
+	end
+
+	def expand_capacity
+		if @player.spend(:gems => @player.next_dino_space_gems)
+			@player.increase :dinosaurs_capacity
+			render_success(:player => @player.to_hash)
+		else
+			render_error(Error::NORMAL, "NOT_ENOUGH_GEMS")
+		end
 	end
 end

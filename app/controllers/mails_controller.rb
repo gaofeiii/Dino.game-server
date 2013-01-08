@@ -6,7 +6,7 @@ class MailsController < ApplicationController
 
 		sender = Player.with(:nickname, params[:sender])
 		if sender.nil?
-			render_error(Error.types[:normal], "Invalid sender name") and return
+			render_error(Error::NORMAL, "Invalid sender name") and return
 		end
 
 		mail_type = params[:mail_type].to_i
@@ -16,7 +16,7 @@ class MailsController < ApplicationController
 		when Mail::TYPE[:private]
 			receiver = Player.with(:nickname, params[:receiver])
 			if receiver.nil?
-				render_error(Error.types[:normal], "Invalid receiver name") and return
+				render_error(Error::NORMAL, "Invalid receiver name") and return
 			end
 
 			Mail.create :mail_type => Mail::TYPE[:private],
@@ -31,7 +31,7 @@ class MailsController < ApplicationController
 			league = League[params[:league_id]]
 
 			if league.nil?
-				render_error(Error.types[:normal], "Invalid league id") and return
+				render_error(Error::NORMAL, "Invalid league id") and return
 			end
 
 			Mail.create :mail_type => Mail::TYPE[:league],
@@ -42,7 +42,7 @@ class MailsController < ApplicationController
 
 			render_success
 		else
-			render_error(Error.types[:normal], "Invalid mail type") and return
+			render_error(Error::NORMAL, "Invalid mail type") and return
 		end
 	end
 
@@ -50,7 +50,7 @@ class MailsController < ApplicationController
 		# mail_type = params[:mail_type].to_i
 
 		# if mail_type <= 0
-		# 	render_error(Error.types[:normal], "Invalid mail type") and return
+		# 	render_error(Error::NORMAL, "Invalid mail type") and return
 		# end
 
 		# mails = @player.mails(mail_type).to_a
@@ -67,7 +67,7 @@ class MailsController < ApplicationController
 	def read_mail
 		@mail = Mail[params[:mail_id]]
 		if @mail.nil?
-			render_error(Error.types[:normal], "Mail not exist") and return
+			render_error(Error::NORMAL, "Mail not exist") and return
 		end
 
 		result = {

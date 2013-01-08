@@ -23,7 +23,7 @@ class SessionsController < ApplicationController
 		else
 			{
 				:message => Error.failed_message,
-				:error_type => Error::TYPES[:normal]
+				:error_type => Error::NORMAL
 			}
 		end
 		render :json => data
@@ -88,14 +88,14 @@ class SessionsController < ApplicationController
 		if result[:success]
 			render_success(:password => params[:password])
 		else
-			render_error(Error.types[:normal], "Invalid password")
+			render_error(Error::NORMAL, "Invalid password")
 		end
 	end
 
 	def change_password
 		username, old_pass, new_pass = params[:username], params[:old_pass], params[:new_pass]
 		if username.blank? || old_pass.blank? || new_pass.blank?
-			render_error(Error.types[:normal], I18n.t("login_error.EMPTY_USERNAME_OR_PASSWORD")) and return
+			render_error(Error::NORMAL, I18n.t("login_error.EMPTY_USERNAME_OR_PASSWORD")) and return
 		end
 
 		result = account_change_pass 	:username => username,
@@ -105,7 +105,7 @@ class SessionsController < ApplicationController
 		if result[:success]
 			render_success(:password => new_pass)
 		else
-			render_error(Error.types[:normal], result[:error])
+			render_error(Error::NORMAL, result[:error])
 		end
 	end
 

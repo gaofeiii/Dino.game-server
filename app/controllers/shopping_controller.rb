@@ -33,7 +33,7 @@ class ShoppingController < ApplicationController
 		goods = Shopping.find_by_sid(sid)
 
 		if goods.nil?
-			render_error(Error.types[:normal], "Invalid serial id") and return
+			render_error(Error::NORMAL, "Invalid serial id") and return
 		end
 
 		if @player.spend!(goods.slice(:gems))
@@ -58,7 +58,7 @@ class ShoppingController < ApplicationController
 			end
 			render_success :player => @player.to_hash(:resources, :items, :specialties)
 		else
-			render_error Error.types[:normal], "Not enough gems"
+			render_error Error::NORMAL, "Not enough gems"
 		end
 	end
 

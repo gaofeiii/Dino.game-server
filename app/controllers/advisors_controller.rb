@@ -23,7 +23,7 @@ class AdvisorsController < ApplicationController
 		if not Player.exists?(params[:player_id])
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message("invalid player id")
 			}
 			return
@@ -35,7 +35,7 @@ class AdvisorsController < ApplicationController
 		if !advisor.is_npc? && advisor.is_advisor && advisor.is_hired
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message("you are already an advisor")
 			}
 			return
@@ -46,7 +46,7 @@ class AdvisorsController < ApplicationController
 		else
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message("Unknown error")
 			}
 		end
@@ -58,7 +58,7 @@ class AdvisorsController < ApplicationController
 		if params[:employer_id].to_i == params[:advisor_id].to_i
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message("cannot hire yourself")
 			}
 			return
@@ -82,7 +82,7 @@ class AdvisorsController < ApplicationController
 		end
 
 		if not err.empty?
-			render_error(Error.types[:normal], err) and	return
+			render_error(Error::NORMAL, err) and	return
 		end
 
 		employer = Player[params[:employer_id]]
@@ -95,7 +95,7 @@ class AdvisorsController < ApplicationController
 			end
 			render_success(:player => employer.to_hash(:advisors))
 		else
-			render_error(Error.types[:normal], "not enough gold")
+			render_error(Error::NORMAL, "not enough gold")
 		end
 	end
 

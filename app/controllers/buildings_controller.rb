@@ -10,7 +10,7 @@ class BuildingsController < ApplicationController
 		if @player.curr_action_queue_size >= @player.action_queue_size
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error::TYPES[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message("BUILDING_QUEUE_IS_FULL")
 			} and return
 		end
@@ -19,7 +19,7 @@ class BuildingsController < ApplicationController
 		unless type.in?(Building.types)
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message("INVALID_BUILDING_TYPE")
 			} and return
 		end
@@ -36,7 +36,7 @@ class BuildingsController < ApplicationController
 		else
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message('NOT_ENOUGH_RESOURCES')
 			}
 		end
@@ -48,7 +48,7 @@ class BuildingsController < ApplicationController
 		if @building.nil?
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message("INVALID_BUILDING_ID")
 			} and return
 		end
@@ -56,7 +56,7 @@ class BuildingsController < ApplicationController
 		if @building.status >= 2
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message("BUILDING_IS_FINISHED")
 			} and return
 		end
@@ -66,7 +66,7 @@ class BuildingsController < ApplicationController
 		else
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message("NOT_ENOUGH_SUNS")
 			} and return
 		end
@@ -92,7 +92,7 @@ class BuildingsController < ApplicationController
 		else
 			render :json => {
 				:message => Error.failed_message, 
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message("invalid coordinate")
 			}
 		end
@@ -108,7 +108,7 @@ class BuildingsController < ApplicationController
 			err = "Error condition"
 			render :json => {
 				:message => Error.failed_message,
-				:error_type => Error.types[:normal],
+				:error_type => Error::NORMAL,
 				:error => Error.format_message(err)
 			}
 		end
@@ -116,7 +116,7 @@ class BuildingsController < ApplicationController
 
 	def harvest
 		if not Building.resource_building_types.include?(@building.type)
-			render_error(Error.types[:normal], "This building cannot be harvested") and return
+			render_error(Error::NORMAL, "This building cannot be harvested") and return
 		end
 		@building.update_harvest
 		if @building.is_lumber_mill? || @building.is_quarry?
