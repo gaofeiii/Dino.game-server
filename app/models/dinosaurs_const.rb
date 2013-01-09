@@ -111,7 +111,8 @@ module DinosaursConst
 		end
 
 		def quality_value(qua = self.quality)
-			info[:quality][qua]
+			val = info[:quality][qua]
+			return val.nil? ? 1 : val
 		end
 
 		def favor_food

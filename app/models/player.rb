@@ -14,6 +14,7 @@ class Player < Ohm::Model
 	include RankModel
 
 	include DailyQuest
+	include PlayerTechMethods
 
 	TYPE = {
 		:normal => 0,

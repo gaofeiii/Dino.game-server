@@ -281,6 +281,7 @@ class Dinosaur < Ohm::Model
 		self.name = info[:name].classify if name.blank?
 		# self.current_hp = self.total_hp if total_hp.zero?
 		self.updated_hp_time = Time.now.to_i if updated_hp_time.zero?
+		self.quality = 1 if quality.zero?
 	end
 
 	def before_create
