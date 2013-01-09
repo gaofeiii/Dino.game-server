@@ -77,13 +77,13 @@ class DinosaurController < ApplicationController
 	end
 
 	def release
-		Ohm.redis.hset("Player:#{@dinosaur.player_id}:released_dinosaurs", @dinosaur.id)
+		Ohm.redis.sadd("Player:#{@dinosaur.player_id}:released_dinosaurs", @dinosaur.id)
 		@dinosaur.update :player_id => nil
 		render_success(:dinosaur_id => @dinosaur.id)
 	end
 
 	def expand_capacity
-		if @player.spend(:gems => @player.next_dino_space_gems)
+		if @player.spend!(:gems => @player.next_dino_space_gems)
 			@player.increase :dinosaurs_capacity
 			render_success(:player => @player.to_hash)
 		else

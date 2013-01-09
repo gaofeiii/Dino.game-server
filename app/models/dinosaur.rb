@@ -278,7 +278,7 @@ class Dinosaur < Ohm::Model
 		# 	send("total_#{att}=", send("basic_#{att}"))
 		# end
 		# self.feed_point -= Time.now.to_i - updated_feed_time
-		self.name = info[:name] if name.blank?
+		self.name = info[:name].classify if name.blank?
 		# self.current_hp = self.total_hp if total_hp.zero?
 		self.updated_hp_time = Time.now.to_i if updated_hp_time.zero?
 	end

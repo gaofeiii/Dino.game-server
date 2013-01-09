@@ -379,7 +379,11 @@ class Player < Ohm::Model
   end
 
   def next_dino_space_gems
-  	dinosaurs_capacity % 5 + 1
+  	dinosaurs_capacity - 4
+  end
+
+  def released_dinosaurs_ids
+  	db.smembers(key[:released_dinosaurs])
   end
 
 	# Callbacks
