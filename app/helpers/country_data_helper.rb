@@ -160,7 +160,7 @@ module CountryDataHelper
 							town_available_nodes -= get_town_nodes(town_index/COORD_TRANS_FACTOR, town_index%COORD_TRANS_FACTOR)
 						end
 
-						gold_available_nodes = town_available_nodes - get_town_nodes(town_index / COORD_TRANS_FACTOR, town_index % COORD_TRANS_FACTOR)
+						gold_available_nodes = town_available_nodes# - get_town_nodes(town_index / COORD_TRANS_FACTOR, town_index % COORD_TRANS_FACTOR)
 						gold_index = gold_available_nodes.sample
 						gold_mine_info[gold_index] = 3
 					end
