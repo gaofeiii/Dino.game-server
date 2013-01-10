@@ -1,8 +1,8 @@
 module CountryDataHelper
 	# COUNTRY_SZ 					= 2 															# 国家的数量
-	COORD_TRANS_FACTOR 	= 600 														# 坐标的大小
-	MAP_MAX_X						= 600
-	MAP_MAX_Y						= 600
+	COORD_TRANS_FACTOR 	= 1000 															# 坐标的大小
+	MAP_MAX_X						= 1000
+	MAP_MAX_Y						= 1000
 	TOWN_SZ 						= {:length => 3, :width => 3} 		# 城镇节点的大小
 	GOLD_MINE_SZ 				= {:length => 3, :width => 3}			# 金矿节点的大小，默认是正方形
 	GOLD_MINE_X_RANGE		= 250..350												# 高级金矿X坐标范围
@@ -154,8 +154,11 @@ module CountryDataHelper
 						town_blocked_nodes.uniq!
 						town_available_nodes = all_nodes - town_blocked_nodes
 
-						town_index = town_available_nodes.sample
-						town_nodes_info[town_index] = 1
+						2.times do
+							town_index = town_available_nodes.sample
+							town_nodes_info[town_index] = 1
+							town_available_nodes -= get_town_nodes(town_index/COORD_TRANS_FACTOR, town_index%COORD_TRANS_FACTOR)
+						end
 
 						gold_available_nodes = town_available_nodes - get_town_nodes(town_index / COORD_TRANS_FACTOR, town_index % COORD_TRANS_FACTOR)
 						gold_index = gold_available_nodes.sample

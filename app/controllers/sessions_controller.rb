@@ -43,6 +43,8 @@ class SessionsController < ApplicationController
 			else
 				@player.sets 	:device_token => @device_token,
 											:locale => LocaleHelper.get_server_locale_name(request.env["HTTP_CLIENT_LOCALE"])
+				@player.village.buildings.find(:status => [Building::STATUS[:new], Building::STATUS[:half]]).map(&:update_status!)
+				@player.technologies.find(:status => Technology::STATUS[:researching]).map(&:update_status!)
 			end
 			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all)})
 		else
