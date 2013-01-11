@@ -17,6 +17,7 @@ class Player < Ohm::Model
 	include PlayerTechHelper
 	include PlayerGodHelper
 	include PlayerAdvisorHelper
+	include PlayerResourceHelper
 
 	TYPE = {
 		:normal => 0,
@@ -28,8 +29,7 @@ class Player < Ohm::Model
 	attribute :account_id, 		Type::Integer
 	attribute :nickname
 	attribute :level, 				Type::Integer
-	attribute :gems,					Type::Integer
-	attribute :gold_coin, 		Type::Integer
+	
 	attribute :experience, 		Type::Integer
 	attribute :score, 				Type::Integer
 	attribute :device_token
@@ -92,78 +92,6 @@ class Player < Ohm::Model
 		(session && session.expired_at > ::Time.now.utc) ? true : false
 	end
 
-	# player的spend!方法：
-	# 参数为hash，key值是:wood, :stone, :population, :gold, :sun
-	# 前三个为玩家所属村落的资源，后两者为玩家的基本货币单位
-	# 返回值：某项资源不够返回false，成功返回玩家信息
-	# 
-	# E.g. player = Player.create :nickname => 'gaofei'
-	# # 假设以下数值
-	# player.gold_coin
-	# => 100
-	# player.sun
-	# => 50
-	# player.village.wood
-	# => 200
-	#
-	# player.spend!(:gold_coin => 10, :gems => 5, :wood => 100)
-	#
-	def spend!(args = {})
-		# vil = (args.include?(:wood) or args.include?(:stone) or args.include?(:population)) ? village : nil
-		vil = Village.new :id => village_id
-		vil.gets(:wood, :stone)
-
-		args_dup = args.dup
-		args_dup[:gold_coin] = args[:gold] if args[:gold]
-
-		db.multi do |t|
-			args_dup.symbolize_keys.each do |att, val|
-				if att.in?([:gold_coin, :gems])
-					return false if send(att) < val || val < 0
-					t.hincrby(key, att, -val)
-				elsif att.in?([:wood, :stone]) && vil
-					return false if vil.send(att) < val || val < 0
-					t.hincrby(vil.key, att, -val)
-				end
-			end
-		end
-
-		self.gold_coin = gold_coin - args_dup[:gold_coin] if args_dup[:gold_coin]
-		self.gems = gems - args_dup[:gems] if args_dup[:gems]
-		self
-	end
-
-	# player的receive!方法：
-	# 参数与返回值同spend!方法
-	def receive!(args = {})
-		vil = Village.new(:id => village_id)
-		vil.gets(:wood, :stone)
-		
-		args_dup = args.dup
-		args_dup[:gold_coin] = args[:gold] if args[:gold]
-
-		db.multi do |t|
-			args_dup.symbolize_keys.each do |att, val|
-				if att.in?([:gold_coin, :gems])
-					return false if val < 0
-					t.hincrby(key, att, val)
-				elsif att.in?([:wood, :stone])
-					return false if val < 0
-					t.hincrby(vil.key, att, val)
-				end
-			end
-		end
-		
-		self.gold_coin = gold_coin + args_dup[:gold_coin] if args_dup[:gold_coin]
-		self.gems = gems + args_dup[:gems] if args_dup[:gems]
-		self
-	end
-
-	# player的to_hash方法，主要用于render的返回值
-	# 参数为symbol数组
-	# 若参数为空返回基本信息
-	# 带上参数则查询并返回参数所对应的信息，如player.to_hash(:village, :techs)
-	# 只要包含:all参数，返回所有的信息
 	def to_hash(*args)
 		hash = {
 			:id => id.to_i,
@@ -180,7 +108,10 @@ class Player < Ohm::Model
 			:player_power => battle_power,
 			:is_set_nickname => is_set_nickname,
 			:dinosaurs_capacity => dinosaurs_capacity,
-			:dinosaurs_count => dinosaurs.size
+			:dinosaurs_count => dinosaurs.size,
+			:wood => wood,
+			:stone => stone,
+			:warehouse_size => tech_warehouse_size
 		}
 		opts = if args.include?(:all)
 			args | [:god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
@@ -205,7 +136,7 @@ class Player < Ohm::Model
 			when :advisors
 				hash[:advisors] = my_advisors_info
 			when :beginning_guide
-				has_beginning_guide = false#!beginning_guide_finished
+				has_beginning_guide = !beginning_guide_finished
 				hash[:has_beginning_guide] = has_beginning_guide
 				hash[:beginning_guide] = guide_info.current if has_beginning_guide
 			when :queue_info
@@ -393,6 +324,8 @@ class Player < Ohm::Model
 		return if player_type == TYPE[:npc]
 		self.gold_coin = 1000
 		self.gems = 100
+		self.wood = 5000
+		self.stone = 5000
 		self.level = 1 if (level.nil? or level == 0)
 		self.avatar_id = 1 if avatar_id.zero?
 		self.country_id = Country.first.id

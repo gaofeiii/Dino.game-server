@@ -26,7 +26,7 @@ class BuildingsController < ApplicationController
 
 		cost = Building.cost(type)
 
-		if @village.spend!(cost)
+		if @player.spend!(cost)
 			b_type = params[:building_type].to_i
 			wkr = @player.working_workers < @player.total_workers && Building.resource_building_types.include?(b_type) ? 1 : 0
 			@building = @village.create_building 	:type => b_type, 

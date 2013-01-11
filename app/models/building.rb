@@ -160,7 +160,6 @@ class Building < Ohm::Model
 
 		player = Player.new :id => player_id
 		warehouse_size = player.tech_warehouse_size
-		vil = Village.new(:id => village_id).gets(:wood, :stone)
 
 		case type
 		when Building.hashes[:collecting_farm]
@@ -189,8 +188,8 @@ class Building < Ohm::Model
 				self.harvest_updated_time = now_time - delta_t % produce_rate
 				self.harvest_count += count_inc.to_i
 
-				if vil.wood + self.harvest_count > warehouse_size
-					self.harvest_count = warehouse_size - vil.wood
+				if player.wood + self.harvest_count > warehouse_size
+					self.harvest_count = warehouse_size - player.wood
 				end
 
 				self.harvest_count = 0 if self.harvest_count < 0
@@ -204,8 +203,8 @@ class Building < Ohm::Model
 				self.harvest_updated_time = now_time - delta_t % produce_rate
 				self.harvest_count += count_inc.to_i
 
-				if vil.stone + self.harvest_count > warehouse_size
-					self.harvest_count = warehouse_size - vil.stone
+				if player.stone + self.harvest_count > warehouse_size
+					self.harvest_count = warehouse_size - player.stone
 				end
 
 				self.harvest_count = 0 if self.harvest_count < 0
@@ -257,20 +256,5 @@ class Building < Ohm::Model
 		end
 	end
 
-	def after_save
-		case type
-		when Building.hashes[:warehouse]
-			self.village.update_warehouse!
-		end
-	end
-
-	def before_save
-		if level > 0
-			case type
-			when Building.hashes[:lumber_mill]
-				self.village.set :wood_inc, 100 if technology_ids.empty?
-			end
-		end
-	end
 end
 

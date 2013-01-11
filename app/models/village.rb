@@ -10,11 +10,6 @@ class Village < Ohm::Model
 	attribute :y, 									Type::Integer
 	attribute :index, 							Type::Integer
 
-	attribute :wood,								Type::Integer
-	attribute :wood_max, 						Type::Integer
-	attribute :stone, 							Type::Integer
-	attribute :stone_max,						Type::Integer
-
 	attribute :under_attack, 				Type::Boolean
 		
 
@@ -87,26 +82,9 @@ class Village < Ohm::Model
 	def resources
 		warehouse_size = player.tech_warehouse_size
 		{
-			:wood => wood,
 			:wood_max => warehouse_size,
-			:stone => stone,
 			:stone_max => warehouse_size
 		}
-	end
-
-	[:spend, :receive].each do |name|
-		define_method("#{name}!") do |args = {}|
-			db.multi do |t|
-				args.each do |att, val|
-					if att.in?(:wood, :stone)
-						return false if send(att) < val
-						v = name == :spend ? -val : val
-						t.hincrby(self.key, att, v)
-					end
-				end
-			end
-			load!
-		end
 	end
 
 	# def create_building(building_type, level = 1, x, y, st)
@@ -144,23 +122,6 @@ class Village < Ohm::Model
 		return tech
 	end
 
-	def update_warehouse
-		wh_size = self.buildings.find(:type => Building.hashes[:warehouse]).size
-		wh_size = wh_size < 1 ? 1 : wh_size
-		tech = find_tech_by_type(Technology.hashes[:storing])
-		tech_size = tech.info[:property][:resource_max]
-		total_size = wh_size * tech_size
-		self.wood_max = total_size
-		self.stone_max = total_size
-	end
-
-	def update_warehouse!
-		update_warehouse
-		self.sets :wood_max 	=> wood_max,
-							:stone_max 	=> stone_max
-		self
-	end
-
 	def has_built_building?(building_type)
 		result = buildings.find(:type => building_type)
 		result.any? && result.max{ |b| b.level if b }.try(:status).to_i >= 2
@@ -179,11 +140,6 @@ class Village < Ohm::Model
 		if index.zero?
 			self.index = x * Country::COORD_TRANS_FACTOR + y
 		end
-	end
-
-	def before_create
-		self.wood = 5000
-		self.stone = 5000
 	end
 
 	def after_create
