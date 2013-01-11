@@ -32,6 +32,20 @@ class AdviseRelation < Ohm::Model
 		start_time + days.days.to_i
 	end
 
+	def effect_value
+		k = case type
+		when Advisor::TYPES[:produce]
+			:inc_produce
+		when Advisor::TYPES[:military]
+			:inc_damage
+		when Advisor::TYPES[:business]
+			:inc_business
+		when Advisor::TYPES[:technology]
+			:inc_research
+		end
+		Advisor.const[advisor_level][k].to_f
+	end
+
 	def to_hash
 		advisor = Player.new :id => advisor_id
 		advisor.gets(:level, :nickname, :avatar_id)
@@ -44,7 +58,7 @@ class AdviseRelation < Ohm::Model
 			:nickname => advisor.nickname,
 			:avatar_id => advisor.avatar_id,
 			:left_time => start_time + days.days.to_i - ::Time.now.to_i,
-			:effect_value => 0.15
+			:effect_value => effect_value
 		}
 	end
 end

@@ -6,6 +6,7 @@ class Item < Ohm::Model
 	attribute :item_category, 	Type::Integer
 	attribute :item_type, 			Type::Integer
 	attribute :can_sell,				Type::Boolean
+	attribute :quality,					Type::Integer
 	reference :player, :Player
 
 	class << self
@@ -58,11 +59,20 @@ class Item < Ohm::Model
 	end
 
 	def to_hash
-		{
+		hash = {
 			:id => id.to_i,
 			:category => item_category,
 			:type => item_type,
 			:can_sell => false
 		}
+		hash[:quality] = quality if is_egg?
+		hash
+	end
+
+	protected
+	def before_save
+		if is_egg? && self.quality.zero?
+			self.quality = 1
+		end
 	end
 end

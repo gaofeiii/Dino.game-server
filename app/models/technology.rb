@@ -89,7 +89,6 @@ class Technology < Ohm::Model
 	def speed_up_gem_cost
 		l_time = finish_time - start_time
 		l_time = 0 if l_time < 0
-		p "=== l_time: #{l_time}"
 		(l_time / 300.0).ceil
 	end
 
@@ -114,6 +113,8 @@ class Technology < Ohm::Model
 
 	def after_save
 		case type
+		when Technology.hashes[:residential]
+			self.player.update_building_workers!
 		when Technology.hashes[:storing]
 			self.village.update_warehouse! if level > 0
 		when Technology.hashes[:lumbering]

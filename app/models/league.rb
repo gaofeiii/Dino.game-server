@@ -25,7 +25,9 @@ class League < Ohm::Model
 			:id => id.to_i,
 			:name => name,
 			:desc => desc,
+			:level => level,
 			:president => president.try(:nickname).to_s,
+			:member_count => league_member_ships.size
 		}
 	end
 

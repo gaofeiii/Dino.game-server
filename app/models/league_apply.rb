@@ -8,7 +8,9 @@ class LeagueApply < Ohm::Model
 	reference :league, League
 	reference :player, Player
 
-	attribute :player_nickname
+	def player_nickname
+		db.hget(Player.key[player_id], :nickname)
+	end
 
 	def to_hash
 		{

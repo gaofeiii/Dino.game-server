@@ -1,7 +1,7 @@
 if Player.find(:player_type => Player::TYPE[:npc]).size < 1
 	puts "***** Creating NPC Players *****"
 	players = 4.times.map do
-		Player.create(:nickname => "NPC", :player_type => Player::TYPE[:npc], :avatar_id => rand(1..8), :level => 10)
+		Player.create(:nickname => "NPC", :player_type => Player::TYPE[:npc], :avatar_id => rand(1..8), :level => 1)
 	end
 
 	players.each_with_index do |player, idx|
