@@ -164,7 +164,7 @@ class Building < Ohm::Model
 
 		case type
 		when Building.hashes[:collecting_farm]
-			produce_rate = 3600 / player.tech_produce_fruit_rate
+			produce_rate = 3600 / (player.tech_produce_fruit_rate * (1 + player.adv_inc_resource))
 			delta_t = now_time - harvest_updated_time
 			count_inc = delta_t / produce_rate
 			if count_inc > 0
@@ -173,7 +173,7 @@ class Building < Ohm::Model
 			end
 			self
 		when Building.hashes[:hunting_field]
-			produce_rate = 3600 / player.tech_produce_meat_rate # seconds/1 meat
+			produce_rate = 3600 / (player.tech_produce_meat_rate * (1 + player.adv_inc_resource)) # seconds/1 meat
 			delta_t = now_time - harvest_updated_time
 			count_inc = delta_t / produce_rate
 			if count_inc > 0
@@ -182,7 +182,7 @@ class Building < Ohm::Model
 			end
 			self
 		when Building.hashes[:lumber_mill]
-			produce_rate = 3600 / player.tech_produce_wood_rate # seconds/1 wood
+			produce_rate = 3600 / (player.tech_produce_wood_rate * (1 + player.adv_inc_resource)) # seconds/1 wood
 			delta_t = now_time - harvest_updated_time
 			count_inc = delta_t / produce_rate
 			if count_inc > 0
@@ -197,7 +197,7 @@ class Building < Ohm::Model
 			end
 			self
 		when Building.hashes[:quarry]
-			produce_rate = 3600 / player.tech_produce_stone_rate # seconds/1 stone
+			produce_rate = 3600 / (player.tech_produce_stone_rate * (1 + player.adv_inc_resource)) # seconds/1 stone
 			delta_t = now_time - harvest_updated_time
 			count_inc = delta_t / produce_rate
 			if count_inc > 0

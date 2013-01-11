@@ -1,4 +1,4 @@
-module PlayerTechMethods
+module PlayerTechHelper
 	module ClassMethods
 		
 	end

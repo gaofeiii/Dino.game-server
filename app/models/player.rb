@@ -14,8 +14,9 @@ class Player < Ohm::Model
 	include RankModel
 
 	include DailyQuest
-	include PlayerTechMethods
+	include PlayerTechHelper
 	include PlayerGodHelper
+	include PlayerAdvisorHelper
 
 	TYPE = {
 		:normal => 0,
@@ -33,9 +34,6 @@ class Player < Ohm::Model
 	attribute :score, 				Type::Integer
 	attribute :device_token
 	attribute :avatar_id, 		Type::Integer		# 玩家头像的id
-	attribute :is_advisor,		Type::Boolean
-	attribute :is_hired,			Type::Boolean
-	attribute :advisor_type,	Type::Integer
 	attribute :battle_power,	Type::Integer
 
 	attribute :player_type, 	Type::Integer
@@ -58,7 +56,6 @@ class Player < Ohm::Model
 	collection :specialties, 			Specialty
 	collection :items, 						Item
 	collection :league_applys, 		LeagueApply
-	collection :advise_relations, AdviseRelation
 	collection :buffs, 						Buff
 	collection :gods, 						God
 	collection :troops,						Troops
@@ -208,9 +205,7 @@ class Player < Ohm::Model
 			when :league
 				hash[:league] = league_info
 			when :advisors
-				hash[:advisors] = AdviseRelation.find(:employer_id => id).map do |ar|
-					ar.to_hash
-				end
+				hash[:advisors] = my_advisors_info
 			when :beginning_guide
 				has_beginning_guide = false#!beginning_guide_finished
 				hash[:has_beginning_guide] = has_beginning_guide
@@ -238,20 +233,6 @@ class Player < Ohm::Model
 
 		end
 		return hash
-	end
-
-	def advisor_info
-		{
-			:id => id.to_i,
-			:nickname => nickname,
-			:level => level
-		}
-	end
-
-	def my_advisors_info
-		AdviseRelation.find(:employer_id => id).map do |ar|
-			ar.to_hash
-		end
 	end
 
 	def league_info
@@ -293,15 +274,6 @@ class Player < Ohm::Model
 				:y => village_coords[1].to_i
 			}
 		end
-	end
-
-	# 顾问
-	def hire(advisor)
-		advisors.add(advisor)
-	end
-
-	def fire(advisor)
-		advisors.delete(advisor)
 	end
 
 	def make_troops(*dinos)
@@ -449,7 +421,6 @@ class Player < Ohm::Model
 		%w(dinosaurs technologies specialties items league_applys buffs gods troops).each do |coll|
 			self.send(coll).map(&:delete)
 		end
-		AdviseRelation.find(:employer_id => id).union(:advisor_id => id).each(&:delete)
 	end
 
 	def before_save
