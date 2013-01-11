@@ -15,6 +15,7 @@ class Player < Ohm::Model
 
 	include DailyQuest
 	include PlayerTechMethods
+	include PlayerGodHelper
 
 	TYPE = {
 		:normal => 0,
