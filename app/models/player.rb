@@ -56,8 +56,6 @@ class Player < Ohm::Model
 	collection :specialties, 			Specialty
 	collection :items, 						Item
 	collection :league_applys, 		LeagueApply
-	collection :buffs, 						Buff
-	collection :gods, 						God
 	collection :troops,						Troops
 	collection :deals,						Deal, 	:seller
 	collection :gold_mines,				GoldMine
@@ -213,8 +211,6 @@ class Player < Ohm::Model
 			when :queue_info
 				hash[:max_queue_size] = action_queue_size
 				hash[:queue_in_use] = curr_action_queue_size
-			when :buff_info
-				hash[:buffs] = buffs.to_a
 			when :new_mails
 				hash[:mail_status] = check_mails
 			when :troops
@@ -224,7 +220,7 @@ class Player < Ohm::Model
 				hash[:village].merge!(:resources => village.resources)
 			when :god
 				if not gods.blank?
-					hash[:god] = gods.first.to_hash
+					hash[:god] = curr_god.to_hash
 				end
 			when :daily_quest
 				reset_daily_quest!
@@ -418,7 +414,7 @@ class Player < Ohm::Model
 	def after_delete
 		vil = village
 		vil.delete if vil
-		%w(dinosaurs technologies specialties items league_applys buffs gods troops).each do |coll|
+		%w(dinosaurs technologies specialties items league_applys gods troops).each do |coll|
 			self.send(coll).map(&:delete)
 		end
 	end

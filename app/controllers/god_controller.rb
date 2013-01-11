@@ -7,7 +7,7 @@ class GodController < ApplicationController
 			render_error(Error::NORMAL, "Invalid god type") and return
 		end
 
-		god = @player.gods.first
+		god = @player.curr_god
 		cost = {:wood => 1000, :stone => 1000, :gold_coin => 100}
 
 		if @player.spend!(cost)

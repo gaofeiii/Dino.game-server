@@ -11,15 +11,9 @@ class Village < Ohm::Model
 	attribute :index, 							Type::Integer
 
 	attribute :wood,								Type::Integer
-	attribute :basic_wood_inc,			Type::Integer
-	attribute :wood_inc, 						Type::Integer
 	attribute :wood_max, 						Type::Integer
 	attribute :stone, 							Type::Integer
-	attribute :basic_stone_inc,			Type::Integer
-	attribute :stone_inc,						Type::Integer
 	attribute :stone_max,						Type::Integer
-	
-	attribute :update_resource_at, 	Type::Integer
 
 	attribute :under_attack, 				Type::Boolean
 		
@@ -31,8 +25,6 @@ class Village < Ohm::Model
 
 	collection :buildings, 					Building
 	collection :dinosaurs, 					Dinosaur
-	collection :buffs, 							Buff
-
 
 	index :name
 	unique :index
@@ -96,10 +88,8 @@ class Village < Ohm::Model
 		warehouse_size = player.tech_warehouse_size
 		{
 			:wood => wood,
-			:basic_wood_inc => basic_wood_inc,
 			:wood_max => warehouse_size,
 			:stone => stone,
-			:basic_stone_inc => basic_stone_inc,
 			:stone_max => warehouse_size
 		}
 	end
@@ -154,74 +144,6 @@ class Village < Ohm::Model
 		return tech
 	end
 
-	def refresh_resource_output(time = Time.now.to_i)
-		tech_lumbering = find_tech_by_type(Technology.hashes[:lumbering])
-		tech_mining = find_tech_by_type(Technology.hashes[:mining])
-		self.basic_wood_inc = tech_lumbering.property[:wood_inc]
-		self.basic_stone_inc = tech_mining.property[:stone_inc]
-
-		buffs_inc = buffs.sum do |buff|
-			buff.res_inc
-		end
-
-		self.wood_inc = (self.basic_wood_inc * (1 + buffs_inc)).to_i
-		self.stone_inc = (self.basic_stone_inc * (1 + buffs_inc)).to_i
-		self
-	end
-
-	def calc_resources_increase(time = Time.now.to_i)
-		delta_t = time - update_resource_at
-		if delta_t < 10
-			return
-		else
-			delta_t = delta_t / 3600.0 # seconds to hours
-		end
-
-		wood_delta = (self.wood_inc * (1 + delta_t)).to_i
-		stone_delta = (self.stone_inc * (1 + delta_t)).to_i
-
-		if (self.wood + wood_delta) > self.wood_max
-			wood_delta = 0
-		end
-
-		if (self.stone + stone_delta) > self.stone_max
-			stone_delta = 0
-		end
-
-		self.wood += wood_delta
-		self.stone += stone_delta
-		
-		self.update_resource_at = time
-		self
-	end
-
-	def refresh_resource(time = Time.now.to_i)
-		refresh_resource_output(time)
-		calc_resources_increase(time)
-		self
-	end
-
-	def refresh_resource!(time = Time.now.to_i)
-		
-		refresh_resource(time)
-		
-		write_back_resources!
-	end
-
-	def write_back_resources!
-		if self.sets 	:basic_wood_inc 		=> basic_wood_inc,
-									:wood_inc 					=> wood_inc,
-									:basic_stone_inc 		=> basic_stone_inc,
-									:stone_inc 					=> stone_inc,
-									:update_resource_at => update_resource_at,
-									:wood 							=> wood,
-									:stone 							=> stone
-			return self
-		else
-			false
-		end
-	end
-
 	def update_warehouse
 		wh_size = self.buildings.find(:type => Building.hashes[:warehouse]).size
 		wh_size = wh_size < 1 ? 1 : wh_size
@@ -237,10 +159,6 @@ class Village < Ohm::Model
 		self.sets :wood_max 	=> wood_max,
 							:stone_max 	=> stone_max
 		self
-	end
-
-	def update_wood_output
-		
 	end
 
 	def has_built_building?(building_type)
@@ -266,7 +184,6 @@ class Village < Ohm::Model
 	def before_create
 		self.wood = 5000
 		self.stone = 5000
-		self.update_resource_at = ::Time.now.utc.to_i
 	end
 
 	def after_create
