@@ -116,6 +116,8 @@ class Technology < Ohm::Model
 		case type
 		when Technology.hashes[:storing]
 			self.village.update_warehouse! if level > 0
+		when Technology.hashes[:lumbering]
+			self.village.set(:basic_wood_inc, self.property[:wood_inc])
 		end
 	end
 end

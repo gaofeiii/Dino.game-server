@@ -19,7 +19,7 @@ module PlayerTechMethods
 		# 住宅
 		def tech_worker_number
 			tech = tech_residential
-			return tech.nil? ? 1 : tech.property[:worker_number]
+			return tech.nil? ? 1 : tech.property[:worker_num]
 		end
 
 		def tech_house_max

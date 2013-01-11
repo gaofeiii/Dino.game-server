@@ -66,7 +66,7 @@ class ApplicationController < ActionController::Base
     render :json => {
       :message => Error.failed_message,
       :error_type => error_type.to_i,
-      :error => Error.format_message(error_message)
+      :error => error_message
     }
   end
 

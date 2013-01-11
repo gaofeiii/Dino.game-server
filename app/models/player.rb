@@ -387,6 +387,36 @@ class Player < Ohm::Model
   	db.smembers(key[:released_dinosaurs])
   end
 
+  # 当前拥有的worker总数：民居数×科技
+  def total_workers
+  	vil = Village.new :id => village_id
+  	tech_worker_number * vil.buildings.find(:type => Building.hashes[:residential]).size
+  end
+
+  # 当前正在工作的worker数
+  def working_workers
+  	vil = Village.new :id => village_id
+  	vil.buildings.find(:has_worker => 1).size
+  end
+
+  def need_workers
+  	vil = Village.new :id => village_id
+  	vil.buildings.find(:resource_building => true).size
+  end
+
+  def update_building_workers!
+  	vil = Village.new :id => village_id
+  	total = total_workers
+  	vil.buildings.find(:resource_building => true).each do |bd|
+  		if total > 0
+  			bd.update(:has_worker => 1)
+  			total -= 1
+  		else
+  			bd.update(:has_worker => 0)
+  		end
+  	end
+  end
+
 	# Callbacks
 	protected
 

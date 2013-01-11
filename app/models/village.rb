@@ -18,12 +18,6 @@ class Village < Ohm::Model
 	attribute :basic_stone_inc,			Type::Integer
 	attribute :stone_inc,						Type::Integer
 	attribute :stone_max,						Type::Integer
-
-	# =========== Expired attributes ============
-	attribute :population, 					Type::Integer
-	attribute :population_inc,			Type::Integer
-	attribute :population_max,			Type::Integer
-	# ===========================================
 	
 	attribute :update_resource_at, 	Type::Integer
 
@@ -99,15 +93,14 @@ class Village < Ohm::Model
 	end
 
 	def resources
+		warehouse_size = player.tech_warehouse_size
 		{
 			:wood => wood,
 			:basic_wood_inc => basic_wood_inc,
-			:wood_inc => wood_inc,
-			:wood_max => wood_max,
+			:wood_max => warehouse_size,
 			:stone => stone,
 			:basic_stone_inc => basic_stone_inc,
-			:stone_inc => stone_inc,	
-			:stone_max => stone_max,
+			:stone_max => warehouse_size
 		}
 	end
 
@@ -126,17 +119,20 @@ class Village < Ohm::Model
 		end
 	end
 
-	def create_building(building_type, level = 1, x, y, st)
-		Building.create :type => building_type.to_i, :level => level, :village_id => id, :x => x, :y => y, :status => st
+	# def create_building(building_type, level = 1, x, y, st)
+	# 	Building.create :type => building_type.to_i, :level => level, :village_id => id, :x => x, :y => y, :status => st
+	# end
+
+	# args = { :type => 1, :level => 1, :x => 20, :y => 20, :status => 0, :has_worker => 0 }
+	def create_building(args = {})
+		args_dup = args.dup
+		args_dup.merge!(:level => 1) if args[:level].nil?
+
+		Building.create args_dup.merge(:village_id => id)
 	end
 
 	def full_info
 		self.to_hash.merge(:buildings => buildings.to_a, :dinosaurs => dinosaurs.to_a)
-	end
-
-	# TODO: 刷新资源
-	def update_resource(time = Time.now.to_i)
-		
 	end
 
 	def strategy
@@ -241,6 +237,10 @@ class Village < Ohm::Model
 		self.sets :wood_max 	=> wood_max,
 							:stone_max 	=> stone_max
 		self
+	end
+
+	def update_wood_output
+		
 	end
 
 	def has_built_building?(building_type)

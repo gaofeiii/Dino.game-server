@@ -1,5 +1,7 @@
 class Advisor < Ohm::Model
 
+	include AdvisorHelper
+
 	TAX = 0.0
 	TYPES = {:produce => 1, :military => 2, :business => 3, :technology => 4}
 
@@ -63,18 +65,6 @@ class Advisor < Ohm::Model
 			if relation.delete
 				db.hdel("Player:#{advisor_id}", [:is_advisor, :is_hired])
 			end
-		end
-
-		# TODO: Advisor price.
-		def hire_price(level, days)
-			factor = if days >= 7
-				0.9
-			elsif days < 7 && days >= 3
-				0.95
-			else
-				1
-			end
-			((level ** 1.2).to_i * 500 * days * factor).to_i
 		end
 
 		def find_random_by_type(type, count = 1)

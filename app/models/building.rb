@@ -7,7 +7,7 @@ class Building < Ohm::Model
 	include BuildingConst
 
 	STATUS = {:new => 0, :half => 1, :finished => 2}
-	HARVEST_AVAILABLE_TIME = 30.seconds
+	HARVEST_AVAILABLE_TIME = 2.minutes
 	HARVEST_CHANGE_TIME = 2.minute
 
 	attribute :type, Type::Integer
@@ -27,9 +27,17 @@ class Building < Ohm::Model
 	attribute :resource_type,					Type::Integer
 	attribute :harvest_count,					Type::Integer
 
+	attribute :has_worker, 						Type::Integer
+
 	index :type
 	index :status
 	index :village_id
+	index :has_worker
+	index :resource_building
+
+	def resource_building
+		is_resource_building?
+	end
 
 	reference :village, Village
 
@@ -69,11 +77,48 @@ class Building < Ohm::Model
 			:type => type,
 			:level => level,
 			:status => status,
-			:time => time,
 			:time_pass => Time.now.to_i - start_building_time,
 			:x => x,
-			:y => y
+			:y => y,
+			:time => time,
+			:worker_number => has_worker
 		}
+
+		# 建筑的属性
+		player = Player.new :id => player_id
+		case type
+		when Building.hashes[:residential]
+			hash.merge!(:worker_supply => player.tech_worker_number)
+		when Building.hashes[:lumber_mill]
+			wood_rate = player.tech_produce_wood_rate
+			hash[:basic_wood_inc] = wood_rate
+		when Building.hashes[:quarry]
+			stone_rate = player.tech_produce_stone_rate
+			hash[:basic_stone_inc] = stone_rate
+		when Building.hashes[:hunting_field]
+			meat_rate = player.tech_produce_meat_rate
+			hash[:basic_meat_inc] = meat_rate
+		when Building.hashes[:collecting_farm]
+			fruit_rate = player.tech_produce_fruit_rate
+			hash[:basic_food_inc] = fruit_rate
+		when Building.hashes[:habitat]
+
+		when Building.hashes[:beastiary]
+			
+		when Building.hashes[:market]
+				
+		when Building.hashes[:workshop]
+			
+		when Building.hashes[:temple]
+			
+		when Building.hashes[:warehouse]
+			hash[:resource_max] = player.tech_warehouse_size
+		end
+
+		if hash[:time].to_i < HARVEST_AVAILABLE_TIME
+			hash[:time] = HARVEST_AVAILABLE_TIME
+		end
+
 		if args.include?(:harvest_info) && is_resource_building?
 			hash[:harvest_info] = harvest_info
 		end
@@ -112,41 +157,58 @@ class Building < Ohm::Model
 	def update_harvest
 		return false if status < STATUS[:finished]
 		now_time = ::Time.now.to_i
+
+		player = Player.new :id => player_id
+		warehouse_size = player.tech_warehouse_size
+		vil = Village.new(:id => village_id).gets(:wood, :stone)
+
 		case type
 		when Building.hashes[:collecting_farm]
-			produce_rate = HARVEST_AVAILABLE_TIME # TODO
+			produce_rate = 3600 / player.tech_produce_fruit_rate
 			delta_t = now_time - harvest_updated_time
-			count_inc = delta_t / produce_rate # 5.minutes
+			count_inc = delta_t / produce_rate
 			if count_inc > 0
-				self.harvest_updated_time = now_time - delta_t % produce_rate #5.minutes
+				self.harvest_updated_time = now_time - delta_t % produce_rate
 				self.harvest_count += count_inc
 			end
 			self
 		when Building.hashes[:hunting_field]
-			produce_rate = HARVEST_AVAILABLE_TIME # TODO
+			produce_rate = 3600 / player.tech_produce_meat_rate # seconds/1 meat
 			delta_t = now_time - harvest_updated_time
-			count_inc = delta_t / produce_rate # 5.minutes
+			count_inc = delta_t / produce_rate
 			if count_inc > 0
-				self.harvest_updated_time = now_time - delta_t % produce_rate #5.minutes
+				self.harvest_updated_time = now_time - delta_t % produce_rate
 				self.harvest_count += count_inc
 			end
 			self
 		when Building.hashes[:lumber_mill]
-			produce_rate = 0.5 # TODO
+			produce_rate = 3600 / player.tech_produce_wood_rate # seconds/1 wood
 			delta_t = now_time - harvest_updated_time
-			count_inc = delta_t / produce_rate # 5.minutes
+			count_inc = delta_t / produce_rate
 			if count_inc > 0
-				self.harvest_updated_time = now_time - delta_t % produce_rate #5.minutes
+				self.harvest_updated_time = now_time - delta_t % produce_rate
 				self.harvest_count += count_inc.to_i
+
+				if vil.wood + self.harvest_count > warehouse_size
+					self.harvest_count = warehouse_size - vil.wood
+				end
+
+				self.harvest_count = 0 if self.harvest_count < 0
 			end
 			self
 		when Building.hashes[:quarry]
-			produce_rate = 0.5 # TODO
+			produce_rate = 3600 / player.tech_produce_stone_rate # seconds/1 stone
 			delta_t = now_time - harvest_updated_time
-			count_inc = delta_t / produce_rate # 5.minutes
+			count_inc = delta_t / produce_rate
 			if count_inc > 0
-				self.harvest_updated_time = now_time - delta_t % produce_rate #5.minutes
+				self.harvest_updated_time = now_time - delta_t % produce_rate
 				self.harvest_count += count_inc.to_i
+
+				if vil.stone + self.harvest_count > warehouse_size
+					self.harvest_count = warehouse_size - vil.stone
+				end
+
+				self.harvest_count = 0 if self.harvest_count < 0
 			end
 			self
 		else

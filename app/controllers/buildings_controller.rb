@@ -2,7 +2,7 @@ class BuildingsController < ApplicationController
 
 	before_filter :validate_village, :only => [:create]
 	before_filter :validate_player, :only => [:speed_up, :harvest]
-	before_filter :validate_building, :only => [:move, :complete, :destroy, :harvest, :get_info]
+	before_filter :validate_building, :only => [:move, :complete, :harvest, :get_info]
 
 	def create
 		@player = @village.player
@@ -27,7 +27,14 @@ class BuildingsController < ApplicationController
 		cost = Building.cost(type)
 
 		if @village.spend!(cost)
-			@building = @village.create_building(params[:building_type], params[:x], params[:y], Building::STATUS[:new])
+			b_type = params[:building_type].to_i
+			wkr = @player.working_workers < @player.total_workers && Building.resource_building_types.include?(b_type) ? 1 : 0
+			@building = @village.create_building 	:type => b_type, 
+																						:x => params[:x], 
+																						:y => params[:y], 
+																						:status => Building::STATUS[:new],
+																						:has_worker => wkr
+
 			data = {
 				:message => Error.success_message, 
 				:player => @player.to_hash(:queue_info).merge({:village => @village.to_hash.merge(:buildings => [@building.to_hash])})
@@ -99,24 +106,27 @@ class BuildingsController < ApplicationController
 	end
 
 	def destroy
-		@building.delete
-		if not Building.exists?(@building.id)
-			render :json => {:message => Error.success_message}
+		@building = Building[params[:building_id]]
+		vil = Village.new :id => @building.village_id
+
+		err = ""
+		if @building.nil?
+			err= I18n.t("building_error.BUILDING_HAS_BEEN_DESTROYED")
+		elsif @building.type == Building.hashes[:residential] && vil.buildings.find(:type => @building.type).size < 2
+			err = I18n.t("building_error.CANNOT_DESTROY_RESIDENTIAL")
+		end
+
+		if err.empty?
+			@building.delete
+			render_success
 		else
-			# TODO: Some building cannot be destroyed because it is running something, like hatching.
-			# 			Note the reason in error info.
-			err = "Error condition"
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error::NORMAL,
-				:error => Error.format_message(err)
-			}
+			render_error(Error::NORMAL, err)
 		end
 	end
 
 	def harvest
 		if not Building.resource_building_types.include?(@building.type)
-			render_error(Error::NORMAL, "This building cannot be harvested") and return
+			render_error(Error::NORMAL, "building_error.THIS_BUILDING_CANNOT_BE_HARVESTED") and return
 		end
 		@building.update_harvest
 		if @building.is_lumber_mill? || @building.is_quarry?

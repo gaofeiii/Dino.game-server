@@ -7,3 +7,6 @@ cn:
    INVALID_PLAYER_ID: "错误的用户ID"
    INCORRECT_USERNAME_OR_PASSWORD: "用户名和密码不匹配"
    EMPTY_USERNAME_OR_PASSWORD: "用户名或密码不能为空"
+  building_error:
+   BUILDING_HAS_BEEN_DESTROYED: "建筑已经被拆毁啦！"
+   CANNOT_DESTROY_RESIDENTIAL: "至少要保留一间民居哦！"
