@@ -1,4 +1,4 @@
-p '--- Initializing country and maps info ---'
+puts '--- Initializing country and maps info ---'
 
 if Country.count <= 0
 	1.upto(1) do |i|

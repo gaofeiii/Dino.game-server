@@ -1,4 +1,4 @@
-p '--- Reading Specialties const ---'
+puts '--- Reading Specialties const ---'
 
 SPEC_1 	= 1
 SPEC_2 	= 2

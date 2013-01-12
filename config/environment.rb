@@ -1,4 +1,4 @@
-p '=== Loading environment.rb ==='
+puts '=== Loading environment.rb ==='
 
 
 # Set time zone to UTC

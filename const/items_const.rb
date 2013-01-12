@@ -1,5 +1,5 @@
 # encoding: utf-8
-p "--- Reading items const ---"
+puts "--- Reading items const ---"
 require "#{Rails.root}/const/specialty_const.rb"
 
 ITEM_CATEGORY = {
