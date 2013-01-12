@@ -3,5 +3,8 @@
 
 en:
   hello: "Hello world"
+  player:
+   whos_village: "%{player_name}'s village"
+   empty_village_name: "An empty village"
   error:
    INVALID_PLAYER_ID: "Invalid player ID"

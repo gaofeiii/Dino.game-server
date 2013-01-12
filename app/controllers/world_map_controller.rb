@@ -7,9 +7,9 @@ class WorldMapController < ApplicationController
 		last_x, last_y = params[:last_x], params[:last_y]
 
 		x_min = x - 8 <= 0 ? 0 : x - 8
-		y_min = y - 8 <= 0 ? 0 : y - 8
+		y_min = y - 6 <= 0 ? 0 : y - 6
 		x_max = x + 8 >= Country::MAP_MAX_X - 1 ? Country::MAP_MAX_X - 1 : x + 8
-		y_max = y + 8 >= Country::MAP_MAX_Y - 1 ? Country::MAP_MAX_Y - 1 : y + 8
+		y_max = y + 6 >= Country::MAP_MAX_Y - 1 ? Country::MAP_MAX_Y - 1 : y + 6
 
 		# puts "=== range: -from(#{x_min},#{y_min}), -to(#{x_max}, #{y_max})"
 
@@ -34,26 +34,35 @@ class WorldMapController < ApplicationController
 				vil = Village.with(:index, i)
 				vx = i / Country::COORD_TRANS_FACTOR
 				vy = i % Country::COORD_TRANS_FACTOR
-				puts "--- village coords: (#{vx}, #{vy})"
-				tp, vid, nm, lv, l_name, avatar_id, battle_power = if vil
-					l_id, ava_id, bp = Ohm.redis.hmget(Player.key[vil.player_id], :league_id, :avatar_id, :battle_power)
-					[1, vil.id.to_i, vil.name, vil.level, League.get(l_id, :name).to_s, ava_id, bp]
+
+				player = Player.new
+				league = League.new
+				vil_name = ""
+
+				if vil.nil?
+					vil = Village.new :id => 0, :name => ""
+					vil_name = I18n.t("player.empty_village_name")
+					league.name = ""
 				else
-					[0, 0, "Blank Village", 0, "", 0, 0]
+					player = Player.new :id => vil.player_id
+					player.gets(:nickname, :league_id, :avatar_id, :battle_power, :locale, :level)
+					vil_name = I18n.t("player.whos_village", :player_name => player.nickname)
+					league = League.new :id => player.league_id
+
+					league.get :name
 				end
 
-
 				towns_info << {
-					:x => i / Country::COORD_TRANS_FACTOR, 
-					:y => i % Country::COORD_TRANS_FACTOR, 
+					:x => vx,
+					:y => vy,
 					:info => {
-						:type => tp, 
-						:id => vid, 
-						:name => nm, 
-						:level => lv,
-						:league_name => l_name,
-						:avatar_id => avatar_id.to_i,
-						:battle_power => battle_power.to_i
+						:type => 1, 
+						:id => vil.id, 
+						:name => vil_name,
+						:level => player.level,
+						:league_name => league.name,
+						:avatar_id => player.avatar_id,
+						:battle_power => player.battle_power
 					}
 				}
 			end

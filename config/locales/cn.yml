@@ -3,6 +3,9 @@
 
 cn:
   hello: "Hello 你妹"
+  player:
+   whos_village: "%{player_name}的村庄"
+   empty_village_name: "一座空城"
   login_error:
    INVALID_PLAYER_ID: "错误的用户ID"
    INCORRECT_USERNAME_OR_PASSWORD: "用户名和密码不匹配"

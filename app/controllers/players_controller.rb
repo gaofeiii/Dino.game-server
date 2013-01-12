@@ -86,6 +86,7 @@ class PlayersController < ApplicationController
 
 		if result[:success]
 			@player.sets(:nickname => nkname, :is_set_nickname => true)
+			@player.village.set(:name, I18n.t("player.whos_village", :locale => @player.locale, :player_name => nkname))
 			render_success(:player => {:nickname => @player.nickname}, :username => @player.nickname)
 		else
 			render_error(Error::NORMAL, "Set nickname failed")
