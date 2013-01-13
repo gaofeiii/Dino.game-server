@@ -190,9 +190,8 @@ class Building < Ohm::Model
 
 				if player.wood + self.harvest_count > warehouse_size
 					self.harvest_count = warehouse_size - player.wood
+					self.harvest_count = 0 if self.harvest_count < 0
 				end
-
-				self.harvest_count = 0 if self.harvest_count < 0
 			end
 			self
 		when Building.hashes[:quarry]
@@ -205,9 +204,8 @@ class Building < Ohm::Model
 
 				if player.stone + self.harvest_count > warehouse_size
 					self.harvest_count = warehouse_size - player.stone
-				end
-
-				self.harvest_count = 0 if self.harvest_count < 0
+					self.harvest_count = 0 if self.harvest_count < 0
+				end				
 			end
 			self
 		else

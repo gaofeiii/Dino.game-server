@@ -13,3 +13,5 @@ cn:
   building_error:
    BUILDING_HAS_BEEN_DESTROYED: "建筑已经被拆毁啦！"
    CANNOT_DESTROY_RESIDENTIAL: "至少要保留一间民居哦！"
+  league_error:
+   LEAGUE_NOT_FOUND: "League not found"

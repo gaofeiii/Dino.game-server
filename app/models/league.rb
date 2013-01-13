@@ -4,6 +4,8 @@ class League < Ohm::Model
 	include Ohm::Callbacks
 	include OhmExtension
 
+	include LeagueConst
+
 	attribute :name
 	attribute :desc
 	attribute :level, 	Type::Integer

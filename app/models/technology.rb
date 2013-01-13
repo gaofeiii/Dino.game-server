@@ -116,7 +116,7 @@ class Technology < Ohm::Model
 		when Technology.hashes[:residential]
 			self.player.update_building_workers!
 		when Technology.hashes[:storing]
-			self.village.update_warehouse! if level > 0
+			# self.village.update_warehouse! if level > 0
 		end
 	end
 end

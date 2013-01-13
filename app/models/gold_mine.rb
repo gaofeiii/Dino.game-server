@@ -30,7 +30,7 @@ class GoldMine < Ohm::Model
 		if owner.nil?
 
 			if monsters.blank?
-				# 创建两只属于此金矿的monster
+				# 创建属于此金矿的monster
 				3.times do |i|
 					case level
 					when 1

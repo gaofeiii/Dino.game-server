@@ -85,7 +85,7 @@ class PlayersController < ApplicationController
 														:password => params[:password]
 
 		if result[:success]
-			@player.sets(:nickname => nkname, :is_set_nickname => true)
+			@player.update(:nickname => nkname, :is_set_nickname => true)
 			@player.village.set(:name, I18n.t("player.whos_village", :locale => @player.locale, :player_name => nkname))
 			render_success(:player => {:nickname => @player.nickname}, :username => @player.nickname)
 		else

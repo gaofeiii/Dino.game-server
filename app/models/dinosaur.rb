@@ -12,6 +12,8 @@ class Dinosaur < Ohm::Model
 	include OhmExtension
 	include DinosaursConst
 
+	include Fighter
+
 	attribute :name
 	attribute :level, 				Type::Integer
 	attribute :experience, 		Type::Integer
@@ -24,18 +26,8 @@ class Dinosaur < Ohm::Model
 	attribute :feed_weight, 	Type::Integer
 	attribute :feed_count, 		Type::Integer
 
-	attribute :basic_attack, 			Type::Float			# 基础攻击
-	attribute :basic_defense, 		Type::Float			# 基础防御
-	attribute :basic_agility,			Type::Float 		# 基础敏捷
-	attribute :basic_hp,					Type::Float
-	attribute :total_attack, 			Type::Float
-	attribute :total_defense, 		Type::Float
-	attribute :total_agility,			Type::Float
-	attribute :total_hp,					Type::Float
-
 	attribute :quality,						Type::Integer
 
-	attribute :current_hp, 				Type::Float
 	attribute :updated_hp_time, 	Type::Integer
 
 	attribute :is_deployed,				Type::Boolean
@@ -47,7 +39,7 @@ class Dinosaur < Ohm::Model
 
 	attribute :building_id
 
-	collection :skills, 	Skill
+	
 
 	reference :player, 		Player
 	reference :village, 	Village

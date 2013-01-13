@@ -25,22 +25,38 @@ class Creeps < Ohm::Model
 		Monster.find(:creeps_id => id)
 	end
 
-	def defense_troops
-		if self.monsters.blank?
-			m_type = type
-			m_count = level + 1
+	# def defense_troops
+	# 	if self.monsters.blank?
+	# 		m_type = type
+	# 		m_count = level + 1
 
-			m_count.times{ Monster.create_by(:type => m_type, :status => Monster::STATUS[:adult], :creeps_id => id) }
-			self.set :number, m_count
+	# 		m_count.times{ Monster.new_by(:type => m_type, :status => Monster::STATUS[:adult], :creeps_id => id) }
+	# 		self.set :number, m_count
+	# 	end
+	# 	monsters.to_a
+	# end
+
+	def defense_troops
+		if @mons.nil?
+			m_count = case level
+			when 1..5
+				1
+			when 6..10
+				2
+			when 11..20
+				3
+			when 20..30
+				4
+			else
+				5
+			end
+			@mons = m_count.times.map{ Monster.new_by(:level => level, :type => type, :status => Monster::STATUS[:adult]) }
 		end
-		monsters.to_a
+		@mons
 	end
 
 	def monster_number
-		if number.zero?
-			defense_troops
-		end
-		number
+		defense_troops.size
 	end
 
 	def before_save

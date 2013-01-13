@@ -11,6 +11,7 @@ class Skill < Ohm::Model
 	attribute :level,		Type::Integer
 
 	reference :dinosaur, 		Dinosaur
+	reference :monster, 		Monster
 
 	index :type
 	index :level

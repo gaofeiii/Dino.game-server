@@ -1,26 +1,69 @@
-# class Monster < Ohm::Model
-# 	include Ohm::DataTypes
-# 	include Ohm::Timestamps
-# 	include Ohm::Callbacks
-# 	include OhmExtension
+class Monster < Ohm::Model
+	include Ohm::DataTypes
+	include Ohm::Timestamps
+	include Ohm::Callbacks
+	include OhmExtension
 
-# 	attribute :type, 		Type::Integer
-# 	attribute :level,		Type::Integer
-# 	attribute :hp, 			Type::Integer
-# 	attribute :attack, 	Type::Integer
-# 	attribute :defense,	Type::Integer
-# 	attribute :agility,	Type::Integer
+	include MonsterConst
+	include Fighter
 
-# 	reference :gold_mine, GoldMine
-# end
+	TYPES = [1, 2, 3, 4]
 
-class Monster < Dinosaur
-	attribute :creeps_id
-	index :creeps_id
-	reference :gold_mine, 	GoldMine
+	STATUS = {
+		:egg 			=> 0,
+		:infancy 	=> 1, 
+		:adult 		=> 2
+	}
+
+	attribute 	:level, 		Type::Integer
+	attribute 	:type,			Type::Integer
+	attribute		:status, 		Type::Integer
+	attribute 	:quality,		Type::Integer
+	attribute 	:name
+
+	reference 	:gold_mine, GoldMine
+
+	# args = {:level => 1, :type => 1}
+	def self.new_by(args = {})
+		if args[:level].nil?
+			args[:level] = 1
+		end
+
+		if args[:type].nil?
+			args[:type] = TYPES.sample
+		end
+
+		const_info = self.const[args[:level]]
+		_monster = self.new args.merge(
+												:total_attack => const_info[:attack],
+												:total_defense => const_info[:defense],
+												:total_agility => const_info[:agility],
+												:total_hp => const_info[:hp]
+												)
+												
+
+		return _monster
+	end
+
+	def self.create_by(args = {})
+		self.new_by(args).save
+	end
 
 	protected
-	def after_create
-		
+
+	def before_create
+		self.current_hp = self.total_hp
 	end
+
 end
+
+# class Monster < Dinosaur
+# 	attribute :creeps_id
+# 	index :creeps_id
+# 	reference :gold_mine, 	GoldMine
+
+# 	protected
+# 	def after_create
+		
+# 	end
+# end

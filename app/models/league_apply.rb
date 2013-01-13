@@ -17,7 +17,7 @@ class LeagueApply < Ohm::Model
 			:id => id.to_i,
 			:nickname => player_nickname,
 			:level => 1,
-			:player_id => player_id
+			:player_id => player_id.to_i
 		}
 	end
 end

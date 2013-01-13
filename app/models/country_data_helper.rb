@@ -69,16 +69,19 @@ module CountryDataHelper
 			end
 			return result_arr
 		end
+		module_function :get_nodes_matrix
 
 		# 根据中心点获取城镇所占的格子index信息，返回数组
 		def get_town_nodes(center_x, center_y)
 			get_nodes_matrix(center_x - 1, center_y - 1, TOWN_SZ[:length], TOWN_SZ[:width])
 		end
+		module_function :get_town_nodes
 
 		# 根据金矿中心点获取城镇所占格子的index信息，返回数组
 		def get_gold_mine_nodes(center_x, center_y)
 			get_nodes_matrix(center_x - 1, center_y - 1, GOLD_MINE_SZ[:length], GOLD_MINE_SZ[:width])
 		end
+		module_function :get_gold_mine_nodes
 
 		def get_random_node_in_a_matrix(start_x, start_y, delta_x, delta_y)
 			ran_x = rand(start_x..(start_x + delta_x))

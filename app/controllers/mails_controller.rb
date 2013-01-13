@@ -4,7 +4,8 @@ class MailsController < ApplicationController
 
 	def send_mail
 
-		sender = Player.with(:nickname, params[:sender])
+		# sender = Player.with(:nickname, params[:sender])
+		sender = Player.find(:nickname => params[:sender]).first
 		if sender.nil?
 			render_error(Error::NORMAL, "Invalid sender name") and return
 		end
@@ -14,7 +15,8 @@ class MailsController < ApplicationController
 		case mail_type
 		# 个人邮件
 		when Mail::TYPE[:private]
-			receiver = Player.with(:nickname, params[:receiver])
+			# receiver = Player.with(:nickname, params[:receiver])
+			receiver = Player.find(:nickname => params[:receiver]).first
 			if receiver.nil?
 				render_error(Error::NORMAL, "Invalid receiver name") and return
 			end

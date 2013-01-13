@@ -42,14 +42,15 @@ class DealsController < ApplicationController
 				i = Item[deal.gid]
 				i.update :player_id => @player.id
 			when Deal::CATEGORIES[:food]
-				food = @player.foods.find(:type => deal.type)
+				food = @player.foods.find(:type => deal.type).first
 				return nil if food.nil?
 				food.increase(:count, deal.count)
 			else
 				render_error(Error::NORMAL, "Invalid cate id") and return
 			end
 
-			deal.set :status, Deal::STATUS[:closed]
+			# deal.set :status, Deal::STATUS[:closed]
+			deal.delete
 		end
 		render_success(:player => @player.to_hash(:resources, :items))
 	end

@@ -72,15 +72,9 @@ class LeaguesController < ApplicationController
 	def apply_list
 		league = @player.league
 		if league.nil?
-			render :json => {:error => "LEAGUE_NOT_FOUND"}
+			render_error(Error.types[:normal], I18n.t("league_error.LEAGUE_NOT_FOUND", :locale => @player.locale))
 		else
-			render :json => {
-				:player => {
-					:league => {
-						:apply_list => league.apply_list
-					}
-				}
-			}
+			render_success(:apply_list => league.apply_list)
 		end
 		
 	end
