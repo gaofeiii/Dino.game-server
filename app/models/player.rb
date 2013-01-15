@@ -18,6 +18,7 @@ class Player < Ohm::Model
 	include PlayerGodHelper
 	include PlayerAdvisorHelper
 	include PlayerResourceHelper
+	include PlayerCreepsHelper
 
 	TYPE = {
 		:normal => 0,

@@ -6,10 +6,10 @@ class WorldMapController < ApplicationController
 		x, y = params[:x], params[:y]
 		last_x, last_y = params[:last_x], params[:last_y]
 
-		x_min = x - 8 <= 0 ? 0 : x - 8
-		y_min = y - 6 <= 0 ? 0 : y - 6
-		x_max = x + 8 >= Country::MAP_MAX_X - 1 ? Country::MAP_MAX_X - 1 : x + 8
-		y_max = y + 6 >= Country::MAP_MAX_Y - 1 ? Country::MAP_MAX_Y - 1 : y + 6
+		x_min = x - 10 <= 0 ? 0 : x - 10
+		y_min = y - 10 <= 0 ? 0 : y - 10
+		x_max = x + 10 >= Country::MAP_MAX_X - 1 ? Country::MAP_MAX_X - 1 : x + 10
+		y_max = y + 10 >= Country::MAP_MAX_Y - 1 ? Country::MAP_MAX_Y - 1 : y + 10
 
 		# puts "=== range: -from(#{x_min},#{y_min}), -to(#{x_max}, #{y_max})"
 
@@ -118,80 +118,75 @@ class WorldMapController < ApplicationController
 				left_ids = CountryDataHelper::InstanceMethods.get_nodes_matrix(gx - 2, gx - 2, 5, 5)
 				next
 			end
-
-			# if country.creeps_info[i].to_i > 0
-			# 	x = i / Country::COORD_TRANS_FACTOR
-			# 	y = i % Country::COORD_TRANS_FACTOR
-			# 	creeps = Creeps.find(:x => x, :y => y).first
-			# 	next if creeps.nil?
-			# 	c_info = {
-			# 		:x => x,
-			# 		:y => y,
-			# 		:info => {
-			# 			:type => 2,
-			# 			:id => creeps.id,
-			# 			:name => 'Creeps',
-			# 			:level => creeps.level,
-			# 			:monster_type => creeps.type,
-			# 			:owner_name => 'Creeps',
-			# 			:monster_number => creeps.monster_number,
-			# 			:under_attack => creeps.under_attack
-			# 		}
-			# 	}
-			# 	creeps_info << c_info
-			# end
-
-			# 新手野怪
-			# if country.quest_monster.include?(i)
-			# 	begin_x = i / Country::COORD_TRANS_FACTOR
-			# 	begin_y = i % Country::COORD_TRANS_FACTOR
-			# 	creeps = Creeps.find(:x => begin_x, :y => begin_y).first
-			# 	if !creeps.nil?
-			# 		creeps_info << {
-			# 			:x => begin_x,
-			# 			:y => begin_y,
-			# 			:info => {
-			# 				:type => 2,
-			# 				:id => creeps.id,
-			# 				:name => 'Creeps',
-			# 				:level => 1,
-			# 				:monster_type => creeps.type,
-			# 				:owner_name => 'Creeps',
-			# 				:monster_number => creeps.monster_number,
-			# 				:under_attack => creeps.under_attack,
-			# 				:is_quest_monster => creeps.is_quest_monster,
-			# 				:player_id => creeps.player_id.to_i
-			# 			}
-			# 		}
-			# 	end
-			# end
-			
-		
-
-
 		end # end of ids each
 
-		[left_ids.sample].each do |creeps_coords|
-			cx = creeps_coords / Country::COORD_TRANS_FACTOR
-			cy = creeps_coords % Country::COORD_TRANS_FACTOR
+		if Player.exists?(params[:player_id])
+			player = Player.new :id => params[:player_id]
 
-			creeps = Creeps.new :x => cx, :y => cy, :level => rand(1..4), :type => rand(1..4)
-			creeps_info << {
-				:x => cx,
-				:y => cy,
-				:info => {
-					:type => 2,
-					:id => 1,
-					:name => "Creeps",
-					:level => creeps.level,
-					:monster_type => creeps.type,
-					:owner_name => "Creeps",
-					:monster_number => creeps.monster_number,
-					:under_attack => creeps.under_attack,
-					:is_quest_monster => true,
-					:player_id => 1
+			tmp_creeps_idx = player.temp_creeps_idx & left_ids
+
+			if tmp_creeps_idx.size <= 0
+				new_creeps_index = left_ids.sample
+				cx = new_creeps_index / Country::COORD_TRANS_FACTOR
+				cy = new_creeps_index % Country::COORD_TRANS_FACTOR
+
+				m_level = rand(1..4)
+				m_count = case m_level
+				when 1..5
+					1
+				when 6..10
+					2
+				when 11..20
+					3
+				when 20..30
+					4
+				else
+					5
+				end
+				m_type = rand(1..4)
+
+				creeps_atts = {:x => cx, :y => cy, :level => m_level, :type => m_type, :monster_number => m_count}
+				player.save_creeps(creeps_atts)
+				creeps_info << {
+					:x => cx,
+					:y => cy,
+					:info => {
+						:type => 2,
+						:id => new_creeps_index,
+						:name => "Creeps",
+						:level => m_level,
+						:monster_type => m_type,
+						:owner_name => "Creeps",
+						:monster_number => m_count,
+						:under_attack => false,
+						:is_quest_monster => true,
+						:player_id => player.id
+					}
 				}
-			}
+			else
+				tmp_creeps_idx.each do |tmp_index|
+					info = player.temp_creeps(tmp_index)
+					if info
+						creeps_info << {
+							:x => info['x'],
+							:y => info['y'],
+							:info => {
+								:type => 2,
+								:id => tmp_index,
+								:name => "Creeps",
+								:level => info['level'],
+								:monster_type => info['type'],
+								:owner_name => "Creeps",
+								:monster_number => info['monster_number'],
+								:under_attack => false,
+								:is_quest_monster => true,
+								:player_id => player.id
+							}
+						}
+					end
+				end
+			end
+
 		end
 
 		render :json => {:country_map => towns_info + gold_mines_info + hl_gold_mine_info + creeps_info}

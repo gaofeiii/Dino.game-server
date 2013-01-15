@@ -5,12 +5,13 @@ class Creeps < Ohm::Model
 	include Ohm::Locking
 	include OhmExtension
 
-	attribute :type, 		Type::Integer
-	attribute :level, 	Type::Integer
-	attribute :number, 	Type::Integer
-	attribute :x, 			Type::Integer
-	attribute :y, 			Type::Integer
-	attribute :index, 	Type::Integer
+	attribute :type, 							Type::Integer
+	attribute :level, 						Type::Integer
+	attribute :number, 						Type::Integer
+	attribute :monster_number, 		Type::Integer
+	attribute :x, 								Type::Integer
+	attribute :y, 								Type::Integer
+	attribute :index, 						Type::Integer
 	attribute :under_attack, 			Type::Boolean
 	attribute :is_quest_monster, 	Type::Boolean
 	attribute :player_id
@@ -53,10 +54,6 @@ class Creeps < Ohm::Model
 			@mons = m_count.times.map{ Monster.new_by(:level => level, :type => type, :status => Monster::STATUS[:adult]) }
 		end
 		@mons
-	end
-
-	def monster_number
-		defense_troops.size
 	end
 
 	def before_save
