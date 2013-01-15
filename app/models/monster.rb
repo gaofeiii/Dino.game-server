@@ -22,6 +22,9 @@ class Monster < Ohm::Model
 	attribute 	:name
 
 	reference 	:gold_mine, GoldMine
+	attribute		:creeps_id
+
+	index :creeps_id
 
 	# args = {:level => 1, :type => 1}
 	def self.new_by(args = {})

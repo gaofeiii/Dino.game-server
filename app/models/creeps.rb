@@ -51,7 +51,7 @@ class Creeps < Ohm::Model
 			else
 				5
 			end
-			@mons = m_count.times.map{ Monster.new_by(:level => level, :type => type, :status => Monster::STATUS[:adult]) }
+			@mons = m_count.times.map{ Monster.create_by(:level => level, :type => type, :status => Monster::STATUS[:adult], :creeps_id => id) }
 		end
 		@mons
 	end

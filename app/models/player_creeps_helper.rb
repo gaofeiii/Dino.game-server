@@ -32,7 +32,11 @@ module PlayerCreepsHelper
 			end
 		end
 
-		def clear_temp_creeps
+		def del_temp_creeps(creeps_idx)
+			db.hdel(temp_creeps_key, creeps_idx)
+		end
+
+		def clear_all_temp_creeps
 			db.del(temp_creeps_key)
 		end
 	end

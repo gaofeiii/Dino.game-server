@@ -54,12 +54,18 @@ class StrategyController < ApplicationController
 		elsif params[:gold_mine_id]
 			GoldMine[params[:gold_mine_id]]
 		elsif params[:creeps_id]
-			Creeps[params[:creeps_id]]
+			# Creeps[params[:creeps_id]]
+			creeps_info = @player.temp_creeps(params[:creeps_id])
+			if creeps_info.nil?
+				nil
+			else
+				Creeps.create(creeps_info)
+			end
 		else
 			nil
 		end
 
-		if target.nil?
+		if target.blank?
 			render_error(Error::NORMAL, "Invalid target") and return
 		end
 
@@ -87,7 +93,7 @@ class StrategyController < ApplicationController
 			when "Village"
 				BattleModel::TARGET_TYPE[:village]
 			when "Creeps"
-				target_monster_type = target.monsters.first.type
+				target_monster_type = target.defense_troops.first.type
 				BattleModel::TARGET_TYPE[:creeps]
 			when "GoldMine"
 				BattleModel::TARGET_TYPE[:gold_mine]

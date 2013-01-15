@@ -138,9 +138,11 @@ class BattleModel
 					# end
 					skill_effect = nil
 					skill_result = nil
-					fighter.skills.map do |skill|
+					fighter.skills.each do |skill|
 						if not skill.triggered
 							if skill.trigger?
+								puts "--- fighter_id: #{fighter.id}, skill_id: #{skill.id}"
+
 								puts "~~~~~~~ Skill Triggered! ~~~~~~"
 								puts "~~~~~~~ Type:#{skill.type} ~~~~~~"
 								case skill.effect_key
@@ -157,6 +159,7 @@ class BattleModel
 									fighter.army.each do |fr|
 										fr.curr_defense = fr.curr_defense * (1 + skill.effect_value)
 									end
+									skill.triggered = true
 									puts "<<<--- After self.defense: #{fighter.curr_defense} --->>>"
 									nil
 								when :attack_inc_all
@@ -165,6 +168,7 @@ class BattleModel
 									fighter.army.each do |fr|
 										fr.curr_attack = fr.curr_attack * (1 + skill.effect_value)
 									end
+									skill.triggered = true
 									puts "<<<--- After self.attack: #{fighter.curr_attack} --->>>"
 									nil
 								when :attack_inc_self_bleeding
@@ -183,6 +187,7 @@ class BattleModel
 									dest.army.each do |fr|
 										fr.curr_attack = fr.total_attack * (1 - skill.effect_value)
 									end
+									skill.triggered = true
 									puts "<<<--- After enemy.attack: #{dest.curr_attack} --->>>"
 									nil
 								when :defense_desc
@@ -191,6 +196,7 @@ class BattleModel
 									dest.army.each do |fr|
 										fr.curr_defense = fr.curr_defense * (1 - skill.effect_value)
 									end
+									skill.triggered = true
 									puts "<<<--- After enemy.defense: #{dest.curr_defense} --->>>"
 									nil
 								when :bleeding
@@ -201,10 +207,12 @@ class BattleModel
 								when :attack_desc
 									puts "<<< Descrease Attack >>>"
 									dest.curr_attack = dest.curr_attack * (1 - skill.effect_value)
+									skill.triggered = true
 									nil
 								when :defense_desc
 									# puts "<<< Descrease Defense >>>"
 									dest.curr_defense = dest.curr_defense * (1 - skill.effect_value)
+									skill.triggered = true
 									nil
 								end
 								skill_result = skill.type

@@ -105,6 +105,7 @@ class Troops < Ohm::Model
 					target.set(:under_attack, 0)
 					rwd
 				when BattleModel::TARGET_TYPE[:creeps]
+					player.del_temp_creeps(target.index)
 					target.delete
 					rwd = {:wood => 1000, :stone => 1200, :gold_coin => 150, :items => []}
 					i_cat = Item.categories.sample
@@ -136,8 +137,6 @@ class Troops < Ohm::Model
 				dino.set :is_attacking, 0
 			end
 			player.save_battle_report(self.id, result)
-			p 'result', result
-			p "result time", result[:time]
 			self.delete
 		end
 	end

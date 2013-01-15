@@ -226,10 +226,12 @@ class Dinosaur < Ohm::Model
 		else
 			d_hp = dt / HEALED_PER_SECOND
 			c_hp = current_hp + d_hp
+
 			if c_hp > total_hp
 				c_hp = total_hp
 			end
-			c_hp
+
+			self.current_hp = c_hp
 		end
 	end
 

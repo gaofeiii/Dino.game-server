@@ -181,6 +181,13 @@ class Building < Ohm::Model
 			end
 			self
 		when Building.hashes[:lumber_mill]
+			player.get(:wood)
+
+			if player.wood >= warehouse_size
+				self.harvest_count = 0
+				return
+			end
+
 			produce_rate = 3600 / (player.tech_produce_wood_rate * (1 + player.adv_inc_resource)) # seconds/1 wood
 			delta_t = now_time - harvest_updated_time
 			count_inc = delta_t / produce_rate
@@ -195,6 +202,13 @@ class Building < Ohm::Model
 			end
 			self
 		when Building.hashes[:quarry]
+			player.get(:stone)
+
+			if player.stone >= warehouse_size
+				self.harvest_count = 0
+				return
+			end
+			
 			produce_rate = 3600 / (player.tech_produce_stone_rate * (1 + player.adv_inc_resource)) # seconds/1 stone
 			delta_t = now_time - harvest_updated_time
 			count_inc = delta_t / produce_rate
