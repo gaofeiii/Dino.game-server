@@ -14,7 +14,21 @@ module CountryDataHelper
 	
 	module InstanceMethods
 
-		[:basic_map_info, :town_nodes_info, :gold_mine_info, :hl_gold_mine_info, :creeps_info].each do |name|
+		# Define methods like:
+		# 	country.basic_map_info
+		# 	country.basic_map_info_key
+		# 	country.get_basic_map_info # From redis
+		# 	country.set_basic_map_info # To redis
+		# 	country.clear_basic_map_info
+		#
+		# The same as:
+		# 	def basic_map_info
+		# 		if $country_1_basic_map_info.blank?
+		# 			$country_1_basic_map_info = get_basic_map_info
+		# 		end
+		# 		return $country_1_basic_map_info
+		# 	end
+		[:basic_map_info, :town_nodes_info, :gold_mine_info, :hl_gold_mine_info, :creeps_info, :empty_map_info].each do |name|
 		
 			define_method("#{name.to_s}_key") do
 				key[name]
@@ -118,16 +132,22 @@ module CountryDataHelper
 			# => 金矿所占格子最大为3*3
 			hl_gold_mine_info = {}
 
+			## 空白的地图坐标点
+			empty_map_info = {}
+
 			# 如果基本信息为空，从文件读取地图的基本信息
 			if basic_map_info.nil?
 				
 				file = File.open Rails.root.join("init_data/tilemap_lgc.txt")
 				basic_map_info = file.read.each_char.map { |i| i = i.to_i; i = -1 if i == 1; i }
+				basic_map_info.each_with_index do |info, idx|
+					empty_map_info[idx] = info
+				end
 				
 
 				# 循环每11*11个矩形格子
-				15.step(COORD_TRANS_FACTOR - 11, 11) do |x|
-					15.step(COORD_TRANS_FACTOR - 11, 11) do |y|
+				12.step(COORD_TRANS_FACTOR - 11, 11) do |x|
+					12.step(COORD_TRANS_FACTOR - 11, 11) do |y|
 						if x.in?(GOLD_MINE_X_RANGE) && y.in?(GOLD_MINE_Y_RANGE)
 							next
 						end
@@ -160,12 +180,22 @@ module CountryDataHelper
 						2.times do
 							town_index = town_available_nodes.sample
 							town_nodes_info[town_index] = 1
-							town_available_nodes -= get_town_nodes(town_index/COORD_TRANS_FACTOR, town_index%COORD_TRANS_FACTOR)
+							# town_used_nodes = get_town_nodes(town_index/COORD_TRANS_FACTOR, town_index%COORD_TRANS_FACTOR)
+							town_used_nodes = get_nodes_matrix(town_index/COORD_TRANS_FACTOR - 2, town_index%COORD_TRANS_FACTOR - 2, 5, 5) # change town matrix to 5*5
+							town_available_nodes -= town_used_nodes
+							town_used_nodes.each do |idx|
+								empty_map_info[idx] = -1
+							end
 						end
 
 						gold_available_nodes = town_available_nodes# - get_town_nodes(town_index / COORD_TRANS_FACTOR, town_index % COORD_TRANS_FACTOR)
 						gold_index = gold_available_nodes.sample
 						gold_mine_info[gold_index] = 3
+						# gold_used_nodes = get_gold_mine_nodes(gold_index/COORD_TRANS_FACTOR, gold_index%COORD_TRANS_FACTOR)
+						gold_used_nodes = get_nodes_matrix(gold_index/COORD_TRANS_FACTOR - 2, gold_index%COORD_TRANS_FACTOR - 2, 5, 5) # change gold mine martix to 5*5
+						gold_used_nodes.each do |idx|
+							empty_map_info[idx] = -1
+						end
 					end
 				end
 
@@ -175,8 +205,8 @@ module CountryDataHelper
 				GOLD_MINE_X_RANGE.each do |x|
 					GOLD_MINE_Y_RANGE.each do |y|
 						idx = x * COORD_TRANS_FACTOR + y
-						town_nodes_info.delete(idx)
-						gold_mine_info.delete(idx)
+						town_nodes_info.delete(idx)	# Just make sure no other nodes here.
+						gold_mine_info.delete(idx)	# Just make sure no other nodes here.
 
 						if x.in?([GOLD_MINE_X_RANGE.min, GOLD_MINE_X_RANGE.max]) || y.in?([GOLD_MINE_Y_RANGE.min, GOLD_MINE_Y_RANGE.max])
 							next
@@ -193,19 +223,20 @@ module CountryDataHelper
 
 						if available
 							gm_available_nodes[idx] = 1
-							nodes_token.each{|n_idx| gm_blocked_nodes[n_idx] = 1}
+							nodes_token.each do |n_idx|
+								gm_blocked_nodes[n_idx] = 1
+								empty_map_info[n_idx] = -1
+							end
 						end
 					end
 				end
-
-				# 刷新野怪
-				
 
 				self.set_basic_map_info(basic_map_info)
 				self.set_town_nodes_info(town_nodes_info)
 				self.set_gold_mine_info(gold_mine_info)
 				self.set_hl_gold_mine_info(gm_available_nodes)
-			end
+				self.set_empty_map_info(empty_map_info)
+			end # End of basic_map_info.nil?
 		end # End of init method.
 
 		# 刷新地图野怪
@@ -228,7 +259,7 @@ module CountryDataHelper
 
 
 		# 清除地图城镇、金矿信息
-		def clear!
+		def clear_map_info!
 			db.multi do |t|
 				t.del(self.basic_map_info_key)
 				t.del(self.town_nodes_info_key)

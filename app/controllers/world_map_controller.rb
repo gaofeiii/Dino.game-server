@@ -4,15 +4,11 @@ class WorldMapController < ApplicationController
 
 	def country_map
 		x, y = params[:x], params[:y]
-		last_x, last_y = params[:last_x], params[:last_y]
 
 		x_min = x - 10 <= 0 ? 0 : x - 10
 		y_min = y - 10 <= 0 ? 0 : y - 10
 		x_max = x + 10 >= Country::MAP_MAX_X - 1 ? Country::MAP_MAX_X - 1 : x + 10
 		y_max = y + 10 >= Country::MAP_MAX_Y - 1 ? Country::MAP_MAX_Y - 1 : y + 10
-
-		# puts "=== range: -from(#{x_min},#{y_min}), -to(#{x_max}, #{y_max})"
-
 
 		towns_info = []
 		gold_mines_info = []
@@ -24,7 +20,12 @@ class WorldMapController < ApplicationController
 				i * Country::COORD_TRANS_FACTOR + j
 			end
 		end.flatten
-		country = Country.first
+
+		country = Country[params[:country_id]]
+		if country.nil?
+			render(:json => []) and return
+		end
+
 		country_map = country.town_nodes_info
 		gold_mine_map = country.gold_mine_info
 
@@ -67,7 +68,7 @@ class WorldMapController < ApplicationController
 						:battle_power => player.battle_power
 					}
 				}
-				left_ids = CountryDataHelper::InstanceMethods.get_nodes_matrix(vx - 2, vy - 2, 5, 5)
+				left_ids -= CountryDataHelper::InstanceMethods.get_nodes_matrix(vx - 2, vy - 2, 5, 5)
 				next
 			end
 
@@ -91,7 +92,7 @@ class WorldMapController < ApplicationController
 						:left_time => 0
 					}
 				}
-				left_ids = CountryDataHelper::InstanceMethods.get_nodes_matrix(gx - 2, gx - 2, 5, 5)
+				left_ids -= CountryDataHelper::InstanceMethods.get_nodes_matrix(gx - 2, gx - 2, 5, 5)
 				next
 			end
 
@@ -115,16 +116,17 @@ class WorldMapController < ApplicationController
 						:left_time => 0
 					}
 				}
-				left_ids = CountryDataHelper::InstanceMethods.get_nodes_matrix(gx - 2, gx - 2, 5, 5)
+				left_ids -= CountryDataHelper::InstanceMethods.get_nodes_matrix(gx - 2, gx - 2, 5, 5)
 				next
 			end
 		end # end of ids each
 
 		if Player.exists?(params[:player_id])
+			left_ids.select!{ |idx| country.empty_map_info[idx] >= 0 }
+
 			player = Player.new :id => params[:player_id]
-
 			tmp_creeps_idx = player.temp_creeps_idx & left_ids
-
+			
 			if tmp_creeps_idx.size <= 0
 				new_creeps_index = left_ids.sample
 				cx = new_creeps_index / Country::COORD_TRANS_FACTOR

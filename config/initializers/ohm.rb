@@ -1,4 +1,4 @@
-p 'Loading ohm.rb...' if Rails.env.development?
+puts '--- Loading ohm.rb... ---' if Rails.env.development?
 
 # Use hiredis for redis connecting
 require 'redis/connection/hiredis'
