@@ -20,7 +20,7 @@ module MonsterConst
 
 			3.upto(book.last_row) do |i|
 				lvl = book.cell(i, 'A').to_i
-				hp = book.cell(i, 'O').to_i
+				hp = book.cell(i, 'B').to_i
 				attack = book.cell(i, 'C').to_f
 				defense = book.cell(i, 'd').to_f
 				speed = book.cell(i, 'e').to_f

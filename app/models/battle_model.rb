@@ -233,7 +233,7 @@ class BattleModel
 
 					# puts "--- factor_k: #{factor_k}"
 
-					damage = (fighter.curr_attack * 5 * (1 / (1 + dest.curr_defense / 10)) * factor_k).to_i
+					damage = (fighter.curr_attack * 5 * (1 / (1 + dest.curr_defense / 136)) * factor_k).to_i
 					puts "===== The Origin Damage: #{damage} ====="
 
 					# if skill_effects[:damage_inc].to_f > 0
