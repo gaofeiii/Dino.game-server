@@ -56,7 +56,7 @@ module CountryDataHelper
 					else
 						data = {}
 						JSON.parse(info).map do |k, v|
-							data[k.to_i] = v
+							data[k.to_i] = v # The key from json is a string, turn it into integer
 						end
 						return data
 					end
@@ -265,10 +265,12 @@ module CountryDataHelper
 				t.del(self.town_nodes_info_key)
 				t.del(self.gold_mine_info_key)
 				t.del(self.creeps_info_key)
+				t.del(self.empty_map_info_key)
 				eval("$country_#{index}_basic_map_info = nil")
 				eval("$country_#{index}_town_nodes_info = nil")
 				eval("$country_#{index}_gold_mine_info = nil")
 				eval("$country_#{index}_creeps_info = nil")
+				eval("$country_#{index}_empty_map_info = nil")
 			end
 		end
 
