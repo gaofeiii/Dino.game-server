@@ -23,7 +23,7 @@ module SkillConst
 			book = Excelx.new("#{Rails.root}/const/dinosaurs.xlsx")
 			book.default_sheet = "skill_avai"
 
-			2.upto(book.last_row) do |i|
+			2.upto(12) do |i|
 				key_name = book.cell(i, 'B').downcase.to_sym
 				type = book.cell(i, 'D').to_i
 				chance = book.cell(i, 'E').to_f

@@ -286,7 +286,7 @@ class Dinosaur < Ohm::Model
 
 	def after_create
 		if self.skills.blank?
-			Skill.create :type => Skill.types.sample, :level => 1, :dinosaur_id => id
+			Skill.create :type => self.const_skills.sample, :level => 1, :dinosaur_id => id
 		end
 	end
 

@@ -44,6 +44,7 @@ module DinosaursConst
 				attack_inc = book.cell(i, 'J').to_f
 				defense_inc = book.cell(i, 'K').to_f
 				agility_inc = book.cell(i, 'L').to_f
+				skills = book.cell(i, "W").split(',').map(&:to_i)
 				# Quality:
 				quality_A = book.cell(i, 'M').to_f
 				quality_B = book.cell(i, 'N').to_f
@@ -76,6 +77,7 @@ module DinosaursConst
 						4 => quality_D,
 						5 => quality_E
 					},
+					:skills => skills,
 					:enhance_property => {
 						:attack_inc => attack_inc,
 						:defense_inc => defense_inc,
@@ -95,6 +97,10 @@ module DinosaursConst
 		
 		def info
 			self.class.info[type]
+		end
+
+		def const_skills
+			info[:skills]
 		end
 
 		def next_level_exp
