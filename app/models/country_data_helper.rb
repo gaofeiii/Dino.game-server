@@ -52,7 +52,9 @@ module CountryDataHelper
 				else
 					case name
 					when :basic_map_info
-						return JSON.parse(info)
+						return JSON(info)
+					when :empty_map_info
+						return JSON(info)
 					else
 						data = {}
 						JSON.parse(info).map do |k, v|
@@ -140,9 +142,10 @@ module CountryDataHelper
 				
 				file = File.open Rails.root.join("init_data/tilemap_lgc.txt")
 				basic_map_info = file.read.each_char.map { |i| i = i.to_i; i = -1 if i == 1; i }
-				basic_map_info.each_with_index do |info, idx|
-					empty_map_info[idx] = info
-				end
+				# basic_map_info.each_with_index do |info, idx|
+				# 	empty_map_info[idx] = info if info >= 0
+				# end
+				empty_map_info = basic_map_info.dup
 				
 
 				# 循环每11*11个矩形格子
