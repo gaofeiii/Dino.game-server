@@ -155,9 +155,9 @@ class Dinosaur < Ohm::Model
 	def upgrade_atts
 		factor = case emotion
 		when EMOTIONS[:happy]
-			Random.rand(8..12) / 10.0
+			Random.rand(8..12) / 10.0 * quality
 		when EMOTIONS[:normal]
-			Random.rand(5..10) / 10.0
+			Random.rand(5..10) / 10.0 * quality
 		else
 			0
 		end
@@ -184,10 +184,11 @@ class Dinosaur < Ohm::Model
 	end
 
 	def update_level
-		if experience > next_level_exp
+		if experience >= next_level_exp
 			self.experience -= next_level_exp
 			self.level += 1
 			upgrade_atts
+			self.current_hp = self.total_hp
 			if self.level.in?([1, 2])
 				self.total_hp = self.basic_hp
 			end

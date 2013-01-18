@@ -117,6 +117,10 @@ module OhmExtension
     		self.class[@id].nil? ? false : true
     	end
     end
+
+    def deleted?
+    	!exists?
+    end
 	end
 	
 	def self.included(receiver)

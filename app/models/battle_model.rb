@@ -282,10 +282,14 @@ class BattleModel
 				if attacker[:army].all_curr_hp.zero?
 					puts "$$ Defender win!!! $$"
 					result[:winner] = 'defender'
+					attacker[:is_win] = false
+					defender[:is_win] = true
 					write_result(attacker, defender)
 					return result.merge!(:time => Time.now.to_f)
 				elsif defender[:army].all_curr_hp.zero?
 					result[:winner] = 'attacker'
+					attacker[:is_win] = true
+					defender[:is_win] = false
 					write_result(attacker, defender)
 					puts "$$ Attacker win!!! $$"
 					return result.merge!(:time => Time.now.to_f)
@@ -296,9 +300,11 @@ class BattleModel
 		end # End of method: attack_calc
 
 		def write_result(attacker = {}, defender = {})
-			[attacker[:army], defender[:army]].each do |army|
-				army.write_hp!
-			end
+			# [attacker[:army], defender[:army]].each do |army|
+			# 	army.write_hp!
+			# end
+			attacker[:army].write_hp!(attacker[:is_win], defender)
+			defender[:army].write_hp!(defender[:is_win], attacker)
 		end
 	end
 
@@ -444,13 +450,21 @@ module BattleArmyModule
 		end
 	end
 
-	def write_hp!
-		puts "=== Writing hp... ==="
+	def write_hp!(is_win, target)
+		return false if self.first.is_a?(Monster)
+		p self
+		earn_xp_fighters_count = self.select{ |fighter| fighter.curr_hp > 0 }.size
+		every_exp = 0
+		if is_win
+			total_exp = target[:army].sum{ |enemy| enemy.xp.to_i }
+			every_exp = total_exp / earn_xp_fighters_count
+		end
+		p "=== every_exp: #{every_exp}"
 		self.each do |fighter|
 			if fighter.is_a?(Monster)
-				return
+				return false
 			end
-			exp = fighter.curr_hp > 0 ? fighter.experience + 10 : fighter.experience
+			exp = fighter.curr_hp > 0 ? fighter.experience + every_exp : fighter.experience
 			puts "-- fighter: #{fighter.current_hp} => #{fighter.curr_hp}"
 			fighter.sets 	:current_hp => fighter.curr_hp,
 										:updated_hp_time => Time.now.to_i,

@@ -22,6 +22,10 @@ class Creeps < Ohm::Model
 
 	# collection :monsters, 	Monster
 
+	def self.rewards
+		Monster.rewards
+	end
+
 	def monsters
 		Monster.find(:creeps_id => id)
 	end
@@ -40,22 +44,29 @@ class Creeps < Ohm::Model
 	def defense_troops
 		if @mons.nil?
 			m_count = case level
-			when 1..5
+			when 1
 				1
-			when 6..10
+			when 2..5
 				2
-			when 11..20
+			when 6..15
 				3
-			when 20..30
+			when 16..35
 				4
-			else
+			when 36..60
 				5
+			else
+				1
 			end
 			@mons = m_count.times.map{ Monster.create_by(:level => level, :type => type, :status => Monster::STATUS[:adult], :creeps_id => id) }
 		end
 		@mons
 	end
 
+	def reward
+		Creeps.rewards[type]
+	end
+
+	protected
 	def before_save
 		if index.zero?
 			self.index = x * Country::COORD_TRANS_FACTOR + y

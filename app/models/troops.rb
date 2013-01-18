@@ -94,6 +94,8 @@ class Troops < Ohm::Model
 
 			result = BattleModel.attack_calc(attacker, defender)
 
+			# 如果进攻方获胜，计算奖励
+			reward = {}
 			if result[:winner] == 'attacker'
 				reward = case target_type
 				when BattleModel::TARGET_TYPE[:village]
@@ -105,14 +107,49 @@ class Troops < Ohm::Model
 					target.set(:under_attack, 0)
 					rwd
 				when BattleModel::TARGET_TYPE[:creeps]
+					has_reward = Tool.rate(0.4)
+
+					if has_reward
+						if Tool.rate(0.25)
+							reward = {
+								:items => [{
+									:item_cat => Item::CATEGORY[:specialty], 
+									:item_type => Specialty.types.sample, 
+									:item_count => target.reward[:food_count]
+								}]
+							}
+						elsif Tool.rate(0.25)
+							reward = {
+								:wood => target.reward[:res_count],
+								:stone => target.reward[:res_count]
+							}
+						elsif Tool.rate(0.125)
+							reward = {
+								:items => [{
+									:item_cat => Item::CATEGORY[:egg], 
+									:item_type => target.reward[:egg_type].sample, 
+									:item_count => 1
+								}]
+							}
+						elsif Tool.rate(0.125)
+							reward = {
+								:items => [{
+									:item_cat => Item::CATEGORY[:scroll],
+									:item_type => target.reward[:scroll_type].sample,
+									:item_count => 1
+								}]
+							}
+						end
+					end
 					player.del_temp_creeps(target.index)
 					target.delete
-					rwd = {:wood => 1000, :stone => 1200, :gold_coin => 150, :items => []}
-					i_cat = Item.categories.sample
-					i_type = Item.types(i_cat).sample
-					i_count = i_cat == 1 ? 1 : 100
-					rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
-					rwd
+					# rwd = {:wood => 1000, :stone => 1200, :gold_coin => 150, :items => []}
+					# i_cat = Item.categories.sample
+					# i_type = Item.types(i_cat).sample
+					# i_count = i_cat == 1 ? 1 : 100
+					# rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
+					# rwd
+					reward
 				when BattleModel::TARGET_TYPE[:gold_mine]
 					target.update :player_id => player.id, :under_attack => false
 					rwd = {:wood => 1500, :stone => 1500, :gold_coin => 200, :items => []}
@@ -124,6 +161,7 @@ class Troops < Ohm::Model
 				else
 					{}
 				end
+				p "---- reward", reward
 				player.receive!(reward)
 			end # End of winner reward
 

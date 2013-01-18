@@ -14,6 +14,10 @@ module DinosaursConst
 
 		alias info const
 
+		def types
+			self.const.keys
+		end
+
 		def reload!
 			@@dinosaurs_const.clear
 			@@dinosaurs_exp.clear

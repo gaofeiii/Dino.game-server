@@ -4,6 +4,10 @@ class LeaguesController < ApplicationController
 	before_filter :validate_league, :only => [:apply]
 
 	def create
+		if League.exists?(@player.league_id)
+			render_error(Error::NORMAL, "YOU_ARE_ALREADY_IN_A_LEAGUE") and return
+		end
+
 		if @player.spend!(:gems => 10)
 			# name = "League#{rand(1..10000000)}"
 			name = params[:name]

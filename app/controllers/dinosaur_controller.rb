@@ -77,6 +77,10 @@ class DinosaurController < ApplicationController
 	end
 
 	def release
+		if @dinosaur.status == Dinosaur::STATUS[:egg]
+			render_error(Error::NORMAL, "CANNOT_RELEASE_HATCHING_DINO") and return
+		end
+
 		Ohm.redis.sadd("Player:#{@dinosaur.player_id}:released_dinosaurs", @dinosaur.id)
 		@dinosaur.update :player_id => nil
 		render_success(:dinosaur_id => @dinosaur.id)

@@ -3,6 +3,8 @@ class Item < Ohm::Model
 	include Ohm::Callbacks
 	include OhmExtension
 
+	CATEGORY = ITEM_CATEGORY
+
 	attribute :item_category, 	Type::Integer
 	attribute :item_type, 			Type::Integer
 	attribute :can_sell,				Type::Boolean
@@ -10,6 +12,10 @@ class Item < Ohm::Model
 	reference :player, :Player
 
 	class << self
+
+		def const
+			ITEMS
+		end
 
 		def categories
 			ITEM_CATEGORY.values

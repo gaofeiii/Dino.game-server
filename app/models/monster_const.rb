@@ -12,6 +12,13 @@ module MonsterConst
 			@@monster_const
 		end
 
+		def rewards
+			if @@monster_reward.blank?
+				load_const!
+			end
+			@@monster_reward
+		end
+
 		def load_const!
 			@@monster_const.clear
 			book = Excelx.new("#{Rails.root}/const/monsters.xlsx")
@@ -36,6 +43,25 @@ module MonsterConst
 				}
 			end
 
+			book.default_sheet = "野怪组合列表"
+
+			4.upto(book.last_row) do |i|
+				type = book.cell(i, 'A').to_i
+				monster_number = book.cell(i, 'C').to_i
+				food_count = book.cell(i, 'D').to_i
+				res_count = book.cell(i, 'E').to_i
+				egg_type = book.cell(i, 'F').to_s.split(',').map(&:to_i)
+				scrl_type = book.cell(i, 'G').to_s.split(',').map(&:to_i)
+				@@monster_reward[type] = {
+					:type => type,
+					:monster_number => monster_number,
+					:food_count => food_count,
+					:res_count => res_count,
+					:egg_type => egg_type,
+					:scroll_type => scrl_type
+				}
+			end
+
 		end
 	end
 	
@@ -48,9 +74,6 @@ module MonsterConst
 			info[:xp]
 		end
 
-		def reward
-			
-		end
 	end
 	
 	def self.included(receiver)

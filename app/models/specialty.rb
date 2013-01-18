@@ -14,6 +14,10 @@ class Specialty < Ohm::Model
 
 	reference :player, 	:Player
 
+	def self.types
+		SPECIALTY_TYPES
+	end
+
 
 	[:name, :feed_point].each do |att|
 		define_method(att) do

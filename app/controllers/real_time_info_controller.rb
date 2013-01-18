@@ -12,6 +12,11 @@ class RealTimeInfoController < ApplicationController
 					:building => 300, # 每300消耗1个宝石
 					:tech => 300,
 					:dino_hp_recovery => 300
+				},
+				:god_cost => {
+					:wood => 1000,
+					:stone => 1000,
+					:gold => 1000
 				}
 			}
 		}
