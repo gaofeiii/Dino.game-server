@@ -4,12 +4,7 @@ class God < Ohm::Model
 	include Ohm::Locking
 	include OhmExtension
 
-	TYPE = {
-		:coeus => 1,
-		:mercury => 2,
-		:mars => 3,
-		:ceres => 4
-	}
+	include GodConst
 
 	attribute :type, 					Type::Integer
 	attribute :level,					Type::Integer

@@ -2,9 +2,67 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  hello: "Hello 你妹"
+
+  system: "System"
   player:
    whos_village: "%{player_name}'s village"
-   empty_village_name: "An empty village"
-  error:
-   INVALID_PLAYER_ID: "Invalid player ID"
+   empty_village_name: "Empty Village"
+
+  resource:
+   wood: "wood"
+   stone: "stone"
+   gold_coin: "gold coin"
+   gems: "gems"
+
+  god:
+   full_name:
+    argriculture: "农业之神-赛纳斯"
+    business: "商业之神-墨丘利"
+    war: "战争之神-玛尔斯"
+    intelligence: "智慧之神-考伊斯"
+   short_name:
+    argriculture: "Ceres"
+    business: "Mercury"
+    war: "Mars"
+    intelligence: "Coeus"
+
+  building_names:
+   residential: "民居"
+   lumber_mill: "Lumber mill"
+   quarry: "Quarry"
+   hunting_field: "狩猎场"
+   collecting_farm: "采集场"
+   habitat: "孵化园"
+   beastiary: "兽栏"
+   market: "Market"
+   workshop: "Workshop"
+   temple: "Temple"
+   warehouse: "Warehouse"
+
+  login_error:
+   INVALID_PLAYER_ID: "Invalid player id"
+   INCORRECT_USERNAME_OR_PASSWORD: "Incorrect username or password"
+   EMPTY_USERNAME_OR_PASSWORD: "username or password cannot be empty"
+
+  building_error:
+   BUILDING_HAS_BEEN_DESTROYED: "This building has already destroyed"
+   CANNOT_DESTROY_RESIDENTIAL: "You must keep one residential"
+   building_exist: "%{building_name} already exists"
+
+  league_error:
+   LEAGUE_NOT_FOUND: "League not found"
+
+  god_effect_mail:
+   argriculture:
+    title: "Blessing from Ceres"
+    content: "由于你对农业之神-赛纳斯的虔诚供奉，赛纳斯决定揭露仓库中隐藏的%{res_name}！"
+   business:
+    title: "Blessing from Mercury"
+    content: "由于你对商业之神-墨丘利的虔诚供奉，墨丘利决定让你这次交易获得双倍的利润！"
+   war:
+    title: "Blessing from Mars"
+    content: "由于你对战争之神-玛尔斯的虔诚供奉，玛尔斯决定在战斗中助你一臂之力！"
+   intelligence:
+    title: "Blessing from Coeus"
+    content: "由于你对智慧之神-考伊斯的虔诚供奉，考伊斯决定减少%{time_reduce}的研究时间！"

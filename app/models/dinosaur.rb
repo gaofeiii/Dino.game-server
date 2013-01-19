@@ -114,6 +114,9 @@ class Dinosaur < Ohm::Model
 		end
 	end
 
+	# Update consuming...
+	# Update auto healing...
+	# Check if upgraded...
 	def update_status
 		if event_type == EVENTS[:hatching]
 			if ::Time.now.to_i >= finish_time
@@ -124,6 +127,7 @@ class Dinosaur < Ohm::Model
 			consume_food
 			update_level
 			auto_heal
+			return self
 		else
 			return false
 		end

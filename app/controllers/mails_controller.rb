@@ -90,7 +90,8 @@ class MailsController < ApplicationController
 
 	def mark_as_read
 		params[:mail_ids].to_a.each do |m_id|
-			Mail[m_id].update :is_read => true
+			m = Mail[m_id]
+			m.update :is_read => true if m
 		end
 		render_success
 	end

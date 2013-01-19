@@ -18,7 +18,14 @@ class ResearchController < ApplicationController
 		end
 		
 		if @player.spend!(tech.next_level[:cost])
-			tech.research!(params[:building_id])
+			# 判断是否触发神灵效果
+			time_reduce = if @player.curr_god.type == God.hashes[:intelligence]
+				@player.trigger_god_effect
+			else
+				0
+			end
+
+			tech.research!(params[:building_id], time_reduce)
 			if !@player.beginning_guide_finished && !@player.guide_cache['has_researched']
 				cache = @player.guide_cache.merge(:has_researched => true)
 				@player.set :guide_cache, cache

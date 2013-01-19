@@ -5,6 +5,12 @@ class BuildingsController < ApplicationController
 	before_filter :validate_building, :only => [:move, :complete, :harvest, :get_info]
 
 	def create
+		b_type = params[:building_type].to_i
+		# check if this kind of building existed
+		if @village.buildings.find(:type => b_type = params[:building_type].to_i).any?
+			render_error Error::NORMAL, I18n.t("building_error.building_exist", :building_name => Building.get_locale_name_by_type(b_type))
+			return
+		end
 		@player = @village.player
 
 		if @player.curr_action_queue_size >= @player.action_queue_size
@@ -15,8 +21,7 @@ class BuildingsController < ApplicationController
 			} and return
 		end
 
-		type = params[:building_type].to_i
-		unless type.in?(Building.types)
+		unless b_type.in?(Building.types)
 			render :json => {
 				:message => Error.failed_message,
 				:error_type => Error::NORMAL,
@@ -24,10 +29,9 @@ class BuildingsController < ApplicationController
 			} and return
 		end
 
-		cost = Building.cost(type)
+		cost = Building.cost(b_type)
 
 		if @player.spend!(cost)
-			b_type = params[:building_type].to_i
 			wkr = @player.working_workers < @player.total_workers && Building.resource_building_types.include?(b_type) ? 1 : 0
 			@building = @village.create_building 	:type => b_type, 
 																						:x => params[:x], 
@@ -132,6 +136,13 @@ class BuildingsController < ApplicationController
 		if @building.is_lumber_mill? || @building.is_quarry?
 			res = Resource::TYPE[@building.harvest_type]
 			@player.receive!(res => @building.harvest_count)
+
+			# 判断是否出发神灵效果
+			if @player.curr_god.type == God.hashes[:argriculture]
+				@player.trigger_god_effect
+				@player.gets(:wood, :stone)
+			end
+
 		elsif @building.is_collecting_farm? || @building.is_hunting_field?
 			@player.receive_food!(@building.harvest_type, @building.harvest_count)
 		end

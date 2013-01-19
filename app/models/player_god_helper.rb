@@ -1,4 +1,5 @@
 module PlayerGodHelper
+	GOD_TRIGGER_CHANCE = 1
 	module ClassMethods
 		
 	end
@@ -11,7 +12,50 @@ module PlayerGodHelper
 		end
 
 		def curr_god
-			gods.first
+			if @curr_god.nil?
+				@curr_god = gods.first
+			end
+			@curr_god
+		end
+
+		def refresh_god_status!
+			if self.god_taken_effect_time < Time.now.beginning_of_day.to_i
+				self.set :god_taken_effect, 0
+			end
+		end
+
+		def trigger_god_effect
+			if Tool.rate(GOD_TRIGGER_CHANCE)
+				case curr_god.type
+				when God.hashes[:argriculture]
+					res = ['wood', 'stone'].sample
+					self.set res, self.tech_warehouse_size
+					Mail.create :mail_type => Mail::TYPE[:system],
+											:sys_mail_type => Mail::SYS_TYPE[:normal],
+											:receiver_name => self.nickname,
+											:sender_name => I18n.t(:system, :locale => self.locale),
+											:title => I18n.t("god_effect_mail.argriculture.title"),
+											:content => I18n.t("god_effect_mail.argriculture.content", :res_name => I18n.t("resource.#{res}"))
+					1
+				when God.hashes[:business]
+					1
+				when God.hashes[:war]
+					1
+				when God.hashes[:intelligence]
+					val = 0.2
+					Mail.create :mail_type => Mail::TYPE[:system],
+											:sys_mail_type => Mail::SYS_TYPE[:normal],
+											:receiver_name => self.nickname,
+											:sender_name => I18n.t(:system, :locale => self.locale),
+											:title => I18n.t("god_effect_mail.intelligence.title"),
+											:content => I18n.t('god_effect_mail.intelligence.content', :time_reduce => val.to_percentage)
+					val
+				else
+					0
+				end
+			else
+				0
+			end
 		end
 
 	end

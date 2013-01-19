@@ -3,7 +3,7 @@ class GodController < ApplicationController
 
 	# 供奉神灵
 	def worship_gods
-		if not params[:god_type].in?(God::TYPE.values)
+		if not params[:god_type].in?(God.hashes.values)
 			render_error(Error::NORMAL, "Invalid god type") and return
 		end
 

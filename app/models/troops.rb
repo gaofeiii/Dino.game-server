@@ -53,6 +53,7 @@ class Troops < Ohm::Model
 			army = dinosaurs.map do |dino_id|
 				dino = Dinosaur[dino_id]
 				if dino && dino.status > 0
+					dino.update_status!
 					dino
 				end
 			end.compact

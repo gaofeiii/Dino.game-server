@@ -40,10 +40,10 @@ class Technology < Ohm::Model
 
 	reference :player, :Player
 
-	def research!(bid)
+	def research!(bid, time_reduce = 0)
 		self.status = STATUS[:researching]
 		self.start_time = ::Time.now.to_i
-		self.finish_time = ::Time.now.to_i + next_level[:cost][:time]
+		self.finish_time = ::Time.now.to_i + next_level[:cost][:time] * (1 - time_reduce)
 		self.building_id = bid
 		self.save
 	end

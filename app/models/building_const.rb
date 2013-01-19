@@ -46,6 +46,10 @@ module BuildingConst
 			hashes.keys
 		end
 
+		def get_locale_name_by_type(type, locale = I18n.locale)
+			I18n.t("building_names.#{self.const[type][:key]}", :locale => locale)
+		end
+
 		def reload!
 			puts '--- Reading buildings const ---'
 			@@building_const.clear
@@ -90,6 +94,14 @@ module BuildingConst
 
 		def property
 			self.class.info[type][:property]
+		end
+
+		def key_name
+			self.info[:key].to_s
+		end
+
+		def locale_name(locale = I18n.locale)
+			I18n.t("building_names.#{key_name}", :locale => locale)
 		end
 
 	end

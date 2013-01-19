@@ -18,7 +18,9 @@ class Mail < Ohm::Model
 
 	attribute :mail_type, Type::Integer
 	attribute :sender_name			# sender nickname
+	attribute :sender_id,			Type::Integer
 	attribute :receiver_name		# receiver nickname
+	attribute :receiver_id,		Type::Integer
 	attribute :title
 	attribute :content
 	attribute :league_id
