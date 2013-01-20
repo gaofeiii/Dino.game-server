@@ -26,6 +26,7 @@ module PlayerGodHelper
 
 		def trigger_god_effect
 			if Tool.rate(GOD_TRIGGER_CHANCE)
+				puts "Ho Ho Ho!! God blessing..."
 				case curr_god.type
 				when God.hashes[:argriculture]
 					res = ['wood', 'stone'].sample
@@ -38,8 +39,20 @@ module PlayerGodHelper
 											:content => I18n.t("god_effect_mail.argriculture.content", :res_name => I18n.t("resource.#{res}"))
 					1
 				when God.hashes[:business]
+					Mail.create :mail_type => Mail::TYPE[:system],
+											:sys_mail_type => Mail::SYS_TYPE[:normal],
+											:receiver_name => self.nickname,
+											:sender_name => I18n.t(:system, :locale => self.locale),
+											:title => I18n.t("god_effect_mail.business.title"),
+											:content => I18n.t("god_effect_mail.business.content")
 					1
 				when God.hashes[:war]
+					Mail.create :mail_type => Mail::TYPE[:system],
+											:sys_mail_type => Mail::SYS_TYPE[:normal],
+											:receiver_name => self.nickname,
+											:sender_name => I18n.t(:system, :locale => self.locale),
+											:title => I18n.t("god_effect_mail.war.title"),
+											:content => I18n.t("god_effect_mail.war.content")
 					1
 				when God.hashes[:intelligence]
 					val = 0.2
