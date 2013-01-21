@@ -16,7 +16,7 @@ class VillagesController < ApplicationController
 
 		if player.spend!(:gems => 100)
 			@village.update :x => params[:x], :y => params[:y], :index => 0
-			render_success(:player => {:village => @village.to_hash})
+			render_success(:player => player.to_hash.merge(:village => @village.to_hash))
 		else
 			render_error(Error::NORMAL, "NOT_ENOUGH_GEMS")
 		end

@@ -9,16 +9,20 @@ class FriendsController < ApplicationController
 		end.flatten
 
 		result = ids.map do |id|
-			info = Ohm.redis.hmget(Player.key[id], :nickname, :level, :score)
+			player = Player.new :id => id
+			player.gets(:nickname, :level, :score, :player_type)
+			# info = Ohm.redis.hmget(Player.key[id], :nickname, :level, :score, :player_type)
 			rank = rand(1..1000)
-			{
-				:id => id.to_i,
-				:nickname => info[0],
-				:level => info[1].to_i,
-				:score => info[2].to_i,
-				:rank => rank
-			}
-		end
+			if !player.is_npc?
+				{
+					:id => id.to_i,
+					:nickname => player.nickname,
+					:level => player.level,
+					:score => player.score,
+					:rank => rank
+				}
+			end
+		end.compact
 
 		render :json => {:result => result}
 	end

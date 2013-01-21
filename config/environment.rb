@@ -23,7 +23,7 @@ end
 class Float
 	# 0.125.to_percentage 		# => "12.50%"
 	# 0.125.to_percentage(0) 	# => "12%"
-	def to_percentage(keep = 2)
+	def to_percentage(keep = 1)
 		if keep
 			return format("%.#{keep}f%", self * 100)
 		else

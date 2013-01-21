@@ -41,6 +41,7 @@ class WorldMapController < ApplicationController
 				player = Player.new
 				league = League.new
 				vil_name = ""
+				v_type = 0
 
 				if vil.nil?
 					vil = Village.new :id => 0, :name => ""
@@ -48,6 +49,7 @@ class WorldMapController < ApplicationController
 					league.name = ""
 				else
 					player = Player.new :id => vil.player_id
+					v_type = 1
 					player.gets(:nickname, :league_id, :avatar_id, :battle_power, :locale, :level)
 					vil_name = I18n.t("player.whos_village", :player_name => player.nickname)
 					league = League.new :id => player.league_id
@@ -59,7 +61,7 @@ class WorldMapController < ApplicationController
 					:x => vx,
 					:y => vy,
 					:info => {
-						:type => 1, 
+						:type => v_type,
 						:id => vil.id, 
 						:name => vil_name,
 						:level => player.level,
