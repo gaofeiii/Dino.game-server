@@ -22,7 +22,7 @@ module PlayerCreepsHelper
 		def save_creeps(creeps)
 			return false if creeps.blank?
 
-			creeps_id = creeps[:x] * Country::COORD_TRANS_FACTOR + creeps[:y]
+			creeps_id = creeps[:x] + creeps[:y] * Country::COORD_TRANS_FACTOR
 			db.hset(temp_creeps_key, creeps_id, creeps.to_json)
 		end
 

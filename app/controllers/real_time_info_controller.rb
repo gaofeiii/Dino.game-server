@@ -9,7 +9,7 @@ class RealTimeInfoController < ApplicationController
 				:shopping_list => Shopping.list,
 				:dinosaurs => {:recovery_speed => 60}, # 等级*60秒
 				:speed_up_info => {
-					:building => 300, # 每300消耗1个宝石
+					:building => 300, # 每300秒消耗1个宝石
 					:tech => 300,
 					:dino_hp_recovery => 300
 				},

@@ -17,7 +17,7 @@ class WorldMapController < ApplicationController
 
 		ids = (x_min..x_max).map do |i|
 			(y_min..y_max).map do |j|
-				i * Country::COORD_TRANS_FACTOR + j
+				i + j * Country::COORD_TRANS_FACTOR
 			end
 		end.flatten
 
@@ -35,8 +35,8 @@ class WorldMapController < ApplicationController
 			if country_map[i].to_i > 0
 				# puts "--- index: #{i}"
 				vil = Village.with(:index, i)
-				vx = i / Country::COORD_TRANS_FACTOR
-				vy = i % Country::COORD_TRANS_FACTOR
+				vx = i % Country::COORD_TRANS_FACTOR
+				vy = i / Country::COORD_TRANS_FACTOR
 
 				player = Player.new
 				league = League.new
@@ -77,8 +77,8 @@ class WorldMapController < ApplicationController
 			end
 
 			if gold_mine_map[i].to_i > 0
-				gx = i / Country::COORD_TRANS_FACTOR
-				gy = i % Country::COORD_TRANS_FACTOR
+				gx = i % Country::COORD_TRANS_FACTOR
+				gy = i / Country::COORD_TRANS_FACTOR
 
 				g_mine = GoldMine.find(:x => gx, :y => gy).first
 				next if g_mine.nil?
@@ -101,8 +101,8 @@ class WorldMapController < ApplicationController
 			end
 
 			if country.hl_gold_mine_info[i].to_i > 0
-				gx = i / Country::COORD_TRANS_FACTOR
-				gy = i % Country::COORD_TRANS_FACTOR
+				gx = i % Country::COORD_TRANS_FACTOR
+				gy = i / Country::COORD_TRANS_FACTOR
 
 				g_mine = GoldMine.find(:x => gx, :y => gy).first
 				next if g_mine.nil?
@@ -133,8 +133,8 @@ class WorldMapController < ApplicationController
 			
 			if tmp_creeps_idx.size <= 0
 				new_creeps_index = left_ids.sample
-				cx = new_creeps_index / Country::COORD_TRANS_FACTOR
-				cy = new_creeps_index % Country::COORD_TRANS_FACTOR
+				cx = new_creeps_index % Country::COORD_TRANS_FACTOR
+				cy = new_creeps_index / Country::COORD_TRANS_FACTOR
 
 				m_level = rand(1..4)
 				m_count = case m_level

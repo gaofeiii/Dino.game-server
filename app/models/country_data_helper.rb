@@ -80,7 +80,7 @@ module CountryDataHelper
 			result_arr = Array.new
 			(start_x..(start_x + offset_x)).each do |x|
 				(start_y..(start_y + offset_y)).each do |y|
-					result_arr << x * COORD_TRANS_FACTOR + y
+					result_arr << x + y * COORD_TRANS_FACTOR
 				end
 			end
 			return result_arr
@@ -162,14 +162,13 @@ module CountryDataHelper
 						# 11*11矩形格子中，最外圈不可用，即可用的为9*9
 						((x-4)..(x+4)).each do |rx|
 							((y-4)..(y+4)).each do |ry|
-								idx = rx * COORD_TRANS_FACTOR + ry # 地图节点的实际index
+								idx = rx + ry * COORD_TRANS_FACTOR # 地图节点的实际index
 								all_nodes << idx
 								t_nodes = get_town_nodes(rx, ry)
 
 								t_nodes.each do |n_idx|
 									if basic_map_info[n_idx] < 0
 										town_blocked_nodes << n_idx
-										break
 									end
 								end
 							end
@@ -182,9 +181,10 @@ module CountryDataHelper
 
 						2.times do
 							town_index = town_available_nodes.sample
+							next if town_index.nil?
 							town_nodes_info[town_index] = 1
 							# town_used_nodes = get_town_nodes(town_index/COORD_TRANS_FACTOR, town_index%COORD_TRANS_FACTOR)
-							town_used_nodes = get_nodes_matrix(town_index/COORD_TRANS_FACTOR - 2, town_index%COORD_TRANS_FACTOR - 2, 5, 5) # change town matrix to 5*5
+							town_used_nodes = get_nodes_matrix(town_index%COORD_TRANS_FACTOR - 2, town_index/COORD_TRANS_FACTOR - 2, 5, 5) # change town matrix to 5*5
 							town_available_nodes -= town_used_nodes
 							town_used_nodes.each do |idx|
 								empty_map_info[idx] = -1
@@ -193,12 +193,15 @@ module CountryDataHelper
 
 						gold_available_nodes = town_available_nodes# - get_town_nodes(town_index / COORD_TRANS_FACTOR, town_index % COORD_TRANS_FACTOR)
 						gold_index = gold_available_nodes.sample
-						gold_mine_info[gold_index] = 3
-						# gold_used_nodes = get_gold_mine_nodes(gold_index/COORD_TRANS_FACTOR, gold_index%COORD_TRANS_FACTOR)
-						gold_used_nodes = get_nodes_matrix(gold_index/COORD_TRANS_FACTOR - 2, gold_index%COORD_TRANS_FACTOR - 2, 5, 5) # change gold mine martix to 5*5
-						gold_used_nodes.each do |idx|
-							empty_map_info[idx] = -1
+						if not gold_index.nil?
+							gold_mine_info[gold_index] = 3
+							# gold_used_nodes = get_gold_mine_nodes(gold_index/COORD_TRANS_FACTOR, gold_index%COORD_TRANS_FACTOR)
+							gold_used_nodes = get_nodes_matrix(gold_index%COORD_TRANS_FACTOR - 2, gold_index/COORD_TRANS_FACTOR - 2, 5, 5) # change gold mine martix to 5*5
+							gold_used_nodes.each do |idx|
+								empty_map_info[idx] = -1
+							end
 						end
+						
 					end
 				end
 
@@ -207,7 +210,7 @@ module CountryDataHelper
 
 				GOLD_MINE_X_RANGE.each do |x|
 					GOLD_MINE_Y_RANGE.each do |y|
-						idx = x * COORD_TRANS_FACTOR + y
+						idx = x + y * COORD_TRANS_FACTOR
 						town_nodes_info.delete(idx)	# Just make sure no other nodes here.
 						gold_mine_info.delete(idx)	# Just make sure no other nodes here.
 
@@ -250,7 +253,7 @@ module CountryDataHelper
 					m_x, m_y = nil, nil 
 					until !m_x.nil? && !m_y.nil?
 						m_x, m_y = get_random_node_in_a_matrix(x, y, 9, 9)
-						m_idx = m_x * COORD_TRANS_FACTOR + m_y
+						m_idx = m_x + m_y * COORD_TRANS_FACTOR
 						if basic_map_info[m_idx] >= 0 && town_nodes_info[m_idx].nil? && gold_mine_info[m_idx].nil? && hl_gold_mine_info[m_idx].nil?
 							creeps_info[m_idx] = 1
 						end
