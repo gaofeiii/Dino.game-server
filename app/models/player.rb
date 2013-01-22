@@ -369,8 +369,8 @@ class Player < Ohm::Model
 	# 为新玩家创建村庄
 	def create_village
 		random_coord = Country.first.town_nodes_info.keys.sample
-		x = random_coord / Country::COORD_TRANS_FACTOR
-		y = random_coord % Country::COORD_TRANS_FACTOR
+		x = random_coord % Country::COORD_TRANS_FACTOR
+		y = random_coord / Country::COORD_TRANS_FACTOR
 		vil = Village.create :name => "#{self.nickname}'s village", :player_id => self.id, 
 		:x => x, :y => y, :country_index => 1
 		self.set :village_id, vil.id
