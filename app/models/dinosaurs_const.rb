@@ -136,6 +136,10 @@ module DinosaursConst
 		def is_my_favorite_food(food_type)
 			property[:favor_food] == food_type
 		end
+
+		def xp
+			self.level * 10
+		end
 	end
 	
 	def self.included(receiver)

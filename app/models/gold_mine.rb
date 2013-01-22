@@ -26,8 +26,7 @@ class GoldMine < Ohm::Model
 	index :level
 
 	def defense_troops
-		owner = self.player
-		if owner.nil?
+		if player_id.blank?
 
 			if monsters.blank?
 				# 创建属于此金矿的monster
@@ -44,11 +43,9 @@ class GoldMine < Ohm::Model
 					Monster.create_by(:type => m_type, :status => Monster::STATUS[:adult], :gold_mine_id => id)
 				end
 			end
-			
 			monsters.to_a
-		elsif owner.is_a?(Player)
-			# TODO:
-			[]
+		else
+
 		end
 	end
 
@@ -99,6 +96,10 @@ class GoldMine < Ohm::Model
 
 	def output
 		self.class.gold_output(level)
+	end
+
+	def strategy
+		Strategy[strategy_id]
 	end
 
 	protected

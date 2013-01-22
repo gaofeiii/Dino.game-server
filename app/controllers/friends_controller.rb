@@ -11,7 +11,6 @@ class FriendsController < ApplicationController
 		result = ids.map do |id|
 			player = Player.new :id => id
 			player.gets(:nickname, :level, :score, :player_type)
-			# info = Ohm.redis.hmget(Player.key[id], :nickname, :level, :score, :player_type)
 			rank = rand(1..1000)
 			if !player.is_npc?
 				{
@@ -55,12 +54,10 @@ class FriendsController < ApplicationController
 		end
 
 		data = if @player.friends.add(friend)
-			{:player => {:friends => @player.friend_list}}
+			render_success#(:player => {:friends => @player.friend_list})
 		else
-			{:error => "ADD_FRIEND_FAILED"}
+			render_error(Error::NORMAL, I18n.t("friends_error.already_add_friend"))
 		end
-
-		render :json => data
 	end
 
 	def friend_list

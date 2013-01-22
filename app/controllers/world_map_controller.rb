@@ -62,9 +62,11 @@ class WorldMapController < ApplicationController
 					:y => vy,
 					:info => {
 						:type => v_type,
-						:id => vil.id, 
+						:id => vil.id,
+						:player_id => vil.player_id.to_i,
 						:name => vil_name,
-						:level => player.level,
+						:village_level => player.village_level,
+						:player_level => player.level,
 						:league_name => league.name,
 						:avatar_id => player.avatar_id,
 						:battle_power => player.battle_power

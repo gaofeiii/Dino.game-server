@@ -69,7 +69,7 @@ class StrategyController < ApplicationController
 			render_error(Error::NORMAL, "Invalid target") and return
 		end
 
-		if target.is_a?(Village) && target.player_id.to_i = @player.id
+		if target.is_a?(Village) && target.player_id.to_i == @player.id
 			render_error(Error::NORMAL, "Cannot attack your own village") and return
 		end
 

@@ -93,6 +93,8 @@ class Troops < Ohm::Model
 				:army => defender_army
 			}
 
+			defender[:owner_info][:avatar_id] = target.player.avatar_id if target.is_a?(Village)
+
 			result = BattleModel.attack_calc(attacker, defender)
 
 			# 如果进攻方获胜，计算奖励

@@ -112,6 +112,7 @@ class Player < Ohm::Model
 			:dinosaurs_count => dinosaurs.size,
 			:wood => wood,
 			:stone => stone,
+			:player_type => player_type,
 			:warehouse_size => tech_warehouse_size
 		}
 		opts = if args.include?(:all)
@@ -191,15 +192,14 @@ class Player < Ohm::Model
 	# 好友列表
 	def friend_list
 		friends.map do |friend|
-			village_coords = Village.gets(friend.village_id, :x, :y)
 			{
 				:id => friend.id.to_i,
 				:nickname => friend.nickname,
 				:level => friend.level,
 				:score => friend.score,
 				:rank => rand(1..1000),
-				:x => village_coords[0].to_i,
-				:y => village_coords[1].to_i
+				:x => 0,
+				:y => 0
 			}
 		end
 	end
@@ -316,6 +316,10 @@ class Player < Ohm::Model
   			bd.update(:has_worker => 0)
   		end
   	end
+  end
+
+  def village_level
+  	(level / 10.0).ceil
   end
 
 	# Callbacks

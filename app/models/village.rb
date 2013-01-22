@@ -32,21 +32,16 @@ class Village < Ohm::Model
 		Player[player_id]
 	end
 
+	def type
+		0
+	end
+
 	def player_name
 		db.hget("Player:#{player_id}", :nickname)
 	end
 
 	def level
-		case player.level
-		when 1..10
-			1
-		when 11..20
-			2
-		when 21..30
-			3
-		else
-			1
-		end
+		(player.level / 10.0).ceil
 	end
 
 	def to_hash(*args)
@@ -132,6 +127,20 @@ class Village < Ohm::Model
 			@country = Country[db.hget("Player:#{player_id}", :country_id)]
 		end
 		@country
+	end
+
+	def defense_troops
+		str = self.strategy
+		if str
+			str.dinosaur_ids.map do |d_id|
+				dino = Dinosaur[d_id]
+				if dino
+					dino
+				end
+			end.compact
+		else
+			[]
+		end
 	end
 
 	protected

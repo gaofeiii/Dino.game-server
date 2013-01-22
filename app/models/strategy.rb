@@ -21,4 +21,17 @@ class Strategy < Ohm::Model
 		hash[:dinosaurs] = JSON.parse(dinosaurs)
 		hash
 	end
+
+	def dinosaur_ids
+		if self.dinosaurs.blank?
+			return []
+		end
+
+		re = JSON(dinosaurs)
+		if re.is_a?(Array)
+			re.select {|d_id| d_id > 0 }
+		else
+			[]
+		end
+	end
 end

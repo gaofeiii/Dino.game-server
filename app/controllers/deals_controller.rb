@@ -30,13 +30,16 @@ class DealsController < ApplicationController
 				else
 					{}
 				end
-				p "======== goods: ", goods
+
 				if !goods.blank?
 					# p "--- deal.price: #{deal.price.to_i}"
 					cost = {:gold_coin => deal.price.to_i}
-					p "cost", cost
-					@player.spend!(cost)
-					@player.receive!(goods)
+
+					if @player.spend!(cost)
+						@player.receive!(goods)
+					else
+						render_error(Error::NORMAL, I18n.t("deals_error.not_enough_gold")) and return
+					end
 				end
 			when Deal::CATEGORIES[:egg]
 				i = Item[deal.gid]
