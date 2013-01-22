@@ -25,7 +25,13 @@ class ResearchController < ApplicationController
 				0
 			end
 
-			tech.research!(params[:building_id], time_reduce)
+			b_id = if params[:building_id].nil? || params[:building_id] <= 0
+				@player.village.buildings.find(:type => Building.hashes[:workshop]).ids.first
+			else
+				params[:building_id]
+			end
+
+			tech.research!(b_id, time_reduce)
 			if !@player.beginning_guide_finished && !@player.guide_cache['has_researched']
 				cache = @player.guide_cache.merge(:has_researched => true)
 				@player.set :guide_cache, cache
