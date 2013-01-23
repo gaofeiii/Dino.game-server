@@ -136,14 +136,14 @@ class LeaguesController < ApplicationController
 		mail = Mail.create_league_invite_mail(:receiver_name => @friend.nickname, :player_name => @player.nickname, :league_name => @league.name, :league_id => @league.id)
 		
 		if mail
-			LeagueInvitation.create :player_id => @friend.id, :mail_id => mail.id, :league_id => @league.id
 			render_success
 		else
-			render_error(Error::NORMAL, "Server busy, try again later")
+			render_error(Error::NORMAL, I18n.t('general.server_busy'))
 		end
 	end
 	
 	def accept_invite
+		# already validated @player
 		@mail = Mail[params[:mail_id]]
 		if @mail.nil?
 			render_error(Error::NORMAL, "Invalid mail id") and return
@@ -154,6 +154,11 @@ class LeaguesController < ApplicationController
 			render_error(Error::NORMAL, "League not exists") and return
 		end
 
+		if @league.add_new_member(@player)
+			render_success(:player => @player.to_hash)
+		else
+			render_error(Error::NORMAL, I18n.t('general.server_busy'))
+		end
 
 	end
 	

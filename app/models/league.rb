@@ -16,8 +16,6 @@ class League < Ohm::Model
 	collection :league_member_ships, LeagueMemberShip
 	collection :league_applys, LeagueApply
 
-	collection :league_invitations,  LeagueInvitation
-
 	index :name
 
 	def president
@@ -44,6 +42,16 @@ class League < Ohm::Model
 	def apply_list
 		league_applys.map do |apply|
 			apply.to_hash
+		end
+	end
+
+	def add_new_member(member)
+		membership = LeagueMemberShip.create :player_id => member.id,
+																					:league_id => self.id,
+																					:nickname => member.nickname,
+																					:level => League.levels[:member]
+		if membership
+			member.update :league_id => id, :league_member_ship_id => membership.id
 		end
 	end
 

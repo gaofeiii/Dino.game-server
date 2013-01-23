@@ -5,6 +5,8 @@ cn:
   hello: "Hello 你妹"
 
   system: "系统"
+  general:
+   server_busy: "网络不给力啊，请稍后再试~~"
   player:
    whos_village: "%{player_name}的村庄"
    empty_village_name: "一座空城"
@@ -80,7 +82,7 @@ cn:
     content: "%{friend_name}希望加你为好友。"
 
    league_invitation:
-    title: "公会邀请"
+    title: "来自%{league_name}公会的邀请"
     content: "%{player_name}邀请你加入他的公会：%{league_name}。"
 
    league_application:

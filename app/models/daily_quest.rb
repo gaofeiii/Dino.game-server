@@ -1,8 +1,16 @@
+# Only included by Player model.
 module DailyQuest
 	module ClassMethods
 		@@daily_quest_info = {
 			:data => {}
 		}
+
+		def daily_quests_const
+			if @@daily_quest_info[:data].blank?
+				load_daily_quest!
+			end
+			@@daily_quest_info
+		end
 
 		def find_daily_quest_info_by_index(idx, locale = :en)
 			if @@daily_quest_info[:data].blank?
@@ -70,17 +78,29 @@ module DailyQuest
 				rwd_stone = book.cell(i, 'D').to_i
 				rwd_gold_coin = book.cell(i, 'E').to_i
 				rwd_gem = book.cell(i, 'F').to_i
-				rwd_item_cat = book.cell(i, 'G').to_i
-				rwd_item_type = book.cell(i, 'H').to_i
-				rwd_item_count = book.cell(i, 'I').to_i
 
-				steps = book.cell(i, 'J').to_i
+				xp_reg = /^\d+(\.\d+)?\+\d+(\.\d+)?%$/ # Pattern: 300.0+25.0%
+				tmp_xp = book.cell(i, 'G').gsub(/\s/, '')
+
+				rwd_xp = 0
+				rwd_ext_xp = 0.0
+
+				if tmp_xp =~ xp_reg
+					tmp_str_arr = tmp_xp.split('+')
+					rwd_xp = tmp_str_arr.first.to_i
+					rwd_ext_xp = tmp_str_arr.second.to_f / 100
+				end
+
+				rwd_item_cat = book.cell(i, 'i').to_i
+				rwd_item_type = book.cell(i, 'j').to_i
+				rwd_item_count = book.cell(i, 'k').to_i
+
+				steps = book.cell(i, 'L').to_i
 
 				reward = Hash.new
-				%w(wood stone gold_coin gem item_cat item_type item_count).each do |name|
+				%w(wood stone gold_coin gem item_cat item_type item_count xp ext_xp).each do |name|
 					code = %Q(reward[name.to_sym] = rwd_#{name} if rwd_#{name} > 0)
 					eval(code)
-					# eval("reward[#{name.to_sym}] = rwd_#{name} if rwd_#{name} > 0")
 				end
 				@@daily_quest_info[:data][number] ||= {:number => number, :level => level, :reward => reward, :total_steps => steps}
 			end
@@ -182,7 +202,7 @@ module DailyQuest
 
 		def daily_quests_full_info
 			self.daily_quest.map do |quest|
-				info = self.class.find_daily_quest_info_by_index(quest[:number])
+				info = self.class.find_daily_quest_info_by_index(quest[:number], self.locale)
 				quest.merge(info)
 			end
 		end

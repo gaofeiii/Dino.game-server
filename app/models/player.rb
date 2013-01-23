@@ -63,8 +63,6 @@ class Player < Ohm::Model
 	collection :strategies, 			Strategy
 	collection :app_store_orders,	AppStoreOrder
 
-	collection :league_invitations, 	LeagueInvitation
-
 	reference :league, League
 	
 	set :friends, 				Player
