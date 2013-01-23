@@ -16,6 +16,8 @@ class League < Ohm::Model
 	collection :league_member_ships, LeagueMemberShip
 	collection :league_applys, LeagueApply
 
+	collection :league_invitations,  LeagueInvitation
+
 	index :name
 
 	def president

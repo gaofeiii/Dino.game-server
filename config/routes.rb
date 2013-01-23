@@ -80,6 +80,9 @@ DinosaurGame::Application.routes.draw do
     post 'handle_apply'   => 'leagues#handle_apply'
     post 'apply_list'     => 'leagues#apply_list'
     post 'my_league_info' => 'leagues#my_league_info'
+    post 'invite'         => 'leagues#invite'
+    post 'accept_invite'  => 'leagues#accept_invite'
+    post 'refuse_invite'  => 'leagues#refuse_invite'
   end  
 
   # 地图
@@ -97,6 +100,9 @@ DinosaurGame::Application.routes.draw do
     post 'friend_list'      => 'friends#friend_list'
     post 'search_friend'    => 'friends#search_friend'
     post 'random_friends'   => 'friends#random_friends'
+    post 'apply_friend'     => 'friends#apply_friend'
+    post 'apply_accept'     => 'friends#apply_accept'
+    post 'apply_refuse'     => 'friends#apply_refuse'
   end
 
   # 顾问

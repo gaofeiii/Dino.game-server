@@ -1,6 +1,6 @@
 class LeaguesController < ApplicationController
 
-	before_filter :validate_player, :only => [:create, :apply, :apply_list, :my_league_info, :member_list]
+	before_filter :validate_player, :only => [:create, :apply, :apply_list, :my_league_info, :member_list, :invite]
 	before_filter :validate_league, :only => [:apply]
 
 	def create
@@ -113,7 +113,7 @@ class LeaguesController < ApplicationController
 			render :json => {
 				:player => {
 					:league => {
-						:apply_list => aplly.league.apply_list
+						:apply_list => apply.league.apply_list
 					}
 				}
 			}
@@ -121,5 +121,35 @@ class LeaguesController < ApplicationController
 			render :json => {:error => "WRONG_ACT_TYPE"}
 		end
 	end
+
+	def invite
+		@league = @player.league
+		if @league.nil?
+			render_error(Error::NORMAL, "You are not in a league") and return
+		end
+
+		@friend = Player[params[:friend_id]]
+		if @friend.nil?
+			render_error(Error::NORMAL, "Invalid friend id") and return
+		end
+
+		mail = Mail.create_league_invite_mail(:receiver_name => @friend.nickname, :player_name => @player.nickname, :leauge_name => @league.name, :league_id => @league.id)
+		
+		if mail
+			LeagueInvitation.create :player_id => @friend.id, :mail_id => mail.id, :leauge_id => @league.id
+			render_success
+		else
+			render_error(Error::NORMAL, "Server busy, try again later")
+		end
+	end
+	
+	def accept_invite
+		
+	end
+	
+	def refuse_invite
+		
+	end
+		
 
 end

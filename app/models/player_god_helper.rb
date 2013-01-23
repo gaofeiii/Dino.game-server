@@ -26,7 +26,6 @@ module PlayerGodHelper
 
 		def trigger_god_effect
 			if Tool.rate(GOD_TRIGGER_CHANCE)
-				puts "Ho Ho Ho!! God blessing..."
 				case curr_god.type
 				when God.hashes[:argriculture]
 					res = ['wood', 'stone'].sample

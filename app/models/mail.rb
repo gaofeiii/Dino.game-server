@@ -7,7 +7,9 @@ class Mail < Ohm::Model
 
 	SYS_TYPE = {
 		:normal => 1,
-		:battle_report => 2
+		:battle_report => 2,
+		:friend_invite => 3,
+		:league_invite => 4
 	}
 
 	include Ohm::DataTypes
@@ -26,6 +28,7 @@ class Mail < Ohm::Model
 	attribute :league_id
 	attribute :is_read, 	Type::Boolean
 	attribute :sys_mail_type, 	Type::Integer
+	attribute :invitation_id
 
 	index :mail_type
 	index :sys_mail_type
@@ -36,6 +39,37 @@ class Mail < Ohm::Model
 
 	def self.types
 		TYPE
+	end
+
+	# args = {:receiver_name => "***"}
+	def self.create_friend_invite_mail(args = {})
+		return if args.blank?
+
+		receiver = Player.find(:nickname => args[:receiver_name]).first
+		return if receiver.nil?
+
+		self.create :mail_type => TYPE[:system],
+								:sys_mail_type => SYS_TYPE[:friend_invite],
+								:sender_name => I18n.t('system', :locale => receiver.locale),
+								:receiver_name => receiver.nickname,
+								:title => I18n.t("mail.friend_invitation.title", :locale => receiver.locale),
+								:content => I18n.t('mail.friend_invitation.content', :locale => receiver.locale, :friend_name => receiver.nickname)
+	end
+
+	# args = {:receiver_name => "***", :player_name => "***", :league_name => "***", :league_id => 1}
+	def self.create_league_invite_mail(args = {})
+		return if args.blank?
+
+		receiver = Player.find(:nickname => args[:receiver_name]).first
+		return if receiver.nil?
+
+		self.create :mail_type => TYPE[:system],
+								:sys_mail_type => SYS_TYPE[:league_invite],
+								:sender_name => I18n.t('system', :locale => receiver.locale),
+								:receiver_name => receiver.nickname,
+								:league_id => args[:league_id],
+								:title => I18n.t("mail.league_invitation.title", :locale => receiver.locale),
+								:content => I18n.t('mail.league_invitation.content', :locale => receiver.locale, :player_name => args[:player_name], :league_name => args[:league_name])
 	end
 
 	def to_hash(*args)
@@ -62,11 +96,11 @@ class Mail < Ohm::Model
 	end
 
 	def sender
-		@sender_player ||= Player.with(:nickname, sender_name)
+		@sender_player ||= Player.find(:nickname => sender_name).first
 	end
 
 	def receiver
-		@receiver_player ||= Player.with(:nickname, receiver_name)
+		@receiver_player ||= Player.find(:nickname => receiver_name).first
 	end
 
 	def league

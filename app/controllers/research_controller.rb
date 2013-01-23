@@ -19,7 +19,7 @@ class ResearchController < ApplicationController
 		
 		if @player.spend!(tech.next_level[:cost])
 			# 判断是否触发神灵效果
-			time_reduce = if @player.curr_god.type == God.hashes[:intelligence]
+			time_reduce = if @player.curr_god && @player.curr_god.type == God.hashes[:intelligence]
 				@player.trigger_god_effect
 			else
 				0

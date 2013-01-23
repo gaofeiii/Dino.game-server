@@ -33,9 +33,7 @@ class WorldMapController < ApplicationController
 
 		ids.each do |i|
 			if country_map[i].to_i > 0
-				puts "--- village index: #{i}"
 				vil = Village.with(:index, i)
-				p "village is: ", vil
 				vx = i % Country::COORD_TRANS_FACTOR
 				vy = i / Country::COORD_TRANS_FACTOR
 

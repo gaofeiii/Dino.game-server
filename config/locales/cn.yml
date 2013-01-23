@@ -73,6 +73,19 @@ cn:
     title: "来自考伊斯的祝福"
     content: "由于你对智慧之神-考伊斯的虔诚供奉，考伊斯决定减少%{time_reduce}的研究时间！"
 
+  mail:
+   friend_invitation:
+    title: "好友申请通知"
+    content: "%{friend_name}希望加你为好友。"
+
+   league_invitation:
+    title: "公会邀请"
+    content: "%{player_name}邀请你加入他的公会：%{league_name}。"
+
+   league_application:
+    title: "公会申请通知"
+    content: "%{player_name}申请加入你的公会：%{league_name}"
+
 
 
 
