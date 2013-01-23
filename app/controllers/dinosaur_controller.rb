@@ -9,13 +9,17 @@ class DinosaurController < ApplicationController
 
 	def hatch_speed_up
 		@player = @dinosaur.player
-		if @dinosaur.hatch_speed_up!
-			if !@player.beginning_guide_finished && @player.guide_cache[:hatch_speed_up].nil?
-				cache = @player.guide_cache.merge(:hatch_speed_up => true)
-				@player.set :guide_cache, cache.to_json
+		if @player.spend!(:gems => @dinosaur.hatch_speed_up_cost_gems)
+			if @dinosaur.hatch_speed_up!
+				if !@player.beginning_guide_finished && @player.guide_cache[:hatch_speed_up].nil?
+					cache = @player.guide_cache.merge(:hatch_speed_up => true)
+					@player.set :guide_cache, cache.to_json
+				end
 			end
+		else
+			render_error(Error::NORMAL, I18n.t('general.not_enough_gems')) and return
 		end
-
+		
 		render :json => {:player => @player.to_hash.merge({:dinosaurs => [@dinosaur.to_hash]})}
 	end
 

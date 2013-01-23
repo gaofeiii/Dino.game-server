@@ -114,6 +114,10 @@ class Dinosaur < Ohm::Model
 		end
 	end
 
+	def hatch_speed_up_cost_gems
+		((finish_time - ::Time.now.to_i) / 300.0).ceil
+	end
+
 	# Update consuming...
 	# Update auto healing...
 	# Check if upgraded...
