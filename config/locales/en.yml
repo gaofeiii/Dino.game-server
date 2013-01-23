@@ -4,16 +4,22 @@
 en:
   hello: "Hello 你妹"
 
-  system: "System"
+  system: "系统"
+  general:
+   server_busy: "网络不给力啊，请稍后再试~~"
+   not_enough_gems: "宝石不足"
   player:
-   whos_village: "%{player_name}'s village"
-   empty_village_name: "Empty Village"
+   whos_village: "%{player_name}的村庄"
+   empty_village_name: "一座空城"
 
   resource:
-   wood: "wood"
-   stone: "stone"
-   gold_coin: "gold coin"
-   gems: "gems"
+   wood: "木材"
+   stone: "石料"
+   gold_coin: "金币"
+   gems: "宝石"
+
+  deals_error:
+   not_enough_gold: "金币不足"
 
   god:
    full_name:
@@ -22,47 +28,64 @@ en:
     war: "战争之神-玛尔斯"
     intelligence: "智慧之神-考伊斯"
    short_name:
-    argriculture: "Ceres"
-    business: "Mercury"
-    war: "Mars"
-    intelligence: "Coeus"
+    argriculture: "赛纳斯"
+    business: "墨丘利"
+    war: "玛尔斯"
+    intelligence: "考伊斯"
 
   building_names:
    residential: "民居"
-   lumber_mill: "Lumber mill"
-   quarry: "Quarry"
+   lumber_mill: "伐木场"
+   quarry: "采石场"
    hunting_field: "狩猎场"
    collecting_farm: "采集场"
    habitat: "孵化园"
    beastiary: "兽栏"
-   market: "Market"
-   workshop: "Workshop"
-   temple: "Temple"
-   warehouse: "Warehouse"
+   market: "市场"
+   workshop: "工坊"
+   temple: "神庙"
+   warehouse: "仓库"
 
   login_error:
-   INVALID_PLAYER_ID: "Invalid player id"
-   INCORRECT_USERNAME_OR_PASSWORD: "Incorrect username or password"
-   EMPTY_USERNAME_OR_PASSWORD: "username or password cannot be empty"
+   INVALID_PLAYER_ID: "错误的用户ID"
+   INCORRECT_USERNAME_OR_PASSWORD: "用户名和密码不匹配"
+   EMPTY_USERNAME_OR_PASSWORD: "用户名或密码不能为空"
+   duplicated_nickname: "昵称已经存在"
 
   building_error:
-   BUILDING_HAS_BEEN_DESTROYED: "This building has already destroyed"
-   CANNOT_DESTROY_RESIDENTIAL: "You must keep one residential"
-   building_exist: "%{building_name} already exists"
+   BUILDING_HAS_BEEN_DESTROYED: "建筑已经被拆毁啦！"
+   CANNOT_DESTROY_RESIDENTIAL: "至少要保留一间民居哦！"
+   building_exist: "%{building_name}已经存在"
 
   league_error:
-   LEAGUE_NOT_FOUND: "League not found"
+   LEAGUE_NOT_FOUND: "公会不存在"
+
+  friends_error:
+   already_add_friend: "已经添加过好友了"
 
   god_effect_mail:
    argriculture:
-    title: "Blessing from Ceres"
+    title: "来自赛纳斯的祝福"
     content: "由于你对农业之神-赛纳斯的虔诚供奉，赛纳斯决定揭露仓库中隐藏的%{res_name}！"
    business:
-    title: "Blessing from Mercury"
+    title: "来自墨丘利的祝福"
     content: "由于你对商业之神-墨丘利的虔诚供奉，墨丘利决定让你这次交易获得双倍的利润！"
    war:
-    title: "Blessing from Mars"
+    title: "来自玛尔斯的祝福"
     content: "由于你对战争之神-玛尔斯的虔诚供奉，玛尔斯决定在战斗中助你一臂之力！"
    intelligence:
-    title: "Blessing from Coeus"
+    title: "来自考伊斯的祝福"
     content: "由于你对智慧之神-考伊斯的虔诚供奉，考伊斯决定减少%{time_reduce}的研究时间！"
+
+  mail:
+   friend_invitation:
+    title: "好友申请通知"
+    content: "%{friend_name}希望加你为好友。"
+
+   league_invitation:
+    title: "来自%{league_name}公会的邀请"
+    content: "%{player_name}邀请你加入他的公会：%{league_name}。"
+
+   league_application:
+    title: "公会申请通知"
+    content: "%{player_name}申请加入你的公会：%{league_name}"
