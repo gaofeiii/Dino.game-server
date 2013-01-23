@@ -77,7 +77,7 @@ class PlayersController < ApplicationController
 		end
 
 		if Player.find(:nickname => nkname).any?
-			render_error(Error::NORMAL, "nickname exists") and return
+			render_error(Error::NORMAL, I18n.t('login_error.duplicated_nickname')) and return
 		end
 
 		result = account_update :account_id => @player.account_id,

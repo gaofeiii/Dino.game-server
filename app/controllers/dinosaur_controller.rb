@@ -1,6 +1,6 @@
 class DinosaurController < ApplicationController
 	before_filter :validate_dinosaur, :only => [:update, :hatch_speed_up, :feed, :heal, :rename, :reborn, :release]
-	before_filter :validate_player, :only => [:food_list, :feed, :heal, :expand_capacity]
+	before_filter :validate_player, :only => [:food_list, :feed, :heal, :expand_capacity, :refresh_all_dinos]
 
 	def update
 		@dinosaur.update_status!
@@ -93,5 +93,9 @@ class DinosaurController < ApplicationController
 		else
 			render_error(Error::NORMAL, "NOT_ENOUGH_GEMS")
 		end
+	end
+
+	def refresh_all_dinos
+		render_success(:player => {:dinosaurs => @player.dinosaurs_info})
 	end
 end

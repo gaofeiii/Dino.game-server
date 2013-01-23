@@ -34,4 +34,13 @@ class ItemsController < ApplicationController
 	def food_list
 		render :json => {:player => {:dinosaurs => @player.dinosaurs_info, :food => @player.food_list}}
 	end
+
+	def scrolls_list
+		render :json => {:player => {:scrolls => @player.items.find(:type => 3)}}
+	end
+
+	def eggs_list
+		render :json => {:player => {:scrolls => @player.items.find(:type => 1)}}
+	end
+
 end

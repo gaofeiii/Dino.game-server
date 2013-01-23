@@ -47,6 +47,7 @@ cn:
    INVALID_PLAYER_ID: "错误的用户ID"
    INCORRECT_USERNAME_OR_PASSWORD: "用户名和密码不匹配"
    EMPTY_USERNAME_OR_PASSWORD: "用户名或密码不能为空"
+   duplicated_nickname: "昵称已经存在"
 
   building_error:
    BUILDING_HAS_BEEN_DESTROYED: "建筑已经被拆毁啦！"

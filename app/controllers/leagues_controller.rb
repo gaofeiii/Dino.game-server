@@ -133,10 +133,10 @@ class LeaguesController < ApplicationController
 			render_error(Error::NORMAL, "Invalid friend id") and return
 		end
 
-		mail = Mail.create_league_invite_mail(:receiver_name => @friend.nickname, :player_name => @player.nickname, :leauge_name => @league.name, :league_id => @league.id)
+		mail = Mail.create_league_invite_mail(:receiver_name => @friend.nickname, :player_name => @player.nickname, :league_name => @league.name, :league_id => @league.id)
 		
 		if mail
-			LeagueInvitation.create :player_id => @friend.id, :mail_id => mail.id, :leauge_id => @league.id
+			LeagueInvitation.create :player_id => @friend.id, :mail_id => mail.id, :league_id => @league.id
 			render_success
 		else
 			render_error(Error::NORMAL, "Server busy, try again later")
@@ -144,7 +144,17 @@ class LeaguesController < ApplicationController
 	end
 	
 	def accept_invite
-		
+		@mail = Mail[params[:mail_id]]
+		if @mail.nil?
+			render_error(Error::NORMAL, "Invalid mail id") and return
+		end
+
+		@league = @mail.league
+		if @league.nil?
+			render_error(Error::NORMAL, "League not exists") and return
+		end
+
+
 	end
 	
 	def refuse_invite

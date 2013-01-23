@@ -57,18 +57,21 @@ DinosaurGame::Application.routes.draw do
     post 'items_list'   => 'items#my_items_list'
     post 'use'          => 'items#use'
     post 'food_list'    => 'items#food_list'
+    post 'scrolls_list' => 'items#scrolls_list'
+    post 'eggs_list'    => 'items#eggs_list'
   end
 
   # 恐龙相关
   scope :path => 'dinosaurs', :as => 'dinosaurs' do
-    post 'update_status'    => 'dinosaur#update'
-    post 'hatch_speed_up'   => 'dinosaur#hatch_speed_up'
-    post 'feed'             => 'dinosaur#feed'
-    post 'heal'             => 'dinosaur#heal'
-    post 'release'          => 'dinosaur#release'
-    post 'rename'           => 'dinosaur#rename'
-    post 'reborn'           => 'dinosaur#reborn'
-    post 'expand_capacity'  => 'dinosaur#expand_capacity'
+    post 'update_status'      => 'dinosaur#update'
+    post 'hatch_speed_up'     => 'dinosaur#hatch_speed_up'
+    post 'feed'               => 'dinosaur#feed'
+    post 'heal'               => 'dinosaur#heal'
+    post 'release'            => 'dinosaur#release'
+    post 'rename'             => 'dinosaur#rename'
+    post 'reborn'             => 'dinosaur#reborn'
+    post 'expand_capacity'    => 'dinosaur#expand_capacity'
+    post 'refresh_all_dinos'  => 'dinosaur#refresh_all_dinos'
   end
   
   # 公会
