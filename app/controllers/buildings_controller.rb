@@ -7,7 +7,7 @@ class BuildingsController < ApplicationController
 	def create
 		b_type = params[:building_type].to_i
 		# check if this kind of building existed
-		if @village.buildings.find(:type => b_type = params[:building_type].to_i).any?
+		if !b_type.in?(Building.resource_building_types) && @village.buildings.find(:type => b_type = params[:building_type].to_i).any?
 			render_error Error::NORMAL, I18n.t("building_error.building_exist", :building_name => Building.get_locale_name_by_type(b_type))
 			return
 		end
