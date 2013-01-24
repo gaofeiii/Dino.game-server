@@ -4,12 +4,15 @@ class DealsController < ApplicationController
 	def list
 		# deals = Deal.all.sort_by(:created_at, :order => 'DESC', :limit => [0, 20])
 		# render_success(:deals => deals)
-		cat = params[:cat]
+		cat = params[:cat].to_i
+		deals = []
 		if cat.zero?
-			cat = 1
-		end
-		page = params[:page].to_i
+			deals = Deal.find(:status => Deal::STATUS[:selling]).sort_by(:created_at, :order => 'DESC', :limit => [0, 20])
+		else
+			page = params[:page].to_i
 		deals = Deal.find(:status => Deal::STATUS[:selling], :category => cat).sort_by(:created_at, :order => 'DESC', :limit => [page, 20])
+		end
+
 		render_success(:deals => deals)
 	end
 

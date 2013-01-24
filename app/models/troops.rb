@@ -102,7 +102,10 @@ class Troops < Ohm::Model
 			if result[:winner] == 'attacker'
 				reward = case target_type
 				when BattleModel::TARGET_TYPE[:village]
-					rwd = {:wood => 1000, :stone => 2000, :gold_coin => 100, :items => []}
+					target_player = target.player
+					rwd = {:wood => target_player.wood/10, :stone => target_player.stone/10, :gold_coin => target_player.gold_coin/10, :items => []}
+					target_player.spend!(rwd) # The target lost resource
+					self.player.receive!(rwd) # The winner receive resource
 					i_cat = Item.categories.sample
 					i_type = Item.types(i_cat).sample
 					i_count = i_cat == 1 ? 1 : 100

@@ -9,6 +9,9 @@ class Item < Ohm::Model
 	attribute :item_type, 			Type::Integer
 	attribute :can_sell,				Type::Boolean
 	attribute :quality,					Type::Integer
+
+	index :item_category
+
 	reference :player, :Player
 
 	class << self

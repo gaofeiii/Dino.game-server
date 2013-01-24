@@ -11,6 +11,8 @@ class Deal < Ohm::Model
 		:closed => 2
 	}
 
+	ORIGIN_TAX = 0.1
+
 	# 可出售物品的类型
 	CATEGORIES = {
 		:res 	=> 1,

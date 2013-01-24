@@ -68,7 +68,7 @@ class Mail < Ohm::Model
 								:sender_name => I18n.t('system', :locale => receiver.locale),
 								:receiver_name => receiver.nickname,
 								:league_id => args[:league_id],
-								:title => I18n.t("mail.league_invitation.title", :locale => receiver.locale),
+								:title => I18n.t("mail.league_invitation.title", :league_name => args[:league_name], :locale => receiver.locale),
 								:content => I18n.t('mail.league_invitation.content', :locale => receiver.locale, :player_name => args[:player_name], :league_name => args[:league_name])
 	end
 

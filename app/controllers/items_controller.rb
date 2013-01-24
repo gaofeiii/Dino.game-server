@@ -28,19 +28,19 @@ class ItemsController < ApplicationController
 			render_error(Error::NORMAL, "ITEMS_NOT_DEFINED") and return
 		end
 		
-		render :json => {:player => @player.to_hash(:dinosaurs, :items)}
+		render_success :player => @player.to_hash(:dinosaurs, :items)
 	end
 
 	def food_list
-		render :json => {:player => {:dinosaurs => @player.dinosaurs_info, :food => @player.food_list}}
+		render_success :player => {:dinosaurs => @player.dinosaurs_info, :food => @player.food_list}
 	end
 
 	def scrolls_list
-		render :json => {:player => {:scrolls => @player.items.find(:type => 3)}}
+		render_success :player => {:scrolls => @player.items.find(:item_category => 3)}
 	end
 
 	def eggs_list
-		render :json => {:player => {:scrolls => @player.items.find(:type => 1)}}
+		render_success :player => {:items => @player.items.find(:item_category => 1)}
 	end
 
 end

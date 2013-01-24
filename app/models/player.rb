@@ -114,7 +114,8 @@ class Player < Ohm::Model
 			:wood => wood,
 			:stone => stone,
 			:player_type => player_type,
-			:warehouse_size => tech_warehouse_size
+			:warehouse_size => tech_warehouse_size,
+			:tax_rate => Deal::ORIGIN_TAX
 		}
 		opts = if args.include?(:all)
 			args | [:god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
