@@ -102,7 +102,24 @@ module ShoppingConst
 					:gems => gem_price,
 					:count => count
 				}
+			end
 
+			book.default_sheet = '其他'
+			2.upto(book.last_row) do |i|
+				name = book.cell(i, 'b')
+				sid = book.cell(i, 'c').to_i
+				count = book.cell(i, 'd').to_i
+				price = book.cell(i, 'e').to_i
+				item_cat = book.cell(i, 'f').to_i
+				item_type = book.cell(i, 'g').to_i
+
+				@@all_goods[sid] = {
+					:goods_type => GOODS_TYPE[:item],
+					:item_cat => item_cat,
+					:item_type => item_type,
+					:gems => price,
+					:count => count
+				}
 			end
 			@@all_goods		
 		end # End of reload!

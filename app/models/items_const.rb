@@ -25,14 +25,6 @@ module ItemsConst
 			CATEGORIES
 		end
 
-		def types(cat)
-			if cat.nil?
-				const
-			else
-				const[cat]
-			end
-		end
-
 		def load_const!
 			@@const.clear
 
@@ -86,7 +78,7 @@ module ItemsConst
 	module InstanceMethods
 		
 		def info
-			self.class.const[item_category][item_type]
+			self.class.const[category][type]
 		end
 	end
 	

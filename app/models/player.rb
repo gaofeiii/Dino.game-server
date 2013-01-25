@@ -324,6 +324,12 @@ class Player < Ohm::Model
   	(level / 10.0).ceil
   end
 
+  def special_items
+  	(items.find(:item_category => 4).ids + items.find(:item_category => 5).ids + items.find(:item_category => 6).ids).map do |item_id|
+  		Item[item_id]
+  	end
+  end
+
 	# Callbacks
 	protected
 

@@ -3,8 +3,6 @@ class Item < Ohm::Model
 	include Ohm::Callbacks
 	include OhmExtension
 
-	CATEGORY = ITEM_CATEGORY
-
 	attribute :item_category, 	Type::Integer
 	attribute :item_type, 			Type::Integer
 	attribute :can_sell,				Type::Boolean
@@ -14,36 +12,15 @@ class Item < Ohm::Model
 
 	reference :player, :Player
 
-	class << self
-
-		def const
-			ITEMS
-		end
-
-		def categories
-			ITEM_CATEGORY.values
-		end
-
-		def types(cat = 0)
-			if cat == 0
-				return []
-			else
-				ITEMS[cat].keys
-			end
-		end
-	end
-
-	def info
-		ITEMS[item_category][item_type]
-	end
+	include ItemsConst
 
 	def use!(options = {})
 		item_info = info
 		obj = case item_info[:type]
-		when ITEM_CATEGORY[:egg]
+		when Item.categories[:egg]
 			dino = Dinosaur.const[item_info[:type]]
 			building_id = options[:building_id]
-			dino = Dinosaur.new		:type 				=> item_info[:property][:dinosaur_type],
+			dino = Dinosaur.new		:type 				=> item_info[:type],
 														:status 			=> Dinosaur::STATUS[:egg],
 														:event_type 	=> Dinosaur::EVENTS[:hatching],
 														:start_time 	=> ::Time.now.to_i,
@@ -53,18 +30,14 @@ class Item < Ohm::Model
 			if dino.save
 				self.delete
 			end
-		when ITEM_CATEGORY[:scroll]
-			if self.delete
-				return true
-			else
-				return false
-			end
+		when Item.categories[:scroll]
+			
 		end
 		return obj
 	end
 
 	def is_egg?
-		item_category == ITEM_CATEGORY[:egg]
+		item_category == Item.categories[:egg]
 	end
 
 	def to_hash

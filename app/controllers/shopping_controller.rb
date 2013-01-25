@@ -42,7 +42,7 @@ class ShoppingController < ApplicationController
 				tmp = goods.slice(:stone, :wood, :gold_coin)
 				@player.receive!(tmp)
 			when Shopping::GOODS_TYPE[:item]
-				if goods[:item_category] == ITEM_CATEGORY[:specialty]
+				if goods[:item_category] == Item.categories[:food]
 					food = @player.find_food_by_type(goods[:item_type])
 					if food.nil?
 						tmp = goods.slice(:item_category, :item_type).merge(:player_id => @player.id)

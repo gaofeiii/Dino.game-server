@@ -119,7 +119,7 @@ class Troops < Ohm::Model
 						if Tool.rate(0.25)
 							reward = {
 								:items => [{
-									:item_cat => Item::CATEGORY[:specialty], 
+									:item_cat => Item.categories[:food], 
 									:item_type => Specialty.types.sample, 
 									:item_count => target.reward[:food_count]
 								}]
@@ -132,7 +132,7 @@ class Troops < Ohm::Model
 						elsif Tool.rate(0.125)
 							reward = {
 								:items => [{
-									:item_cat => Item::CATEGORY[:egg], 
+									:item_cat => Item.categories[:egg], 
 									:item_type => target.reward[:egg_type].sample, 
 									:item_count => 1
 								}]
@@ -140,7 +140,7 @@ class Troops < Ohm::Model
 						elsif Tool.rate(0.125)
 							reward = {
 								:items => [{
-									:item_cat => Item::CATEGORY[:scroll],
+									:item_cat => Item.categories[:scroll],
 									:item_type => target.reward[:scroll_type].sample,
 									:item_count => 1
 								}]

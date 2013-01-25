@@ -59,6 +59,8 @@ DinosaurGame::Application.routes.draw do
     post 'food_list'    => 'items#food_list'
     post 'scrolls_list' => 'items#scrolls_list'
     post 'eggs_list'    => 'items#eggs_list'
+    post 'lucky_reward' => 'items#lucky_reward'
+    post 'special_items_list' => 'items#special_items_list'
   end
 
   # 恐龙相关
@@ -144,7 +146,7 @@ DinosaurGame::Application.routes.draw do
     post 'buy'     => 'deals#buy'
     post 'sell'    => 'deals#sell'
     post 'my_selling_list' => 'deals#my_selling_list'
-    post 'cancel'  => 'deals#cancel_deal'
+    post 'cancel_deal'  => 'deals#cancel_deal'
     post 'my_items_list' => 'deals#my_items_list'
   end
 

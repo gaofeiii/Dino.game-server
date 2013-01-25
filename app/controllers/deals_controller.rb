@@ -111,15 +111,20 @@ class DealsController < ApplicationController
 			if !egg.is_egg?
 				render_error(Error::NORMAL, "It is not a egg") and return
 			end
+			if egg.player_id.blank?
+				render_error(Error::NORMAL, "Already sold") and return
+			end
 
-			Deal.create :status => Deal::STATUS[:selling],
-									:category => goods_cat,
-									:type => egg.item_type,
-									:count => 1,
-									:price => price,
-									:gid => gid,
-									:end_time => Time.now.to_i + 3.days,
-									:seller_id => @player.id
+			if Deal.create  :status => Deal::STATUS[:selling],
+											:category => goods_cat,
+											:type => egg.item_type,
+											:count => 1,
+											:price => price,
+											:gid => gid,
+											:end_time => Time.now.to_i + 3.days,
+											:seller_id => @player.id
+				egg.update :player_id => nil
+			end
 		when Deal::CATEGORIES[:food]
 			type = params[:type].to_i
 			count = params[:count].to_i
