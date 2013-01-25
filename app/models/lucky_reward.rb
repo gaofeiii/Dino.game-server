@@ -30,19 +30,16 @@ class LuckyReward
 				when 'wood'
 					rwd = {
 						:category => 1,
-						:res_type => 1,
 						:num => num.to_f
 					}
 				when 'stone'
 					rwd = {
 						:category => 2,
-						:res_type => 2,
 						:num => num.to_f
 					}
 				when 'gold'
 					rwd = {
 						:category => 3,
-						:res_type => 3,
 						:num => num.to_f
 					}
 				when 'food'

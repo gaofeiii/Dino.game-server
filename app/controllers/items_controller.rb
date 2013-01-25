@@ -24,8 +24,9 @@ class ItemsController < ApplicationController
 				@player.daily_quest_cache[:hatch_dinosaurs] += 1
 				@player.set :daily_quest_cache, @player.daily_quest_cache.to_json
 			end
-		elsif @item
-			
+		elsif @item.item_category == Item.categories[:lottery]
+			rwd = LuckyReward.get_one
+			render_success(:reward => rwd, :category => @item.item_category) and return
 		else
 			render_error(Error::NORMAL, "ITEMS_NOT_DEFINED") and return
 		end
