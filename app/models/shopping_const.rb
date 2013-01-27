@@ -2,8 +2,9 @@
 
 module ShoppingConst
 	GOODS_TYPE = {
-		:res => 1,
-		:item => 2
+		:res 	=> 1,
+		:item => 2,
+		:egg 	=> 3
 	}
 	module ClassMethods
 		
@@ -32,7 +33,11 @@ module ShoppingConst
 				:resources => [],
 				:eggs => [],
 				:scrolls => [],
-				:food => []
+				:food => [],
+				:vip => [],
+				:protection => [],
+				:lottery => []
+
 			}
 			book = Excelx.new("#{Rails.root}/const/shopping_list.xlsx")
 
@@ -46,7 +51,7 @@ module ShoppingConst
 				cny_price = book.cell(i, 'H').to_f
 
 				@@all_goods[:gems] << {
-					:sid => sid, 
+					:sid => sid,
 					:count => count,
 					:product_id => product_id,
 					:reference_name => reference_name,
@@ -58,21 +63,22 @@ module ShoppingConst
 			2.upto(book.last_row) do |i|
 				name = book.cell(i, 'B')
 				sid = book.cell(i, 'C').to_i
-				count = book.cell(i, 'D').to_i
+				count = book.cell(i, 'D').to_f
+				count_per_gem = book.cell(i, 'g').to_i
 				gem_price = book.cell(i, 'E').to_i
 				res_type = book.cell(i, 'F').to_i
 				sid = book.cell(i, 'C').to_i
 
-				record = {:sid => sid, :count => count, :type => res_type, :gem => gem_price}
+				record = {:sid => sid, :count => count, :type => res_type, :gem => gem_price, :count_per_gem => count_per_gem}
 				if name == "金币"
 					@@all_goods[:gold] << record
-					@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :gold_coin => count, :gems => gem_price}
+					@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :res_type => :gold,:count => count, :gems => gem_price, :count_per_gem => count_per_gem}
 				else
 					@@all_goods[:resources] << record
 					if name == "石料"
-						@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :stone => count, :gems => gem_price}
-					else
-						@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :wood => count, :gems => gem_price}
+						@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :res_type => :stone,:count => count, :gems => gem_price, :count_per_gem => count_per_gem}
+					else # if name == "木材"
+						@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :res_type => :wood,:count => count, :gems => gem_price, :count_per_gem => count_per_gem}
 					end
 				end
 			end
@@ -87,16 +93,19 @@ module ShoppingConst
 				item_type = book.cell(i, 'G').to_i
 
 				record = {:sid => sid, :count => count, :gem => gem_price, :cat => item_cat, :type => item_type}
-				case name
+				goods_type = case name
 				when "恐龙蛋"
 					@@all_goods[:eggs] << record
+					GOODS_TYPE[:egg]
 				when "卷轴"
 					@@all_goods[:scrolls] << record
+					GOODS_TYPE[:item]
 				when "食物"
 					@@all_goods[:food] << record
+					GOODS_TYPE[:item]
 				end
 				@@all_goods_hash[sid] = {
-					:goods_type => GOODS_TYPE[:item], 
+					:goods_type => goods_type,
 					:item_type => item_type, 
 					:item_category => item_cat,
 					:gems => gem_price,
@@ -107,15 +116,31 @@ module ShoppingConst
 			book.default_sheet = '其他'
 			2.upto(book.last_row) do |i|
 				name = book.cell(i, 'b')
+				key_name = case name
+				when 'VIP'
+					:vip
+				when '保护'
+					:protection
+				when /奖券/
+					:lottery
+				end
 				sid = book.cell(i, 'c').to_i
 				count = book.cell(i, 'd').to_i
 				price = book.cell(i, 'e').to_i
 				item_cat = book.cell(i, 'f').to_i
 				item_type = book.cell(i, 'g').to_i
 
-				@@all_goods[sid] = {
+				@@all_goods[key_name] << {
+					:sid => sid,
 					:goods_type => GOODS_TYPE[:item],
-					:item_cat => item_cat,
+					:item_category => item_cat,
+					:item_type => item_type,
+					:gems => price,
+					:count => count
+				}
+				@@all_goods_hash[sid] = {
+					:goods_type => GOODS_TYPE[:item],
+					:item_category => item_cat,
 					:item_type => item_type,
 					:gems => price,
 					:count => count

@@ -166,7 +166,6 @@ DinosaurGame::Application.routes.draw do
 
   # 商城
   scope :path => 'shopping', :as => 'shopping' do
-    post 'buy_resource'     => 'shopping#buy_resource'
     post 'buy_gems'         => 'shopping#buy_gems'
     post 'buy'              => 'shopping#buy'
   end

@@ -214,10 +214,10 @@ class Dinosaur < Ohm::Model
 	end
 
 	def eat!(food)
-		self.emotion = if is_my_favorite_food(food.type)
-			EMOTIONS[:happy]
+		if is_my_favorite_food(food.type)
+			self.emotion = EMOTIONS[:happy]
 		else
-			EMOTIONS[:normal]
+			self.emotion = EMOTIONS[:normal]
 		end
 		curr_feed_point = feed_point + food.feed_point
 		curr_feed_point = curr_feed_point > hunger_time ? hunger_time : curr_feed_point

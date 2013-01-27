@@ -7,6 +7,7 @@ class ItemsController < ApplicationController
 	end
 
 	def use
+		# ==== If using egg ====
 		if @item.item_category == Item.categories[:egg]
 			if @player.dinosaurs.size >= @player.dinosaurs_capacity
 				render_error(Error::NORMAL, "NOT_ENOUGH_SPACE") and return
@@ -24,8 +25,9 @@ class ItemsController < ApplicationController
 				@player.daily_quest_cache[:hatch_dinosaurs] += 1
 				@player.set :daily_quest_cache, @player.daily_quest_cache.to_json
 			end
+		# ==== If using lottery ====
 		elsif @item.item_category == Item.categories[:lottery]
-			rwd = LuckyReward.get_one
+			rwd = LuckyReward.rand_one(@item.item_type)
 			render_success(:reward => rwd, :category => @item.item_category) and return
 		else
 			render_error(Error::NORMAL, "ITEMS_NOT_DEFINED") and return
@@ -48,15 +50,6 @@ class ItemsController < ApplicationController
 
 	def special_items_list
 		render_success :player => {:items => @player.special_items}
-	end
-
-	def lucky_reward
-		if @item.use
-			rwd = LuckyReward.lucky_reward.get_one
-			render_success :reward => rwd
-		else
-			render_error(Error::NORMAL, "Item has already used")
-		end
 	end
 
 end

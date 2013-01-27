@@ -1,22 +1,41 @@
 # encoding: utf-8
 class LuckyReward
 	MAX_RATE = 1000001
-	@@const = Hash.new
+	@@const = {
+		1 => {},
+		2 => {},
+		3 => {}
+	}
 
 	# Class methods:
 	class << self
 
-		def const
-			if @@const.blank?
+		def const(type)
+			if @@const[type].blank?
 				load_const!
 			end
-			@@const
+			@@const[type]
 		end
 
 		def load_const!
+			@@const = {
+				1 => {},
+				2 => {},
+				3 => {}
+			}
 			book = Excelx.new "#{Rails.root}/const/抽奖.xlsx"
 
-			book.default_sheet = 'data'
+			@@const[1] = read_sheet(book, '奖券1')
+			@@const[2] = read_sheet(book, '奖券2')
+			@@const[3] = read_sheet(book, '奖券3')
+
+			@@const
+		end
+
+		def read_sheet(book, sheet_name)
+			const_value = {}
+			book.default_sheet = sheet_name
+
 			2.upto(book.last_row) do |i|
 				cat = book.cell(i, 'c')
 				type = book.cell(i, 'd').to_i
@@ -63,15 +82,16 @@ class LuckyReward
 				end
 
 				if !rwd.blank?
-					@@const[min_odds...max_odds] = rwd
+					const_value[min_odds...max_odds] = rwd
 				end
 			end
-		end
+			const_value
+		end # End of defining method: load_const!
 
-		def get_one
+		def rand_one(item_type)
 			num = rand(1..MAX_RATE)
 
-			const.each do |key, val|
+			const(item_type.to_i).each do |key, val|
 				if num.in?(key)
 					return val
 				end

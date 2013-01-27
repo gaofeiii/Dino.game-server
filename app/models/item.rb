@@ -16,7 +16,7 @@ class Item < Ohm::Model
 
 	def use!(options = {})
 		item_info = info
-		obj = case item_info[:type]
+		obj = case item_category
 		when Item.categories[:egg]
 			dino = Dinosaur.const[item_info[:type]]
 			building_id = options[:building_id]
@@ -25,11 +25,14 @@ class Item < Ohm::Model
 														:event_type 	=> Dinosaur::EVENTS[:hatching],
 														:start_time 	=> ::Time.now.to_i,
 														:finish_time 	=> ::Time.now.to_i + dino[:property][:hatching_time],
-														:player_id 		=> player_id
+														:player_id 		=> player_id,
+														:quality 			=> self.quality
 			dino.building_id = building_id if building_id
+			p dino
 			if dino.save
 				self.delete
 			end
+			dino
 		when Item.categories[:scroll]
 			
 		end

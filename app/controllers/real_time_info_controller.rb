@@ -18,7 +18,8 @@ class RealTimeInfoController < ApplicationController
 					:wood => 1000,
 					:stone => 1000,
 					:gold => 1000
-				}
+				},
+				:lottery_reward => LuckyReward.const(1).values
 			}
 		}
 			

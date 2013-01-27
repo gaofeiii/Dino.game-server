@@ -1,10 +1,6 @@
 class ShoppingController < ApplicationController
 	before_filter :validate_player, :only => [:buy, :buy_gems]
 
-	def buy_resource
-		
-	end
-
 	def buy_gems
 		order = AppStoreOrder.find(:transaction_id => params[:transaction_id]).first
 		if order.nil?
@@ -36,12 +32,25 @@ class ShoppingController < ApplicationController
 			render_error(Error::NORMAL, "Invalid serial id") and return
 		end
 
-		if @player.spend!(goods.slice(:gems))
-			case goods[:goods_type]
-			when Shopping::GOODS_TYPE[:res]
-				tmp = goods.slice(:stone, :wood, :gold_coin)
-				@player.receive!(tmp)
-			when Shopping::GOODS_TYPE[:item]
+		puts "--- sid: #{sid} ---"
+
+		case goods[:goods_type]
+		# Buy resources...
+		when Shopping::GOODS_TYPE[:res]
+			res_type = goods[:res_type]
+			res_count = (goods[:count] * @player.tech_warehouse_size).to_i
+			gems_cost = (goods[:count] / goods[:count_per_gem]).ceil
+
+			if @player.spend!(:gems => gems_cost)
+				@player.receive!(res_type => res_count)
+			else
+				render_error(Error::NORMAL, I18n.t("general.not_enough_gems")) and return
+			end
+
+		# Buy items...
+		when Shopping::GOODS_TYPE[:item]
+			# --- Food ---
+			if @player.spend!(goods.slice(:gems))
 				if goods[:item_category] == Item.categories[:food]
 					food = @player.find_food_by_type(goods[:item_type])
 					if food.nil?
@@ -51,15 +60,26 @@ class ShoppingController < ApplicationController
 						food.increase(:count, goods[:count])
 					end
 				else
-					tmp = goods.slice(:item_category, :item_type).merge(:player_id => @player.id)
-					Item.create(tmp)
+					itm = goods.slice(:item_category, :item_type).merge(:player_id => @player.id)
+					Item.create(itm)
 				end
-				
+			else
+				render_error(Error::NORMAL, I18n.t("general.not_enough_gems")) and return
 			end
-			render_success :player => @player.to_hash(:resources, :items, :specialties)
-		else
-			render_error Error::NORMAL, "Not enough gems"
+
+		# Buy eggs...
+		when Shopping::GOODS_TYPE[:egg]
+			if @player.spend!(goods.slice(:gems))
+				egg = Shopping.buy_random_egg(:item_type => goods[:item_type], :player_id => @player.id)
+				if egg
+					render_success(:player => {:gems => @player.gems, :items => @player.items.find(:item_category => Item.categories[:egg])}) and return
+				end
+			else
+				render_error(Error::NORMAL, I18n.t("general.not_enough_gems")) and return
+			end
 		end
+
+		render_success :player => @player.to_hash(:resources, :items, :specialties)
 	end
 
 end
