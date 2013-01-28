@@ -55,9 +55,18 @@ class Deal < Ohm::Model
 	index :category
 	index :status
 	index :type
+	index :end_time
 
 	def self.types
 		CATEGORIES		
+	end
+
+	def self.clean_up!
+		self.all.map do |deal|
+			if deal && deal.expired?
+				deal.cancel!
+			end
+		end
 	end
 
 	def to_hash
@@ -102,6 +111,10 @@ class Deal < Ohm::Model
 				self.delete
 			end
 		end
+	end
+
+	def expired?
+		::Time.now.to_i >= end_time
 	end
 
 end

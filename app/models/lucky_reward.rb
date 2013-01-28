@@ -7,8 +7,20 @@ class LuckyReward
 		3 => {}
 	}
 
+	CATEGORIES = {
+		:wood => 1,
+		:stone => 2,
+		:gold => 3,
+		:food => 4,
+		:egg => 5,
+		:scroll => 6
+	}
+
 	# Class methods:
 	class << self
+		def categories
+			CATEGORIES
+		end
 
 		def const(type)
 			if @@const[type].blank?
@@ -44,22 +56,24 @@ class LuckyReward
 				min_odds = book.cell(i, 'i').to_i
 				max_odds = book.cell(i, 'j').to_i
 
+				rwd_cat = book.cell(i, 'K').to_i
+
 				rwd = {}
 				case cat
 				when 'wood'
 					rwd = {
 						:category => 1,
-						:num => num.to_f
+						:count => num.to_f
 					}
 				when 'stone'
 					rwd = {
 						:category => 2,
-						:num => num.to_f
+						:count => num.to_f
 					}
 				when 'gold'
 					rwd = {
 						:category => 3,
-						:num => num.to_f
+						:count => num.to_f
 					}
 				when 'food'
 					rwd = {
@@ -82,6 +96,7 @@ class LuckyReward
 				end
 
 				if !rwd.blank?
+					rwd[:reward_cat] = rwd_cat
 					const_value[min_odds...max_odds] = rwd
 				end
 			end

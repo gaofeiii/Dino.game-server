@@ -61,7 +61,9 @@ cn:
    LEAGUE_NOT_FOUND: "公会不存在"
 
   friends_error:
-   already_add_friend: "已经添加过好友了"
+   already_add_friend: "%{friend_name}已经是你的好友了！"
+   add_friend_failed: "添加好友失败。"
+   invitation_expired: "好友邀请已经过期。"
 
   god_effect_mail:
    argriculture:

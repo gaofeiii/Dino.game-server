@@ -109,7 +109,9 @@ class Player < Ohm::Model
 			:avatar_id => avatar_id,
 			:player_power => battle_power,
 			:is_set_nickname => is_set_nickname,
-			:dinosaurs_capacity => dinosaurs_capacity,
+			:dino_origin_capacity => tech_dinosaurs_size,
+			:dino_ext_capacity => dinosaurs_capacity,
+			:dinosaurs_capacity => dinosaurs_capacity + tech_dinosaurs_size,
 			:dinosaurs_count => dinosaurs.size,
 			:wood => wood,
 			:stone => stone,
@@ -283,7 +285,16 @@ class Player < Ohm::Model
   end
 
   def next_dino_space_gems
-  	dinosaurs_capacity - 4
+  	case dinosaurs_capacity
+  	when 0
+  		1
+  	when 1..4
+  		dinosaurs_capacity * 5
+  	when 5..9
+  		(dinosaurs_capacity - 4) * 25
+  	else
+  		150
+  	end
   end
 
   def released_dinosaurs_ids
@@ -336,13 +347,12 @@ class Player < Ohm::Model
 	def before_create
 		return if player_type == TYPE[:npc]
 		self.gold_coin = 1000
-		self.gems = 100
+		self.gems = 9999
 		self.wood = 5000
 		self.stone = 5000
 		self.level = 1 if (level.nil? or level == 0)
 		self.avatar_id = 1 if avatar_id.zero?
 		self.country_id = Country.first.id
-		self.dinosaurs_capacity = 5 if dinosaurs_capacity.zero?
 	end
 
 	def after_create
@@ -364,13 +374,6 @@ class Player < Ohm::Model
 			self.send(coll).map(&:delete)
 		end
 	end
-
-	def before_save
-		# Just for test
-		self.dinosaurs_capacity = 5 if dinosaurs_capacity.zero?
-	end
-
-
 
 	private
 

@@ -9,7 +9,7 @@ class ItemsController < ApplicationController
 	def use
 		# ==== If using egg ====
 		if @item.item_category == Item.categories[:egg]
-			if @player.dinosaurs.size >= @player.dinosaurs_capacity
+			if @player.dinosaurs.size >= @player.dinosaurs_capacity + @player.tech_dinosaurs_size
 				render_error(Error::NORMAL, "NOT_ENOUGH_SPACE") and return
 			end
 

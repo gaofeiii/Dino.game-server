@@ -74,17 +74,32 @@ class FriendsController < ApplicationController
 	end
 
 	def apply_friend
-		@friend.friend_invites.add(@player)
-		Mail.create_friend_invite_mail(:receiver_name => @player.nickname)
+
+		Mail.create_friend_invite_mail 	:receiver_id => @friend.id, 
+																		:player_id => @player.id,
+																		:receiver_name => @friend.nickname,
+																		:player_name => @player.nickname,
+																		:locale => @friend.locale
 		render_success
 	end
 
 	def apply_accept
-		if @player.friend_invites.delete(@friend)
-			@player.friends.add(@friend)
-			@friend.friends.add(@player)
+		mail = Mail.new(:id => params[:mail_id]).gets(:cached_data)
+		if mail
+			@friend = Player.new(:id => mail.cached_data[:player_id]).gets(:nickname)
+			if @player.friends.include?(@friend)
+				render_error(Error::NORMAL, I18n.t('friends_error.already_add_friend', :friend_name => @friend.nickname)) and return
+			end
+
+			if @player.friends.add(@friend) && @friend.friends.add(@player)			
+				render_success
+			else
+				render_error(Error::NORMAL, I18n.t('friends_error.add_friend_failed')) and return
+			end
+		else
+			render_error(Error::NORMAL, I18n.t('friends_error.invitation_expired'))
 		end
-		render_success
+		
 	end
 
 	def apply_refuse
