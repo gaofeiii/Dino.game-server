@@ -5,9 +5,14 @@ cn:
   hello: "Hello 你妹"
 
   system: "系统"
+
   general:
    server_busy: "网络不给力啊，请稍后再试~~"
    not_enough_gems: "宝石不足"
+   invitation_expired: "邀请函已经过期。"
+   join_league_success: "成功加入公会！"
+   add_friend_success: "添加好友成功！"
+
   player:
    whos_village: "%{player_name}的村庄"
    empty_village_name: "一座空城"
@@ -58,7 +63,9 @@ cn:
    building_exist: "%{building_name}已经存在"
 
   league_error:
-   LEAGUE_NOT_FOUND: "公会不存在"
+   league_not_found: "公会不存在"
+   already_in_a_league: "你已经加入了公会。"
+   already_in_this_league: "你已经加入公会：[%{league_name}]"
 
   friends_error:
    already_add_friend: "%{friend_name}已经是你的好友了！"

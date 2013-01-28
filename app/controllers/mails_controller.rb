@@ -1,6 +1,6 @@
 class MailsController < ApplicationController
 
-	before_filter :validate_player, :only => [:receive_mails, :check_new_mails]
+	before_filter :validate_player, :only => [:receive_mails, :check_new_mails, :on_mail_ok]
 
 	def send_mail
 
@@ -94,6 +94,52 @@ class MailsController < ApplicationController
 			m.update :is_read => true if m
 		end
 		render_success
+	end
+
+	def on_mail_ok
+		mail = Mail.new(:id => params[:mail_id]).gets(:cached_data, :sys_mail_type)
+
+		if mail.nil?
+			render_error(Error::NORMAL, I18n.t('general.invitation_expired')) and return
+		end
+
+		case mail.sys_mail_type
+		# 好友邀请
+		when Mail::SYS_TYPE[:friend_invite]
+			@friend = Player.new(:id => mail.cached_data[:player_id]).gets(:nickname)
+			if @player.friends.include?(@friend)
+				render_error(Error::NORMAL, I18n.t('friends_error.already_add_friend', :friend_name => @friend.nickname)) and return
+			end
+
+			if @player.friends.add(@friend) && @friend.friends.add(@player)			
+				render_success(I18n.t('general.add_friend_success'))
+			else
+				render_error(Error::NORMAL, I18n.t('friends_error.add_friend_failed'))
+			end
+		# 公会邀请
+		when Mail::SYS_TYPE[:league_invite]
+			if !@player.league_id.nil?
+				render_error(Error::NORMAL, I18n.t('league_error.already_in_a_league')) and return
+			end
+
+			league = League.new(:id => mail.cached_data[:league_id]).gets(:name)
+			if league.nil?
+				render_error(Error::NORMAL, I18n.t('league_error.league_not_found')) and return
+			end
+
+			if league.members.include?(@player)
+				render_error(Error::NORMAL, I18n.t('league_error.already_in_this_league', :league_name => league.name)) and return
+			end
+
+			if league.add_new_member(@player)
+				render_success(:player => @player.to_hash, :result => I18n.t('general.join_league_success'))
+			else
+				render_error(Error::NORMAL, I18n.t('general.server_busy'))
+			end
+		else
+			render_error(Error::NORMAL, I18n.t('general.server_busy'))
+		end
+
 	end
 end
 

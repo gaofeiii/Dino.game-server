@@ -71,8 +71,14 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  def render_success(data = {})
-    render :json => {:message => Error.success_message}.merge!(data)
+  def render_success(data = nil)
+    if data.is_a?(Hash)
+      render :json => {:message => Error.success_message}.merge!(data)
+    elsif data.is_a?(String)
+      render :json => {:message => Error.success_message, :result => data}
+    else
+      render :json => {:message => Error.success_message}
+    end
   end
 
   # === Validation methods ===

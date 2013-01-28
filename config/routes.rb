@@ -126,6 +126,7 @@ DinosaurGame::Application.routes.draw do
     post 'mark_as_read' => 'mails#mark_as_read'
     post 'read_mail'    => 'mails#read_mail'
     post 'delete_mail'  => 'mails#delete_mail'
+    post 'on_mail_ok'   => 'mails#on_mail_ok'
   end
 
   # 神灵
