@@ -171,6 +171,12 @@ class StrategyController < ApplicationController
 	end
 
 	def set_match_strategy
-
+		dino_ids = params[:dinosaurs]
+		@player.honour_strategy = dino_ids
+		if @player.save
+			render_success
+		else
+			render_error(Error::NORMAL, "Known Error")
+		end
 	end
 end
