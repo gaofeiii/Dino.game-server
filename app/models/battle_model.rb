@@ -414,20 +414,19 @@ module BattleArmyModule
 
 	def write_hp!(is_win, target)
 		return false if self.first.is_a?(Monster)
-		p self
+
 		earn_xp_fighters_count = self.select{ |fighter| fighter.curr_hp > 0 }.size
 		every_exp = 0
 		if is_win
 			total_exp = target[:army].sum{ |enemy| enemy.xp.to_i }
 			every_exp = total_exp / earn_xp_fighters_count
 		end
-		p "=== every_exp: #{every_exp}"
+
 		self.each do |fighter|
 			if fighter.is_a?(Monster)
 				return false
 			end
 			exp = fighter.curr_hp > 0 ? fighter.experience + every_exp : fighter.experience
-			puts "-- fighter: #{fighter.current_hp} => #{fighter.curr_hp}"
 			fighter.sets 	:current_hp => fighter.curr_hp,
 										:updated_hp_time => Time.now.to_i,
 										:experience => exp

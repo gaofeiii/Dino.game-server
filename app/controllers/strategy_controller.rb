@@ -142,11 +142,32 @@ class StrategyController < ApplicationController
 	end
 
 	def match_players
-		
+		players = Player.find(:player_type => 0).union(:player_type => 1).ids.sample(5).map do |player_id|
+			player = Player.new(:id => player_id).gets(:nickname, :level, :avatar_id)
+			{
+				:id => player.id,
+				:nickname => player.nickname,
+				:level => player.level,
+				:power_point => rand(1..5000),
+				:rank => rand(1..Player.count),
+				:avatar_id => player.avatar_id
+			}
+		end
+		render_success(:players => players)
 	end
 
 	def match_attack
+		@enemy = Player[enemy_id]
 
+		if @enemy.nil?
+			render_error(Error::NORMAL, "Invalid enemy id") and return
+		end
+
+		player_dinos = @player.honour_strategy.map { |d_id| Dinosaur[d_id] }
+		enemy_dinos = @enemy.honour_strategy.map { |d_id| Dinosaur[d_id] }
+
+		result = BattleModel.attack_calc player_dinos, enemy_dinos
+		render_success(result)
 	end
 
 	def set_match_strategy

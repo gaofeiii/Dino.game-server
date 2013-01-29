@@ -99,6 +99,9 @@ cn:
     title: "公会申请通知"
     content: "%{player_name}申请加入你的公会：%{league_name}"
 
+   battle_report:
+    title: "战斗报告"
+
 
 
 

@@ -21,8 +21,8 @@ module BattleReport
 																:sys_mail_type => Mail::SYS_TYPE[:battle_report],
 																:receiver_name => nickname, 
 																:content => result_json,
-																:title => "Battle Report",
-																:sender_name => "System"
+																:title => I18n.t('mail.battle_report.title', :locale => locale),
+																:sender_name => I18n.t('system', :locale => locale)
 			db.multi do |t|
 				t.zadd(battle_report_key_with_time, tm, battle_mail.id)
 				t.hset(battle_report_with_troops_key, troops_id, battle_mail.id)
@@ -37,7 +37,6 @@ module BattleReport
 		end
 
 		def get_battle_report_with_mail_id(last_mail_id = -1)
-			p "last_mail_id: #{last_mail_id}"
 			db.zrevrange(battle_report_key_with_time, 0, last_mail_id).map do |mail_id|
 				mail = Mail[mail_id]
 			end.compact
