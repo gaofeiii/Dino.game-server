@@ -68,8 +68,7 @@ module BuildingConst
 					:time => book.cell(i, 'G').to_i,
 					:wood => book.cell(i, 'C').to_i,
 					:stone => book.cell(i, 'D').to_i,
-					:gold => book.cell(i, 'E').to_i,
-					:population => book.cell(i, 'F').to_i
+					:gold => book.cell(i, 'E').to_i
 				}
 				reward = {
 					:experience => book.cell(i, 'H').to_i,

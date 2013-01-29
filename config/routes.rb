@@ -159,10 +159,13 @@ DinosaurGame::Application.routes.draw do
 
   # 防守策略
   scope :path => 'strategy', :as => 'strategy' do
-    post 'set_defense'    => 'strategy#set_defense'
-    post 'attack'         => 'strategy#attack'
-    post 'refresh_battle' => 'strategy#refresh_battle'
-    post 'get_battle_report' => 'strategy#get_battle_report'
+    post 'set_defense'        => 'strategy#set_defense'
+    post 'attack'             => 'strategy#attack'
+    post 'refresh_battle'     => 'strategy#refresh_battle'
+    post 'get_battle_report'  => 'strategy#get_battle_report'
+    post 'match_players'      => 'strategy#match_players'
+    post 'match_attack'       => 'strategy#match_attack'
+    post 'set_match_strategy' => 'strategy#set_match_strategy'
   end
 
   # 商城

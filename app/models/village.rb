@@ -162,6 +162,11 @@ class Village < Ohm::Model
 												:x => 25,
 												:y => 29,
 												:status => Building::STATUS[:finished]
+				create_building :type => Building.hashes[:arena],
+												:level => 1,
+												:x => 33,
+												:y => 36,
+												:status => Building::STATUS[:finished]
 			end
 		end
 	end

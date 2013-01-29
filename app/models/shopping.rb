@@ -1,5 +1,11 @@
 class Shopping
 
+	SPECAIL_GOODS_TYPE = {
+		:vip => 1,
+		:on_sale => 2,
+		:num_limit => 3
+	}
+
 	include ShoppingConst
 
 	class << self

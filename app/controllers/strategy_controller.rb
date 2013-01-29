@@ -1,7 +1,7 @@
 class StrategyController < ApplicationController
 
 	before_filter :validate_village, :only => [:set_defense]
-	before_filter :validate_player, :only => [:attack, :get_battle_report, :refresh_battle]
+	before_filter :validate_player, :only => [:attack, :get_battle_report, :refresh_battle, :match_players, :match_attack, :set_match_strategy]
 
 	def set_defense
 
@@ -139,5 +139,17 @@ class StrategyController < ApplicationController
 		else
 			render_error(Error::NORMAL, "Report has been cleaned")
 		end
+	end
+
+	def match_players
+		
+	end
+
+	def match_attack
+
+	end
+
+	def set_match_strategy
+
 	end
 end

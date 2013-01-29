@@ -19,6 +19,7 @@ class Player < Ohm::Model
 	include PlayerAdvisorHelper
 	include PlayerResourceHelper
 	include PlayerCreepsHelper
+	include PlayerHonourHelper
 
 	TYPE = {
 		:normal => 0,
@@ -32,7 +33,6 @@ class Player < Ohm::Model
 	attribute :level, 				Type::Integer
 	
 	attribute :experience, 		Type::Integer
-	attribute :score, 				Type::Integer
 	attribute :device_token
 	attribute :avatar_id, 		Type::Integer		# 玩家头像的id
 	attribute :battle_power,	Type::Integer
@@ -104,7 +104,7 @@ class Player < Ohm::Model
 			:experience => experience,
 			:next_level_exp => next_level_exp,
 			:account_id => account_id,
-			:score => score,
+			:score => honour_score,
 			:country_id => country_id.to_i,
 			:avatar_id => avatar_id,
 			:player_power => battle_power,
