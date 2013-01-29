@@ -8,65 +8,37 @@ class BattleModel
 
 	class << self
 
-		def extend_battle_army(*armys)
-			armys.each do |army|
-				army.each do |fighter|
+		def extend_battle_methods(*battle_objects)
+			battle_objects.each do |obj|
+				obj.extend(BattlePlayerModule)
+				obj[:army].extend(BattleArmyModule)
+				obj[:army].each do |fighter|
 					fighter.extend(BattleFighterModule)
-					fighter.skills.each do |skill|
-						skill.extend(SkillModule)
-					end
+					fighter.army = obj[:army]
+					fighter.skills.each{ |sk| sk.extend(SkillModule) }
 				end
-				army.extend(BattleArmyModule)
 			end
 		end
 
-		# Battle Model Algorithm
-		# Note: Bofore calling this method, the params should extend :extend_batthe_army method.
-		# 
-		# Parameters:
-		# => attacker structure:
-		# {
-		# 	:owner_info => {
-		# 		:type => integer,
-		# 		:id => integer or string
-		# 	},
-		# 	:buff_info => {},
-		# 	:army => fihgters(dinosaurs) array
-		# }
-		# => defender: The same as attacker
-		def attack_calc(attacker = {}, defender = {})
-			[attacker, defender].each do |er|
-				er.extend(BattlePlayerModule)
-				er[:army].extend(BattleArmyModule)
-				er[:army].each do |fighter|
-					fighter.extend(BattleFighterModule)
-					fighter.army = er[:army]
-					fighter.skills.each{ |skl| skl.extend(SkillModule) }
-				end
-			end
-
-			result = {
-				:attacker => attacker.to_hash,
-				:defender => defender.to_hash,
-				:all_rounds => []
-			}
-
+		def start_rounds(attacker, defender, result)
 			all_fighters = (attacker[:army] + defender[:army]).extend(BattleArmyModule)
 			all_fighters.ordered_by!(:speed)
-			(1..TOTAL_ROUNDS).each do |round|		
-				puts "*********** Round #{round} ***********"
+
+			(1..TOTAL_ROUNDS).each do |round|
 				round_info = []
+
 				all_fighters.each do |fighter|
-					puts "*-*- Start -*-*\n"
 
-					one_round = {:attacker_id => fighter.id}
+					one_round = {:attacker_id => fighter.id} # 写入result的数据
 
+					# 设置{fighter}为进攻方或者防守方
 					if fighter.in?(attacker[:army])
 						one_round[:camp] = false
 					else
 						one_round[:camp] = true
 					end
 
+					# 判定{fighter}的流血情况，并写入one_round结果
 					bleeding_result = nil
 					if fighter.is_bleeding?
 						fighter.bleeding_count -= 1
@@ -76,17 +48,17 @@ class BattleModel
 							fighter.curr_hp = 0
 							round_info << one_round
 						end
-						puts "----- I'm Bleeding, lost #{fighter.bleeding_val} blood"
 					else
 						one_round[:attacker_bleeding] = 0
 					end
 
+					# 如果{fighter}判定死亡，则跳过进行下一轮
 					if fighter.is_dead?
 						next
 					end
 
+					# 如果{fighter}为晕眩状态，则跳过进行下一轮
 					if fighter.is_stunned?
-						puts "------- I'm Stunned!!! -------\n\n"
 						fighter.stunned_count -= 1
 						one_round[:attacker_stunned] = true
 						next
@@ -94,8 +66,7 @@ class BattleModel
 						one_round[:attacker_stunned] = false
 					end
 
-
-					# 随机找出对方一名hp大于0的对象
+					# 随机找出对方一名hp大于0的对象{dest}
 					camp = false
 					fighter_name, d_name = "", ''
 					dest = if fighter.in?(attacker[:army])
@@ -110,16 +81,17 @@ class BattleModel
 						d
 					end
 
+					# 如果找不出{dest}说明对方所有可战fighter的数量为零，则判定输赢，战斗结束
 					if dest.nil?
-						if attacker[:army].all_curr_hp.zero?
-							result[:winner] = 'defender'
-							puts "$$ Defender win!!! $$"
-						elsif defender[:army].all_curr_hp.zero?
-							result[:winner] = 'attacker'
-							puts "$$ Attacker win!!! $$"
-						end
+						# if attacker[:army].all_curr_hp.zero?
+						# 	result[:winner] = 'defender'
+						# 	puts "$$ Defender win!!! $$"
+						# elsif defender[:army].all_curr_hp.zero?
+						# 	result[:winner] = 'attacker'
+						# 	puts "$$ Attacker win!!! $$"
+						# end
 
-						break
+						return
 					end
 
 					hp_before = dest.curr_hp
@@ -136,90 +108,56 @@ class BattleModel
 					# 		skill_effects[skill.effect_key] += skill.effect_value
 					# 	end
 					# end
-					skill_effect = nil
+					skill_effect = {}
 					skill_result = nil
 					fighter.skills.each do |skill|
 						if not skill.triggered
 							if skill.trigger?
-								puts "--- fighter_id: #{fighter.id}, skill_id: #{skill.id}"
-
-								puts "~~~~~~~ Skill Triggered! ~~~~~~"
-								puts "~~~~~~~ Type:#{skill.type} ~~~~~~"
 								case skill.effect_key
-								when :double_damage
-									puts "<<< Double Damage >>>"
-									skill_effect = skill.effect
-								when :stun
-									puts "<<< Stun Enemy >>>"
+								when :double_damage	# 双倍伤害
+									skill_effect = {:double_damage => 2.0}
+								when :stun 					# 晕眩
 									dest.stunned_count = skill.effect_value
-									nil
-								when :defense_inc_all
-									puts "<<< Increase All Defense >>>"
-									puts "<<<--- Before self.defense: #{fighter.curr_defense} --->>>"
+								when :defense_inc_all # 增加己方防御
 									fighter.army.each do |fr|
 										fr.curr_defense = fr.curr_defense * (1 + skill.effect_value)
 									end
-									skill.triggered = true
-									puts "<<<--- After self.defense: #{fighter.curr_defense} --->>>"
-									nil
-								when :attack_inc_all
-									puts "<<< Increase All Attack >>>"
-									puts "<<<--- Before self.attack: #{fighter.curr_attack} --->>>"
+									skill.triggered = true 	# 全体性技能只能被触发一次，设置一个标识
+								when :attack_inc_all 	# 增加己方攻击
 									fighter.army.each do |fr|
 										fr.curr_attack = fr.curr_attack * (1 + skill.effect_value)
 									end
-									skill.triggered = true
-									puts "<<<--- After self.attack: #{fighter.curr_attack} --->>>"
-									nil
-								when :attack_inc_self_bleeding
+									skill.triggered = true 	# 全体性技能只能被触发一次，设置一个标识
+								when :attack_inc_self_bleeding # 根据自己流血情况增加伤害
 									extra_damage = (((fighter.total_hp - fighter.curr_hp) / fighter.total_hp) * 100).to_i
-									puts "<<< Attack Increase when Bleeding >>>"
-									puts "<<<--- Extra Damage: #{extra_damage} --->>>"
 									skill_effect = {:extra_damage => extra_damage}
-								when :attack_inc_enemy_bleeding
-									puts "<<< Attack Bleeding Increase >>>"
+								when :attack_inc_enemy_bleeding # 根据敌方流血情况增加伤害
 									extra_damage = (((dest.total_hp - dest.curr_hp) / dest.total_hp) * 100).to_i
-									puts "<<<--- Extra Damage: #{extra_damage} --->>>"
 									skill_effect = {:extra_damage => extra_damage}
-								when :attack_desc
-									puts "<<< Descrease All Attack >>>"
-									puts "<<<--- Before enemy.attack: #{dest.curr_attack} --->>>"
+								when :attack_desc # 降低所有敌方攻击
 									dest.army.each do |fr|
 										fr.curr_attack = fr.total_attack * (1 - skill.effect_value)
 									end
 									skill.triggered = true
-									puts "<<<--- After enemy.attack: #{dest.curr_attack} --->>>"
-									nil
-								when :defense_desc
-									puts "<<< Descrease All Attack >>>"
-									puts "<<<--- Before enemy.defense: #{dest.curr_defense} --->>>"
+								when :defense_desc # 降低所有敌方防御
 									dest.army.each do |fr|
 										fr.curr_defense = fr.curr_defense * (1 - skill.effect_value)
 									end
 									skill.triggered = true
-									puts "<<<--- After enemy.defense: #{dest.curr_defense} --->>>"
-									nil
-								when :bleeding
-									puts "<<< Make Bleeding >>>"
+								when :bleeding # 流血技能，使敌方下一回合起每回合损失HP
 									dest.bleeding_count = 1
 									dest.bleeding_val = skill.effect_value
-									nil
-								when :attack_desc
-									puts "<<< Descrease Attack >>>"
+								when :attack_desc # 降低敌方单体的攻击
 									dest.curr_attack = dest.curr_attack * (1 - skill.effect_value)
 									skill.triggered = true
-									nil
-								when :defense_desc
-									# puts "<<< Descrease Defense >>>"
+								when :defense_desc # 降低敌方单体的防御
 									dest.curr_defense = dest.curr_defense * (1 - skill.effect_value)
 									skill.triggered = true
-									nil
 								end
 								skill_result = skill.type
 							end
 						end
 					end.compact # End of skill judging
-					p '++= skill_effect', skill_effect
 
 					# 2 - 计算真实伤害
 					speed_ratio = (fighter.curr_speed / (fighter.curr_speed + dest.curr_speed))
@@ -231,16 +169,10 @@ class BattleModel
 						rand(0.8..0.99)
 					end
 
-					# puts "--- factor_k: #{factor_k}"
-
 					damage = (fighter.curr_attack * 5 * (1 / (1 + dest.curr_defense / 136)) * factor_k).to_i
 					puts "===== The Origin Damage: #{damage} ====="
 
-					# if skill_effects[:damage_inc].to_f > 0
-					# 	old_damage = damage
-					# 	damage *= skill_effects[:damage_inc].to_f
-					# 	puts "[[[$$$ triggered skill: damage X2 (#{old_damage}->#{damage})]]]"
-					# end
+					# 增加技能对伤害的影响
 					if skill_effect
 						skill_effect.each do |effect_k, effect_v|
 							case effect_k
@@ -272,37 +204,69 @@ class BattleModel
 					one_round[:skill_type] = skill_result if skill_result
 
 					round_info << one_round
-					puts "$ - #{fighter_name} kills #{d_name}: #{damage.to_i} hp!"
-					puts "    #{d_name}'s hp: #{hp_before.to_i}->#{hp_later.to_i}\n\n"
 					result[:total_rounds] = round
 				end # End of each fighters
 				result[:all_rounds] << round_info
 
-				puts "*********** End Round #{round} ***********\n\n"
-				if attacker[:army].all_curr_hp.zero?
-					puts "$$ Defender win!!! $$"
-					result[:winner] = 'defender'
-					attacker[:is_win] = false
-					defender[:is_win] = true
-					write_result(attacker, defender)
-					return result.merge!(:time => Time.now.to_f)
-				elsif defender[:army].all_curr_hp.zero?
-					result[:winner] = 'attacker'
-					attacker[:is_win] = true
-					defender[:is_win] = false
-					write_result(attacker, defender)
-					puts "$$ Attacker win!!! $$"
-					return result.merge!(:time => Time.now.to_f)
-				end
+				# if attacker[:army].all_curr_hp.zero?
+				# 	result[:winner] = 'defender'
+				# 	attacker[:is_win] = false
+				# 	defender[:is_win] = true
+				# 	write_result(attacker, defender)
+				# 	return result.merge!(:time => Time.now.to_f)
+				# elsif defender[:army].all_curr_hp.zero?
+				# 	result[:winner] = 'attacker'
+				# 	attacker[:is_win] = true
+				# 	defender[:is_win] = false
+				# 	write_result(attacker, defender)
+				# 	return result.merge!(:time => Time.now.to_f)
+				# end
+
 			end # End all rounds
+		end
+
+		# Parameters:
+		# => attacker structure:
+		# {
+		# 	:owner_info => {
+		# 		:type => integer,
+		# 		:id => integer or string
+		# 	},
+		# 	:buff_info => {},
+		# 	:army => fihgters(dinosaurs) array
+		# }
+		# => defender: The same as attacker
+		def attack_calc(attacker = {}, defender = {})
+			self.extend_battle_methods(attacker, defender)
+
+			result = {
+				:attacker => attacker.to_hash,
+				:defender => defender.to_hash,
+				:all_rounds => []
+			}
+
+			# 计算战斗回合
+			self.start_rounds(attacker, defender, result)
+
+			# 处理战斗结果
+			if attacker[:army].all_curr_hp.zero?
+				result[:winner] = 'defender'
+				attacker[:is_win] = false
+				defender[:is_win] = true
+				write_result(attacker, defender)
+				return result.merge!(:time => Time.now.to_f)
+			elsif defender[:army].all_curr_hp.zero?
+				result[:winner] = 'attacker'
+				attacker[:is_win] = true
+				defender[:is_win] = false
+				write_result(attacker, defender)
+				return result.merge!(:time => Time.now.to_f)
+			end
 
 			return result
 		end # End of method: attack_calc
 
 		def write_result(attacker = {}, defender = {})
-			# [attacker[:army], defender[:army]].each do |army|
-			# 	army.write_hp!
-			# end
 			attacker[:army].write_hp!(attacker[:is_win], defender)
 			defender[:army].write_hp!(defender[:is_win], attacker)
 		end
@@ -426,8 +390,6 @@ module BattleArmyModule
 	end
 
 	def find_an_alive
-
-		# self.map { |fighter| fighter unless fighter.is_dead? }.compact.sample
 		self.select { |fighter| !fighter.is_dead? }.sample
 	end
 
@@ -534,8 +496,6 @@ module SkillModule
 	end
 
 end
-
-SkillBuff = Struct.new(:type, :level, :is_taken_effect)
 
 # Used for extending buff(Ruby Struct)
 module BuffModule
