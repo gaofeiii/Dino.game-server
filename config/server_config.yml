@@ -10,4 +10,4 @@ dinotest:
  port: 10002
  account_server_ip: 106.187.91.156
  account_server_port: 10001
- info_const_version: 7
+ info_const_version: 13
