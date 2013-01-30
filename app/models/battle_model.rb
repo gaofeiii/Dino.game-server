@@ -170,7 +170,6 @@ class BattleModel
 					end
 
 					damage = (fighter.curr_attack * 5 * (1 / (1 + dest.curr_defense / 136)) * factor_k).to_i
-					puts "===== The Origin Damage: #{damage} ====="
 
 					# 增加技能对伤害的影响
 					if skill_effect
@@ -183,8 +182,6 @@ class BattleModel
 							end
 						end
 					end
-						
-					puts "===== The Final Damage: #{damage} ====="
 
 					if damage < 0
 						next
@@ -265,6 +262,33 @@ class BattleModel
 
 			return result
 		end # End of method: attack_calc
+
+		def match_attack(attacker = {}, defender = {})
+			self.extend_battle_methods(attacker, defender)
+
+			result = {
+				:attacker => attacker.to_hash,
+				:defender => defender.to_hash,
+				:all_rounds => [],
+				:reward => {}
+			}
+
+			self.start_rounds(attacker, defender, result)
+
+			if attacker[:army].all_curr_hp.zero?
+				result[:winner] = 'defender'
+				attacker[:is_win] = false
+				defender[:is_win] = true
+				return result.merge!(:time => Time.now.to_f)
+			elsif defender[:army].all_curr_hp.zero?
+				result[:winner] = 'attacker'
+				attacker[:is_win] = true
+				defender[:is_win] = false
+				return result.merge!(:time => Time.now.to_f)
+			end
+
+			return result
+		end
 
 		def write_result(attacker = {}, defender = {})
 			attacker[:army].write_hp!(attacker[:is_win], defender)

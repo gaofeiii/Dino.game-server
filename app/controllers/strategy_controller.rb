@@ -142,31 +142,76 @@ class StrategyController < ApplicationController
 	end
 
 	def match_players
-		players = Player.find(:player_type => 0).union(:player_type => 1).ids.sample(5).map do |player_id|
-			player = Player.new(:id => player_id).gets(:nickname, :level, :avatar_id)
-			{
-				:id => player.id,
-				:nickname => player.nickname,
-				:level => player.level,
-				:power_point => rand(1..5000),
-				:rank => rand(1..Player.count),
-				:avatar_id => player.avatar_id
-			}
+		if @player.spend!(@player.match_cost)
+			players = Player.find(:player_type => 0).union(:player_type => 1).ids.sample(5).map do |player_id|
+				if player_id.to_i == @player.id
+					next
+				end
+
+				player = Player.new(:id => player_id).gets(:nickname, :level, :avatar_id)
+				{
+					:id => player.id,
+					:nickname => player.nickname,
+					:level => player.level,
+					:power_point => rand(1..5000),
+					:rank => rand(1..Player.count),
+					:avatar_id => player.avatar_id
+				}
+			end
+			render_success(:gold_coin => @player.gold_coin, :players => players)
+		else
+			render_error(Error::NORMAL, I18n.t('general.not_enough_gold'))
 		end
-		render_success(:players => players)
+		
 	end
 
 	def match_attack
-		@enemy = Player[enemy_id]
+		@enemy = Player[params[:enemy_id]]
 
 		if @enemy.nil?
 			render_error(Error::NORMAL, "Invalid enemy id") and return
 		end
 
-		player_dinos = @player.honour_strategy.map { |d_id| Dinosaur[d_id] }
-		enemy_dinos = @enemy.honour_strategy.map { |d_id| Dinosaur[d_id] }
+		player_dinos = @player.honour_strategy.map do |d_id|
+			dino = Dinosaur[d_id]
+			if dino
+				dino.set :current_hp, dino.total_hp
+			end
+			dino
+		end.compact
 
-		result = BattleModel.attack_calc player_dinos, enemy_dinos
+		enemy_dinos = @enemy.honour_strategy.map do |d_id|
+			dino = Dinosaur[d_id]
+			if dino
+				dino.set :current_hp, dino.total_hp
+			end
+			dino
+		end.compact
+
+
+		attacker = {
+			:owner_info => {
+				:type => 'Player',
+				:id => @player.id,
+				:name => @player.nickname,
+				:avatar_id => @player.avatar_id
+			},
+			:buff_info => [],
+			:army => player_dinos
+		}
+
+		defender = {
+			:owner_info => {
+				:type => 'Player',
+				:id => @enemy.id,
+				:name => @enemy.nickname,
+				:avatar_id => @enemy.avatar_id
+			},
+			:buff_info => [],
+			:army => enemy_dinos
+		}
+
+		result = BattleModel.match_attack attacker, defender
 		render_success(result)
 	end
 

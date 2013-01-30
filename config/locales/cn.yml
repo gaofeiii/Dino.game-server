@@ -12,6 +12,7 @@ cn:
    invitation_expired: "邀请函已经过期。"
    join_league_success: "成功加入公会！"
    add_friend_success: "添加好友成功！"
+   not_enough_gold: "金币不足"
 
   player:
    whos_village: "%{player_name}的村庄"
