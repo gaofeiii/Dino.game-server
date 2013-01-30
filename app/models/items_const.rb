@@ -78,7 +78,7 @@ module ItemsConst
 	module InstanceMethods
 		
 		def info
-			self.class.const[item_category][type]
+			self.class.const[item_category][item_type]
 		end
 	end
 	

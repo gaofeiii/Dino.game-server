@@ -213,7 +213,7 @@ class Dinosaur < Ohm::Model
 		consume
 	end
 
-	def eat!(food)
+	def eat!(food, count = 1)
 		if is_my_favorite_food(food.type)
 			self.emotion = EMOTIONS[:happy]
 		else
@@ -222,7 +222,7 @@ class Dinosaur < Ohm::Model
 		curr_feed_point = feed_point + food.feed_point
 		curr_feed_point = curr_feed_point > hunger_time ? hunger_time : curr_feed_point
 		self.set(:feed_point, curr_feed_point)
-		food.increase(:count, -1)
+		food.increase(:count, -count)
 		consume_food
 		save
 	end

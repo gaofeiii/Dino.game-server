@@ -25,6 +25,8 @@ class DinosaurController < ApplicationController
 
 	def feed
 		food = @player.foods.find(:type => params[:food_type].to_i).first
+		count = params[:count].to_i
+		count = count > 0 ? count : 1
 
 		if (@dinosaur.hunger_time - @dinosaur.feed_point) < 10
 			render :json => {:error => "BABY_IS_FULL"} and return
@@ -33,7 +35,7 @@ class DinosaurController < ApplicationController
 		if food.nil? || food.count <= 0
 			render :json => {:error => "NOT_ENOUGH_FOOD"} and return
 		else
-			@dinosaur.eat!(food)
+			@dinosaur.eat!(food, count)
 			if !@player.beginning_guide_finished && !@player.guide_cache['feed_dino']
 				cache = @player.guide_cache.merge('feed_dino' => true)
 				@player.set :guide_cache, cache

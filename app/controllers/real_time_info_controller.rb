@@ -1,5 +1,7 @@
 class RealTimeInfoController < ApplicationController
 
+	skip_filter :validate_sig
+
 	def info
 		data = {
 			:data => {
