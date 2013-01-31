@@ -102,6 +102,11 @@ module OhmExtension
 			get(key)
 		end
 
+		def increase_by_float(att, num)
+			db.hincrbyfloat(self.key, att, num)
+			get(att)
+		end
+
 		def attributes
 			super.merge!(:id => id)
 		end

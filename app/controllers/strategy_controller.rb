@@ -222,4 +222,8 @@ class StrategyController < ApplicationController
 			render_error(Error::NORMAL, "Known Error")
 		end
 	end
+
+	def league_goldmine_attack
+		
+	end
 end

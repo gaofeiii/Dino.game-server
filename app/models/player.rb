@@ -138,7 +138,7 @@ class Player < Ohm::Model
 			when :specialties
 				hash[:food] = specialties.map{|s| s.to_hash}
 			when :league
-				hash[:league] = league_info
+				hash[:league] = league.try(:to_hash)
 			when :advisors
 				hash[:advisors] = my_advisors_info
 			when :beginning_guide
@@ -166,10 +166,6 @@ class Player < Ohm::Model
 
 		end
 		return hash
-	end
-
-	def league_info
-		league.nil? ? {} : league.to_hash.merge(:level => league_member_ship_id)
 	end
 
 	def dinosaurs_info

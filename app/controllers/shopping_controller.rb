@@ -39,7 +39,7 @@ class ShoppingController < ApplicationController
 		when Shopping::GOODS_TYPE[:res]
 			res_type = goods[:res_type]
 			res_count = (goods[:count] * @player.tech_warehouse_size).to_i
-			gems_cost = (goods[:count] / goods[:count_per_gem]).ceil
+			gems_cost = (res_count / goods[:count_per_gem].to_f).ceil
 
 			if @player.spend!(:gems => gems_cost)
 				@player.receive!(res_type => res_count)

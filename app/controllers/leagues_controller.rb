@@ -1,7 +1,7 @@
 class LeaguesController < ApplicationController
 
-	before_filter :validate_player, :only => [:create, :apply, :apply_list, :my_league_info, :member_list, :invite]
-	before_filter :validate_league, :only => [:apply]
+	before_filter :validate_player, :only => [:create, :apply, :apply_list, :my_league_info, :member_list, :invite, :donate]
+	before_filter :validate_league, :only => [:apply, :donate]
 
 	def create
 		if League.exists?(@player.league_id)
@@ -14,8 +14,7 @@ class LeaguesController < ApplicationController
 			lg = League.create :name => name, :desc => params[:desc], :president_id => @player.id
 			lms = LeagueMemberShip.create :player_id => @player.id, 
 																		:league_id => lg.id, 
-																		:level => LeagueMemberShip.levels[:president], 
-																		:nickname => @player.nickname
+																		:level => LeagueMemberShip.levels[:president]
 			@player.update :league_id => lg.id, :league_member_ship_id => lms.id
 			render :json => {:player => {:league => lg.to_hash}}
 		else
@@ -97,7 +96,6 @@ class LeaguesController < ApplicationController
 				player = apply.player
 				membership = LeagueMemberShip.create 	:player_id => apply.player_id,
 																							:league_id => apply.league_id,
-																							:nickname => player.nickname,
 																							:level => League.levels[:member]
 				player.update :league_id => apply.league_id, :league_member_ship_id => membership.id
 				render :json => {
@@ -159,11 +157,40 @@ class LeaguesController < ApplicationController
 		else
 			render_error(Error::NORMAL, I18n.t('general.server_busy'))
 		end
-
 	end
 	
 	def refuse_invite
-		
+	end
+
+	def donate
+		donate_type = params[:type].to_i
+		if donate_type <= 0 || donate_type > 2
+			render_error(Error::NORMAL, "Invalid resource type") and return
+		end
+
+		count = params[:count].to_i
+		if count <= League::DONATE_FACTOR * 10
+			render_error(Error::NORMAL, "Count must greater than #{League::DONATE_FACTOR * 10}") and return
+		end
+
+		cost = case donate_type
+		when League::DONATE_TYPE[:wood]
+			{:wood => count}
+		when League::DONATE_TYPE[:stone]
+			{:stone => count}
+		end
+
+		if @player.spend!(cost)
+			@league.increase(:contribution, count / League::DONATE_FACTOR)
+			@league.increase(:xp, count / League::DONATE_FACTOR)
+		end
+
+		render_success :player => {
+			:wood => @player.wood,
+			:stone => @player.stone,
+			:league => {:contribution => @league.contribution}
+		}
+
 	end
 		
 

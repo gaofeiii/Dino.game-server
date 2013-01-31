@@ -13,12 +13,16 @@ class LeagueMemberShip < Ohm::Model
 	attribute :player_id
 	reference :league, League
 
-	attribute :nickname
 	attribute :alias_name
 	attribute :level, 	Type::Integer
+	attribute :contribution, Type::Integer
 
 	def self.levels
 		LEVELS
+	end
+
+	def nickname
+		db.hget("Player:#{player_id}", :nickname)
 	end
 
 	def to_hash
@@ -26,7 +30,8 @@ class LeagueMemberShip < Ohm::Model
 			:player_id => player_id.to_i,
 			:nickname => nickname,
 			:position => level,
-			:level => Player.get(player_id, :level).to_i
+			:level => Player.get(player_id, :level).to_i,
+			:contribution => contribution
 		}
 	end
 
