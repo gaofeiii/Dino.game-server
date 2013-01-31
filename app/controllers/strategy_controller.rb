@@ -162,7 +162,6 @@ class StrategyController < ApplicationController
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gold'))
 		end
-		
 	end
 
 	def match_attack
@@ -187,7 +186,6 @@ class StrategyController < ApplicationController
 			end
 			dino
 		end.compact
-
 
 		attacker = {
 			:owner_info => {
