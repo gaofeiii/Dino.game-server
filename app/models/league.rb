@@ -42,7 +42,8 @@ class League < Ohm::Model
 			:member_count => league_member_ships.size,
 			:xp => xp,
 			:rank => rand(1..100),
-			:gold_mine_count => rand(1..5)
+			:gold_mine_count => rand(1..5),
+			:can_get_league_gold => harvest_gold
 		}
 	end
 
@@ -65,6 +66,10 @@ class League < Ohm::Model
 		if membership
 			member.update :league_id => id, :league_member_ship_id => membership.id
 		end
+	end
+
+	def harvest_gold
+		1000
 	end
 
 	def dismiss!

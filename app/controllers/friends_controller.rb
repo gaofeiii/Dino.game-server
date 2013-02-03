@@ -1,6 +1,7 @@
 class FriendsController < ApplicationController
+	before_filter :validate_add_friend, :only => [:add_friend]
 	before_filter :validate_player, :only => [:add_friend, :friend_list, :remove_friend, :apply_friend, :apply_accept, :apply_refuse]
-	before_filter :validate_friend, :only => [:apply_friend]
+	before_filter :validate_friend, :only => [:apply_friend, :add_friend]
 
 	def search_friend
 		# TODO: Should not use 'keys' method.
@@ -45,6 +46,7 @@ class FriendsController < ApplicationController
 	end
 
 	def add_friend
+
 		data = if @player.friends.add(@friend)
 			render_success
 		else
@@ -105,11 +107,19 @@ class FriendsController < ApplicationController
 		render_success
 	end
 
+	private
+
 	def validate_friend
 		@friend = Player[params[:friend_id]]
 		if @friend.nil?
 			render_error(Error::NORMAL, "invalid friend id")
 			return
+		end
+	end
+
+	def validate_add_friend
+		if !params[:player_id].blank? && !params[:friend_id].blank? && params[:player_id] == params[:friend_id]
+			render_error(Error::NORMAL, I18n.t('friends_error.cannot_add_self')) and return
 		end
 	end
 end

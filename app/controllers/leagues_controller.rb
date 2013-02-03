@@ -1,6 +1,6 @@
 class LeaguesController < ApplicationController
 
-	before_filter :validate_player, :only => [:create, :apply, :apply_list, :my_league_info, :member_list, :invite, :donate]
+	before_filter :validate_player, :only => [:create, :apply, :apply_list, :my_league_info, :member_list, :invite, :donate, :receive_gold]
 	before_filter :validate_league, :only => [:apply, :donate]
 
 	def create
@@ -181,16 +181,41 @@ class LeaguesController < ApplicationController
 		end
 
 		if @player.spend!(cost)
+			@player.league_member_ship.increase(:contribution, count / 1000)
 			@league.increase(:contribution, count / League::DONATE_FACTOR)
 			@league.increase(:xp, count / League::DONATE_FACTOR)
 		end
 
-		render_success :player => {
-			:wood => @player.wood,
-			:stone => @player.stone,
-			:league => {:contribution => @league.contribution}
+		data = {
+			:player => @player.to_hash.merge(:league => @league.to_hash.merge(:members_list => @league.members_list))
 		}
+		render_success data
 
+		# render_success :player => {
+		# 	:wood => @player.wood,
+		# 	:stone => @player.stone,
+		# 	:league => {:contribution => @league.contribution}
+		# }
+
+	end
+
+	def receive_gold
+		membership = @player.league_member_ship
+
+		if membership.nil?
+			render_error(Error::NORMAL, I18n.t('league_error.not_in_a_league')) and return
+		end
+
+		if membership.contribution <= 10
+			render_error(Error::NORMAL, I18n.t('league_error.contribution_count_is_zero')) and return
+		end
+
+		if membership.increase(:contribution, -10)
+			@player.receive!(:gold => @player.league.harvest_gold)
+			render_success(:player => @player.to_hash(:league), :info => I18n.t("general.get_league_gold_success", :gold_count => 1000))
+		else
+			render_error(Error::NORMAL, "Unknown League Error")
+		end
 	end
 		
 

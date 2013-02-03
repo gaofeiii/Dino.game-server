@@ -89,6 +89,7 @@ DinosaurGame::Application.routes.draw do
     post 'accept_invite'  => 'leagues#accept_invite'
     post 'refuse_invite'  => 'leagues#refuse_invite'
     post 'donate'         => 'leagues#donate'
+    post 'receive_gold'   => 'leagues#receive_gold'
   end  
 
   # 地图

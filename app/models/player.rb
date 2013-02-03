@@ -95,6 +95,7 @@ class Player < Ohm::Model
 	end
 
 	def to_hash(*args)
+		update_level!
 		hash = {
 			:id => id.to_i,
 			:nickname => nickname,
@@ -166,6 +167,30 @@ class Player < Ohm::Model
 
 		end
 		return hash
+	end
+
+	def can_get_league_gold
+		@league = League.new(:id => league_id)
+
+		if !@league.exists?
+			return 0
+		else
+			return @league.harvest_gold
+		end
+	end
+
+	def update_level
+		if experience >= next_level_exp
+			self.experience -= next_level_exp
+			self.level += 1
+		end
+	end
+
+	def update_level!
+		if update_level
+			update_level
+			save
+		end
 	end
 
 	def dinosaurs_info

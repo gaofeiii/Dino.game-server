@@ -103,6 +103,11 @@ class Deal < Ohm::Model
 					self.delete
 				end
 			when CATEGORIES[:egg]
+				itm = Item[gid]
+				if itm
+					itm.update :player_id => seller_id
+					self.delete
+				end
 			when CATEGORIES[:food]
 				food = seller.foods.find(:type => type).first
 				return nil if food.nil?

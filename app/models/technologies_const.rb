@@ -115,13 +115,13 @@ module TechnologiesConst
 					:wood => book.cell(i, 'C').to_i,
 					:stone => book.cell(i, 'D').to_i,
 					:gold => book.cell(i, 'E').to_i,
-					:time => book.cell(i, 'G').to_i,
+					:time => book.cell(i, 'F').to_i,
 				}
 				property = {
 					:wood_inc => book.cell(i, 'B').to_i,
 				}
 				reward = {
-					:experience => book.cell(i, 'g').to_i,
+					:experience => book.cell(i, 'G').to_i,
 					:score => book.cell(i, 'h').to_i,
 				}
 				@@tech_const[definition['伐木']][level] ||= {}
@@ -216,7 +216,7 @@ module TechnologiesConst
 				level = book.cell(i, 'A').to_i
 				condition = {:player_level => book.cell(i, 'j').to_i}
 				cost = {
-					:wood => book.cell(i, 'c').to_i,
+					:wood => book.cell(i, 'd').to_i,
 					:stone => book.cell(i, 'e').to_i,
 					:gold => book.cell(i, 'f').to_i,
 					:time => book.cell(i, 'g').to_i,
