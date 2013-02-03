@@ -53,7 +53,7 @@ class GoldMine < Ohm::Model
 			end
 			monsters.to_a
 		else
-
+			[]
 		end
 	end
 

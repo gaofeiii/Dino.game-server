@@ -20,6 +20,9 @@ class BattleModel
 			end
 		end
 
+		# all_rounds: [
+		# 	[], [], [], ...
+		# ]
 		def start_rounds(attacker, defender, result)
 			all_fighters = (attacker[:army] + defender[:army]).extend(BattleArmyModule)
 			all_fighters.ordered_by!(:speed)
@@ -29,10 +32,9 @@ class BattleModel
 				round_info = []
 
 				all_fighters.each do |fighter|
-					puts '++++++++++++++++++++++++++++++++++++++++++++++++++++'
-					p '--- attacker army hp', attacker[:army].map(&:curr_hp)
-					p '--- defender army hp', defender[:army].map(&:curr_hp)
-					puts "++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n"
+					if fighter.is_dead?
+						next
+					end
 
 					one_round = {:attacker_id => fighter.id} # 写入result的数据
 
@@ -73,22 +75,23 @@ class BattleModel
 
 					# 随机找出对方一名hp大于0的对象{dest}
 					camp = false
-					fighter_name, d_name = "", ''
 					dest = if fighter.in?(attacker[:army])
-						d = defender[:army].find_an_alive
 						# camp = false
-						fighter_name, d_name = "A*[#{fighter.id}]", "B*[#{d.id}]" if fighter && d
-						d
+						defender[:army].find_an_alive
 					else
-						d = attacker[:army].find_an_alive
 						camp = true
-						fighter_name, d_name = "B*[#{fighter.id}]", "A*[#{d.id}]" if fighter && d
-						d
+						attacker[:army].find_an_alive
 					end
 
 					# 如果找不出{dest}说明对方所有可战fighter的数量为零，则判定输赢，战斗结束
 					if dest.nil?
+						round_info << one_round
 						result[:all_rounds] << round_info
+						result[:all_rounds].each do |a_round|
+							if a_round.blank?
+								result[:all_rounds].delete(a_round)
+							end
+						end
 						return
 					end
 
@@ -197,16 +200,10 @@ class BattleModel
 						:camp => camp
 					})
 					one_round[:skill_type] = skill_result if skill_result
-					p '---', one_round
 					round_info << one_round
 					result[:total_rounds] = round
+
 				end # End of each fighters
-				result[:all_rounds] << round_info
-				result[:all_rounds].each do |a_round|
-					if a_round.blank?
-						result[:all_rounds].delete(a_round)
-					end
-				end
 
 				# if attacker[:army].all_curr_hp.zero?
 				# 	result[:winner] = 'defender'
@@ -222,7 +219,19 @@ class BattleModel
 				# 	return result.merge!(:time => Time.now.to_f)
 				# end
 
+				result[:all_rounds] << round_info
+				# 判断双方是否还有可以战斗的fighter
+				if attacker[:army].all_curr_hp.zero? || defender[:army].all_curr_hp.zero?
+					p "+++ running judge"
+					return
+				end
+				
 			end # End all rounds
+			result[:all_rounds].each do |a_round|
+				if a_round.blank?
+					result[:all_rounds].delete(a_round)
+				end
+			end
 		end
 
 		# Parameters:
@@ -261,6 +270,8 @@ class BattleModel
 				defender[:is_win] = false
 				write_result(attacker, defender)
 				return result.merge!(:time => Time.now.to_f)
+			else
+				p "--- #{__FILE__}:#{__LINE__}"
 			end
 
 			return result

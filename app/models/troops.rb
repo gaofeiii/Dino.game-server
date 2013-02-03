@@ -96,7 +96,7 @@ class Troops < Ohm::Model
 			defender[:owner_info][:avatar_id] = target.player.avatar_id if target.is_a?(Village)
 
 			result = BattleModel.attack_calc(attacker, defender)
-
+			
 			# 如果进攻方获胜，计算奖励
 			reward = {}
 			if result[:winner] == 'attacker'
@@ -106,9 +106,9 @@ class Troops < Ohm::Model
 					rwd = {:wood => target_player.wood/10, :stone => target_player.stone/10, :gold_coin => target_player.gold_coin/10, :items => []}
 					target_player.spend!(rwd) # The target lost resource
 					self.player.receive!(rwd) # The winner receive resource
-					i_cat = Item.categories.values.sample
+					i_cat = [1,2,3].sample
 					i_type = Item.const[i_cat].keys.sample
-					i_count = i_cat == 1 ? 1 : 100
+					i_count = i_cat == 2 ? 99 : 1
 					rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
 					target.set(:under_attack, 0)
 					rwd
@@ -161,9 +161,11 @@ class Troops < Ohm::Model
 						rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
 						rwd
 					else
-						target.add_attacking_count(player.league_id)
-						player.increase(:experience, 100)
-						player.league_member_ship.increase(:contribution, 200)
+						unless player.league.nil?
+							target.add_attacking_count(player.league_id)
+							self.player.increase(:experience, 100)
+							player.league_member_ship.increase(:contribution, 200)
+						end
 						{} # reward = {}
 					end
 				else

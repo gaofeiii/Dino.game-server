@@ -74,8 +74,18 @@ class StrategyController < ApplicationController
 			render_error(Error::NORMAL, "Cannot attack your own village") and return
 		end
 
-		if target.is_a?(GoldMine) && target.player_id.to_i == @player.id
-			render_error(Error::NORMAL, "The gold mine is yours") and return
+		if target.is_a?(GoldMine)
+			if target.type == GoldMine::TYPE[:normal] && target.player_id.to_i == @player.id
+				render_error(Error::NORMAL, "The gold mine is yours") and return
+			elsif target.type == GoldMine::TYPE[:league] && @player.league_id.blank?
+				render_error(Error::NORMAL, I18n.t('strategy_error.not_in_a_league')) and return
+			end
+		end
+
+		if target.is_a?(Creeps)
+			if target.under_attack
+				render_error(Error::NORMAL, "Target is under attack") and return
+			end
 		end
 
 		army = params[:dinosaurs].to_a.map do |dino_id|
@@ -92,7 +102,10 @@ class StrategyController < ApplicationController
 			end
 		end.compact
 
-		army = army.blank? ? @player.dinosaurs.to_a.select{|d| d.status > 0}[0, 5] : army
+		# army = army.blank? ? @player.dinosaurs.to_a.select{|d| d.status > 0}[0, 5] : army
+		if army.blank?
+			render_error(Error::NORMAL, "Should sent one dinosaur at least") and return
+		end
 
 		target_monster_type = nil
 		target_type = case target.class.name
@@ -266,6 +279,10 @@ class StrategyController < ApplicationController
 				nil
 			end
 		end.compact
+
+		if army.blank?
+			render_error(Error::NORMAL, "Should sent one dinosaur at least") and return
+		end
 
 		if Troops.create 	:player_id => @player.id, 
 											:dinosaurs => dino_ids.to_json,

@@ -165,9 +165,9 @@ class Dinosaur < Ohm::Model
 	def upgrade_atts
 		factor = case emotion
 		when EMOTIONS[:happy]
-			Random.rand(8..12) / 10.0 * quality
+			Random.rand(8..12) / 10.0 * info[:quality][quality]
 		when EMOTIONS[:normal]
-			Random.rand(5..10) / 10.0 * quality
+			Random.rand(5..10) / 10.0 * info[:quality][quality]
 		else
 			0
 		end

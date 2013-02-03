@@ -44,7 +44,7 @@ module SkillConst
 	module InstanceMethods
 		
 		def trigger_chance
-			self.class.const[type][:trigger_chance]
+			1#self.class.const[type][:trigger_chance]
 		end
 
 		def permanent?

@@ -5,6 +5,7 @@ class League < Ohm::Model
 	include OhmExtension
 
 	include LeagueConst
+	include LeagueWarHelper
 
 	attribute :name
 	attribute :desc

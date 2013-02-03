@@ -10,14 +10,13 @@ class FriendsController < ApplicationController
 
 		result = ids.map do |id|
 			player = Player.new :id => id
-			player.gets(:nickname, :level, :score, :player_type)
+			player.gets(:nickname, :level, :player_type)
 			rank = rand(1..1000)
 			if !player.is_npc?
 				{
 					:id => id.to_i,
 					:nickname => player.nickname,
 					:level => player.level,
-					:score => player.score,
 					:rank => rank
 				}
 			end
@@ -28,15 +27,14 @@ class FriendsController < ApplicationController
 
 	def random_friends
 		result = Ohm.redis.srandmembers(Player.all.key, 5).map do |p_id|
-			info = Player.gets(p_id, :nickname, :level, :score, :avatar_id)
+			player = Player.new(:id => p_id).gets(:nickname, :level, :avatar_id)
 			rank = rand(1..1000)
 			{
-				:id => p_id.to_i,
-				:nickname => info[0],
-				:level => info[1].to_i,
-				:score => info[2].to_i,
+				:id => player.id,
+				:nickname => player.nickname,
+				:level => player.level,
 				:rank => rank,
-				:avatar_id => info[3].to_i
+				:avatar_id => player.avatar_id
 			}
 		end
 
