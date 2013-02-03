@@ -24,6 +24,14 @@ class GoldMine < Ohm::Model
 	index :x
 	index :y
 	index :level
+	index :type
+
+	include GoldMineLeagueHelper
+
+	TYPE = {
+		:normal => 1,
+		:league => 2
+	}
 
 	def defense_troops
 		if player_id.blank?
@@ -103,6 +111,10 @@ class GoldMine < Ohm::Model
 	end
 
 	protected
+
+	def before_create
+		self.type = TYPE[:normal] if type.zero?
+	end
 
 	def before_save
 		self.index = x * Country::COORD_TRANS_FACTOR + y

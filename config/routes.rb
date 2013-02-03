@@ -167,6 +167,7 @@ DinosaurGame::Application.routes.draw do
     post 'match_players'      => 'strategy#match_players'
     post 'match_attack'       => 'strategy#match_attack'
     post 'set_match_strategy' => 'strategy#set_match_strategy'
+    post 'league_goldmine_attack' => 'strategy#league_goldmine_attack'
   end
 
   # 商城

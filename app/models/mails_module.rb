@@ -77,7 +77,7 @@ module MailsModule
 
 		def all_mails(args = {})
 			last_id = args[:last_id].to_i
-			private_mails(args) + league_mails(args) + system_mails(args) + get_battle_report_with_time("(#{args[:last_report_time]}")
+			private_mails(args) + league_mails(args) + system_mails(args)
 		end
 	end
 	

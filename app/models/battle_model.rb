@@ -25,9 +25,14 @@ class BattleModel
 			all_fighters.ordered_by!(:speed)
 
 			(1..TOTAL_ROUNDS).each do |round|
+				puts "************** Round: #{round} **************"
 				round_info = []
 
 				all_fighters.each do |fighter|
+					puts '++++++++++++++++++++++++++++++++++++++++++++++++++++'
+					p '--- attacker army hp', attacker[:army].map(&:curr_hp)
+					p '--- defender army hp', defender[:army].map(&:curr_hp)
+					puts "++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n"
 
 					one_round = {:attacker_id => fighter.id} # 写入result的数据
 
@@ -83,14 +88,7 @@ class BattleModel
 
 					# 如果找不出{dest}说明对方所有可战fighter的数量为零，则判定输赢，战斗结束
 					if dest.nil?
-						# if attacker[:army].all_curr_hp.zero?
-						# 	result[:winner] = 'defender'
-						# 	puts "$$ Defender win!!! $$"
-						# elsif defender[:army].all_curr_hp.zero?
-						# 	result[:winner] = 'attacker'
-						# 	puts "$$ Attacker win!!! $$"
-						# end
-
+						result[:all_rounds] << round_info
 						return
 					end
 
@@ -199,11 +197,16 @@ class BattleModel
 						:camp => camp
 					})
 					one_round[:skill_type] = skill_result if skill_result
-
+					p '---', one_round
 					round_info << one_round
 					result[:total_rounds] = round
 				end # End of each fighters
 				result[:all_rounds] << round_info
+				result[:all_rounds].each do |a_round|
+					if a_round.blank?
+						result[:all_rounds].delete(a_round)
+					end
+				end
 
 				# if attacker[:army].all_curr_hp.zero?
 				# 	result[:winner] = 'defender'

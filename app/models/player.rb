@@ -178,7 +178,7 @@ class Player < Ohm::Model
 	end
 
 	def league_member_ship
-		LeagueMemberShip[league_member_ship]
+		LeagueMemberShip[league_member_ship_id]
 	end
 
 	def foods
@@ -196,7 +196,6 @@ class Player < Ohm::Model
 				:id => friend.id.to_i,
 				:nickname => friend.nickname,
 				:level => friend.level,
-				:score => friend.score,
 				:rank => rand(1..1000),
 				:x => 0,
 				:y => 0

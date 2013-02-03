@@ -73,6 +73,12 @@ cn:
    add_friend_failed: "添加好友失败。"
    invitation_expired: "好友邀请已经过期。"
 
+  strategy_error:
+   not_in_a_league: "您还没有加入公会。"
+   wrong_type_of_goldmine: "不能在公会战中攻打此类型的金矿"
+   dino_hp_is_zero: "不能派遣HP为0的恐龙"
+   dino_is_attacking: "不能派遣正在进攻中的恐龙"
+
   god_effect_mail:
    argriculture:
     title: "来自赛纳斯的祝福"

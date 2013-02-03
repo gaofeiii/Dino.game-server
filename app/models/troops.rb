@@ -106,8 +106,8 @@ class Troops < Ohm::Model
 					rwd = {:wood => target_player.wood/10, :stone => target_player.stone/10, :gold_coin => target_player.gold_coin/10, :items => []}
 					target_player.spend!(rwd) # The target lost resource
 					self.player.receive!(rwd) # The winner receive resource
-					i_cat = Item.categories.sample
-					i_type = Item.types(i_cat).sample
+					i_cat = Item.categories.values.sample
+					i_type = Item.const[i_cat].keys.sample
 					i_count = i_cat == 1 ? 1 : 100
 					rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
 					target.set(:under_attack, 0)
@@ -149,25 +149,26 @@ class Troops < Ohm::Model
 					end
 					player.del_temp_creeps(target.index)
 					target.delete
-					# rwd = {:wood => 1000, :stone => 1200, :gold_coin => 150, :items => []}
-					# i_cat = Item.categories.sample
-					# i_type = Item.types(i_cat).sample
-					# i_count = i_cat == 1 ? 1 : 100
-					# rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
-					# rwd
 					reward
+
 				when BattleModel::TARGET_TYPE[:gold_mine]
-					target.update :player_id => player.id, :under_attack => false
-					rwd = {:wood => 1500, :stone => 1500, :gold_coin => 200, :items => []}
-					i_cat = Item.categories.sample
-					i_type = Item.types(i_cat).sample
-					i_count = i_cat == 1 ? 1 : 100
-					rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
-					rwd
+					if target.type == GoldMine::TYPE[:normal]
+						target.update :player_id => player.id, :under_attack => false
+						rwd = {:wood => 1500, :stone => 1500, :gold_coin => 200, :items => []}
+						i_cat = Item.categories.values.sample
+						i_type = Item.const[i_cat].keys.sample
+						i_count = i_cat == 1 ? 1 : 100
+						rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
+						rwd
+					else
+						target.add_attacking_count(player.league_id)
+						player.increase(:experience, 100)
+						player.league_member_ship.increase(:contribution, 200)
+						{} # reward = {}
+					end
 				else
 					{}
 				end
-				p "---- reward", reward
 				player.receive!(reward)
 			end # End of winner reward
 
@@ -181,7 +182,7 @@ class Troops < Ohm::Model
 				dino.set :is_attacking, 0
 			end
 			player.save_battle_report(self.id, result)
-			self.delete
+			self.dissolve!
 		end
 	end
 

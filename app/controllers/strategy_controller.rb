@@ -1,7 +1,8 @@
 class StrategyController < ApplicationController
 
 	before_filter :validate_village, :only => [:set_defense]
-	before_filter :validate_player, :only => [:attack, :get_battle_report, :refresh_battle, :match_players, :match_attack, :set_match_strategy]
+	before_filter :validate_player, :only => [:attack, :get_battle_report, :refresh_battle, :match_players, 
+		:match_attack, :set_match_strategy, :league_goldmine_attack]
 
 	def set_defense
 
@@ -79,7 +80,12 @@ class StrategyController < ApplicationController
 
 		army = params[:dinosaurs].to_a.map do |dino_id|
 			dino = Dinosaur[dino_id]
+
 			if dino && dino.status > 0
+				dino.update_status!
+				if dino.current_hp <= dino.total_hp * 0.05
+					render_error(Error::NORMAL, I18n.t('strategy_error.dino_hp_is_zero')) and return
+				end
 				dino
 			else
 				nil
@@ -119,10 +125,7 @@ class StrategyController < ApplicationController
 		# if !@player.beginning_guide_finished && !@player.guide_cache['attack_monster']
 		# 	@player.set :guide_cache, @player.guide_cache.merge('attack_monster' => true)
 		# end
-		render :json => {
-			:message => Error.success_message,
-			:player => @player.to_hash(:troops)
-		}
+		render_success(:player => @player.to_hash(:troops))
 	end
 
 	def refresh_battle
@@ -179,6 +182,10 @@ class StrategyController < ApplicationController
 			dino
 		end.compact
 
+		if @enemy.honour_strategy.blank?
+			render_error(Error::NORMAL, "Enemy's army not set") and return
+		end
+
 		enemy_dinos = @enemy.honour_strategy.map do |d_id|
 			dino = Dinosaur[d_id]
 			if dino
@@ -224,6 +231,61 @@ class StrategyController < ApplicationController
 	end
 
 	def league_goldmine_attack
-		
+		# TODO: 时间限制
+
+		@league = @player.league
+		if @league.nil?
+			render_error(Error::NORMAL, I18n.t('strategy_error.not_in_a_league')) and return
+		end
+
+		@gold_mine = GoldMine[params[:gold_mien_id]]
+		if @gold_mine.type != GoldMine::TYPE[:league]
+			render_error(Error::NORMAL, I18n.t('strategy_error.wrong_type_of_goldmine')) and return
+		end
+
+		dino_ids = params[:dinosaurs]
+
+		if dino_ids.blank?
+			render_error(Error::NORMAL, "Should sent one dinosaur at least") and return
+		end
+
+		army = dino_id.map do |d_id|
+			dino = Dinosaur[d_id]
+
+			if dino && dino.status > 0
+				dino.update_status!
+				if dino.current_hp <= 0
+					render_error(Error::NORMAL, I18n.t('strategy_error.dino_hp_is_zero')) and return
+				end
+
+				if dino.is_attacking
+					render_error(Error::NORMAL, I18n.t('strategy_error.dino_is_attacking')) and return
+				end
+				dino
+			else
+				nil
+			end
+		end.compact
+
+		if Troops.create 	:player_id => @player.id, 
+											:dinosaurs => dino_ids.to_json,
+											:target_type => BattleModel::TARGET_TYPE[:gold_mine],
+											:target_id => @gold_mine.id,
+											:start_time => Time.now.to_i,
+											:arrive_time => Time.now.to_i + 2.seconds,
+											:target_x => @gold_mine.x,
+											:target_y => @gold_mine.y,
+											:scroll_id => params[:scroll_id]
+
+			@gold_mine.set(:under_attack, 1)
+			params[:dinosaurs].each do |dino_id|
+				if Dinosaur.exists?(dino_id)
+					Ohm.redis.hset("Dinosaur:#{dino_id}", :is_attacking, 1)
+				end
+			end
+
+			render_success(:player => @player.to_hash(:troops))
+		end
+
 	end
 end

@@ -45,7 +45,9 @@ class Dinosaur < Ohm::Model
 	reference :village, 	Village
 
 	index :level
+	index :type
 	index :status
+	index :is_attacking
 
 	class << self
 		
