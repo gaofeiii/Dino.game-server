@@ -13,7 +13,7 @@ set :rvm_ruby_string, "1.9.3@dinosaur_game"
 set :rvm_type, :user
 require "rvm/capistrano"
 
-set :bundle_dir, '$HOME/.rvm/gems/ruby-1.9.3-p194@dinosaur_game'
+# set :bundle_dir, '$HOME/.rvm/gems/ruby-1.9.3-p374@dinosaur_game'
 
 default_run_options[:pty] = true
 set :user, "gaofei"
@@ -101,19 +101,26 @@ end
 
 namespace :unicorn do
   desc "Start unicorn"
-    task :start, :roles => :app do
-      run "cd #{current_path} && bundle exec unicorn -c #{current_path}/config/unicorn.rb -D -E production"
-    end
+  task :start, :roles => :app do
+    run "cd #{current_path} && bundle exec unicorn -c #{current_path}/config/unicorn.rb -D -E production"
+  end
 
-    desc "Stop unicorn"
-    task :stop, :roles => :app do
-      run "kill -QUIT `cat #{current_path}/tmp/pids/unicorn.pid`"
-      sleep(3)
-    end
+  desc "Stop unicorn"
+  task :stop, :roles => :app do
+    run "kill -QUIT `cat #{current_path}/tmp/pids/unicorn.pid`"
+    sleep(3)
+  end
 
-    desc "Restart unicorn"
-    task :restart, :roles => :app do
-      find_and_execute_task("unicorn:stop")
-      find_and_execute_task("unicorn:start")
-    end
+  desc "Restart unicorn"
+  task :restart, :roles => :app do
+    find_and_execute_task("unicorn:stop")
+    find_and_execute_task("unicorn:start")
+  end
+end
+
+namespace :background do
+  desc "Start background job"
+  task :start, :roles => :app do
+    run "cd #{current_path} && ruby "
+  end
 end
