@@ -28,7 +28,6 @@ class BattleModel
 			all_fighters.ordered_by!(:speed)
 
 			(1..TOTAL_ROUNDS).each do |round|
-				puts "************** Round: #{round} **************"
 				round_info = []
 
 				all_fighters.each do |fighter|
