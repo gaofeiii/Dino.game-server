@@ -121,6 +121,6 @@ end
 namespace :background do
   desc "Start background job"
   task :start, :roles => :app do
-    run "cd #{current_path} && ruby "
+    run "cd #{current_path} && ruby background/queues.rb start"
   end
 end
