@@ -6,6 +6,15 @@ module PlayerResourceHelper
 	end
 	
 	module InstanceMethods
+
+		def resources
+			{
+				:wood => wood,
+				:stone => stone,
+				:gold_coin => gold_coin
+			}
+		end
+
 		# playe.spend!(:wood => 100, :gold => 100, :gem => 10)
 		def spend!(args = {})
 			args_dup = args.dup

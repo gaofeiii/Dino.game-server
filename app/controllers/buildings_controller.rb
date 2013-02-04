@@ -122,7 +122,8 @@ class BuildingsController < ApplicationController
 
 		if err.empty?
 			@building.delete
-			render_success
+			@player = Player.new(:id => @building.player_id).gets(:wood, :stone, :gold_coin)
+			render_success(:player => @player.resources)
 		else
 			render_error(Error::NORMAL, err)
 		end

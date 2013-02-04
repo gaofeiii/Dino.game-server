@@ -43,7 +43,7 @@ class WorldMapController < ApplicationController
 				v_type = 0
 
 				if vil.nil?
-					vil = Village.new :id => 0, :name => ""
+					vil = Village.new :id => 0, :name => "", :type => [1, 2].sample
 					vil_name = I18n.t("player.empty_village_name")
 					league.name = ""
 				else
@@ -68,7 +68,8 @@ class WorldMapController < ApplicationController
 						:player_level => player.level,
 						:league_name => league.name,
 						:avatar_id => player.avatar_id,
-						:battle_power => player.battle_power
+						:battle_power => player.battle_power,
+						:village_type => vil.type
 					}
 				}
 				left_ids -= CountryDataHelper::InstanceMethods.get_nodes_matrix(vx - 2, vy - 2, 5, 5)

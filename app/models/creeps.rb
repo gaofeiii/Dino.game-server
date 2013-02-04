@@ -69,7 +69,7 @@ class Creeps < Ohm::Model
 	protected
 	def before_save
 		if index.zero?
-			self.index = x * Country::COORD_TRANS_FACTOR + y
+			self.index = x + y * Country::COORD_TRANS_FACTOR
 		end
 	end
 

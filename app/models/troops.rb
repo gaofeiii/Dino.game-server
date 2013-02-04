@@ -147,7 +147,12 @@ class Troops < Ohm::Model
 							}
 						end
 					end
+					p 'target', target
+					p '======'
+					p Ohm.redis.hgetall(player.temp_creeps_key)
+					p "target.index: #{target.index}"
 					player.del_temp_creeps(target.index)
+					p '======', Ohm.redis.hgetall(player.temp_creeps_key)
 					target.delete
 					reward
 

@@ -9,6 +9,7 @@ class Village < Ohm::Model
 	attribute :x, 									Type::Integer
 	attribute :y, 									Type::Integer
 	attribute :index, 							Type::Integer
+	attribute :type,								Type::Integer
 
 	attribute :under_attack, 				Type::Boolean
 		
@@ -26,14 +27,16 @@ class Village < Ohm::Model
 	index :x
 	index :y
 	index :country_index
+	index :type
+
+	TYPE = {
+		:normal => 1,
+		:dangerous => 2
+	}
 
 	# 获取村庄所属的玩家
 	def player
 		Player[player_id]
-	end
-
-	def type
-		0
 	end
 
 	def player_name
@@ -51,7 +54,8 @@ class Village < Ohm::Model
 			:x => x,
 			:y => y,
 			:resources => resources,
-			:country_index => country_index
+			:country_index => country_index,
+			:type => type
 		}
 
 		options = if args.include?(:all)
