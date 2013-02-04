@@ -10,6 +10,7 @@ gem 'hiredis', '~> 0.4'
 gem 'ohm', '~> 1.0'
 gem 'ohm-contrib', '~> 1.0'
 gem 'roo', '~> 1.10.1'
+gem 'daemons'
 
 group :development do
 	gem 'thin'
