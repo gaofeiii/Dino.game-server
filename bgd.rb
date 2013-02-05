@@ -1,5 +1,7 @@
-require 'daemons'
 require File.expand_path("./config/environment.rb")
+
+puts "--- RAILS_ENV: #{Rails.env} ---"
+
 Ohm.redis.quit
 Dinosaur.const
 Technology.const
@@ -15,6 +17,8 @@ Player.load_honour_const!
 Shopping.list
 Skill.const
 
+require 'daemons'
+
 options = {
 	:app_name 	=> 'dinosaur_bgd',
   :backtrace  => true,
@@ -23,10 +27,8 @@ options = {
 }
 
 Daemons.run_proc('Refreshing', options) do
-	p "starting loop..."
 	loop do
 		begin
-			p 'run Background.perform!'
 			Background.perform!
 		ensure
 			sleep(1)

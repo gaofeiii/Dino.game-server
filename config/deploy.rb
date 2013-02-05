@@ -118,7 +118,7 @@ namespace :unicorn do
   end
 end
 
-# after "unicorn:start", ":background:restart"
+after "unicorn:start", "background:restart"
 
 namespace :background do
   desc "Start background job"
