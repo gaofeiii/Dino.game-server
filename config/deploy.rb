@@ -118,9 +118,21 @@ namespace :unicorn do
   end
 end
 
+# after "unicorn:start", ":background:restart"
+
 namespace :background do
   desc "Start background job"
   task :start, :roles => :app do
-    run "cd #{current_path} && ruby background/queues.rb start"
+    run "cd #{current_path} && bundle exec ruby bgd.rb start"
+  end
+
+  desc "Stop background job"
+  task :start, :roles => :app do
+    run "cd #{current_path} && bundle exec ruby bgd.rb stop"
+  end
+
+  desc "Restart background job"
+  task :restart, :roles => :app do
+    run "cd #{current_path} && bundle exec ruby bgd.rb restart"
   end
 end

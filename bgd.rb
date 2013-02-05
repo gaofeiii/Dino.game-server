@@ -23,10 +23,11 @@ options = {
 }
 
 Daemons.run_proc('Refreshing', options) do
+	p "starting loop..."
 	loop do
 		begin
-			# Deal.clean_up!
-			Troops.all.map(&:refresh!)
+			p 'run Background.perform!'
+			Background.perform!
 		ensure
 			sleep(1)
 		end

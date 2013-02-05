@@ -199,4 +199,9 @@ class Troops < Ohm::Model
 		delete
 	end
 
+protected
+	def after_create
+		Background.add_queue(self.class, self.id, "refresh!", self.arrive_time)
+	end
+
 end
