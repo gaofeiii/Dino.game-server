@@ -94,8 +94,6 @@ class BattleModel
 						return
 					end
 
-					hp_before = dest.curr_hp
-
 					## 伤害计算模型公式
 
 					# 1 - 判断技能触发
@@ -117,7 +115,9 @@ class BattleModel
 								when :double_damage	# 双倍伤害
 									skill_effect = {:double_damage => 2.0}
 								when :stun 					# 晕眩
-									dest.stunned_count = skill.effect_value
+									if !dest.is_stunned?
+										dest.stunned_count = skill.effect_value
+									end
 								when :defense_inc_all # 增加己方防御
 									fighter.army.each do |fr|
 										fr.curr_defense = fr.curr_defense * (1 + skill.effect_value)

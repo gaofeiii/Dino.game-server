@@ -3,10 +3,22 @@ module CountryDataHelper
 	COORD_TRANS_FACTOR 	= 1000 															# 坐标的大小
 	MAP_MAX_X						= 1000
 	MAP_MAX_Y						= 1000
-	TOWN_SZ 						= {:length => 3, :width => 3} 		# 城镇节点的大小
-	GOLD_MINE_SZ 				= {:length => 3, :width => 3}			# 金矿节点的大小，默认是正方形
-	GOLD_MINE_X_RANGE		= 250..350												# 高级金矿X坐标范围
-	GOLD_MINE_Y_RANGE		= 250..350												# 高级金矿Y坐标范围
+	TOWN_SZ 						= {:length => 2, :width => 2} 		# 城镇节点的大小
+	GOLD_MINE_SZ 				= {:length => 2, :width => 2}			# 金矿节点的大小，默认是正方形
+	GOLD_MINE_X_RANGE		= 450..550												# 高级金矿X坐标范围
+	GOLD_MINE_Y_RANGE		= 450..550												# 高级金矿Y坐标范围
+
+	TYPE = {
+		:village 		=> 1,
+		:creeps 		=> 2,
+		:gold_mine 	=> 3
+	}
+
+	Point = Struct.new(:x, :y, :type) do
+		def index
+			return (self.x.to_i + (self.y.to_i * COORD_TRANS_FACTOR))
+		end
+	end
 
 	module ClassMethods
 		
@@ -148,9 +160,9 @@ module CountryDataHelper
 				empty_map_info = basic_map_info.dup
 				
 
-				# 循环每11*11个矩形格子
-				12.step(COORD_TRANS_FACTOR - 11, 11) do |x|
-					12.step(COORD_TRANS_FACTOR - 11, 11) do |y|
+				# 循环每10*10个矩形格子
+				9.step(COORD_TRANS_FACTOR - 10, 10) do |x|
+					9.step(COORD_TRANS_FACTOR - 10, 10) do |y|
 						if x.in?(GOLD_MINE_X_RANGE) && y.in?(GOLD_MINE_Y_RANGE)
 							next
 						end
@@ -244,6 +256,89 @@ module CountryDataHelper
 				self.set_empty_map_info(empty_map_info)
 			end # End of basic_map_info.nil?
 		end # End of init method.
+
+		def init_new!
+			basic_info = self.basic_map_info
+			town_nodes_info = {}
+			gold_mine_info = {}
+			hl_gold_mine_info = {}
+			empty_map_info = {}
+
+			if basic_info.nil?
+				
+				file = File.open Rails.root.join("init_data/tilemap_lgc.txt")
+				basic_info = file.read.each_char.map { |i| i = i.to_i; i = -1 if i == 1; i }
+
+				empty_map_info = basic_info.dup
+				
+				## 村落和普通金矿的位置
+				9.step(COORD_TRANS_FACTOR - 10, 28) do |x|
+					9.step(COORD_TRANS_FACTOR - 10, 28) do |y|
+						next if x > COORD_TRANS_FACTOR - 28 || y > COORD_TRANS_FACTOR - 28
+
+						points = [
+							# 1
+							Point.new(x+3, y+3, 1),
+							Point.new(x+10, y+3, 2),
+							Point.new(x+10, y+10, 1),
+							# 2
+							Point.new(x+3, y+17, 1),
+							Point.new(x+10, y+17, 2),
+							Point.new(x+10, y+24, 1),
+							# 3
+							Point.new(x+17, y+3, 1),
+							Point.new(x+24, y+3, 2),
+							Point.new(x+24, y+10, 1),
+							# 4
+							Point.new(x+17, y+17, 1),
+							Point.new(x+24, y+17, 2),
+							Point.new(x+24, y+24, 1),
+						]
+
+						town_available_nodes = []
+
+						points.each do |point|
+							if basic_info[point.index] < 0
+								next
+							end
+
+							ret = true
+							get_town_nodes(point.x, point.y).each do |node|
+								if basic_info[node] < 0
+									ret = false
+									break
+								end
+
+								e_point = Point.new(node % COORD_TRANS_FACTOR, node / COORD_TRANS_FACTOR)
+								if e_point.x.in?(GOLD_MINE_Y_RANGE) && e_point.y.in?(GOLD_MINE_Y_RANGE)
+									ret = false
+									break
+								end
+							end
+
+							if ret
+								case point.type
+								when 1
+									town_nodes_info[point.index] = TYPE[:village]
+								when 2
+									gold_mine_info[point.index] = TYPE[:gold_mine]
+								end
+							end
+
+						end # End of points
+
+					end # End of 9.step of y
+				end # End of 9.step of x
+
+				# Write to redis
+				self.set_basic_map_info(basic_map_info)
+				self.set_town_nodes_info(town_nodes_info)
+				self.set_gold_mine_info(gold_mine_info)
+				self.set_hl_gold_mine_info([])
+				self.set_empty_map_info(empty_map_info)
+
+			end # Enf of if basic_map_info.nil?
+		end
 
 		# 刷新地图野怪
 		def refresh_creeps!

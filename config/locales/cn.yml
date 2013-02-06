@@ -83,6 +83,9 @@ cn:
    dino_hp_is_zero: "不能派遣HP为0的恐龙"
    dino_is_attacking: "不能派遣正在进攻中的恐龙"
 
+  dinosaur_error:
+   not_enough_food: "食物不足"
+
   god_effect_mail:
    argriculture:
     title: "来自赛纳斯的祝福"

@@ -221,7 +221,7 @@ class Dinosaur < Ohm::Model
 		else
 			self.emotion = EMOTIONS[:normal]
 		end
-		curr_feed_point = feed_point + food.feed_point
+		curr_feed_point = feed_point + food.feed_point * count
 		curr_feed_point = curr_feed_point > hunger_time ? hunger_time : curr_feed_point
 		self.set(:feed_point, curr_feed_point)
 		food.increase(:count, -count)

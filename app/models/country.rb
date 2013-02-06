@@ -29,8 +29,8 @@ class Country < Ohm::Model
 
 	def create_gold_mines
 		self.gold_mine_info.each do |idx, map_type|
-			x = idx / COORD_TRANS_FACTOR
-			y = idx % COORD_TRANS_FACTOR
+			x = idx % COORD_TRANS_FACTOR
+			y = idx / COORD_TRANS_FACTOR
 
 			if GoldMine.find(:x => x, :y => y).blank?
 				GoldMine.create(:x => x, :y => y, :level => rand(1..2))
@@ -38,8 +38,8 @@ class Country < Ohm::Model
 		end
 
 		self.hl_gold_mine_info.each do |idx, map_type|
-			x = idx / COORD_TRANS_FACTOR
-			y = idx % COORD_TRANS_FACTOR
+			x = idx % COORD_TRANS_FACTOR
+			y = idx / COORD_TRANS_FACTOR
 
 			if GoldMine.find(:x => x, :y => y).blank?
 				GoldMine.create(:x => x, :y => y, :level => 3)
