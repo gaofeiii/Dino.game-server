@@ -8,15 +8,30 @@ module CountryDataHelper
 	GOLD_MINE_X_RANGE		= 450..550												# 高级金矿X坐标范围
 	GOLD_MINE_Y_RANGE		= 450..550												# 高级金矿Y坐标范围
 
+	SPEC_GOLD_MINE_X_RANGE = 470..530
+	SPEC_GOLD_MINE_Y_RANGE = 470..530
+
 	TYPE = {
 		:village 		=> 1,
 		:creeps 		=> 2,
 		:gold_mine 	=> 3
 	}
 
-	Point = Struct.new(:x, :y, :type) do
+	::Point = Struct.new(:x, :y, :type) do
 		def index
 			return (self.x.to_i + (self.y.to_i * COORD_TRANS_FACTOR))
+		end
+
+		def +(other)
+			self.class.new(self.x + other.x, self.y + other.y)
+		end
+
+		def ==(other)
+			if self.x == other.x && self.y == other.y
+				return true
+			else
+				return false
+			end
 		end
 	end
 
@@ -40,7 +55,8 @@ module CountryDataHelper
 		# 		end
 		# 		return $country_1_basic_map_info
 		# 	end
-		[:basic_map_info, :town_nodes_info, :gold_mine_info, :hl_gold_mine_info, :creeps_info, :empty_map_info].each do |name|
+		[:basic_map_info, :town_nodes_info, :gold_mine_info, :hl_gold_mine_info, 
+			:creeps_info, :empty_map_info].each do |name|
 		
 			define_method("#{name.to_s}_key") do
 				key[name]
@@ -117,149 +133,11 @@ module CountryDataHelper
 			return [ran_x, ran_y]
 		end
 
-		# 初始化地图信息
-		def init!
-			## 地图基本信息
-			# => 类型：数组
-			# => 数组的下标作为地图坐标的index
-			# => 0表示空，-1表示阻挡
-			basic_map_info = self.basic_map_info
-
-			## 城镇点位的信息
-			# => 类型：Hash
-			# => key为地图坐标的index
-			# => 0表示空城，1表示有人的城市
-			# => 城镇所占格子最大为3*3
-			town_nodes_info = {}
-
-			## 金矿点位的信息
-			# => 类型：Hash
-			# => key为地图坐标的index
-			# => 1表示有金矿
-			# => 金矿所占格子最大为3*3
-			gold_mine_info = {}
-
-			## 高等级金矿点位置
-			# => 类型：Hash
-			# => key为地图坐标的index
-			# => 1表示有金矿
-			# => 金矿所占格子最大为3*3
-			hl_gold_mine_info = {}
-
-			## 空白的地图坐标点
-			empty_map_info = {}
-
-			# 如果基本信息为空，从文件读取地图的基本信息
-			if basic_map_info.nil?
-				
-				file = File.open Rails.root.join("init_data/tilemap_lgc.txt")
-				basic_map_info = file.read.each_char.map { |i| i = i.to_i; i = -1 if i == 1; i }
-				# basic_map_info.each_with_index do |info, idx|
-				# 	empty_map_info[idx] = info if info >= 0
-				# end
-				empty_map_info = basic_map_info.dup
-				
-
-				# 循环每10*10个矩形格子
-				9.step(COORD_TRANS_FACTOR - 10, 10) do |x|
-					9.step(COORD_TRANS_FACTOR - 10, 10) do |y|
-						if x.in?(GOLD_MINE_X_RANGE) && y.in?(GOLD_MINE_Y_RANGE)
-							next
-						end
-
-						all_nodes = []						# 所有格子
-						town_blocked_nodes = []		# 计算城镇节点时的阻挡格子
-						town_available_nodes = []	# 可作为城镇节点的格子
-
-						# 11*11矩形格子中，最外圈不可用，即可用的为9*9
-						((x-4)..(x+4)).each do |rx|
-							((y-4)..(y+4)).each do |ry|
-								idx = rx + ry * COORD_TRANS_FACTOR # 地图节点的实际index
-								all_nodes << idx
-								t_nodes = get_town_nodes(rx, ry)
-
-								t_nodes.each do |n_idx|
-									if basic_map_info[n_idx] < 0
-										town_blocked_nodes << n_idx
-									end
-								end
-							end
-						end
-
-						# 得到所有可以作为城镇节点的格子信息
-						all_nodes.uniq!
-						town_blocked_nodes.uniq!
-						town_available_nodes = all_nodes - town_blocked_nodes
-
-						2.times do
-							town_index = town_available_nodes.sample
-							next if town_index.nil?
-							town_nodes_info[town_index] = 1
-							# town_used_nodes = get_town_nodes(town_index/COORD_TRANS_FACTOR, town_index%COORD_TRANS_FACTOR)
-							town_used_nodes = get_nodes_matrix(town_index%COORD_TRANS_FACTOR - 2, town_index/COORD_TRANS_FACTOR - 2, 5, 5) # change town matrix to 5*5
-							town_available_nodes -= town_used_nodes
-							town_used_nodes.each do |idx|
-								empty_map_info[idx] = -1
-							end
-						end
-
-						gold_available_nodes = town_available_nodes# - get_town_nodes(town_index / COORD_TRANS_FACTOR, town_index % COORD_TRANS_FACTOR)
-						gold_index = gold_available_nodes.sample
-						if not gold_index.nil?
-							gold_mine_info[gold_index] = 3
-							# gold_used_nodes = get_gold_mine_nodes(gold_index/COORD_TRANS_FACTOR, gold_index%COORD_TRANS_FACTOR)
-							gold_used_nodes = get_nodes_matrix(gold_index%COORD_TRANS_FACTOR - 2, gold_index/COORD_TRANS_FACTOR - 2, 5, 5) # change gold mine martix to 5*5
-							gold_used_nodes.each do |idx|
-								empty_map_info[idx] = -1
-							end
-						end
-						
-					end
-				end
-
-				gm_available_nodes = {}
-				gm_blocked_nodes = {}
-
-				GOLD_MINE_X_RANGE.each do |x|
-					GOLD_MINE_Y_RANGE.each do |y|
-						idx = x + y * COORD_TRANS_FACTOR
-						town_nodes_info.delete(idx)	# Just make sure no other nodes here.
-						gold_mine_info.delete(idx)	# Just make sure no other nodes here.
-
-						if x.in?([GOLD_MINE_X_RANGE.min, GOLD_MINE_X_RANGE.max]) || y.in?([GOLD_MINE_Y_RANGE.min, GOLD_MINE_Y_RANGE.max])
-							next
-						end
-
-						available = true
-						nodes_token = get_gold_mine_nodes(x, y)
-						nodes_token.each do |n_idx|
-							if basic_map_info[n_idx] < 0 || !gm_blocked_nodes[n_idx].nil?
-								available = false
-								break
-							end
-						end
-
-						if available
-							gm_available_nodes[idx] = 1
-							nodes_token.each do |n_idx|
-								gm_blocked_nodes[n_idx] = 1
-								empty_map_info[n_idx] = -1
-							end
-						end
-					end
-				end
-
-				self.set_basic_map_info(basic_map_info)
-				self.set_town_nodes_info(town_nodes_info)
-				self.set_gold_mine_info(gold_mine_info)
-				self.set_hl_gold_mine_info(gm_available_nodes)
-				self.set_empty_map_info(empty_map_info)
-			end # End of basic_map_info.nil?
-		end # End of init method.
-
+		# 初始化地图信息 NEW
 		def init_new!
 			basic_info = self.basic_map_info
 			town_nodes_info = {}
+			danger_town_nodes_info = {}
 			gold_mine_info = {}
 			hl_gold_mine_info = {}
 			empty_map_info = {}
@@ -295,8 +173,6 @@ module CountryDataHelper
 							Point.new(x+24, y+24, 1),
 						]
 
-						town_available_nodes = []
-
 						points.each do |point|
 							if basic_info[point.index] < 0
 								next
@@ -310,7 +186,7 @@ module CountryDataHelper
 								end
 
 								e_point = Point.new(node % COORD_TRANS_FACTOR, node / COORD_TRANS_FACTOR)
-								if e_point.x.in?(GOLD_MINE_Y_RANGE) && e_point.y.in?(GOLD_MINE_Y_RANGE)
+								if e_point.x.in?(GOLD_MINE_X_RANGE) && e_point.y.in?(GOLD_MINE_Y_RANGE)
 									ret = false
 									break
 								end
@@ -330,32 +206,67 @@ module CountryDataHelper
 					end # End of 9.step of y
 				end # End of 9.step of x
 
+				## 公会争夺战-危险村庄和特殊金矿的位置
+				# 二级地图中，公会战的区域为(450,450)~(550,550)
+				# 其中海的区域宽度为10的环状，危险村庄的区域为宽度为10的环状，中间60*60的区域为金矿区
+				start_point = Point.new(465, 467)
+				end_point = Point.new(535, 537)
+
+				points = []
+				start_point.x.step(end_point.x, 5) { |x| points += [Point.new(x, start_point.y + rand(-2..2)), Point.new(x, end_point.y + rand(-2..2))] }
+				start_point.y.step(end_point.y, 5) { |y| points += [Point.new(start_point.x + rand(-2..2), y), Point.new(end_point.x + rand(-2..2), y)] }
+
+				points.uniq!
+				points.each do |pt|
+					ret = true
+
+					get_town_nodes(pt.x, pt.y).each do |node|
+						if basic_info[node] < 0
+							ret = false
+							break
+						end
+					end
+
+					if ret
+						town_nodes_info[pt.index] = TYPE[:village]
+					end
+				end
+				
+				gold_start = Point[470, 470]
+				gold_end 	 = Point[530, 530]
+
+				gold_start.x.step(gold_end.x - 1, 15) do |x|
+					gold_start.y.step(gold_end.y - 1, 15) do |y|
+
+						gold_points = [
+							Point.new(x+3, y+3),
+							Point.new(x+3, y+11),
+							Point.new(x+11, y+3),
+							# Point.new(x+11, y+11),
+						]
+
+						gold_points.each do |point|
+							ret = true
+							get_gold_mine_nodes(point.x, point.y).each do |node|
+								if basic_info[node] < 0
+									ret = false
+									break
+								end
+							end
+							if ret
+								hl_gold_mine_info[point.index] = TYPE[:gold_mine]
+							end
+						end
+					end
+				end
+
 				# Write to redis
 				self.set_basic_map_info(basic_map_info)
 				self.set_town_nodes_info(town_nodes_info)
 				self.set_gold_mine_info(gold_mine_info)
-				self.set_hl_gold_mine_info([])
+				self.set_hl_gold_mine_info(hl_gold_mine_info)
 				self.set_empty_map_info(empty_map_info)
-
 			end # Enf of if basic_map_info.nil?
-		end
-
-		# 刷新地图野怪
-		def refresh_creeps!
-			creeps_info = {}
-			15.step(COORD_TRANS_FACTOR - 11, 11) do |x|
-				15.step(COORD_TRANS_FACTOR - 11, 11) do |y|
-					m_x, m_y = nil, nil 
-					until !m_x.nil? && !m_y.nil?
-						m_x, m_y = get_random_node_in_a_matrix(x, y, 9, 9)
-						m_idx = m_x + m_y * COORD_TRANS_FACTOR
-						if basic_map_info[m_idx] >= 0 && town_nodes_info[m_idx].nil? && gold_mine_info[m_idx].nil? && hl_gold_mine_info[m_idx].nil?
-							creeps_info[m_idx] = 1
-						end
-					end
-				end
-			end
-			set_creeps_info(creeps_info)
 		end
 
 

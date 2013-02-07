@@ -14,19 +14,6 @@ class Country < Ohm::Model
 		create_monsters
 	end
 
-	def create_monsters
-		creeps_info.each do |idx, val|
-			x = idx / COORD_TRANS_FACTOR
-			y = idx % COORD_TRANS_FACTOR
-
-			if Creeps.find(:x => x, :y => y).blank?
-				m_type = rand(1..4)
-				m_level = rand(1..4)
-				Creeps.create :x => x, :y => y, :type => m_type, :level => m_level
-			end
-		end
-	end
-
 	def create_gold_mines
 		self.gold_mine_info.each do |idx, map_type|
 			x = idx % COORD_TRANS_FACTOR

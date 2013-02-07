@@ -17,6 +17,7 @@ class Item < Ohm::Model
 	def use!(options = {})
 		item_info = info
 		obj = case item_category
+		# 使用恐龙蛋
 		when Item.categories[:egg]
 			dino = Dinosaur.const[item_info[:type]]
 			building_id = options[:building_id]
@@ -28,14 +29,18 @@ class Item < Ohm::Model
 														:player_id 		=> player_id,
 														:quality 			=> self.quality
 			dino.building_id = building_id if building_id
-			p dino
+
 			if dino.save
 				self.delete
 			end
 			dino
+		# 使用卷轴
 		when Item.categories[:scroll]
-			
+		when Item.categories[:vip]
+		
 		end
+		# 使用VIP礼包
+
 		return obj
 	end
 

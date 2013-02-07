@@ -37,6 +37,8 @@ class Dinosaur < Ohm::Model
 	attribute :start_time, 		Type::Integer
 	attribute :finish_time, 	Type::Integer
 
+	attribute :growth_point, 	Type::Integer
+
 	attribute :building_id
 
 	
@@ -90,7 +92,9 @@ class Dinosaur < Ohm::Model
 			:total_feed_point => property[:hunger_time],
 			:quality => quality,
 			:is_attacking => is_attacking,
-			:is_deployed => is_deployed
+			:is_deployed => is_deployed,
+			:growth_point => growth_point,
+			:max_growth_point => max_growth_point
 		}
 
 		if event_type != 0
@@ -274,6 +278,10 @@ class Dinosaur < Ohm::Model
 
 	def max_defense
 		255
+	end
+
+	def max_growth_point
+		self.level * 100
 	end
 
 	protected

@@ -74,6 +74,7 @@ DinosaurGame::Application.routes.draw do
     post 'reborn'             => 'dinosaur#reborn'
     post 'expand_capacity'    => 'dinosaur#expand_capacity'
     post 'refresh_all_dinos'  => 'dinosaur#refresh_all_dinos'
+    post 'training'           => 'dinosaur#training'
   end
   
   # 公会
