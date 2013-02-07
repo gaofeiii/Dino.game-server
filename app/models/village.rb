@@ -12,7 +12,7 @@ class Village < Ohm::Model
 	attribute :type,								Type::Integer
 
 	attribute :under_attack, 				Type::Boolean
-		
+	attribute :protection_until,		Type::Integer
 
 	attribute :player_id, 					Type::Integer
 	attribute :country_index,				Type::Integer
@@ -55,7 +55,8 @@ class Village < Ohm::Model
 			:y => y,
 			:resources => resources,
 			:country_index => country_index,
-			:type => type
+			:type => type,
+			:under_protection => under_protection
 		}
 
 		options = if args.include?(:all)
@@ -148,6 +149,10 @@ class Village < Ohm::Model
 		end
 	end
 
+	def under_protection
+		::Time.now.to_i < protection_until
+	end
+
 	protected
 
 	def before_save
@@ -156,9 +161,15 @@ class Village < Ohm::Model
 		end
 	end
 
+	def before_create
+		self.protection_until = ::Time.now.to_i + 3.day
+	end
+
+
+
 	def after_create
-		creeps = Creeps.create :x => x - 2, :y => y - 2, :is_quest_monster => true, :type => 1, :player_id => player_id
-		country.add_quest_monster(creeps.index)
+		# creeps = Creeps.create :x => x - 2, :y => y - 2, :is_quest_monster => true, :type => 1, :player_id => player_id
+		# country.add_quest_monster(creeps.index)
 
 		self.mutex do
 			if buildings.find(:type => Building.hashes[:residential]).blank?

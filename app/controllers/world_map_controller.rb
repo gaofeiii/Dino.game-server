@@ -69,7 +69,8 @@ class WorldMapController < ApplicationController
 						:league_name => league.name,
 						:avatar_id => player.avatar_id,
 						:battle_power => player.battle_power,
-						:village_type => vil.type
+						:village_type => vil.type,
+						:under_protection => vil.under_protection
 					}
 				}
 				left_ids -= CountryDataHelper::InstanceMethods.get_nodes_matrix(vx - 2, vy - 2, 5, 5)
