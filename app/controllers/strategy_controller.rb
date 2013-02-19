@@ -60,7 +60,7 @@ class StrategyController < ApplicationController
 			if creeps_info.nil?
 				nil
 			else
-				Creeps.create(creeps_info)
+				Creeps.create(creeps_info.except(:guide_creeps))
 			end
 		else
 			nil
