@@ -1,6 +1,7 @@
 class LeaguesController < ApplicationController
 
-	before_filter :validate_player, :only => [:create, :apply, :apply_list, :my_league_info, :member_list, :invite, :donate, :receive_gold]
+	before_filter :validate_player, :only => [:create, :apply, :apply_list, :my_league_info, :member_list, 
+		:invite, :donate, :receive_gold, :kick_member]
 	before_filter :validate_league, :only => [:apply, :donate]
 
 	def create
@@ -216,6 +217,32 @@ class LeaguesController < ApplicationController
 		else
 			render_error(Error::NORMAL, "Unknown League Error")
 		end
+	end
+
+	def kick_member
+		player_relation = LeagueMemberShip[Player.get(params[:player_id], :league_member_ship_id)]
+
+		if player_relation.nil?
+			render_error(Error::NORMAL, "u r not a league member") and return
+		end
+
+		if player_relation.level != LeagueMemberShip::LEVELS[:president]
+			render_error(Error::NORMAL, "only president can do it") and return
+		end
+
+		member_relation = LeagueMemberShip[Player.get(params[:member_id], :league_member_ship_id)]
+
+		if member_relation.nil?
+			render_error(Error::NORMAL, "member is not in league") and return
+		end
+
+		if member_relation.league_id.to_i != params[:league_id].to_i
+			render_error(Error::NORMAL, "you have no right to do it") and return
+		end
+
+		member_relation.delete
+
+		render_success(:player => @player.to_hash(:league))
 	end
 		
 

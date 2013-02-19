@@ -289,9 +289,9 @@ module CountryDataHelper
 		# 重新生成地图信息
 	end
 	
-	def self.included(receiver)
-		receiver.extend         ClassMethods
-		receiver.send :include, InstanceMethods
+	def self.included(model)
+		model.extend         ClassMethods
+		model.send :include, InstanceMethods
 	end
 end
 

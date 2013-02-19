@@ -361,6 +361,10 @@ class Player < Ohm::Model
   	end
   end
 
+  def is_vip?
+  	self.player_type == TYPE[:vip]
+  end
+
 	# Callbacks
 	protected
 

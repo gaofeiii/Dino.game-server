@@ -63,6 +63,7 @@ cn:
    BUILDING_HAS_BEEN_DESTROYED: "建筑已经被拆毁啦！"
    CANNOT_DESTROY_RESIDENTIAL: "至少要保留一间民居哦！"
    building_exist: "%{building_name}已经存在"
+   building_queue_is_full: "建筑工人不够哦亲！"
 
   league_error:
    league_not_found: "公会不存在"

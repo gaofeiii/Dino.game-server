@@ -17,7 +17,7 @@ class BuildingsController < ApplicationController
 			render :json => {
 				:message => Error.failed_message,
 				:error_type => Error::NORMAL,
-				:error => Error.format_message("BUILDING_QUEUE_IS_FULL")
+				:error => I18n.t('building_error.building_queue_is_full')
 			} and return
 		end
 

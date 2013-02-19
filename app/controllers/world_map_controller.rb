@@ -37,6 +37,12 @@ class WorldMapController < ApplicationController
 				vx = i % Country::COORD_TRANS_FACTOR
 				vy = i / Country::COORD_TRANS_FACTOR
 
+				vil_type = if vx.in?(Country::GOLD_MINE_X_RANGE) && vy.in?(Country::GOLD_MINE_Y_RANGE)
+					Village::TYPE[:dangerous]
+				else
+					Village::TYPE[:normal]
+				end
+
 				player = Player.new
 				league = League.new
 				vil_name = ""
@@ -49,7 +55,7 @@ class WorldMapController < ApplicationController
 				else
 					player = Player.new :id => vil.player_id
 					v_type = 1
-					player.gets(:nickname, :league_id, :avatar_id, :battle_power, :locale, :level)
+					player.gets(:nickname, :league_id, :avatar_id, :battle_power, :locale, :level, :player_type)
 					vil_name = I18n.t("player.whos_village", :player_name => player.nickname)
 					league = League.new :id => player.league_id
 
@@ -69,12 +75,13 @@ class WorldMapController < ApplicationController
 						:league_name => league.name,
 						:avatar_id => player.avatar_id,
 						:battle_power => player.battle_power,
-						:village_type => vil.type,
-						:under_protection => vil.under_protection
+						:village_type => vil_type,
+						:under_protection => vil.under_protection,
+						:is_vip => player.is_vip?
 					}
 				}
 				left_ids -= CountryDataHelper::InstanceMethods.get_nodes_matrix(vx - 2, vy - 2, 5, 5)
-				next
+				next # ids
 			end
 
 			if gold_mine_map[i].to_i > 0
@@ -131,66 +138,78 @@ class WorldMapController < ApplicationController
 
 			player = Player.new :id => params[:player_id]
 			tmp_creeps_idx = player.temp_creeps_idx & left_ids
-			
+
 			if tmp_creeps_idx.size <= 0
+				player.get :guide_info
+
+				# 如果有新手指引攻打野怪的任务，创建任务野怪
+				if player.guide_info[7][:finished] == 0
+					vil = Village.new(:id => player.gets(:village_id).village_id).gets(:x, :y)
+					guide_creeps_atts = {:x => vil.x, :y => vil.y - 3, :level => 1, :type => rand(1..4), :monster_number => 1, :guide_creeps => true}
+					player.save_creeps(guide_creeps_atts)
+				end
+
 				new_creeps_index = left_ids.sample
 				cx = new_creeps_index % Country::COORD_TRANS_FACTOR
 				cy = new_creeps_index / Country::COORD_TRANS_FACTOR
 
-				m_level = rand(1..4)
-				m_count = case m_level
-				when 1..5
-					1
-				when 6..10
-					2
-				when 11..20
-					3
-				when 20..30
-					4
-				else
-					5
-				end
-				m_type = rand(1..4)
-
-				creeps_atts = {:x => cx, :y => cy, :level => m_level, :type => m_type, :monster_number => m_count}
-				player.save_creeps(creeps_atts)
-				creeps_info << {
-					:x => cx,
-					:y => cy,
-					:info => {
-						:type => 2,
-						:id => new_creeps_index,
-						:name => "Creeps",
-						:level => m_level,
-						:monster_type => m_type,
-						:owner_name => "Creeps",
-						:monster_number => m_count,
-						:under_attack => false,
-						:is_quest_monster => true,
-						:player_id => player.id
-					}
-				}
-			else
-				tmp_creeps_idx.each do |tmp_index|
-					info = player.temp_creeps(tmp_index)
-					if info
-						creeps_info << {
-							:x => info['x'],
-							:y => info['y'],
-							:info => {
-								:type => 2,
-								:id => tmp_index,
-								:name => "Creeps",
-								:level => info['level'],
-								:monster_type => info['type'],
-								:owner_name => "Creeps",
-								:monster_number => info['monster_number'],
-								:under_attack => false,
-								:is_quest_monster => true,
-								:player_id => player.id
-							}
-						}
+				unless cx.in?(Country::GOLD_MINE_X_RANGE) && cy.in?(Country::GOLD_MINE_Y_RANGE)
+					m_level = rand(1..4)
+					m_count = case m_level
+					when 1..5
+						1
+					when 6..10
+						2
+					when 11..20
+						3
+					when 20..30
+						4
+					else
+						5
 					end
+					m_type = rand(1..4)
+
+					creeps_atts = {:x => cx, :y => cy, :level => m_level, :type => m_type, :monster_number => m_count, :guide_creeps => false}
+					player.save_creeps(creeps_atts)
+					creeps_info << {
+						:x => cx,
+						:y => cy,
+						:info => {
+							:type => 2,
+							:id => new_creeps_index,
+							:name => "Creeps",
+							:level => m_level,
+							:monster_type => m_type,
+							:owner_name => "Creeps",
+							:monster_number => m_count,
+							:under_attack => false,
+							:is_quest_monster => false,
+							:player_id => player.id
+						}
+					}
+				end
+			end
+
+			tmp_creeps_idx = player.temp_creeps_idx & left_ids # 重新读取缓存的野怪信息
+			tmp_creeps_idx.each do |tmp_index|
+				info = player.temp_creeps(tmp_index)
+				if info
+					creeps_info << {
+						:x => info['x'],
+						:y => info['y'],
+						:info => {
+							:type => 2,
+							:id => tmp_index,
+							:name => "Creeps",
+							:level => info['level'],
+							:monster_type => info['type'],
+							:owner_name => "Creeps",
+							:monster_number => info['monster_number'],
+							:under_attack => false,
+							:is_quest_monster => info['guide_creeps'],
+							:player_id => player.id
+						}
+					}
 				end
 			end
 
