@@ -1,7 +1,7 @@
 require 'ohm'
 require 'redis/connection/hiredis'
 
-worker_processes 1
+worker_processes 4
 
 application = "dinosaur"
 
