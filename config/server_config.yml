@@ -11,3 +11,10 @@ dinotest:
  account_server_ip: 106.187.91.156
  account_server_port: 10001
  info_const_version: 13
+
+a001:
+ ip: 50.112.84.136
+ port: 10002
+ account_server_ip: 50.112.84.136
+ account_server_port: 10001
+ info_const_version: 13

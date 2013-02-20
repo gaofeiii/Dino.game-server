@@ -4,16 +4,14 @@ require 'bundler/capistrano'
 
 # Server list
 @linode = "106.187.91.156"
-@ali = '110.76.45.28'
+@a001 = "50.112.84.136"
 
 # Deploy server
-@@server = :linode
+@@server = [@a001]
 
 set :rvm_ruby_string, "1.9.3@dinosaur_game"
 set :rvm_type, :user
 require "rvm/capistrano"
-
-# set :bundle_dir, '$HOME/.rvm/gems/ruby-1.9.3-p374@dinosaur_game'
 
 default_run_options[:pty] = true
 set :user, "gaofei"
@@ -30,9 +28,9 @@ set :repository,  "gitolite@106.187.91.156:dinosaur_game_server.git"
 set :scm, :git
 set :branch, "master"
 
-role :web, eval("@#{@@server}")
-role :app, eval("@#{@@server}")
-role :db,  eval("@#{@@server}"), :primary => true # This is where Rails migrations will run
+role :web, *@a001
+role :app, *@a001
+role :db,  *@a001, :primary => true # This is where Rails migrations will run
 
 # namespace :deploy do
 #   %w(start stop restart).each do |action|
@@ -71,13 +69,6 @@ namespace :nginx do
   task :restart do
     find_and_execute_task("nginx:config")
     find_and_execute_task("nginx:reload")
-  end
-end
-
-namespace :assets do
-  desc "assets:precompile"
-  task :precompile, :role => :app do
-    run "cd #{current_path} && bundle exec rake assets:precompile"
   end
 end
 
@@ -140,4 +131,9 @@ namespace :background do
   task :status, :roles => :app do
     run "cd #{current_path} && RAILS_ENV=production bundle exec ruby bgd.rb status"
   end
+end
+
+task :deploy_full do
+  find_and_execute_task("deploy")
+  find_and_execute_task("unicorn:restart")
 end
