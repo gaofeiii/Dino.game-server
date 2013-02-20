@@ -66,6 +66,7 @@ class LeaguesController < ApplicationController
 	end
 
 	def apply
+		# mail = Mail.create_league_invite_mail(:receiver_name => @friend.nickname, :player_name => @player.nickname, :league_name => @league.name, :league_id => @league.id)
 		if LeagueApply.create :player_id => @player.id, :league_id => @league.id
 			render :json => {:message => "APPLY_SUCCESS"}
 		else

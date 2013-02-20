@@ -123,16 +123,21 @@ after "unicorn:start", "background:restart"
 namespace :background do
   desc "Start background job"
   task :start, :roles => :app do
-    run "cd #{current_path} && bundle exec ruby bgd.rb start"
+    run "cd #{current_path} && RAILS_ENV=production bundle exec ruby bgd.rb start"
   end
 
   desc "Stop background job"
-  task :start, :roles => :app do
-    run "cd #{current_path} && bundle exec ruby bgd.rb stop"
+  task :stop, :roles => :app do
+    run "cd #{current_path} && RAILS_ENV=production bundle exec ruby bgd.rb stop"
   end
 
   desc "Restart background job"
   task :restart, :roles => :app do
-    run "cd #{current_path} && bundle exec ruby bgd.rb restart"
+    run "cd #{current_path} && RAILS_ENV=production bundle exec ruby bgd.rb restart"
+  end
+
+  desc "Check background status job"
+  task :status, :roles => :app do
+    run "cd #{current_path} && RAILS_ENV=production bundle exec ruby bgd.rb status"
   end
 end
