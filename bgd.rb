@@ -22,7 +22,7 @@ require 'daemons'
 options = {
 	:app_name 	=> 'dinosaur_bgd',
   :backtrace  => true,
-  :log_dir		=> "#{Rails.root}/tmp",
+  :log_dir		=> "#{Rails.root}/log",
   :log_output => true
 }
 
