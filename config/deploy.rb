@@ -28,9 +28,9 @@ set :repository,  "gitolite@106.187.91.156:dinosaur_game_server.git"
 set :scm, :git
 set :branch, "master"
 
-role :web, *@a001
-role :app, *@a001
-role :db,  *@a001, :primary => true # This is where Rails migrations will run
+role :web, *@@server
+role :app, *@@server
+role :db,  *@@server, :primary => true # This is where Rails migrations will run
 
 # namespace :deploy do
 #   %w(start stop restart).each do |action|

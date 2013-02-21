@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
 	# TODO:
 	# 试玩
 	def demo
-		result = trying(:server_id => params[:server_id])
+		result = trying(:server_ip => params[:server_ip])
 		data = if result[:success]
 			player = create_player(result[:account_id])
 			Rails.logger.debug("*** New Player_id:#{player.id} ***")
