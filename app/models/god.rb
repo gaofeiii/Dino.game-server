@@ -9,6 +9,7 @@ class God < Ohm::Model
 	attribute :type, 					Type::Integer
 	attribute :level,					Type::Integer
 	attribute :start_time, 		Type::Integer
+	attribute :end_time,			Type::Integer
 
 	index :type
 
@@ -18,13 +19,14 @@ class God < Ohm::Model
 		{
 			:type => type,
 			:level => level,
-			:start_time => start_time
+			:start_time => start_time,
+			:end_time => end_time
 		}
 	end
 
 	protected
 
 	def before_save
-		self.start_time ||= ::Time.now.to_i		
+		self.end_time = self.start_time + 1.day.to_i
 	end
 end

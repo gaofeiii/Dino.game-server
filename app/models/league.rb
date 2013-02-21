@@ -41,6 +41,7 @@ class League < Ohm::Model
 			:contribution => contribution,
 			:member_count => league_member_ships.size,
 			:xp => xp,
+			:max_xp => next_level_xp,
 			:rank => rand(1..100),
 			:gold_mine_count => rand(1..5),
 			:can_get_league_gold => harvest_gold
@@ -53,6 +54,10 @@ class League < Ohm::Model
 		end
 	end
 
+	def next_level_xp
+		self.info[:next_level_xp]
+	end
+
 	def apply_list
 		league_applys.map do |apply|
 			apply.to_hash
@@ -62,7 +67,7 @@ class League < Ohm::Model
 	def add_new_member(member)
 		membership = LeagueMemberShip.create :player_id => member.id,
 																					:league_id => self.id,
-																					:level => League.levels[:member]
+																					:level => League.positions[:member]
 		if membership
 			member.update :league_id => id, :league_member_ship_id => membership.id
 		end

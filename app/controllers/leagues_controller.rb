@@ -98,7 +98,7 @@ class LeaguesController < ApplicationController
 				player = apply.player
 				membership = LeagueMemberShip.create 	:player_id => apply.player_id,
 																							:league_id => apply.league_id,
-																							:level => League.levels[:member]
+																							:level => League.positions[:member]
 				player.update :league_id => apply.league_id, :league_member_ship_id => membership.id
 				render :json => {
 					:player => {
