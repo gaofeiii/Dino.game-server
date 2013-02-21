@@ -136,6 +136,31 @@ class MailsController < ApplicationController
 			else
 				render_error(Error::NORMAL, I18n.t('general.server_busy'))
 			end
+		when Mail::SYS_TYPE[:league_apply]
+			league = League[mail.cached_data[:league_id]]
+			if league.nil?
+				render_error(Error::NORMAL, I18n.t('league_error.league_not_found')) and return
+			end
+
+			member = Player[mail.cached_data[:player_id]]
+			if member.nil?
+				render_error(Error::NORMAL, I18n.t("league_error.member_does_not_exist")) and return
+			end
+
+			if member.league_id.to_i == league.id
+				render_error(Error::NORMAL, I18n.t("league_error.member_already_join_in")) and return
+			end
+
+			unless member.league_id.blank?
+				render_error(Error::NORMAL, I18n.t('league_error.member_already_in_a_league')) and return
+			end
+
+			if league.add_new_member(member)
+				render_success(:player => @player.to_hash(:league), :result => I18n.t('general.accept_member_success'))
+			else
+				render_error(Error::NORMAL, I18n.t('general.server_busy'))
+			end
+
 		else
 			render_error(Error::NORMAL, I18n.t('general.server_busy'))
 		end

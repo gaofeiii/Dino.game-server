@@ -15,6 +15,8 @@ en:
    not_enough_gold: "金币不足"
    not_enough_res: "资源不足"
    get_league_gold_success: "恭喜你！成功领取%{gold_count}金币！"
+   apply_league_success: "申请加入部落成功！"
+   apply_league_fail: "申请加入部落失败"
 
   player:
    whos_village: "%{player_name}的村庄"
@@ -78,6 +80,10 @@ en:
    already_in_this_league: "你已经加入公会：[%{league_name}]"
    not_in_a_league: "您还没有加入公会。"
    contribution_count_is_zero: "公会贡献值不足"
+   member_already_in_a_league: "该玩家已经加入其他公会了"
+   member_already_join_in: "该玩家已经加入公会"
+   member_does_not_exist: "玩家不存在"
+   accept_member_success: "加入公会成功"
 
   friends_error:
    already_add_friend: "%{friend_name}已经是你的好友了！"

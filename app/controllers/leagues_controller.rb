@@ -66,11 +66,19 @@ class LeaguesController < ApplicationController
 	end
 
 	def apply
-		# mail = Mail.create_league_invite_mail(:receiver_name => @friend.nickname, :player_name => @player.nickname, :league_name => @league.name, :league_id => @league.id)
-		if LeagueApply.create :player_id => @player.id, :league_id => @league.id
-			render :json => {:message => "APPLY_SUCCESS"}
+		@president = @league.president
+		mail = Mail.create_league_apply_mail  :president 		=> @president.nickname,
+																					:player_name 	=> @player.nickname,
+																					:player_id 		=> @player.id,
+																					:league_id 		=> @league.id,
+																					:league_name 	=> @league.name,
+																					:locale 			=> @president.locale,
+																					:receiver_id	=> @president.id
+
+		if mail
+			render_success
 		else
-			render :json => {:message => "APPLY_FAILED"}
+			render_error(Error::NORMAL, I18n.t('general.apply_league_fail'))
 		end
 	end
 

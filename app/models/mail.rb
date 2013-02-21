@@ -9,7 +9,8 @@ class Mail < Ohm::Model
 		:normal => 1,
 		:battle_report => 2,
 		:friend_invite => 3,
-		:league_invite => 4
+		:league_invite => 4,
+		:league_apply	 => 5
 	}
 
 	include Ohm::DataTypes
@@ -84,6 +85,25 @@ class Mail < Ohm::Model
 								:receiver_name 	=> args[:receiver_name],
 								:title 					=> I18n.t("mail.league_invitation.title", :league_name => args[:league_name], :locale => args[:locale]),
 								:content 				=> I18n.t('mail.league_invitation.content', :locale => args[:locale], :player_name => args[:player_name], :league_name => args[:league_name]),
+								:cached_data 		=> {:player_id => args[:player_id], :receiver_id => args[:receiver_id], :league_id => args[:league_id]}
+	end
+
+	# args = {
+	# 	:president 		=> 'xxx',
+	# 	:player_id		=> 1,
+	# 	:player_name 	=> 'xxx',
+	# 	:league_id		=> 1
+	# 	:league_name 	=> 'xxx',
+	# 	:locale 			=> 'en'
+	# }
+	def self.create_league_apply_mail(args = {})
+		return if args.blank?
+		self.create :mail_type 			=> TYPE[:system],
+								:sys_mail_type 	=> SYS_TYPE[:league_apply],
+								:sender_name 		=> I18n.t('system', :locale => args[:locale]),
+								:receiver_name 	=> args[:president],
+								:title 					=> I18n.t("mail.league_application.title", :locale => args[:locale]),
+								:content 				=> I18n.t('mail.league_application.content', :locale => args[:locale], :player_name => args[:player_name], :league_name => args[:league_name]),
 								:cached_data 		=> {:player_id => args[:player_id], :receiver_id => args[:receiver_id], :league_id => args[:league_id]}
 	end
 
