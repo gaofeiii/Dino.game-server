@@ -4,7 +4,8 @@ class ResearchController < ApplicationController
 
 	def research
 		if @player.curr_research_queue_size >= @player.total_research_queue_size
-			render_error(Error::NORMAL, "research queue is full") and return
+			render_success(:player => @player.to_hash(:techs), :info => I18n.t('research_error.research_queue_full'))
+			return
 		end
 
 		tech = @player.technologies.find(:type => params[:tech_type].to_i).first
@@ -14,7 +15,8 @@ class ResearchController < ApplicationController
 		end
 
 		unless tech.research_finished?
-			render_error(Error::NORMAL, "Researching not complete") and return
+			render_success(:player => @player.to_hash(:techs), :info => I18n.t('research_error.research_not_complete'))
+			return
 		end
 		
 		if @player.spend!(tech.next_level[:cost])
@@ -54,8 +56,6 @@ class ResearchController < ApplicationController
 		if tech.nil?
 			tech = Technology.create :type => params[:tech_type].to_i, :level => 0, :player_id => @player.id
 		end
-
-		p "--- gem: #{tech.speed_up_cost}"
 
 		if @player.spend!(tech.speed_up_cost)
 			tech.speed_up!

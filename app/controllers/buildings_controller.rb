@@ -6,19 +6,23 @@ class BuildingsController < ApplicationController
 
 	def create
 		b_type = params[:building_type].to_i
-		# check if this kind of building existed
-		if !b_type.in?(Building.resource_building_types) && @village.buildings.find(:type => b_type = params[:building_type].to_i).any?
-			render_error Error::NORMAL, I18n.t("building_error.building_exist", :building_name => Building.get_locale_name_by_type(b_type))
-			return
-		end
 		@player = @village.player
 
+		# check if this kind of building existed
+		if !b_type.in?(Building.resource_building_types) && @village.buildings.find(:type => b_type).any?
+			error_msg = I18n.t("building_error.building_exist", :building_name => Building.get_locale_name_by_type(b_type))
+			render_success(:player => @player.to_hash(:village), :info => error_msg)
+			return
+		end		
+
 		if @player.curr_action_queue_size >= @player.action_queue_size
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error::NORMAL,
-				:error => I18n.t('building_error.building_queue_is_full')
-			} and return
+			# render :json => {
+			# 	:message => Error.failed_message,
+			# 	:error_type => Error::NORMAL,
+			# 	:error => I18n.t('building_error.building_queue_is_full')
+			# } and return
+			render_success(:player => @player.to_hash(:village), :info => I18n.t('building_error.building_queue_is_full'))
+			return
 		end
 
 		unless b_type.in?(Building.types)
@@ -45,11 +49,7 @@ class BuildingsController < ApplicationController
 			}
 			render :json => data
 		else
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error::NORMAL,
-				:error => Error.format_message('NOT_ENOUGH_RESOURCES')
-			}
+			render_error(Error::NORMAL, I18n.t('general.not_enough_res'))
 		end
 	end
 
@@ -65,21 +65,14 @@ class BuildingsController < ApplicationController
 		end
 
 		if @building.status >= 2
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error::NORMAL,
-				:error => Error.format_message("BUILDING_IS_FINISHED")
-			} and return
+			render_success(:player => @player.to_hash(:village), :info => I18n.t('building_error.building_finished'))
+			return
 		end
 
 		if @player.spend!(:gems => @building.build_speed_up_gem_cost)
 			@building.update :status => 2, :start_building_time => 0
 		else
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error::NORMAL,
-				:error => Error.format_message("NOT_ENOUGH_SUNS")
-			} and return
+			render_error(Error::NORMAL, I18n.t('general.not_enough_gems')) and return
 		end
 		data = {
 			:player => @player.to_hash.merge(
@@ -101,11 +94,7 @@ class BuildingsController < ApplicationController
 		if @building.update :x => coord_x, :y => coord_y
 			render :json => {:message => Error.success_message}
 		else
-			render :json => {
-				:message => Error.failed_message, 
-				:error_type => Error::NORMAL,
-				:error => Error.format_message("invalid coordinate")
-			}
+			render_error(Error::NORMAL, I18n.t('building_error.invalid_coords'))
 		end
 	end
 
@@ -115,9 +104,9 @@ class BuildingsController < ApplicationController
 
 		err = ""
 		if @building.nil?
-			err= I18n.t("building_error.BUILDING_HAS_BEEN_DESTROYED")
+			err= I18n.t("building_error.building_destroyed")
 		elsif @building.type == Building.hashes[:residential] && vil.buildings.find(:type => @building.type).size < 2
-			err = I18n.t("building_error.CANNOT_DESTROY_RESIDENTIAL")
+			err = I18n.t("building_error.keep_one_residential")
 		end
 
 		if err.empty?
