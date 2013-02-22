@@ -37,7 +37,14 @@ class Item < Ohm::Model
 		# 使用卷轴
 		when Item.categories[:scroll]
 		when Item.categories[:vip]
-		
+			player.player_type = Player::TYPE[:vip]
+			now = Time.now.to_i
+			if now > player.vip_expired_time
+				player.vip_expired_time = now + 1.month.to_i
+			else
+				player.vip_expired_time += 1.month.to_i
+			end
+			player.save
 		end
 		# 使用VIP礼包
 

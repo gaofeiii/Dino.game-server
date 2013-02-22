@@ -157,8 +157,8 @@ DinosaurGame::Application.routes.draw do
 
   # 排行榜
   scope :path => 'rank', :as => 'rank' do
-    post 'score_rank'     => 'rank#score_rank'
-    post 'battle_rank'    => 'rank#battle_rank'
+    post 'player_rank'    => 'rank#player_rank'
+    post 'league_rank'    => 'rank#league_rank'
   end
 
   # 防守策略

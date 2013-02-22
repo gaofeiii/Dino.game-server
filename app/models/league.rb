@@ -14,6 +14,8 @@ class League < Ohm::Model
 	attribute :contribution, 	Type::Integer
 	attribute :xp,			Type::Integer
 
+	attribute :total_battle_power, 	Type::Integer
+
 	collection :members, Player
 	collection :league_member_ships, LeagueMemberShip
 	collection :league_applys, LeagueApply
@@ -81,6 +83,31 @@ class League < Ohm::Model
 		league_member_ships.map(&:delete)
 		league_applys.map(&:delete)
 		self.delete
+	end
+
+	def self.battle_rank(count = 20)
+		result = []
+
+		League.all.sort_by(:total_battle_power, :order => "DESC", :limit => [0, count]).each_with_index do |league|
+			result << {
+				:id => league.id,
+				:name => league.name,
+				:total_battle_power => league.total_battle_power,
+				:level => league.level,
+				:member_count => league_member_ships.size
+			}
+		end
+
+		return result
+	end
+
+	def self.refresh_league_battle_power
+		self.all.each do |league|
+			record = league.members.ids.sum do |member_id|
+				db.hget("Player:#{member_id}", :battle_power).to_i
+			end
+			league.update :total_battle_power => record if league.total_battle_power != record
+		end
 	end
 
 	protected

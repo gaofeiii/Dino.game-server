@@ -67,12 +67,14 @@ class GoldMine < Ohm::Model
 
 	def to_hash
 		hash = {
+			:id => id,
 			:x => x,
 			:y => y,
 			:type => type,
 			:level => level,
 			:gold_output => GoldMine.gold_output(level),
-			:owner => owner_name
+			:owner => owner_name,
+			:owner_id => player_id.to_i
 		}
 		stra = Strategy[strategy_id]
 		hash[:strategy] = stra.to_hash if stra

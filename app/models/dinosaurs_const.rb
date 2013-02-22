@@ -2,6 +2,7 @@ module DinosaursConst
 	module ClassMethods
 		@@dinosaurs_const = Hash.new
 		@@dinosaurs_exp = Hash.new
+		@@dinosaurs_gold_cost = Hash.new
 
 		%w(const exp).each do |name|
 			define_method(name) do
@@ -21,6 +22,8 @@ module DinosaursConst
 		def reload!
 			@@dinosaurs_const.clear
 			@@dinosaurs_exp.clear
+			@@dinosaurs_gold_cost.clear
+
 
 			book = Excelx.new "#{Rails.root}/const/dinosaurs.xlsx"
 
@@ -30,7 +33,9 @@ module DinosaursConst
 			2.upto(52) do |i|
 				level = book.cell(i, "A").to_i
 				exp = book.cell(i, 'B').to_i
+				gold_cost = book.cell(i, 'D').to_i
 				@@dinosaurs_exp[level] = exp
+				@@dinosaurs_gold_cost[level] = gold_cost
 			end
 
 

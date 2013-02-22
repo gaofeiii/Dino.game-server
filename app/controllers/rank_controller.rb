@@ -1,10 +1,11 @@
 class RankController < ApplicationController
 
-	def score_rank
-		
+	def player_rank
+		render_success(:players => Player.battle_rank)
 	end
 
-	def battle_rank
-		
+	def league_rank
+		render_success(:leagues => League.battle_rank)
 	end
+
 end

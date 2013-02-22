@@ -29,6 +29,17 @@ class ItemsController < ApplicationController
 		elsif @item.item_category == Item.categories[:lottery]
 			rwd = LuckyReward.rand_one(@item.item_type)
 			render_success(:reward => rwd, :category => @item.item_category) and return
+
+		elsif @item.item_category == Item.categories[:vip]
+			@player.player_type = Player::TYPE[:vip]
+			now = Time.now.to_i
+			if now > @player.vip_expired_time
+				@player.vip_expired_time = now + 1.month.to_i
+			else
+				@player.vip_expired_time += 1.month.to_i
+			end
+			@player.save
+			@item.delete
 		else
 			render_error(Error::NORMAL, "ITEMS_NOT_DEFINED") and return
 		end

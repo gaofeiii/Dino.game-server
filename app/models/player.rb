@@ -51,6 +51,7 @@ class Player < Ohm::Model
 
 	attribute :dinosaurs_capacity, 		Type::Integer
 
+	attribute :vip_expired_time, 	Type::Integer
 
 	collection :dinosaurs, 				Dinosaur
 	collection :technologies, 		Technology
@@ -78,6 +79,14 @@ class Player < Ohm::Model
 
 	def is_npc?
 		player_type == TYPE[:npc]
+	end
+
+	def is_vip?
+		player_type == TYPE[:vip]
+	end
+
+	def self.none_npc
+		self.find(:player_type => TYPE[:normal]).union(:player_type => TYPE[:vip])
 	end
 
 	def village
@@ -377,6 +386,7 @@ class Player < Ohm::Model
 		self.level = 1 if (level.nil? or level == 0)
 		self.avatar_id = 1 if avatar_id.zero?
 		self.country_id = Country.first.id
+		self.vip_expired_time = ::Time.now.to_i
 	end
 
 	def after_create
