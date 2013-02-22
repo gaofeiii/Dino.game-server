@@ -136,7 +136,7 @@ class WorldMapController < ApplicationController
 		if Player.exists?(params[:player_id])
 			left_ids.select!{ |idx| country.empty_map_info[idx] >= 0 }
 
-			player = Player.new :id => params[:player_id]
+			player = Player.new(:id => params[:player_id]).gets(:adapt_level)
 			tmp_creeps_idx = player.temp_creeps_idx & left_ids
 
 			if tmp_creeps_idx.size <= 0
@@ -154,15 +154,15 @@ class WorldMapController < ApplicationController
 				cy = new_creeps_index / Country::COORD_TRANS_FACTOR
 
 				unless cx.in?(Country::GOLD_MINE_X_RANGE) && cy.in?(Country::GOLD_MINE_Y_RANGE)
-					m_level = rand(1..4)
-					m_count = case m_level
-					when 1..5
+					m_level = rand(1..player.adapt_level)
+					m_count = case player.adapt_level
+					when 1
 						1
-					when 6..10
+					when 2..5
 						2
-					when 11..20
+					when 6..15
 						3
-					when 20..30
+					when 16..35
 						4
 					else
 						5

@@ -31,6 +31,8 @@ class Player < Ohm::Model
 	attribute :account_id, 		Type::Integer
 	attribute :nickname
 	attribute :level, 				Type::Integer
+
+	attribute :adapt_level,		Type::Integer
 	
 	attribute :experience, 		Type::Integer
 	attribute :device_token
@@ -370,8 +372,14 @@ class Player < Ohm::Model
   	end
   end
 
-  def is_vip?
-  	self.player_type == TYPE[:vip]
+  def update_adapt_level
+  	dino_ids = self.dinosaurs.ids
+  	return false if dino_ids.size <= 0
+  	new_level = dino_ids.sum{|dino_id| db.hget("Dinosaur:#{dino_id}", :level).to_i} / dino_ids.size
+  	if new_level <= 0
+  		new_level = 1
+  	end
+  	self.set :adapt_level, new_level
   end
 
 	# Callbacks
@@ -384,9 +392,10 @@ class Player < Ohm::Model
 		self.wood = 5000
 		self.stone = 5000
 		self.level = 1 if (level.nil? or level == 0)
-		self.avatar_id = 1 if avatar_id.zero?
+		self.avatar_id = rand(1..12) if avatar_id.zero?
 		self.country_id = Country.first.id
 		self.vip_expired_time = ::Time.now.to_i
+		self.adapt_level = 1 if adapt_level.zero?
 	end
 
 	def after_create

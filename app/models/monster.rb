@@ -59,14 +59,3 @@ class Monster < Ohm::Model
 	end
 
 end
-
-# class Monster < Dinosaur
-# 	attribute :creeps_id
-# 	index :creeps_id
-# 	reference :gold_mine, 	GoldMine
-
-# 	protected
-# 	def after_create
-		
-# 	end
-# end

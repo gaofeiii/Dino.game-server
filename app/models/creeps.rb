@@ -52,7 +52,7 @@ class Creeps < Ohm::Model
 				3
 			when 16..35
 				4
-			when 36..60
+			when 36..80
 				5
 			else
 				1
