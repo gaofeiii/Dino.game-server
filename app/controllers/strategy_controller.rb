@@ -57,6 +57,7 @@ class StrategyController < ApplicationController
 		elsif params[:creeps_id]
 			# Creeps[params[:creeps_id]]
 			creeps_info = @player.temp_creeps(params[:creeps_id])
+			p "creeps_info", creeps_info
 			if creeps_info.nil?
 				nil
 			else
@@ -65,6 +66,8 @@ class StrategyController < ApplicationController
 		else
 			nil
 		end
+
+		p target
 
 		if target.blank?
 			render_error(Error::NORMAL, "Invalid target") and return

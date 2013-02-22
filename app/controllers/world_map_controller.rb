@@ -155,7 +155,7 @@ class WorldMapController < ApplicationController
 
 				unless cx.in?(Country::GOLD_MINE_X_RANGE) && cy.in?(Country::GOLD_MINE_Y_RANGE)
 					m_level = rand(1..player.adapt_level)
-					m_count = case player.adapt_level
+					m_count = case m_level
 					when 1
 						1
 					when 2..5
@@ -170,6 +170,7 @@ class WorldMapController < ApplicationController
 					m_type = rand(1..4)
 
 					creeps_atts = {:x => cx, :y => cy, :level => m_level, :type => m_type, :monster_number => m_count, :guide_creeps => false}
+
 					player.save_creeps(creeps_atts)
 					creeps_info << {
 						:x => cx,
