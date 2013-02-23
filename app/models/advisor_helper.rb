@@ -13,7 +13,7 @@ module AdvisorHelper
 			puts "--- Loading advisors const ---"
 			@@advisor_const.clear
 
-			book = Excelx.new "#{Rails.root}/const/advisors.xlsx"
+			book = Roo::Excelx.new "#{Rails.root}/const/advisors.xlsx"
 
 			2.upto(book.last_row) do |i|
 				lvl = book.cell(i, 'a').to_i

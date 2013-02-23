@@ -13,7 +13,7 @@ module LeagueConst
 		def load_const!
 			@@const.clear
 
-			book = Excelx.new("#{Rails.root}/const/league_const.xlsx")
+			book = Roo::Excelx.new("#{Rails.root}/const/league_const.xlsx")
 			book.default_sheet = 'league'
 
 			4.upto(book.last_row) do |i|

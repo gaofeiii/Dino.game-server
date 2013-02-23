@@ -261,7 +261,8 @@ class Player < Ohm::Model
 	# The size of building or researching queue.
 	def action_queue_size
 		#db.sinterstore("Building:indices:village_id:#{village_id}", "Building:indices:type:#{Building.hashes[:residential]}").to_i
-		village.buildings.find(:type => Building.hashes[:residential], :status => Building::STATUS[:finished]).size
+		bd_size = village.buildings.find(:type => Building.hashes[:residential], :status => Building::STATUS[:finished]).size
+		self.tech_worker_number * bd_size
 	end
 
 	def curr_research_queue_size

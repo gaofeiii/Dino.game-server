@@ -21,7 +21,7 @@ module MonsterConst
 
 		def load_const!
 			@@monster_const.clear
-			book = Excelx.new("#{Rails.root}/const/monsters.xlsx")
+			book = Roo::Excelx.new("#{Rails.root}/const/monsters.xlsx")
 
 			book.default_sheet = '野怪数值'
 

@@ -67,7 +67,7 @@ module DailyQuest
 			@@daily_quest_info.clear
 			@@daily_quest_info = {:data => {}}
 
-			book = Excelx.new("#{Rails.root}/const/daily_quest.xlsx")
+			book = Roo::Excelx.new("#{Rails.root}/const/daily_quest.xlsx")
 
 			# Read basic data
 			book.default_sheet = 'data'

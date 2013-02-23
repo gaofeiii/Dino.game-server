@@ -28,7 +28,7 @@ module ItemsConst
 		def load_const!
 			@@const.clear
 
-			book = Excelx.new("#{Rails.root}/const/items.xlsx")
+			book = Roo::Excelx.new("#{Rails.root}/const/items.xlsx")
 
 			book.default_sheet = "dino_egg"
 			2.upto(book.last_row) do |i|

@@ -280,10 +280,6 @@ class Dinosaur < Ohm::Model
 		255
 	end
 
-	def max_growth_point
-		self.level * 100
-	end
-
 	protected
 
 	def before_save

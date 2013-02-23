@@ -22,7 +22,13 @@ module RankModel
 	module InstanceMethods
 		
 		def to_rank_hash
-			
+			{
+				:id => id,
+				:rank => 1,
+				:battle_power => battle_power,
+				:nickname => nickname,
+				:level => level
+			}
 		end
 	end
 	

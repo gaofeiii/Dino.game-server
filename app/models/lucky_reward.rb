@@ -35,7 +35,7 @@ class LuckyReward
 				2 => {},
 				3 => {}
 			}
-			book = Excelx.new "#{Rails.root}/const/抽奖.xlsx"
+			book = Roo::Excelx.new "#{Rails.root}/const/抽奖.xlsx"
 
 			@@const[1] = read_sheet(book, '奖券1')
 			@@const[2] = read_sheet(book, '奖券2')

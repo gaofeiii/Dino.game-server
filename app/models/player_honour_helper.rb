@@ -9,7 +9,7 @@ module PlayerHonourHelper
 			@@honour_scores_asc.clear
 			@@honour_scores_desc.clear
 			@@honour_gold_cost = [0]
-			book = Excelx.new "#{Rails.root}/const/honour_match.xlsx"
+			book = Roo::Excelx.new "#{Rails.root}/const/honour_match.xlsx"
 
 			book.default_sheet = "calc"
 			2.upto(book.last_row) do |i|

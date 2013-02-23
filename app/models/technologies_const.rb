@@ -61,7 +61,7 @@ module TechnologiesConst
 			@@tech_types.clear
 			@@tech_names.clear
 
-			book = Excelx.new "#{Rails.root}/const/technologies.xlsx"
+			book = Roo::Excelx.new "#{Rails.root}/const/technologies.xlsx"
 
 			book.default_sheet = 'define'
 			definition = Hash.new

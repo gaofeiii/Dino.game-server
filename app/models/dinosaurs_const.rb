@@ -2,7 +2,7 @@ module DinosaursConst
 	module ClassMethods
 		@@dinosaurs_const = Hash.new
 		@@dinosaurs_exp = Hash.new
-		@@dinosaurs_gold_cost = Hash.new
+		@@dinosaurs_training_info = Hash.new
 
 		%w(const exp).each do |name|
 			define_method(name) do
@@ -22,10 +22,10 @@ module DinosaursConst
 		def reload!
 			@@dinosaurs_const.clear
 			@@dinosaurs_exp.clear
-			@@dinosaurs_gold_cost.clear
+			@@dinosaurs_training_info.clear
 
 
-			book = Excelx.new "#{Rails.root}/const/dinosaurs.xlsx"
+			book = Roo::Excelx.new "#{Rails.root}/const/dinosaurs.xlsx"
 
 			# ===Reading experiece===
 			book.default_sheet = 'experience'
@@ -34,8 +34,15 @@ module DinosaursConst
 				level = book.cell(i, "A").to_i
 				exp = book.cell(i, 'B').to_i
 				gold_cost = book.cell(i, 'D').to_i
+				growth_inc = book.cell(i, 'C').to_i
+				max_growth = book.cell(i, 'G').to_i
 				@@dinosaurs_exp[level] = exp
-				@@dinosaurs_gold_cost[level] = gold_cost
+				@@dinosaurs_training_info[level] = {
+					:gold => gold_cost,
+					:max_growth => max_growth,
+					:growth_inc => growth_inc
+				}
+
 			end
 
 
@@ -99,6 +106,13 @@ module DinosaursConst
 			@@dinosaurs_const
 		end
 
+		def training_info
+			if @@dinosaurs_training_info.blank?
+				reload!
+			end
+			@@dinosaurs_training_info
+		end
+
 
 	end
 	
@@ -144,6 +158,18 @@ module DinosaursConst
 
 		def xp
 			self.level * 10
+		end
+
+		def max_growth_point
+			self.class.training_info[level + 1][:max_growth]
+		end
+
+		def training_growth
+			self.class.training_info[level + 1][:growth_inc]
+		end
+
+		def training_cost
+			self.class.training_info[level + 1][:gold]
 		end
 	end
 	

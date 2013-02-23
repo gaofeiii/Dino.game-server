@@ -7,7 +7,7 @@ module PlayerExp
 		def load_exps!
 			@@exps.clear
 
-			book = Excelx.new("#{Rails.root}/const/exps.xlsx")
+			book = Roo::Excelx.new("#{Rails.root}/const/exps.xlsx")
 			book.default_sheet = '玩家升级所需经验'
 
 			2.upto(book.last_row).each do |i|

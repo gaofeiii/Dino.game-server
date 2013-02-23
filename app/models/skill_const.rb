@@ -20,7 +20,7 @@ module SkillConst
 		end
 
 		def reload!
-			book = Excelx.new("#{Rails.root}/const/dinosaurs.xlsx")
+			book = Roo::Excelx.new("#{Rails.root}/const/dinosaurs.xlsx")
 			book.default_sheet = "skill_avai"
 
 			2.upto(12) do |i|

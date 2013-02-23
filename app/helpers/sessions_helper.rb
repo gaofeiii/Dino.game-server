@@ -1,3 +1,5 @@
+require 'net/http'
+
 module SessionsHelper
 	
 	# 与账户服务器交互的方法	

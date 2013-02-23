@@ -57,7 +57,7 @@ module BuildingConst
 			@@building_keys.clear
 			@@building_hashes.clear
 
-			book = Excelx.new("#{Rails.root}/const/buildings.xlsx")
+			book = Roo::Excelx.new("#{Rails.root}/const/buildings.xlsx")
 
 			book.default_sheet = "建造列表"
 

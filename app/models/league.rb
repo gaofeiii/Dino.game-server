@@ -88,13 +88,14 @@ class League < Ohm::Model
 	def self.battle_rank(count = 20)
 		result = []
 
-		League.all.sort_by(:total_battle_power, :order => "DESC", :limit => [0, count]).each_with_index do |league|
+		League.all.sort_by(:total_battle_power, :order => "DESC", :limit => [0, count]).each_with_index do |league, idx|
 			result << {
+				:rank => idx + 1,
 				:id => league.id,
 				:name => league.name,
 				:total_battle_power => league.total_battle_power,
 				:level => league.level,
-				:member_count => league_member_ships.size
+				:member_count => league.league_member_ships.size
 			}
 		end
 

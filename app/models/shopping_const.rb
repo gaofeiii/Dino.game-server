@@ -39,7 +39,7 @@ module ShoppingConst
 				:lottery => []
 
 			}
-			book = Excelx.new("#{Rails.root}/const/shopping_list.xlsx")
+			book = Roo::Excelx.new("#{Rails.root}/const/shopping_list.xlsx")
 
 			book.default_sheet = "宝石"
 			2.upto(book.last_row).each do |i|
