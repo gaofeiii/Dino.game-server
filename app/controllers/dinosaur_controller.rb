@@ -29,7 +29,7 @@ class DinosaurController < ApplicationController
 		count = count > 0 ? count : 1
 
 		if (@dinosaur.hunger_time - @dinosaur.feed_point) < 10
-			render :json => {:error => "BABY_IS_FULL"} and return
+			render :json => {:error => I18n.t('dinosaur_error.dinosaur_is_full')} and return
 		end
 
 		if food.nil? || food.count <= 0 || count > food.count
@@ -84,7 +84,7 @@ class DinosaurController < ApplicationController
 
 	def release
 		if @dinosaur.status == Dinosaur::STATUS[:egg]
-			render_error(Error::NORMAL, "CANNOT_RELEASE_HATCHING_DINO") and return
+			render_error(Error::NORMAL, I18n.t('dinosaur_error.cannot_release_hatching_dino')) and return
 		end
 
 		Ohm.redis.sadd("Player:#{@dinosaur.player_id}:released_dinosaurs", @dinosaur.id)
@@ -97,7 +97,7 @@ class DinosaurController < ApplicationController
 			@player.increase :dinosaurs_capacity
 			render_success(:player => @player.to_hash)
 		else
-			render_error(Error::NORMAL, "NOT_ENOUGH_GEMS")
+			render_error(Error::NORMAL, I18n.t('general.not_enough_gems'))
 		end
 	end
 
@@ -107,12 +107,16 @@ class DinosaurController < ApplicationController
 
 	def training
 		@dinosaur = Dinosaur[params[:dinosaur_id]]
+
+		if @dinosaur.growth_point >= @dinosaur.max_growth_point
+			render_error(Error::NORMAL, I18n.t('dinosaur_error.reach_max_growth_point')) and return
+		end
 		
 		if @player.spend!(:gold => 100)
-			@dinosaur.increase(:growth_point, 10)
+			@dinosaur.increase(:growth_point, @dinosaur.training_growth)
 			render_success(:growth_point => @dinosaur.growth_point)
 		else
-			render_error(Error::NORMAL, "Not enough gold")
+			render_error(Error::NORMAL, I18n.t('general.not_enough_gold'))
 		end
 	end
 end

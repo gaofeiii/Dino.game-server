@@ -28,9 +28,6 @@ cn:
    gold_coin: "金币"
    gems: "宝石"
 
-  deals_error:
-   not_enough_gold: "金币不足"
-
   god:
    full_name:
     argriculture: "农业之神-赛纳斯"
@@ -99,6 +96,9 @@ cn:
 
   dinosaur_error:
    not_enough_food: "食物不足"
+   reach_max_growth_point: "恐龙的成长已达到最大值"
+   cannot_release_hatching_dino: "不能放生正在孵化的恐龙"
+   dinosaur_is_full: "恐龙已经喂饱了哦"
 
   god_effect_mail:
    argriculture:
