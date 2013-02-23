@@ -57,7 +57,6 @@ class StrategyController < ApplicationController
 		elsif params[:creeps_id]
 			# Creeps[params[:creeps_id]]
 			creeps_info = @player.temp_creeps(params[:creeps_id])
-			p "creeps_info", creeps_info
 			if creeps_info.nil?
 				nil
 			else
@@ -67,14 +66,18 @@ class StrategyController < ApplicationController
 			nil
 		end
 
-		p target
-
 		if target.blank?
 			render_error(Error::NORMAL, "Invalid target") and return
 		end
 
-		if target.is_a?(Village) && target.player_id.to_i == @player.id
-			render_error(Error::NORMAL, "Cannot attack your own village") and return
+		if target.is_a?(Village)
+			if target.player_id.to_i == @player.id
+				render_error(Error::NORMAL, "Cannot attack your own village") and return
+			end
+
+			if target.under_protection
+				render_error(Error::NORMAL, "Village is under protection") and return
+			end
 		end
 
 		if target.is_a?(GoldMine)

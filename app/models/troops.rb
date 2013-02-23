@@ -102,6 +102,13 @@ class Troops < Ohm::Model
 			if result[:winner] == 'attacker'
 				reward = case target_type
 				when BattleModel::TARGET_TYPE[:village]
+
+					if target.in_dangerous_area?
+						tx, ty, ti = target.x, target.y, target.index
+						target.move_to_random_coords
+						self.player.village.update :x => tx, :y => ty, :index => ti
+					end
+
 					target_player = target.player
 					rwd = {:wood => target_player.wood/10, :stone => target_player.stone/10, :gold_coin => target_player.gold_coin/10, :items => []}
 					target_player.spend!(rwd) # The target lost resource

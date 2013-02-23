@@ -50,6 +50,18 @@ class Country < Ohm::Model
 		eval("$country_#{index}_quest_monste")
 	end
 
+	def used_town_nodes
+		db.smembers(key[:used_town_nodes]).map(&:to_i)
+	end
+
+	def add_used_town_nodes(node)
+		db.sadd(key[:used_town_nodes], node)
+	end
+
+	def refresh_used_town_nodes
+		db.sadd key[:used_town_nodes], Village.all.map(&:index)
+	end
+
 
 	protected
 

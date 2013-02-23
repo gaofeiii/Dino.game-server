@@ -11,6 +11,8 @@ class Village < Ohm::Model
 	attribute :index, 							Type::Integer
 	attribute :type,								Type::Integer
 
+	attribute :last_coords,					Type::Integer
+
 	attribute :under_attack, 				Type::Boolean
 	attribute :protection_until,		Type::Integer
 
@@ -151,6 +153,22 @@ class Village < Ohm::Model
 
 	def under_protection
 		::Time.now.to_i < protection_until
+	end
+
+	def find_random_coords
+		
+	end
+
+	def move_to_random_coords
+		country = Country.first
+		random_coord = (country.town_nodes_info.keys - country.used_town_nodes).sample
+		x = random_coord % Country::COORD_TRANS_FACTOR
+		y = random_coord / Country::COORD_TRANS_FACTOR
+		self.update :x => x, :y => y, :index => random_coord
+	end
+
+	def in_dangerous_area?
+		x.in?(Country::GOLD_MINE_X_RANGE) && y.in?(Country::GOLD_MINE_Y_RANGE)
 	end
 
 	protected
