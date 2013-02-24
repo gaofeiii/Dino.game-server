@@ -74,8 +74,10 @@ class GoldMine < Ohm::Model
 			:level => level,
 			:gold_output => GoldMine.gold_output(level),
 			:owner => owner_name,
-			:owner_id => player_id.to_i
+			:owner_id => player_id.to_i,
+			:goldmine_type => goldmine_type
 		}
+
 		stra = Strategy[strategy_id]
 		hash[:strategy] = stra.to_hash if stra
 
@@ -89,6 +91,15 @@ class GoldMine < Ohm::Model
 		hash[:left_time] = left_time
 
 		return hash
+	end
+
+	def goldmine_type
+		case type
+		when TYPE[:normal]
+			return level / 10 + 1
+		when TYPE[:league]
+			return 3
+		end
 	end
 
 	def self.gold_output(lvl = 0)

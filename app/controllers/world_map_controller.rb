@@ -101,7 +101,9 @@ class WorldMapController < ApplicationController
 						:level => g_mine.level,
 						:owner_name => g_mine.owner_name,
 						:output => g_mine.output,
-						:left_time => 0
+						:goldmine_type => g_mine.goldmine_type,
+						:left_time => 0,
+						:can_attack => true
 					}
 				}
 				left_ids -= CountryDataHelper::InstanceMethods.get_nodes_matrix(gx - 2, gx - 2, 5, 5)
@@ -125,7 +127,9 @@ class WorldMapController < ApplicationController
 						:level => g_mine.level,
 						:owner_name => g_mine.owner_name,
 						:output => g_mine.output,
-						:left_time => 0
+						:goldmine_type => g_mine.goldmine_type,
+						:left_time => 0,
+						:can_attack => LeagueWar.in_period_of_fight?
 					}
 				}
 				left_ids -= CountryDataHelper::InstanceMethods.get_nodes_matrix(gx - 2, gx - 2, 5, 5)

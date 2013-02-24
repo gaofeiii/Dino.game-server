@@ -122,6 +122,10 @@ class Building < Ohm::Model
 		if args.include?(:harvest_info) && is_resource_building?
 			hash[:harvest_info] = harvest_info
 		end
+
+		if args.include?(:steal_info) && is_resource_building?
+			hash[:harvest_info] = steal_info
+		end
 		hash
 	end
 
@@ -132,6 +136,24 @@ class Building < Ohm::Model
 			:time_pass => pass_time,
 			:total_time => HARVEST_AVAILABLE_TIME,
 			:count => harvest_count
+		}
+		if is_collecting_farm? || is_hunting_field?
+			hash[:food_type] = harvest_type
+		end
+
+		if is_lumber_mill? || is_quarry?
+			hash[:res_type] = harvest_type
+		end
+		hash
+	end
+
+	def steal_info
+		pass_time = ::Time.now.to_i - harvest_updated_time
+		pass_time = pass_time > HARVEST_AVAILABLE_TIME ? HARVEST_AVAILABLE_TIME : pass_time
+		hash = {
+			:time_pass => pass_time,
+			:total_time => HARVEST_AVAILABLE_TIME,
+			:count => harvest_count / 10
 		}
 		if is_collecting_farm? || is_hunting_field?
 			hash[:food_type] = harvest_type

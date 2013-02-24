@@ -106,6 +106,7 @@ class Troops < Ohm::Model
 					if target.in_dangerous_area?
 						tx, ty, ti = target.x, target.y, target.index
 						target.move_to_random_coords
+						target.set :protection_until, ::Time.now.to_i + 10.minutes
 						self.player.village.update :x => tx, :y => ty, :index => ti
 					end
 

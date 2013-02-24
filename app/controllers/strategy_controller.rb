@@ -78,13 +78,21 @@ class StrategyController < ApplicationController
 			if target.under_protection
 				render_error(Error::NORMAL, "Village is under protection") and return
 			end
+
+			if target.in_dangerous_area? && !LeagueWar.can_fight_danger_village?
+				render_error(Error::NORMAL, "Cannot attack when league war started") and return
+			end
 		end
 
 		if target.is_a?(GoldMine)
 			if target.type == GoldMine::TYPE[:normal] && target.player_id.to_i == @player.id
 				render_error(Error::NORMAL, "The gold mine is yours") and return
-			elsif target.type == GoldMine::TYPE[:league] && @player.league_id.blank?
-				render_error(Error::NORMAL, I18n.t('strategy_error.not_in_a_league')) and return
+			elsif target.type == GoldMine::TYPE[:league] 
+				if @player.league_id.blank?
+					render_error(Error::NORMAL, I18n.t('strategy_error.not_in_a_league')) and return
+				elsif not LeagueWar.in_period_of_fight?
+					render_error(Error::NORMAL, "League not started") and return
+				end
 			end
 		end
 

@@ -5,6 +5,8 @@ class Village < Ohm::Model
 	include Ohm::Locking
 	include OhmExtension
 
+	MAX_STEAL_TIME = 3
+
 	attribute :name
 	attribute :x, 									Type::Integer
 	attribute :y, 									Type::Integer
@@ -20,6 +22,9 @@ class Village < Ohm::Model
 	attribute :country_index,				Type::Integer
 
 	attribute :strategy_id
+
+	attribute :stolen_count,				Type::Integer
+	attribute :last_stolen_time, 		Type::Integer
 
 	collection :buildings, 					Building
 	collection :dinosaurs, 					Dinosaur
@@ -164,6 +169,9 @@ class Village < Ohm::Model
 		random_coord = (country.town_nodes_info.keys - country.used_town_nodes).sample
 		x = random_coord % Country::COORD_TRANS_FACTOR
 		y = random_coord / Country::COORD_TRANS_FACTOR
+		# self.x = x
+		# self.y = y
+		# self.index = random_coord
 		self.update :x => x, :y => y, :index => random_coord
 	end
 

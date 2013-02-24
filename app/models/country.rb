@@ -29,7 +29,7 @@ class Country < Ohm::Model
 			y = idx / COORD_TRANS_FACTOR
 
 			if GoldMine.find(:x => x, :y => y).blank?
-				GoldMine.create(:x => x, :y => y, :level => 3)
+				GoldMine.create(:x => x, :y => y, :level => 3, :type => GoldMine::TYPE[:league])
 			end
 		end
 	end

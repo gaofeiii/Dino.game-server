@@ -11,15 +11,17 @@ DinosaurGame::Application.routes.draw do
 
   # 玩家信息
   scope :path => 'players', :as => 'players' do
-    post 'refresh' => 'players#refresh'
-    post 'change_avatar' => 'players#change_avatar'
-    post 'my_gold_mines' => 'players#my_gold_mines'
-    post 'modify_nickname' => 'players#modify_nickname'
+    post 'refresh'          => 'players#refresh'
+    post 'change_avatar'    => 'players#change_avatar'
+    post 'my_gold_mines'    => 'players#my_gold_mines'
+    post 'modify_nickname'  => 'players#modify_nickname'
   end
 
   # 村落
   scope :path => 'villages', :as => 'villages' do
-    post 'move' => 'villages#move'
+    post 'move'         => 'villages#move'
+    post 'visit_info'   => 'villages#visit_info'
+    post 'steal'        => 'villages#steal'
   end
   
 

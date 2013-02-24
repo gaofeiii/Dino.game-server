@@ -228,13 +228,16 @@ class Player < Ohm::Model
 	# 好友列表
 	def friend_list
 		friends.map do |friend|
+			vil = Village.new(:id => friend.village_id).gets(:x, :y)
+			friend_league = League.new(:id => friend.league_id).gets(:name)
 			{
 				:id => friend.id.to_i,
 				:nickname => friend.nickname,
 				:level => friend.level,
 				:rank => rand(1..1000),
-				:x => 0,
-				:y => 0
+				:x => vil.x,
+				:y => vil.y,
+				:league_name => friend_league.name
 			}
 		end
 	end
@@ -382,6 +385,14 @@ class Player < Ohm::Model
   	end
   	self.set :adapt_level, new_level
   end
+
+  def visit_info
+		vil = self.village
+		hash = self.to_hash
+		hash[:village] = vil.to_hash
+		hash[:village][:buildings] = vil.buildings.map { |bd| bd.to_hash(:steal_info) }
+		hash
+	end
 
 	# Callbacks
 	protected
