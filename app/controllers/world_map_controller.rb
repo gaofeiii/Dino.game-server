@@ -144,6 +144,9 @@ class WorldMapController < ApplicationController
 			player = Player.new(:id => params[:player_id]).gets(:adapt_level)
 			tmp_creeps_idx = player.temp_creeps_idx & left_ids
 
+			vil = Village.new(:id => player.gets(:village_id).village_id).gets(:x, :y)
+			my_x, my_y = vil.x, vil.y
+
 			if tmp_creeps_idx.size <= 0
 				player.get :guide_info
 
@@ -222,7 +225,7 @@ class WorldMapController < ApplicationController
 
 		end
 
-		render :json => {:my_x => my_x, :my_y => my_y, :country_map => towns_info + gold_mines_info + hl_gold_mine_info + creeps_info}
+		render :json => {:my_x => my_x, :my_y => 2, :country_map => towns_info + gold_mines_info + hl_gold_mine_info + creeps_info}
 	end
 
 end
