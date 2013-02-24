@@ -22,7 +22,8 @@ class RealTimeInfoController < ApplicationController
 					:gold => 1000
 				},
 				:lottery_reward => LuckyReward.const(1).values,
-				:match_gold_cost => Player.honour_gold_cost
+				:match_gold_cost => Player.honour_gold_cost,
+				:advisor_cost => 100.step(5000, 50).map{|i| i}
 			}
 		}
 			
