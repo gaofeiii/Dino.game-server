@@ -7,7 +7,7 @@ module LeagueWar
 		period_3 = (begin_day + 16)..(begin_day + 16 + 30.minutes.to_i)
 
 		time.in?(period_1) && time.in?(period_2) && time.in?(period_3)
-		false
+		true
 	end
 
 	def can_fight_danger_village?(time = Time.now.to_i)
@@ -15,6 +15,15 @@ module LeagueWar
 		false
 	end
 
-	module_function :in_period_of_fight?, :can_fight_danger_village?
+	def calc_battle_result
+		GoldMine.find(:type => 2).each do |gold_mine|
+			winner_league = League[gold_mine.winner_league_id]
+			if winner_league
+				winner_league.winned_mines.add(gold_mine)
+			end
+		end
+	end
+
+	module_function :in_period_of_fight?, :can_fight_danger_village?, :calc_battle_result
 
 end

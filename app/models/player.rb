@@ -119,7 +119,7 @@ class Player < Ohm::Model
 			:score => honour_score,
 			:country_id => country_id.to_i,
 			:avatar_id => avatar_id,
-			:player_power => battle_power,
+			:player_power => honour_score,
 			:is_set_nickname => is_set_nickname,
 			:dino_origin_capacity => tech_dinosaurs_size,
 			:dino_ext_capacity => dinosaurs_capacity,

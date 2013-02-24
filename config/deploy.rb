@@ -133,7 +133,7 @@ namespace :background do
   end
 end
 
-task :deploy_full do
+task :deploy_all do
   find_and_execute_task("deploy")
   find_and_execute_task("unicorn:restart")
 end

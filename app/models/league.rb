@@ -19,6 +19,7 @@ class League < Ohm::Model
 	collection :members, Player
 	collection :league_member_ships, LeagueMemberShip
 	collection :league_applys, LeagueApply
+	set :winned_mines, GoldMine
 
 	index :name
 
@@ -45,8 +46,8 @@ class League < Ohm::Model
 			:xp => xp,
 			:max_xp => next_level_xp,
 			:rank => rand(1..100),
-			:gold_mine_count => rand(1..5),
-			:can_get_league_gold => harvest_gold
+			:gold_mine_count => winned_mines.size,
+			:can_get_league_gold => harvest_gold.to_i
 		}
 	end
 
@@ -76,7 +77,7 @@ class League < Ohm::Model
 	end
 
 	def harvest_gold
-		1000
+		(winned_mines.sum{|gold_mine| gold_mine.output * 8} * 0.8).to_i
 	end
 
 	def dismiss!

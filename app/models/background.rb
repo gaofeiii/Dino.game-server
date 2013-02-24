@@ -92,5 +92,6 @@ class Background
 
 	def self.perform!
 		self.refresh_queues
+		self.refresh_cronjobs
 	end
 end

@@ -98,7 +98,7 @@ class Deal < Ohm::Model
 
 			case category
 			when CATEGORIES[:res]
-				res_name = TYPES[category][type]
+				res_name = RES_TYPES[type]
 				if seller.receive!(res_name => count)
 					self.delete
 				end

@@ -17,6 +17,8 @@ en:
    get_league_gold_success: "恭喜你！成功领取%{gold_count}金币！"
    apply_league_success: "申请加入部落成功！"
    apply_league_fail: "申请加入部落失败"
+   normal_gold_mine: "屌丝金矿"
+   league_gold_mine: "牛逼金矿"
 
   player:
    whos_village: "%{player_name}的村庄"
@@ -93,6 +95,7 @@ en:
    wrong_type_of_goldmine: "不能在公会战中攻打此类型的金矿"
    dino_hp_is_zero: "不能派遣HP为0的恐龙"
    dino_is_attacking: "不能派遣正在进攻中的恐龙"
+   honour_score_not_match: "不能攻打战斗力不匹配的玩家"
 
   dinosaur_error:
    not_enough_food: "食物不足"

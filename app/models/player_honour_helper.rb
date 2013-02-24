@@ -47,9 +47,9 @@ module PlayerHonourHelper
 		def calc_score(x, y)
 			dis = x - y
 			if dis > 0
-				honour_scores_asc[dis]
+				honour_scores_desc[dis]
 			else
-				honour_scores_desc[-dis]
+				honour_scores_asc[-dis]
 			end
 		end
 	end
@@ -79,6 +79,18 @@ module PlayerHonourHelper
 
 		def refresh_honour_count
 			
+		end
+
+		def add_honour(count)
+			self.increase(:honour_score, count)
+		end
+
+		def dec_honour(count)
+			if self.honour_score - count <= 0
+				self.set :honour_score, 0
+			else
+				self.increase(:honour_score, -count)
+			end
 		end
 	end
 	

@@ -5,11 +5,11 @@ module RankModel
 		def battle_rank(count = 20)
 			result = []
 
-			Player.none_npc.sort_by(:battle_power, :order => "DESC", :limit => [0, count]).each_with_index do |player, idx|
+			Player.none_npc.sort_by(:honour_score, :order => "DESC", :limit => [0, count]).each_with_index do |player, idx|
 				result << {
 					:id => player.id,
 					:rank => idx + 1,
-					:battle_power => player.battle_power,
+					:battle_power => player.honour_score,
 					:nickname => player.nickname,
 					:level => player.level
 				}

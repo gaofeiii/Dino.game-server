@@ -63,6 +63,7 @@ DinosaurGame::Application.routes.draw do
     post 'eggs_list'    => 'items#eggs_list'
     post 'lucky_reward' => 'items#lucky_reward'
     post 'special_items_list' => 'items#special_items_list'
+    post 'drop'         => 'items#drop'
   end
 
   # 恐龙相关

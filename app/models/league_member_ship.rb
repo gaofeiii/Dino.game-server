@@ -21,6 +21,10 @@ class LeagueMemberShip < Ohm::Model
 		LEVELS
 	end
 
+	def player
+		Player[player_id]
+	end
+
 	def nickname
 		db.hget("Player:#{player_id}", :nickname)
 	end

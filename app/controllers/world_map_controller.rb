@@ -137,6 +137,7 @@ class WorldMapController < ApplicationController
 			end
 		end # end of ids each
 
+		my_x, my_y = 0, 0
 		if Player.exists?(params[:player_id])
 			left_ids.select!{ |idx| country.empty_map_info[idx] >= 0 }
 
@@ -149,6 +150,7 @@ class WorldMapController < ApplicationController
 				# 如果有新手指引攻打野怪的任务，创建任务野怪
 				if player.guide_info[7][:finished] == 0
 					vil = Village.new(:id => player.gets(:village_id).village_id).gets(:x, :y)
+					my_x, my_y = vil.x, vil.y
 					guide_creeps_atts = {:x => vil.x, :y => vil.y - 3, :level => 1, :type => rand(1..4), :monster_number => 1, :guide_creeps => true}
 					player.save_creeps(guide_creeps_atts)
 				end
@@ -220,7 +222,7 @@ class WorldMapController < ApplicationController
 
 		end
 
-		render :json => {:country_map => towns_info + gold_mines_info + hl_gold_mine_info + creeps_info}
+		render :json => {:my_x => my_x, :my_y => my_y, :country_map => towns_info + gold_mines_info + hl_gold_mine_info + creeps_info}
 	end
 
 end

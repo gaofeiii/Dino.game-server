@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   def log_info
     logger.debug format("%-64s", '='*64)
     logger.debug format("| %-60s |", "* Redis access: #{$redis_count} times.")
-    logger.debug format("| %-60s |", "* ")
+    logger.debug format("| %-60s |", "* Client locale: #{request.env['HTTP_CLIENT_LOCALE']}")
     logger.debug format("| %-60s |", "*")
     logger.debug format("%-64s", '='*64)
     logger.debug "\n"
@@ -26,7 +26,6 @@ class ApplicationController < ActionController::Base
 
   def set_default_locale
     client_locale = request.env["HTTP_CLIENT_LOCALE"]
-    p "--- client_locale: #{client_locale} --- "
     I18n.locale = LocaleHelper.get_server_locale_name(client_locale)
   end
 

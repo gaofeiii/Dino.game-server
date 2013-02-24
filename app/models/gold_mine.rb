@@ -103,16 +103,17 @@ class GoldMine < Ohm::Model
 	end
 
 	def self.gold_output(lvl = 0)
-		case lvl
-		when 1
-			100
-		when 2
-			400
-		when 3
-			800
-		else
-			0
-		end
+		# case lvl
+		# when 1
+		# 	100
+		# when 2
+		# 	400
+		# when 3
+		# 	800
+		# else
+		# 	0
+		# end
+		100 + (lvl - 1) * 50
 	end
 
 	def output
@@ -122,6 +123,7 @@ class GoldMine < Ohm::Model
 	def strategy
 		Strategy[strategy_id]
 	end
+
 
 	protected
 

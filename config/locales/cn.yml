@@ -95,6 +95,7 @@ cn:
    wrong_type_of_goldmine: "不能在公会战中攻打此类型的金矿"
    dino_hp_is_zero: "不能派遣HP为0的恐龙"
    dino_is_attacking: "不能派遣正在进攻中的恐龙"
+   honour_score_not_match: "不能攻打战斗力不匹配的玩家"
 
   dinosaur_error:
    not_enough_food: "食物不足"

@@ -173,21 +173,36 @@ class StrategyController < ApplicationController
 
 	def match_players
 		if @player.spend!(@player.match_cost)
-			players = Player.find(:player_type => 0).union(:player_type => 1).ids.sample(5).map do |player_id|
+			count = 0
+			players = []
+			Player.none_npc.ids.map do |player_id|
+				break if count >= 5
 				if player_id.to_i == @player.id
 					next
 				end
 
-				player = Player.new(:id => player_id).gets(:nickname, :level, :avatar_id)
-				{
+				player = Player.new(:id => player_id).gets(:nickname, :level, :avatar_id, :honour_strategy, :honour_score)
+
+				if player.honour_strategy.blank?
+					next
+				end
+
+				if (@player.honour_score - player.honour_score).abs >= 199
+					next
+				end
+
+				count += 1
+				players << {
 					:id => player.id,
 					:nickname => player.nickname,
 					:level => player.level,
-					:power_point => rand(1..5000),
+					:power_point => player.honour_score,
 					:rank => rand(1..Player.count),
 					:avatar_id => player.avatar_id
 				}
 			end
+			players.compact!
+
 			render_success(:gold_coin => @player.gold_coin, :players => players)
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gold'))
@@ -199,6 +214,10 @@ class StrategyController < ApplicationController
 
 		if @enemy.nil?
 			render_error(Error::NORMAL, "Invalid enemy id") and return
+		end
+
+		if (@player.honour_score - @enemy.honour_score).abs >= 199
+			render_error(Error::NORMAL, I18n.t('strategy_error.honour_score_not_match')) and return
 		end
 
 		player_dinos = @player.honour_strategy.map do |d_id|
@@ -244,7 +263,19 @@ class StrategyController < ApplicationController
 		}
 
 		result = BattleModel.match_attack attacker, defender
-		render_success(result)
+
+		winner, loser = if result[:winner] == "attacker"
+			[@player, @enemy]
+		else
+			[@enemy, @player]
+		end
+
+		win_score  = Player.calc_score(winner.honour_score, loser.honour_score)
+
+		winner.add_honour(win_score)
+		loser.dec_honour(win_score)
+
+		render_success(result.merge(:score => @player.honour_score))
 	end
 
 	def set_match_strategy

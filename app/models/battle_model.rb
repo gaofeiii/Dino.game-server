@@ -221,7 +221,6 @@ class BattleModel
 				result[:all_rounds] << round_info
 				# 判断双方是否还有可以战斗的fighter
 				if attacker[:army].all_curr_hp.zero? || defender[:army].all_curr_hp.zero?
-					p "+++ running judge"
 					return
 				end
 				
@@ -292,20 +291,26 @@ class BattleModel
 				result[:winner] = 'defender'
 				attacker[:is_win] = false
 				defender[:is_win] = true
+				write_xp(attacker, defender)
 				return result.merge!(:time => Time.now.to_f)
 			elsif defender[:army].all_curr_hp.zero?
 				result[:winner] = 'attacker'
 				attacker[:is_win] = true
 				defender[:is_win] = false
+				write_xp(attacker, defender)
 				return result.merge!(:time => Time.now.to_f)
 			end
-
 			return result
 		end
 
 		def write_result(attacker = {}, defender = {})
 			attacker[:army].write_hp!(attacker[:is_win], defender)
 			defender[:army].write_hp!(defender[:is_win], attacker)
+		end
+
+		def write_xp(attacker, defender)
+			attacker[:army].write_xp!(attacker[:is_win], defender)
+			defender[:army].write_xp!(defender[:is_win], attacker)
 		end
 	end
 
@@ -399,7 +404,8 @@ module BattleFighterModule
 			:speed => curr_speed.to_i,
 			:curr_hp => curr_hp.to_i,
 			:total_hp => total_hp.to_i,
-			:name => name
+			:name => name,
+			:status => status
 		}
 		hash[:monster_type] = monster_type
 		return hash
@@ -447,6 +453,23 @@ module BattleArmyModule
 		self.map do |fighter|
 			fighter.curr_info
 		end
+	end
+
+	def write_xp!(is_win, target)
+		return false if self.first.is_a?(Monster)
+
+		earn_xp_fighters_count = self.select{ |fighter| fighter.curr_hp > 0 }.size
+		every_exp = 0
+		if is_win
+			total_exp = target[:army].sum{ |enemy| enemy.xp.to_i }
+			every_exp = total_exp / earn_xp_fighters_count
+		end
+
+		self.each do |fighter|
+			exp = fighter.curr_hp > 0 ? fighter.experience + every_exp : fighter.experience
+			fighter.set :experience, exp
+		end
+
 	end
 
 	def write_hp!(is_win, target)

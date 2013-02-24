@@ -1,6 +1,6 @@
 class ItemsController < ApplicationController
 	before_filter :validate_player
-	before_filter :validate_item, :only => [:use, :lucky_reward]
+	before_filter :validate_item, :only => [:use, :lucky_reward, :drop]
 
 	def my_items_list
 		render :json => {:player => {:items => @player.items.map{|item| item.to_hash}}}
@@ -61,6 +61,11 @@ class ItemsController < ApplicationController
 
 	def special_items_list
 		render_success :player => {:items => @player.special_items}
+	end
+
+	def drop
+		@item.delete
+		render_success
 	end
 
 end

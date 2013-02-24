@@ -53,7 +53,7 @@ class LeaguesController < ApplicationController
 	def member_list
 		league = @player.league
 		if league.nil?
-			render :json => {:error => "LEAGUE_NOT_FOUND"}
+			render :json => {:error => I18n.t('league_error.not_in_a_league')}
 		else
 			render :json => {
 				:player => {
@@ -220,9 +220,10 @@ class LeaguesController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('league_error.contribution_count_is_zero')) and return
 		end
 
-		if membership.increase(:contribution, -10)
-			@player.receive!(:gold => @player.league.harvest_gold)
-			render_success(:player => @player.to_hash(:league), :info => I18n.t("general.get_league_gold_success", :gold_count => 1000))
+		if membership.increase(:contribution, -100)
+			gold = @player.league.harvest_gold
+			@player.receive!(:gold => gold)
+			render_success(:player => @player.to_hash(:league), :info => I18n.t("general.get_league_gold_success", :gold_count => gold))
 		else
 			render_error(Error::NORMAL, "Unknown League Error")
 		end
@@ -250,6 +251,7 @@ class LeaguesController < ApplicationController
 		end
 
 		member_relation.delete
+		member_relation.player.update :league_id => nil
 
 		render_success(:player => @player.to_hash(:league))
 	end
