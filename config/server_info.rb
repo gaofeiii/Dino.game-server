@@ -8,7 +8,7 @@ class ServerInfo
 	class << self
 
 		def reload!
-			@@cache = YAML::load_file("#{Rails.root}/config/server_config.yml").deep_symbolize_keys
+			@@cache = YAML::load_file("#{Dir::pwd}/config/server_config.yml").deep_symbolize_keys
 		end
 
 		def all
