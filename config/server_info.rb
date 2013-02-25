@@ -12,7 +12,7 @@ class ServerInfo
 		end
 
 		def all
-			if @@cache.blank?
+			if @@cache.empty?
 				reload!
 			else
 				@@cache
