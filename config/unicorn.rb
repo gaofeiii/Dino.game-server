@@ -1,16 +1,18 @@
 require 'ohm'
 require 'redis/connection/hiredis'
-require "server_info.rb"
+
+
+application = "dinosaur"
+
+working_directory "/var/games/servers/#{application}/current"
+
+require "#{working_directory}/current/config/server_info.rb"
 
 if ServerInfo.info[:env] == "dev"
   worker_processes 1
 else
   worker_processes 4
 end
-
-application = "dinosaur"
-
-working_directory "/var/games/servers/#{application}/current"
 
 listen "/tmp/#{application}.sock", :backlog => 128
 
