@@ -1,6 +1,6 @@
 require 'ohm'
 require 'redis/connection/hiredis'
-require "./server_info.rb"
+require "server_info.rb"
 
 if ServerInfo.info[:env] == "dev"
   worker_processes 1
