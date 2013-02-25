@@ -2,6 +2,7 @@ class Dinosaur < Ohm::Model
 	STATUS = {:egg => 0, :infancy => 1, :adult => 2}
 	EVENTS = {:hatching => 1}
 	EMOTIONS = {:happy => 2, :normal => 1, :angry => 0}
+	ACTION_STATUS = {:idle => 0, :deployed => 1, :attacking => 2}
 	COMSUME_PER_SECOND = 5
 	HEALED_PER_SECOND = 10
 
@@ -27,6 +28,7 @@ class Dinosaur < Ohm::Model
 	attribute :feed_count, 		Type::Integer
 
 	attribute :quality,						Type::Integer
+	attribute :action_status,			Type::Integer
 
 	attribute :updated_hp_time, 	Type::Integer
 
@@ -94,7 +96,8 @@ class Dinosaur < Ohm::Model
 			:is_attacking => is_attacking,
 			:is_deployed => is_deployed,
 			:growth_point => growth_point,
-			:max_growth_point => max_growth_point
+			:max_growth_point => max_growth_point,
+			:action_status => action_status
 		}
 
 		if event_type != 0

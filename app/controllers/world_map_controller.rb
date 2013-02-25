@@ -174,7 +174,7 @@ class WorldMapController < ApplicationController
 					else
 						5
 					end
-					m_type = rand(1..4)
+					m_type = rand(1..5)
 
 					creeps_atts = {:x => cx, :y => cy, :level => m_level, :type => m_type, :monster_number => m_count, :guide_creeps => false}
 

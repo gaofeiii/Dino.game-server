@@ -24,13 +24,13 @@ class StrategyController < ApplicationController
 		else
 			JSON.parse(sta.dinosaurs).each do |dino_id|
 				if Dinosaur.exists?(dino_id)
-					Ohm.redis.hset("Dinosaur:#{dino_id}", :is_deployed, 0)
+					Ohm.redis.hset("Dinosaur:#{dino_id}", :action_status, 0)
 				end
 			end
 			sta.set :dinosaurs, params[:dinosaurs].to_json
 			params[:dinosaurs].each do |dino_id|
 				if Dinosaur.exists?(dino_id)
-					Ohm.redis.hset("Dinosaur:#{dino_id}", :is_deployed, 1)
+					Ohm.redis.hset("Dinosaur:#{dino_id}", :action_status, 1)
 				end
 			end
 		end

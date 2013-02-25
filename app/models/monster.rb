@@ -7,7 +7,7 @@ class Monster < Ohm::Model
 	include MonsterConst
 	include Fighter
 
-	TYPES = [1, 2, 3, 4]
+	TYPES = [1, 2, 3, 4, 5, 6]
 
 	STATUS = {
 		:egg 			=> 0,
