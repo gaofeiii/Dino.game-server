@@ -9,22 +9,8 @@ class ItemsController < ApplicationController
 	def use
 		# ==== If using egg ====
 		if @item.item_category == Item.categories[:egg]
-			if @player.dinosaurs.size >= @player.dinosaurs_capacity + @player.tech_dinosaurs_size
-				render_error(Error::NORMAL, "NOT_ENOUGH_SPACE") and return
-			end
-
-			obj = @item.use!(:building_id => params[:building_id])
-
-			if !@player.beginning_guide_finished && !@player.guide_cache[:has_hatched_dino]
-				cache = @player.guide_cache.merge('has_hatched_dino' => true)
-				@player.set :guide_cache, cache.to_json
-			end
-
-			if !@player.finish_daily_quest
-				@player.daily_quest_cache[:hatch_dinosaurs] ||= 0
-				@player.daily_quest_cache[:hatch_dinosaurs] += 1
-				@player.set :daily_quest_cache, @player.daily_quest_cache.to_json
-			end
+			render_error(Error::NORMAL, "Hatch egg in Incubation") and return
+			
 		# ==== If using lottery ====
 		elsif @item.item_category == Item.categories[:lottery]
 			rwd = LuckyReward.rand_one(@item.item_type)

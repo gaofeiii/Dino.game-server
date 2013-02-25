@@ -20,6 +20,7 @@ class God < Ohm::Model
 			:type => type,
 			:level => level,
 			:start_time => start_time,
+			:curr_time => ::Time.now.to_i,
 			:end_time => end_time
 		}
 	end

@@ -79,17 +79,17 @@ module DailyQuest
 				rwd_gold_coin = book.cell(i, 'E').to_i
 				rwd_gem = book.cell(i, 'F').to_i
 
-				xp_reg = /^\d+(\.\d+)?\+\d+(\.\d+)?%$/ # Pattern: 300.0+25.0%
-				tmp_xp = book.cell(i, 'G').gsub(/\s/, '')
+				# xp_reg = /^\d+(\.\d+)?\+\d+(\.\d+)?%$/ # Pattern: 300.0+25.0%
+				# tmp_xp = book.cell(i, 'G').gsub(/\s/, '')
 
-				rwd_xp = 0
+				rwd_xp = book.cell(i, 'G').to_i
 				rwd_ext_xp = 0.0
 
-				if tmp_xp =~ xp_reg
-					tmp_str_arr = tmp_xp.split('+')
-					rwd_xp = tmp_str_arr.first.to_i
-					rwd_ext_xp = tmp_str_arr.second.to_f / 100
-				end
+				# if tmp_xp =~ xp_reg
+				# 	tmp_str_arr = tmp_xp.split('+')
+				# 	rwd_xp = tmp_str_arr.first.to_i
+				# 	rwd_ext_xp = tmp_str_arr.second.to_f / 100
+				# end
 
 				rwd_item_cat = book.cell(i, 'i').to_i
 				rwd_item_type = book.cell(i, 'j').to_i

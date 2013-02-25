@@ -36,11 +36,11 @@ class Troops < Ohm::Model
 
 	def target
 		case target_type
-		when 1
+		when BattleModel::TARGET_TYPE[:village]
 			Village[target_id]
-		when 2
+		when BattleModel::TARGET_TYPE[:creeps]
 			Creeps[target_id]
-		when 3
+		when BattleModel::TARGET_TYPE[:gold_mine]
 			GoldMine[target_id]
 		end
 	end
@@ -57,7 +57,7 @@ class Troops < Ohm::Model
 					dino
 				end
 			end.compact
-			attacker_army = army.blank? ? player.dinosaurs.to_a.select{|d| d.status > 0}[0, 5] : army
+			attacker_army = army
 			defender_army = target.defense_troops
 
 			attacker = {
@@ -74,12 +74,12 @@ class Troops < Ohm::Model
 
 			defender_name = nil
 			dfender_type = nil
-			if target_type == 1
+			if target_type == BattleModel::TARGET_TYPE[:village]
 				defender_name = target.player_name
-			elsif target_type == 2
+			elsif target_type == BattleModel::TARGET_TYPE[:creeps]
 				defender_name = "Creeps"
 				dfender_type = target.type
-			elsif target_type == 3
+			elsif target_type == BattleModel::TARGET_TYPE[:gold_mine]
 				defender_name = target.owner_name
 			end
 			defender = {
@@ -95,7 +95,7 @@ class Troops < Ohm::Model
 
 			defender[:owner_info][:avatar_id] = target.player.avatar_id if target.is_a?(Village)
 
-			result = BattleModel.attack_calc(attacker, defender)
+			result = BattleModel.normal_attack(attacker, defender)
 			
 			# 如果进攻方获胜，计算奖励
 			reward = {}

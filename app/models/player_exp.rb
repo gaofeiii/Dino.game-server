@@ -31,6 +31,19 @@ module PlayerExp
 		def next_level_exp
 			self.class.all_level_exps[self.level + 1]
 		end
+
+		def earn_exp(count = 0)
+			self.experience += count
+
+			if experience >= next_level_exp
+				self.experience -= next_level_exp
+				self.level += 1
+				return self.save
+			else
+				return self.sets(:experience => experience)
+			end
+		end
+
 	end
 	
 	def self.included(receiver)

@@ -20,6 +20,7 @@ class BattleModel
 			end
 		end
 
+		# 计算战斗回合伤害，结果记录到result参数中
 		# all_rounds: [
 		# 	[], [], [], ...
 		# ]
@@ -204,20 +205,6 @@ class BattleModel
 
 				end # End of each fighters
 
-				# if attacker[:army].all_curr_hp.zero?
-				# 	result[:winner] = 'defender'
-				# 	attacker[:is_win] = false
-				# 	defender[:is_win] = true
-				# 	write_result(attacker, defender)
-				# 	return result.merge!(:time => Time.now.to_f)
-				# elsif defender[:army].all_curr_hp.zero?
-				# 	result[:winner] = 'attacker'
-				# 	attacker[:is_win] = true
-				# 	defender[:is_win] = false
-				# 	write_result(attacker, defender)
-				# 	return result.merge!(:time => Time.now.to_f)
-				# end
-
 				result[:all_rounds] << round_info
 				# 判断双方是否还有可以战斗的fighter
 				if attacker[:army].all_curr_hp.zero? || defender[:army].all_curr_hp.zero?
@@ -232,6 +219,7 @@ class BattleModel
 			end
 		end
 
+		# 普通战斗计算，返回战斗结果
 		# Parameters:
 		# => attacker structure:
 		# {
@@ -243,7 +231,7 @@ class BattleModel
 		# 	:army => fihgters(dinosaurs) array
 		# }
 		# => defender: The same as attacker
-		def attack_calc(attacker = {}, defender = {})
+		def normal_attack(attacker = {}, defender = {})
 			self.extend_battle_methods(attacker, defender)
 
 			result = {
@@ -260,13 +248,13 @@ class BattleModel
 				result[:winner] = 'defender'
 				attacker[:is_win] = false
 				defender[:is_win] = true
-				write_result(attacker, defender)
+				write_result(attacker, defender, :exp, :hp)
 				return result.merge!(:time => Time.now.to_f)
 			elsif defender[:army].all_curr_hp.zero?
 				result[:winner] = 'attacker'
 				attacker[:is_win] = true
 				defender[:is_win] = false
-				write_result(attacker, defender)
+				write_result(attacker, defender, :exp, :hp)
 				return result.merge!(:time => Time.now.to_f)
 			else
 				p "--- #{__FILE__}:#{__LINE__}"
@@ -275,6 +263,7 @@ class BattleModel
 			return result
 		end # End of method: attack_calc
 
+		# 荣誉战斗计算
 		def match_attack(attacker = {}, defender = {})
 			self.extend_battle_methods(attacker, defender)
 
@@ -303,9 +292,12 @@ class BattleModel
 			return result
 		end
 
-		def write_result(attacker = {}, defender = {})
-			attacker[:army].write_hp!(attacker[:is_win], defender)
-			defender[:army].write_hp!(defender[:is_win], attacker)
+		# options => :exp, :hp
+		def write_result(attacker = {}, defender = {}, *options)
+			# attacker[:army].write_hp!(attacker[:is_win], defender)
+			# defender[:army].write_hp!(defender[:is_win], attacker)
+			attacker[:army].write_army!(attacker[:is_win], defender, options)
+			defender[:army].write_army!(defender[:is_win], attacker, options)
 		end
 
 		def write_xp(attacker, defender)
@@ -452,6 +444,39 @@ module BattleArmyModule
 	def to_hash
 		self.map do |fighter|
 			fighter.curr_info
+		end
+	end
+
+	# options => :exp, :hp
+	def write_army!(is_win, target, options = [])
+		return false if self.first.is_a?(Monster)
+		return false if options.blank?
+
+		write_xp = options.include?(:exp)
+		write_hp = options.include?(:hp)
+
+		alive_count = self.select{ |fighter| fighter.curr_hp > 0 }.size
+
+		each_exp = 0
+		player_exp = 0
+
+		if is_win && write_xp
+			total_exp = target[:army].sum{ |enemy| enemy.xp.to_i }
+			each_exp = total_exp / alive_count
+		end
+
+		self.each do |fighter|
+			p "---- Fighter:#{fighter.id} Current HP~#{fighter.curr_hp}"
+			new_atts = {}
+
+			if write_xp && fighter.curr_hp > 0
+				fighter.experience += each_exp
+				new_atts[:experience] = fighter.experience
+			end
+
+			new_atts[:current_hp] = fighter.curr_hp if write_hp
+
+			fighter.sets(new_atts) unless new_atts.blank?
 		end
 	end
 

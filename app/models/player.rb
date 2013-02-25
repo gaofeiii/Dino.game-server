@@ -106,7 +106,6 @@ class Player < Ohm::Model
 	end
 
 	def to_hash(*args)
-		update_level!
 		hash = {
 			:id => id.to_i,
 			:nickname => nickname,
@@ -154,7 +153,7 @@ class Player < Ohm::Model
 			when :advisors
 				hash[:advisors] = my_advisors_info
 			when :beginning_guide
-				has_beginning_guide = !beginning_guide_finished
+				has_beginning_guide = false#!beginning_guide_finished
 				hash[:has_beginning_guide] = has_beginning_guide
 				hash[:beginning_guide] = guide_info.current if has_beginning_guide
 			when :queue_info
@@ -187,20 +186,6 @@ class Player < Ohm::Model
 			return 0
 		else
 			return @league.harvest_gold
-		end
-	end
-
-	def update_level
-		if experience >= next_level_exp
-			self.experience -= next_level_exp
-			self.level += 1
-		end
-	end
-
-	def update_level!
-		if update_level
-			update_level
-			save
 		end
 	end
 

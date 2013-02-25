@@ -68,6 +68,7 @@ DinosaurGame::Application.routes.draw do
 
   # 恐龙相关
   scope :path => 'dinosaurs', :as => 'dinosaurs' do
+    post 'hatch'              => 'dinosaur#hatch'
     post 'update_status'      => 'dinosaur#update'
     post 'hatch_speed_up'     => 'dinosaur#hatch_speed_up'
     post 'feed'               => 'dinosaur#feed'

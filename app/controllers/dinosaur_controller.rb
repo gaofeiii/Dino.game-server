@@ -1,10 +1,37 @@
 class DinosaurController < ApplicationController
 	before_filter :validate_dinosaur, :only => [:update, :hatch_speed_up, :feed, :heal, :rename, :reborn, :release]
-	before_filter :validate_player, :only => [:food_list, :feed, :heal, :expand_capacity, :refresh_all_dinos, :training]
+	before_filter :validate_player, :only => [:hatch, :food_list, :feed, :heal, :expand_capacity, :refresh_all_dinos, :training]
 
 	def update
 		@dinosaur.update_status!
 		render :json => {:player => {:dinosaurs => [@dinosaur.to_hash]}}
+	end
+
+	def hatch
+		if @player.dinosaurs.size >= @player.dinosaurs_capacity + @player.tech_dinosaurs_size
+			render_error(Error::NORMAL, "NOT_ENOUGH_SPACE") and return
+		end
+
+		@egg = Item[params[:egg_id]]
+
+		if @egg.nil?
+			render_error(Error::NORMAL, "This egg has been hatched!!") and return
+		end
+
+		if not @egg.is_egg?
+			render_error(Error::NORMAL, "This is not an egg!!!") and return
+		end
+
+		@building = Building[params[:building_id]]
+		if @building.nil?
+			render_error(Error::NORMAL, "Egg should be hatched in Incubation") and return
+		end
+
+		if @egg.use!(:building_id => @building.id)
+			render_success({:player => @player.to_hash(:dinosaurs), :egg_id => @egg.id})
+		else
+			render_error(Error::NORMAL, "Unknown_Error_On_Hatching_Egg")
+		end
 	end
 
 	def hatch_speed_up

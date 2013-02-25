@@ -259,6 +259,7 @@ class Dinosaur < Ohm::Model
 								:updated_hp_time => time
 			return current_hp
 		else
+			self.set :updated_hp_time => time
 			return false
 		end
 	end

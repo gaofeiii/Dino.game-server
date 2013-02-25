@@ -4,7 +4,7 @@ module Fighter
 	end
 	
 	module InstanceMethods
-		
+
 	end
 	
 	def self.included(model)

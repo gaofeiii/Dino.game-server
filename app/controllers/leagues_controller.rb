@@ -9,9 +9,12 @@ class LeaguesController < ApplicationController
 			render_error(Error::NORMAL, "YOU_ARE_ALREADY_IN_A_LEAGUE") and return
 		end
 
+		name = params[:name]
+		if name.blank?
+			render_error(Error::NORMAL, "Should type a name for league") and return
+		end
+
 		if @player.spend!(:gems => 10)
-			# name = "League#{rand(1..10000000)}"
-			name = params[:name]
 			lg = League.create :name => name, :desc => params[:desc], :president_id => @player.id
 			lms = LeagueMemberShip.create :player_id => @player.id, 
 																		:league_id => lg.id, 
