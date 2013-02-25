@@ -8,7 +8,7 @@ working_directory "/var/games/servers/#{application}/current"
 
 current_path = "/var/games/servers/#{application}/current"
 
-require "#{current_path}/current/config/server_info.rb"
+require "#{current_path}/config/server_info.rb"
 
 if ServerInfo.info[:env] == "dev"
   worker_processes 1
