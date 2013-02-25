@@ -296,8 +296,8 @@ class BattleModel
 		def write_result(attacker = {}, defender = {}, *options)
 			# attacker[:army].write_hp!(attacker[:is_win], defender)
 			# defender[:army].write_hp!(defender[:is_win], attacker)
-			attacker[:army].write_army!(attacker[:is_win], defender, options)
-			defender[:army].write_army!(defender[:is_win], attacker, options)
+			attacker[:army].write_army!(attacker[:is_win], defender, attacker[:player], options)
+			defender[:army].write_army!(defender[:is_win], attacker, defender[:player], options)
 		end
 
 		def write_xp(attacker, defender)
@@ -448,7 +448,7 @@ module BattleArmyModule
 	end
 
 	# options => :exp, :hp
-	def write_army!(is_win, target, options = [])
+	def write_army!(is_win, target, player = nil, options = [])
 		return false if self.first.is_a?(Monster)
 		return false if options.blank?
 
@@ -466,7 +466,6 @@ module BattleArmyModule
 		end
 
 		self.each do |fighter|
-			p "---- Fighter:#{fighter.id} Current HP~#{fighter.curr_hp}"
 			new_atts = {}
 
 			if write_xp && fighter.curr_hp > 0
@@ -477,6 +476,10 @@ module BattleArmyModule
 			new_atts[:current_hp] = fighter.curr_hp if write_hp
 
 			fighter.sets(new_atts) unless new_atts.blank?
+		end
+
+		if player && is_win
+			player.earn_exp!(each_exp)
 		end
 	end
 

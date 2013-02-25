@@ -4,6 +4,7 @@ gaofei.local:
  account_server_ip: 192.168.1.200
  account_server_port: 3000
  info_const_version: 15
+ env: dev
 
 dinotest:
  ip: 106.187.91.156
@@ -11,6 +12,7 @@ dinotest:
  account_server_ip: 50.112.84.136
  account_server_port: 10001
  info_const_version: 15
+ env: dev
 
 a001:
  ip: 50.112.84.136
@@ -18,3 +20,4 @@ a001:
  account_server_ip: 50.112.84.136
  account_server_port: 10001
  info_const_version: 15
+ env: prod

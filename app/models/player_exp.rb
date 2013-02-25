@@ -32,8 +32,8 @@ module PlayerExp
 			self.class.all_level_exps[self.level + 1]
 		end
 
-		def earn_exp(count = 0)
-			self.experience += count
+		def earn_exp!(exps = 0)
+			self.experience += exps
 
 			if experience >= next_level_exp
 				self.experience -= next_level_exp

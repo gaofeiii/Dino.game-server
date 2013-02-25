@@ -1,7 +1,7 @@
 require 'socket'
 
 class ServerInfo
-	include OhmExtension
+	# include OhmExtension
 
 	@@cache = Hash.new
 

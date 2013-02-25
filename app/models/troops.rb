@@ -61,6 +61,7 @@ class Troops < Ohm::Model
 			defender_army = target.defense_troops
 
 			attacker = {
+				:player => player,
 				:owner_info => {
 					:type => 'Player',
 					:id => player_id.to_i,
@@ -73,16 +74,20 @@ class Troops < Ohm::Model
 			attacker[:buff_info] << scroll.to_hash if scroll
 
 			defender_name = nil
-			dfender_type = nil
+			defender_type = nil
+			defense_player = nil
+
 			if target_type == BattleModel::TARGET_TYPE[:village]
 				defender_name = target.player_name
+				defense_player = target.player
 			elsif target_type == BattleModel::TARGET_TYPE[:creeps]
 				defender_name = "Creeps"
-				dfender_type = target.type
+				defender_type = target.type
 			elsif target_type == BattleModel::TARGET_TYPE[:gold_mine]
 				defender_name = target.owner_name
 			end
 			defender = {
+				:player => defense_player,
 				:owner_info => {
 					:type => target.class.name,
 					:id => target.id,

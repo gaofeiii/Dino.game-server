@@ -10,6 +10,8 @@ require File.expand_path('../application', __FILE__)
 const_dir = "#{Rails.root}/const"
 Dir[const_dir + '/*.rb', const_dir + '/**/*.rb'].each{|file| require file}
 
+require "#{Rails.root}/config/server_info.rb"
+
 # Initialize the rails application
 DinosaurGame::Application.initialize!
 

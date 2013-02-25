@@ -1,7 +1,8 @@
 require 'ohm'
 require 'redis/connection/hiredis'
+require "#{Rails.root}/config/server_info.rb"
 
-if ENV["RAILS_ENV"] == "development"
+if ServerInfo.info[:env] == "dev"
   worker_processes 1
 else
   worker_processes 4

@@ -139,7 +139,7 @@ class Dinosaur < Ohm::Model
 		elsif status > 0
 			consume_food
 			update_level
-			auto_heal
+			auto_healing
 			return self
 		else
 			return false
@@ -236,32 +236,23 @@ class Dinosaur < Ohm::Model
 		save
 	end
 
-	def auto_heal(time = ::Time.now.to_i)
-		return false if current_hp == total_hp
+	def auto_healing
+		time = ::Time.now.to_i
 		dt = time - updated_hp_time
-		if dt < HEALED_PER_SECOND
-			return false
-		else
-			d_hp = dt / HEALED_PER_SECOND
-			c_hp = current_hp + d_hp
 
-			if c_hp > total_hp
-				c_hp = total_hp
-			end
+		return false if dt < HEALED_PER_SECOND
 
-			self.current_hp = c_hp
-		end
+		dhp = dt / HEALED_PER_SECOND
+		self.current_hp += dhp
+		self.current_hp = total_hp if self.current_hp > total_hp
+
+		self.updated_hp_time = time
+		self
 	end
 
-	def auto_heal!(time = ::Time.now.to_i)
-		if auto_heal(time)
-			self.sets :current_hp => self.current_hp,
-								:updated_hp_time => time
-			return current_hp
-		else
-			self.set :updated_hp_time => time
-			return false
-		end
+	def auto_healing!
+		auto_healing
+		self.sets :current_hp => self.current_hp, :updated_hp_time => self.updated_hp_time
 	end
 
 	def heal_speed_up_cost
