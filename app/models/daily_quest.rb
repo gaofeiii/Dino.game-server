@@ -180,7 +180,10 @@ module DailyQuest
 					:research_times => 0
 				}
 
-				new_quests_ids = self.class.random_daily_quests_by_level_range(:max => level, :limit => 5)
+				min = level - level % 5 - 1
+				min = 1 if min < 0
+				max = level
+				new_quests_ids = self.class.random_daily_quests_by_level_range(:min => min, :max => max, :limit => 5)
 				self.daily_quest = new_quests_ids.map do |q_id|
 					q_info = self.class.find_daily_quest_info_by_index(q_id)
 					{:number => q_id, :rewarded => false, :finished_steps => 0, :total_steps => q_info[:total_steps]}
@@ -205,6 +208,19 @@ module DailyQuest
 				info = self.class.find_daily_quest_info_by_index(quest[:number], self.locale)
 				quest.merge(info)
 			end
+		end
+
+		def clear_daily_quests
+			self.daily_quest = []
+			self.daily_quest_cache = {
+				:hatch_dinosaurs => 0,
+				:sell_woods => 0,
+				:sell_stones => 0,
+				:kill_monsters => 0,
+				:occupy_gold_mines => 0,
+				:research_times => 0
+			}
+			self.save
 		end
 
 		# Rewrite the "get" method of attribute.
