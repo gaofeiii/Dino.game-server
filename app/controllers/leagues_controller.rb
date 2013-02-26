@@ -20,7 +20,7 @@ class LeaguesController < ApplicationController
 																		:league_id => lg.id, 
 																		:level => LeagueMemberShip.levels[:president]
 			@player.update :league_id => lg.id, :league_member_ship_id => lms.id
-			render :json => {:player => {:league => lg.to_hash}}
+			render :json => {:player => @player.to_hash(:league)}
 		else
 			render :json => {:error => "NOT_ENOUGH_SUNS"}
 		end
@@ -264,6 +264,11 @@ class LeaguesController < ApplicationController
 		else
 			@player.league_member_ship.delete
 			@player.update :league_id => nil
+
+			if @league.members.count <= 0
+				@league.delete
+			end
+
 			render_success(:player => @player.to_hash(:league))
 		end
 	end

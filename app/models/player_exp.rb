@@ -8,7 +8,7 @@ module PlayerExp
 			@@exps.clear
 
 			book = Roo::Excelx.new("#{Rails.root}/const/exps.xlsx")
-			book.default_sheet = '玩家升级所需经验'
+			book.default_sheet = 'player_upgrade_exp'
 
 			2.upto(book.last_row).each do |i|
 				level = book.cell(i, 'A').to_i
