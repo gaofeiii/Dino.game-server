@@ -105,6 +105,10 @@ class Player < Ohm::Model
 		(session && session.expired_at > ::Time.now.utc) ? true : false
 	end
 
+	def in_league?
+		!league_id.blank?
+	end
+
 	def to_hash(*args)
 		hash = {
 			:id => id.to_i,
@@ -128,10 +132,11 @@ class Player < Ohm::Model
 			:stone => stone,
 			:player_type => player_type,
 			:warehouse_size => tech_warehouse_size,
-			:tax_rate => Deal::ORIGIN_TAX
+			:tax_rate => Deal::ORIGIN_TAX,
+			:in_league => in_league?
 		}
 		opts = if args.include?(:all)
-			args | [:god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :league, :beginning_guide, :queue_info]
+			args | [:troops, :specialties, :village, :techs, :dinosaurs, :advisors, :beginning_guide, :queue_info]
 		else
 			args
 		end

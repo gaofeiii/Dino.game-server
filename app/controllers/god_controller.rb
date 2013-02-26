@@ -1,5 +1,5 @@
 class GodController < ApplicationController
-	before_filter :validate_player, :only => [:worship_gods, :cancel_worship_gods]
+	before_filter :validate_player, :only => [:worship_gods, :cancel_worship_gods, :query_god]
 
 	# 供奉神灵
 	def worship_gods
@@ -12,7 +12,7 @@ class GodController < ApplicationController
 
 		if @player.spend!(cost)
 			if god
-				god.set :type, params[:god_type]
+				god.update :type => params[:god_type], :start_time => Time.now.to_i
 			else
 				God.create(:type => params[:god_type], :level => 1, :start_time => Time.now.to_i, :player_id => @player.id)
 			end
@@ -23,6 +23,10 @@ class GodController < ApplicationController
 			@player.set :guide_cache, cache
 		end
 		render_success(:player => @player.to_hash(:resources, :god))
+	end
+
+	def query_god
+		render_success(:player => @player.to_hash(:god))
 	end
 
 	# 取消供奉神灵

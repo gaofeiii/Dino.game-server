@@ -1,7 +1,7 @@
 class LeaguesController < ApplicationController
 
 	before_filter :validate_player, :only => [:create, :apply, :apply_list, :my_league_info, :member_list, 
-		:invite, :donate, :receive_gold, :kick_member]
+		:invite, :donate, :receive_gold, :kick_member, :leave_league]
 	before_filter :validate_league, :only => [:apply, :donate]
 
 	def create
@@ -43,7 +43,7 @@ class LeaguesController < ApplicationController
 	def my_league_info
 		league = @player.league
 		if league.nil?
-			render :json => {:player => {:league => {}}}
+			render :json => {:player => {:league => {}, :in_league => false}}
 		else
 			render :json => {
 				:player => {
@@ -58,13 +58,10 @@ class LeaguesController < ApplicationController
 		if league.nil?
 			render :json => {:error => I18n.t('league_error.not_in_a_league')}
 		else
-			render :json => {
-				:player => {
-					:league => {
-						:members_list => @player.league.members_list
-					}
-				}
-			}
+			data = @player.to_hash(:league)
+			data[:league][:members_list] = league.members_list
+			# render_success(:player => data)
+			render_success(:player => {:league => {:members_list => @player.league.members_list}})
 		end
 	end
 
@@ -258,6 +255,17 @@ class LeaguesController < ApplicationController
 
 		render_success(:player => @player.to_hash(:league))
 	end
-		
+
+	def leave_league
+		@league = @player.league
+
+		if @league.nil?
+			render_error(Error::NORMAL, "You are not in this league now")
+		else
+			@player.league_member_ship.delete
+			@player.update :league_id => nil
+			render_success(:player => @player.to_hash(:league))
+		end
+	end
 
 end

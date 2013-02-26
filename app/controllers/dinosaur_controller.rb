@@ -28,6 +28,10 @@ class DinosaurController < ApplicationController
 		end
 
 		if @egg.use!(:building_id => @building.id)
+			if !@player.beginning_guide_finished && !@player.guide_cache['has_hatched_dino']
+				cache = @player.guide_cache.merge(:has_hatched_dino => true)
+				@player.set :guide_cache, cache
+			end
 			render_success({:player => @player.to_hash(:dinosaurs), :egg_id => @egg.id})
 		else
 			render_error(Error::NORMAL, "Unknown_Error_On_Hatching_Egg")

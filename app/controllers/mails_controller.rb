@@ -63,7 +63,13 @@ class MailsController < ApplicationController
 	def check_new_mails
 		@player.troops.map(&:refresh!)
 		mails = @player.all_mails(:last_id => params[:last_id], :last_report_time => params[:last_report_time])
-		render_success(:mails => mails, :player => {:level => @player.level, :experience => @player.experience, :next_level_exp => @player.next_level_exp})
+		render_success 	:mails => mails, 
+										:player => {
+											:level => @player.level, 
+											:experience => @player.experience, 
+											:next_level_exp => @player.next_level_exp,
+											:in_league => @player.in_league?
+										}
 	end
 
 	def read_mail
@@ -118,7 +124,7 @@ class MailsController < ApplicationController
 			end
 		# 公会邀请
 		when Mail::SYS_TYPE[:league_invite]
-			if !@player.league_id.nil?
+			if not @player.league_id.blank?
 				render_error(Error::NORMAL, I18n.t('league_error.already_in_a_league')) and return
 			end
 
@@ -156,7 +162,7 @@ class MailsController < ApplicationController
 			end
 
 			if league.add_new_member(member)
-				render_success(:player => @player.to_hash(:league), :result => I18n.t('general.accept_member_success'))
+				render_success(:player => @player.to_hash(:league), :result => I18n.t('league_error.accept_member_success'))
 			else
 				render_error(Error::NORMAL, I18n.t('general.server_busy'))
 			end

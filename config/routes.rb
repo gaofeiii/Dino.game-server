@@ -96,6 +96,7 @@ DinosaurGame::Application.routes.draw do
     post 'donate'         => 'leagues#donate'
     post 'receive_gold'   => 'leagues#receive_gold'
     post 'kick_member'    => 'leagues#kick_member'
+    post 'leave_league'   => 'leagues#leave_league'
   end  
 
   # 地图
@@ -141,6 +142,7 @@ DinosaurGame::Application.routes.draw do
   scope :path => 'gods', :as => 'gods' do
     post 'worship'         => 'god#worship_gods'
     post 'cancel_worship'  => 'god#cancel_worship_gods'
+    post 'query_god'       => 'god#query_god'
   end
 
   # 新手指引
