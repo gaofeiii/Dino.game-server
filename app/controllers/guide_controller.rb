@@ -4,6 +4,7 @@ class GuideController < ApplicationController
 
 	def complete
 		q_index = params[:index].to_i
+		@player.refresh_village_status
 		@player.guide_info.check_finished(q_index)
 
 		data = if @player.guide_info[q_index].finished?

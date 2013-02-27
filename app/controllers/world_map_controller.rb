@@ -136,6 +136,7 @@ class WorldMapController < ApplicationController
 				next
 			end
 		end # end of ids each
+		p left_ids
 
 		my_x, my_y = 0, 0
 		if Player.exists?(params[:player_id])
@@ -143,6 +144,7 @@ class WorldMapController < ApplicationController
 
 			player = Player.new(:id => params[:player_id]).gets(:adapt_level)
 			tmp_creeps_idx = player.temp_creeps_idx & left_ids
+			p tmp_creeps_idx
 
 			vil = Village.new(:id => player.gets(:village_id).village_id).gets(:x, :y)
 			my_x, my_y = vil.x, vil.y

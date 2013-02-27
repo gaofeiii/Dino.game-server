@@ -384,6 +384,21 @@ class Player < Ohm::Model
 		hash
 	end
 
+	def buildings
+		vil = Village.new(:id => village_id)
+		vil.buildings
+	end
+
+	def refresh_village_status
+		self.buildings.find(:type => 0).union(:type => 1, :village_id => village_id).each do |build|
+			build.update_status!
+		end
+
+		self.dinosaurs.find(:status => 0).each do |dino|
+			dino.update_status!
+		end
+	end
+
 	# Callbacks
 	protected
 
