@@ -274,6 +274,12 @@ class StrategyController < ApplicationController
 
 		win_score  = Player.calc_score(winner.honour_score, loser.honour_score)
 
+		if not winner.finish_daily_quest
+			winner.daily_quest_cache[:win_match_game] += 1
+			winner.daily_quest_cache[:win_honour_val] += win_score
+			winner.set :daily_quest_cache, winner.daily_quest_cache.to_json
+		end
+
 		winner.add_honour(win_score)
 		loser.dec_honour(win_score)
 

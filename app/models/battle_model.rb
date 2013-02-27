@@ -475,7 +475,10 @@ module BattleArmyModule
 				total_level += enemy.level.to_i
 			end
 
-			enemy_avg_level = total_level / target[:army].size
+			target_count = target[:army].size
+			target_count = 1 if target_count <= 0
+			enemy_avg_level = total_level / target_count
+			enemy_avg_level = 1 if enemy_avg_level <= 0
 
 			p "enemy_avg_level: #{enemy_avg_level}"
 

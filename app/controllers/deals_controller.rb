@@ -23,6 +23,10 @@ class DealsController < ApplicationController
 			render_error(Error::NORMAL, "Trade has been finished") and return
 		end
 
+		if deal.seller_id.to_i == @player.id
+			render_error(Error::NORMAL, "CANNOT BUY YOURSELF GOODS") and return
+		end
+
 		deal.mutex(0.5) do
 			case deal.category
 			when Deal::CATEGORIES[:res]
@@ -58,7 +62,7 @@ class DealsController < ApplicationController
 			# deal.set :status, Deal::STATUS[:closed]
 			deal.delete
 		end
-		render_success(:player => @player.to_hash(:resources, :items))
+		render_success(:player => @player.to_hash(:resources), :deal_id => deal.id)
 	end
 
 	def sell

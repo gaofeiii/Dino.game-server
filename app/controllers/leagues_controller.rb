@@ -1,8 +1,8 @@
 class LeaguesController < ApplicationController
 
 	before_filter :validate_player, :only => [:create, :apply, :apply_list, :my_league_info, :member_list, 
-		:invite, :donate, :receive_gold, :kick_member, :leave_league]
-	before_filter :validate_league, :only => [:apply, :donate]
+		:invite, :donate, :receive_gold, :kick_member, :leave_league, :change_info]
+	before_filter :validate_league, :only => [:apply, :donate, :change_info]
 
 	def create
 		if League.exists?(@player.league_id)
@@ -271,6 +271,15 @@ class LeaguesController < ApplicationController
 
 			render_success(:player => @player.to_hash(:league))
 		end
+	end
+
+	def change_info
+		if @league.president_id.to_i != @player.id
+			render_error(Error::NORMAL, "NOT PRESIDENT") and return
+		end
+
+		@league.set :desc, params[:desc]
+		render_success(:player => @player.to_hash(:league))
 	end
 
 end

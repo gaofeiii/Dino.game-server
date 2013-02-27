@@ -17,6 +17,7 @@ class DailyQuestController < ApplicationController
 		if @player.set_rewarded(params[:quest_id])
 			@player.set :daily_quest, @player.daily_quest.to_json
 		end
-		render_success(:player => @player.to_hash.merge(:daily_quests => [quest]))
+		# render_success(:player => @player.to_hash.merge(:daily_quests => [quest]))
+		render_success(:player => @player.to_hash(:daily_quest))
 	end
 end

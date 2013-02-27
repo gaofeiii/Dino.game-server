@@ -141,27 +141,20 @@ module DailyQuest
 
 		def update_daily_quest_status!
 			self.daily_quest.each do |quest|
-				case quest[:number]
+				case quest[:number] % 5
 				when 1
-					quest[:finished_steps] = self.daily_quest_cache[:research_times]
+					quest[:finished_steps] = self.daily_quest_cache[:kill_monsters]
 				when 2
-					quest[:finished_steps] = self.daily_quest_cache[:sell_woods]
+					quest[:finished_steps] = self.daily_quest_cache[:occupy_gold_mines]
 				when 3
-					quest[:finished_steps] = self.daily_quest_cache[:hatch_dinosaurs]
+					quest[:finished_steps] = self.daily_quest_cache[:attack_players]
 				when 4
-					quest[:finished_steps] = self.daily_quest_cache[:occupy_gold_mines]
-				when 5
-					quest[:finished_steps] = self.daily_quest_cache[:kill_monsters]
-				when 6
-					quest[:finished_steps] = self.daily_quest_cache[:research_times]
-				when 7
-					quest[:finished_steps] = self.daily_quest_cache[:sell_woods]
-				when 8
-					quest[:finished_steps] = self.daily_quest_cache[:hatch_dinosaurs]
-				when 9
-					quest[:finished_steps] = self.daily_quest_cache[:occupy_gold_mines]
-				when 10
-					quest[:finished_steps] = self.daily_quest_cache[:kill_monsters]
+					quest[:finished_steps] = self.daily_quest_cache[:win_match_game]
+				when 0
+					quest[:finished_steps] = self.daily_quest_cache[:win_honour_val]
+				end
+				if quest[:finished_steps] > quest[:total_steps]
+					quest[:finished_steps] = quest[:total_steps]
 				end
 			end
 			self.set :daily_quest, self.daily_quest.to_json
@@ -169,15 +162,14 @@ module DailyQuest
 		
 		def reset_daily_quest
 			if daily_quest_updated_time < Time.now.beginning_of_day.to_i
-				# DO update!!!
+
 				self.daily_quest = []
 				self.daily_quest_cache = {
-					:hatch_dinosaurs => 0,
-					:sell_woods => 0,
-					:sell_stones => 0,
-					:kill_monsters => 0,
-					:occupy_gold_mines => 0,
-					:research_times => 0
+					:kill_monsters 			=> 0,
+					:occupy_gold_mines 	=> 0,
+					:attack_players 		=> 0,
+					:win_match_game 		=> 0,
+					:win_honour_val 		=> 0
 				}
 
 				min = level - level % 5 - 1
@@ -213,12 +205,11 @@ module DailyQuest
 		def clear_daily_quests
 			self.daily_quest = []
 			self.daily_quest_cache = {
-				:hatch_dinosaurs => 0,
-				:sell_woods => 0,
-				:sell_stones => 0,
-				:kill_monsters => 0,
-				:occupy_gold_mines => 0,
-				:research_times => 0
+				:kill_monsters 			=> 0,
+				:occupy_gold_mines 	=> 0,
+				:attack_players 		=> 0,
+				:win_match_game 		=> 0,
+				:win_honour_val 		=> 0
 			}
 			self.save
 		end
@@ -254,7 +245,7 @@ module DailyQuest
 
 		def save!
 			self.daily_quest = daily_quest.to_json
-			self.daily_quest_cache = daily_quest_cache.to_json
+			self.daily_quest_cache = daily_quest_cache.to_json if daily_quest_cache.is_a?(Hash)
 			super
 		end
 

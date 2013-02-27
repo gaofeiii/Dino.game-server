@@ -107,6 +107,10 @@ class Troops < Ohm::Model
 			if result[:winner] == 'attacker'
 				reward = case target_type
 				when BattleModel::TARGET_TYPE[:village]
+					if not player.finish_daily_quest
+						player.daily_quest_cache[:attack_players] += 1
+						player.set :daily_quest_cache, player.daily_quest_cache.to_json
+					end
 
 					if target.in_dangerous_area?
 						tx, ty, ti = target.x, target.y, target.index
@@ -161,11 +165,21 @@ class Troops < Ohm::Model
 						end
 					end
 					
+					if not player.finish_daily_quest
+						player.daily_quest_cache[:kill_monsters] += 1
+						player.set :daily_quest_cache, player.daily_quest_cache.to_json
+					end
+
 					player.del_temp_creeps(target.index)
 					target.delete
 					reward
 
 				when BattleModel::TARGET_TYPE[:gold_mine]
+					if not player.finish_daily_quest
+						player.daily_quest_cache[:occupy_gold_mines] += 1
+						player.set :daily_quest_cache, player.daily_quest_cache.to_json
+					end
+					
 					if target.type == GoldMine::TYPE[:normal]
 						target.update :player_id => player.id, :under_attack => false
 						rwd = {:wood => 1500, :stone => 1500, :gold_coin => 200, :items => []}
@@ -182,6 +196,7 @@ class Troops < Ohm::Model
 						end
 						{} # reward = {}
 					end
+					
 				else
 					{}
 				end
