@@ -43,6 +43,7 @@ class BuildingsController < ApplicationController
 																						:status => Building::STATUS[:new],
 																						:has_worker => wkr
 
+			@player.earn_exp!(150)
 			data = {
 				:message => Error.success_message, 
 				:player => @player.to_hash(:queue_info).merge({:village => @village.to_hash.merge(:buildings => [@building.to_hash])})

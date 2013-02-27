@@ -280,13 +280,13 @@ class BattleModel
 				result[:winner] = 'defender'
 				attacker[:is_win] = false
 				defender[:is_win] = true
-				write_xp(attacker, defender)
+				write_result(attacker, defender, :exp)
 				return result.merge!(:time => Time.now.to_f)
 			elsif defender[:army].all_curr_hp.zero?
 				result[:winner] = 'attacker'
 				attacker[:is_win] = true
 				defender[:is_win] = false
-				write_xp(attacker, defender)
+				write_result(attacker, defender, :exp)
 				return result.merge!(:time => Time.now.to_f)
 			end
 			return result
@@ -317,6 +317,10 @@ module BattlePlayerModule
 			:buff_info => self[:buff_info],
 			:army => army
 		}
+	end
+
+	def earn_exp(exp)
+		self[:player].earn_exp!(exp) if self[:player]
 	end
 end
 
@@ -460,9 +464,24 @@ module BattleArmyModule
 		each_exp = 0
 		player_exp = 0
 
+		enemy_avg_level = 1
+
 		if is_win && write_xp
-			total_exp = target[:army].sum{ |enemy| enemy.xp.to_i }
+			total_exp = 0
+			total_level = 0
+
+			target[:army].each do |enemy|
+				total_exp += enemy.xp.to_i
+				total_level += enemy.level.to_i
+			end
+
+			enemy_avg_level = total_level / target[:army].size
+
+			p "enemy_avg_level: #{enemy_avg_level}"
+
 			each_exp = total_exp / alive_count
+			player_exp = Player.battle_exp[enemy_avg_level]
+			p "player_exp: #{player_exp}"
 		end
 
 		self.each do |fighter|
@@ -478,8 +497,8 @@ module BattleArmyModule
 			fighter.sets(new_atts) unless new_atts.blank?
 		end
 
-		if player && is_win
-			player.earn_exp!(each_exp)
+		if player && is_win && player_exp > 0
+			player.earn_exp!(player_exp)
 		end
 	end
 

@@ -241,6 +241,7 @@ class StrategyController < ApplicationController
 		end.compact
 
 		attacker = {
+			:player => @player,
 			:owner_info => {
 				:type => 'Player',
 				:id => @player.id,
@@ -252,6 +253,7 @@ class StrategyController < ApplicationController
 		}
 
 		defender = {
+			:player => @enemy,
 			:owner_info => {
 				:type => 'Player',
 				:id => @enemy.id,

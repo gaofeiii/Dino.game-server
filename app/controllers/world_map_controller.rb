@@ -136,7 +136,6 @@ class WorldMapController < ApplicationController
 				next
 			end
 		end # end of ids each
-		p left_ids
 
 		my_x, my_y = 0, 0
 		if Player.exists?(params[:player_id])

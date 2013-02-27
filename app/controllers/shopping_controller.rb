@@ -55,7 +55,8 @@ class ShoppingController < ApplicationController
 					food = @player.find_food_by_type(goods[:item_type])
 					if food.nil?
 						tmp = goods.slice(:item_category, :item_type).merge(:player_id => @player.id)
-						Item.create(tmp)
+						# Item.create(tmp)
+						Specialty.create(:category => goods[:item_category], :type => goods[:item_type], :count => goods[:count], :player_id => @player.id)
 					else
 						food.increase(:count, goods[:count])
 					end

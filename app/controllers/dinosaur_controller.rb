@@ -143,7 +143,7 @@ class DinosaurController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('dinosaur_error.reach_max_growth_point')) and return
 		end
 		
-		if @player.spend!(:gold => 100)
+		if @player.spend!(:gold => @dinosaur.training_cost)
 			@dinosaur.increase(:growth_point, @dinosaur.training_growth)
 			render_success(:growth_point => @dinosaur.growth_point)
 		else
