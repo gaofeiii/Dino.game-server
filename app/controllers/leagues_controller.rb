@@ -45,23 +45,24 @@ class LeaguesController < ApplicationController
 		if league.nil?
 			render :json => {:player => {:league => {}, :in_league => false}}
 		else
-			render :json => {
-				:player => {
-					:league => league.to_hash
-				}
-			}
+			# render :json => {
+			# 	:player => {
+			# 		:league => league.to_hash
+			# 	}
+			# }
+			render_success(:player => @player.to_hash(:league))
 		end
 	end
 
 	def member_list
 		league = @player.league
 		if league.nil?
-			render :json => {:error => I18n.t('league_error.not_in_a_league')}
+			render_error(Error::NORMAL, I18n.t('league_error.not_in_a_league'))
 		else
 			data = @player.to_hash(:league)
 			data[:league][:members_list] = league.members_list
-			# render_success(:player => data)
-			render_success(:player => {:league => {:members_list => @player.league.members_list}})
+			render_success(:player => data)
+			# render_success(:player => {:league => {:members_list => @player.league.members_list}})
 		end
 	end
 

@@ -37,6 +37,15 @@ class ItemsController < ApplicationController
 			end
 			@player.save
 			@item.delete
+		elsif @item.item_category == Item.categories[:protection]
+			vil = Village.new(:id => @player.village_id).gets(:protection_until)
+			now_time = ::Time.now.to_i
+			if vil.protection_until < now_time
+				vil.set :protection_until, now_time + 8.hours
+			else
+				vil.set :protection_until, vil.protection_until + 8.hours
+			end
+			render_success(:player => @player.to_hash(:village)) and return
 		else
 			render_error(Error::NORMAL, "ITEMS_NOT_DEFINED") and return
 		end

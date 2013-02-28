@@ -181,6 +181,7 @@ class Troops < Ohm::Model
 					end
 					
 					if target.type == GoldMine::TYPE[:normal]
+						# TODO: 攻打普通金矿的奖励
 						target.update :player_id => player.id, :under_attack => false
 						rwd = {:wood => 1500, :stone => 1500, :gold_coin => 200, :items => []}
 						i_cat = Item.categories.values.sample
@@ -193,6 +194,7 @@ class Troops < Ohm::Model
 							target.add_attacking_count(player.league_id)
 							self.player.increase(:experience, 100)
 							player.league_member_ship.increase(:contribution, 200)
+							result[:league_war_result] = {:progress => rand(1..3000), :rank => rand(1..10)}
 						end
 						{} # reward = {}
 					end

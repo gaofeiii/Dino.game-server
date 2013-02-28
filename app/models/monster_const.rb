@@ -61,7 +61,35 @@ module MonsterConst
 					:scroll_type => scrl_type
 				}
 			end
+		end # End of load_const!
 
+		def get_monster_level_and_number_by_type(m_type)
+			case m_type
+			when 1
+				[1, 1]
+			when 2
+				[rand(1..3), 2]
+			when 3
+				[rand(3..5), 2]
+			when 4
+				[rand(5..8), 3]
+			when 5
+				[rand(8..10), 3]
+			when 6
+				[rand(10..15), 3]
+			when 7
+				[rand(15..20), 4]
+			when 8
+				[rand(20..25), 4]
+			when 9
+				[rand(25..30), 4]
+			when 10
+				[rand(30..35), 4]
+			when 11..19
+				[rand(((m_type - 4) * 5)..((m_type - 3) * 5)), 5]
+			when 20
+				[80, 5]
+			end
 		end
 	end
 	

@@ -143,6 +143,13 @@ class StrategyController < ApplicationController
 											:target_y => target.y,
 											:scroll_id => params[:scroll_id]
 			target.set(:under_attack, 1)
+
+			if target.is_a?(Village) || (target.is_a?(GoldMine) && !target.player_id.blank?)
+				vil = Village.new(:id => @player.village_id).gets(:protection_until)
+				now_time = ::Time.now.to_i
+				vil.set(:protection_until, Time.now.to_i) if vil.protection_until > Time.now.to_i
+			end
+			
 			params[:dinosaurs].each do |dino_id|
 				if Dinosaur.exists?(dino_id)
 					Ohm.redis.hset("Dinosaur:#{dino_id}", :is_attacking, 1)
@@ -274,7 +281,7 @@ class StrategyController < ApplicationController
 
 		win_score  = Player.calc_score(winner.honour_score, loser.honour_score)
 
-		if not winner.finish_daily_quest
+		if winner == @player && !winner.finish_daily_quest
 			winner.daily_quest_cache[:win_match_game] += 1
 			winner.daily_quest_cache[:win_honour_val] += win_score
 			winner.set :daily_quest_cache, winner.daily_quest_cache.to_json

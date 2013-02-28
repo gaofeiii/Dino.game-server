@@ -26,6 +26,7 @@ class GoldMine < Ohm::Model
 	index :level
 	index :type
 
+	include GoldMineConst
 	include GoldMineLeagueHelper
 
 	TYPE = {
@@ -38,21 +39,15 @@ class GoldMine < Ohm::Model
 
 			if monsters.blank?
 				# 创建属于此金矿的monster
-				3.times do |i|
-					case level
-					when 1
-						m_type = Random.rand(1..2)
-					when 2
-						m_type = Random.rand(2..3)
-					when 3
-						m_type = Random.rand(3..5)
-					end
-
-					Monster.create_by(:type => m_type, :status => Monster::STATUS[:adult], :gold_mine_id => id)
+				m_level, m_count = Monster.get_monster_level_and_number_by_type(self.level)
+				m_type = rand(1..5)
+				m_count.times do |i|
+					Monster.create_by :level => m_level, :type => m_type, :gold_mine_id => id
 				end
 			end
 			monsters.to_a
 		else
+			# TODO: player's defense troops
 			[]
 		end
 	end
@@ -100,20 +95,6 @@ class GoldMine < Ohm::Model
 		when TYPE[:league]
 			return 3
 		end
-	end
-
-	def self.gold_output(lvl = 0)
-		# case lvl
-		# when 1
-		# 	100
-		# when 2
-		# 	400
-		# when 3
-		# 	800
-		# else
-		# 	0
-		# end
-		100 + (lvl - 1) * 50
 	end
 
 	def output
