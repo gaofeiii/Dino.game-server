@@ -1,12 +1,18 @@
 class ItemsController < ApplicationController
 	before_filter :validate_player
-	before_filter :validate_item, :only => [:use, :lucky_reward, :drop]
+	before_filter :validate_item, :only => [:lucky_reward, :drop]
 
 	def my_items_list
 		render :json => {:player => {:items => @player.items.map{|item| item.to_hash}}}
 	end
 
 	def use
+		@item = Item[params[:item_id]]
+
+		if @item.nil?
+			render_error(Error::NORMAL, I18n.t('items.invalid_item_id')) and return
+		end
+		
 		# ==== If using egg ====
 		if @item.item_category == Item.categories[:egg]
 			render_error(Error::NORMAL, "Hatch egg in Incubation") and return
@@ -14,7 +20,12 @@ class ItemsController < ApplicationController
 		# ==== If using lottery ====
 		elsif @item.item_category == Item.categories[:lottery]
 			rwd = LuckyReward.rand_one(@item.item_type)
-			render_success(:reward => rwd, :category => @item.item_category) and return
+			@player.receive_lucky_reward(rwd)
+			@item.delete
+			render_success 	:reward => rwd, 
+											:category => @item.item_category,
+											:player => @player.to_hash(:resources)
+			return
 
 		elsif @item.item_category == Item.categories[:vip]
 			@player.player_type = Player::TYPE[:vip]

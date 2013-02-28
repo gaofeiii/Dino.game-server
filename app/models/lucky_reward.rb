@@ -63,17 +63,17 @@ class LuckyReward
 				when 'wood'
 					rwd = {
 						:category => 1,
-						:count => num.to_f
+						:count => num.to_i
 					}
 				when 'stone'
 					rwd = {
 						:category => 2,
-						:count => num.to_f
+						:count => num.to_i
 					}
 				when 'gold'
 					rwd = {
 						:category => 3,
-						:count => num.to_f
+						:count => num.to_i
 					}
 				when 'food'
 					rwd = {
@@ -112,5 +112,6 @@ class LuckyReward
 				end
 			end
 		end
+
 	end
 end

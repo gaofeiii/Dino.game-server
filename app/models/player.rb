@@ -20,6 +20,7 @@ class Player < Ohm::Model
 	include PlayerResourceHelper
 	include PlayerCreepsHelper
 	include PlayerHonourHelper
+	include PlayerLuckyRewardHelper
 
 	TYPE = {
 		:normal => 0,
@@ -169,8 +170,8 @@ class Player < Ohm::Model
 			when :troops
 				hash[:troops] = troops
 			when :resources
-				hash[:village] ||= {}
-				hash[:village].merge!(:resources => village.resources)
+				# hash[:village] ||= {}
+				# hash[:village].merge!(:resources => village.resources)
 			when :god
 				if not gods.blank?
 					hash[:god] = curr_god.to_hash

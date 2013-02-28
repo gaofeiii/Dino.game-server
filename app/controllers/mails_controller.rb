@@ -68,7 +68,11 @@ class MailsController < ApplicationController
 											:level => @player.level, 
 											:experience => @player.experience, 
 											:next_level_exp => @player.next_level_exp,
-											:in_league => @player.in_league?
+											:in_league => @player.in_league?,
+											:wood => @player.wood,
+											:stone => @player.stone,
+											:gems => @player.gems,
+											:gold_coin => @player.gold_coin
 										}
 	end
 

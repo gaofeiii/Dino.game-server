@@ -20,6 +20,9 @@ cn:
    normal_gold_mine: "屌丝金矿"
    league_gold_mine: "牛逼金矿"
 
+  items:
+   invalid_item_id: "物品已经不存在"
+
   player:
    whos_village: "%{player_name}的村庄"
    empty_village_name: "一座空城"
