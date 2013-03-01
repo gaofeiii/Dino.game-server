@@ -144,6 +144,7 @@ class LeaguesController < ApplicationController
 
 		mail = Mail.create_league_invite_mail(:receiver_name => @friend.nickname, :player_name => @player.nickname, :league_name => @league.name, :league_id => @league.id)
 		
+		p "==== mail ====", mail
 		if mail
 			render_success
 		else
@@ -195,6 +196,9 @@ class LeaguesController < ApplicationController
 			@player.league_member_ship.increase(:contribution, count / 1000)
 			@league.increase(:contribution, count / League::DONATE_FACTOR)
 			@league.increase(:xp, count / League::DONATE_FACTOR)
+			@league.update_level!
+		else
+			render_error(Error::NORMAL, I18n.t('general.not_enough_res')) and return
 		end
 
 		data = {

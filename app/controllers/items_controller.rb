@@ -24,9 +24,11 @@ class ItemsController < ApplicationController
 			@item.delete
 			render_success 	:reward => rwd, 
 											:category => @item.item_category,
-											:player => @player.to_hash(:resources)
+											:player => @player.to_hash(:items)
 			return
+		# ==== End lottery ====
 
+		# ==== Using VIP ====
 		elsif @item.item_category == Item.categories[:vip]
 			@player.player_type = Player::TYPE[:vip]
 			now = Time.now.to_i
@@ -37,6 +39,9 @@ class ItemsController < ApplicationController
 			end
 			@player.save
 			@item.delete
+			vip_left_time = @player.vip_expired_time - ::Time.now.to_i
+			render_success(:player => @player.to_hash(:dinosaurs, :items), :info => I18n.t('general.use_vip_success', :vip_left_time => vip_left_time / 3600))
+		# ==== End VIP ====
 		elsif @item.item_category == Item.categories[:protection]
 			vil = Village.new(:id => @player.village_id).gets(:protection_until)
 			now_time = ::Time.now.to_i
@@ -45,12 +50,13 @@ class ItemsController < ApplicationController
 			else
 				vil.set :protection_until, vil.protection_until + 8.hours
 			end
-			render_success(:player => @player.to_hash(:village)) and return
+			@item.delete
+			render_success(:player => @player.to_hash(:village, :items)) and return
 		else
 			render_error(Error::NORMAL, "ITEMS_NOT_DEFINED") and return
 		end
 		
-		render_success :player => @player.to_hash(:dinosaurs, :items)
+		
 	end
 
 	def food_list

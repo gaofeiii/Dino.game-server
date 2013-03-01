@@ -43,6 +43,7 @@ class ShoppingController < ApplicationController
 
 			if @player.spend!(:gems => gems_cost)
 				@player.receive!(res_type => res_count)
+				render_success(:player => @player.to_hash)
 			else
 				render_error(Error::NORMAL, I18n.t("general.not_enough_gems")) and return
 			end
@@ -60,9 +61,11 @@ class ShoppingController < ApplicationController
 					else
 						food.increase(:count, goods[:count])
 					end
+					render_success(:player => @player.to_hash(:specialties)) and return
 				else
 					itm = goods.slice(:item_category, :item_type).merge(:player_id => @player.id)
 					Item.create(itm)
+					render_success(:player => @player.to_hash(:items)) and return
 				end
 			else
 				render_error(Error::NORMAL, I18n.t("general.not_enough_gems")) and return
@@ -73,14 +76,12 @@ class ShoppingController < ApplicationController
 			if @player.spend!(goods.slice(:gems))
 				egg = Shopping.buy_random_egg(:item_type => goods[:item_type], :player_id => @player.id)
 				if egg
-					render_success(:player => {:gems => @player.gems, :items => @player.items.find(:item_category => Item.categories[:egg])}) and return
+					render_success(:player => @player.to_hash(:items)) and return
 				end
 			else
 				render_error(Error::NORMAL, I18n.t("general.not_enough_gems")) and return
 			end
 		end
-
-		render_success :player => @player.to_hash(:resources, :items, :specialties)
 	end
 
 end

@@ -142,7 +142,7 @@ class MailsController < ApplicationController
 			end
 
 			if league.add_new_member(@player)
-				render_success(:player => @player.to_hash, :result => I18n.t('general.join_league_success'))
+				render_success(:player => @player.to_hash(:league), :result => I18n.t('general.join_league_success'))
 			else
 				render_error(Error::NORMAL, I18n.t('general.server_busy'))
 			end

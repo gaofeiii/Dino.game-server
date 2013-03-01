@@ -30,6 +30,14 @@ class League < Ohm::Model
 
 	DONATE_FACTOR = 10
 
+	def update_level!
+		if xp >= next_level_xp
+			self.xp -= next_level_xp
+			self.level += 1
+			self.sets(:xp => xp, :level => level)
+		end
+	end
+
 	def president
 		Player[president_id]
 	end

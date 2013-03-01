@@ -12,6 +12,9 @@ class SessionsController < ApplicationController
 		result = trying(:server_ip => params[:server_ip])
 		data = if result[:success]
 			player = create_player(result[:account_id])
+			player.reset_daily_quest!
+			player.refresh_village_status
+			player.refresh_god_status!
 			Rails.logger.debug("*** New Player_id:#{player.id} ***")
 			{
 				:message => Error.success_message, 
@@ -43,8 +46,10 @@ class SessionsController < ApplicationController
 			else
 				@player.sets 	:device_token => @device_token,
 											:locale => LocaleHelper.get_server_locale_name(request.env["HTTP_CLIENT_LOCALE"])
-				@player.village.buildings.find(:status => [Building::STATUS[:new], Building::STATUS[:half]]).map(&:update_status!)
-				@player.technologies.find(:status => Technology::STATUS[:researching]).map(&:update_status!)
+				# @player.village.buildings.find(:status => [Building::STATUS[:new], Building::STATUS[:half]]).map(&:update_status!)
+				# @player.technologies.find(:status => Technology::STATUS[:researching]).map(&:update_status!)
+				@player.refresh_village_status
+				@player.reset_daily_quest!
 				@player.refresh_god_status!
 			end
 			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all)})

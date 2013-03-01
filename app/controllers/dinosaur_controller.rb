@@ -73,7 +73,7 @@ class DinosaurController < ApplicationController
 			end
 		end
 		render :json => {
-			:player => @player.to_hash(:dinosaurs, :food)
+			:player => @player.to_hash(:dinosaurs, :specialties)
 		}
 	end
 

@@ -169,9 +169,6 @@ class Player < Ohm::Model
 				hash[:mail_status] = check_mails
 			when :troops
 				hash[:troops] = troops
-			when :resources
-				# hash[:village] ||= {}
-				# hash[:village].merge!(:resources => village.resources)
 			when :god
 				if not gods.blank?
 					hash[:god] = curr_god.to_hash
@@ -405,10 +402,10 @@ class Player < Ohm::Model
 
 	def before_create
 		return if player_type == TYPE[:npc]
-		self.gold_coin = 1000
-		self.gems = 9999
-		self.wood = 5000
-		self.stone = 5000
+		self.gold_coin = 600
+		self.gems = 20000
+		self.wood = 600
+		self.stone = 600
 		self.level = 1 if (level.nil? or level == 0)
 		self.avatar_id = rand(1..12) if avatar_id.zero?
 		self.country_id = Country.first.id

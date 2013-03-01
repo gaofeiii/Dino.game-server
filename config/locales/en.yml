@@ -19,10 +19,11 @@ en:
    apply_league_fail: "申请加入部落失败"
    normal_gold_mine: "屌丝金矿"
    league_gold_mine: "牛逼金矿"
+   use_vip_success: "使用VIP道具成功！VIP剩余：约%{vip_left_time}小时"
 
   player:
-   whos_village: "%{player_name}的村庄"
-   empty_village_name: "一座空城"
+   whos_village: "%{player_name}'s village"
+   empty_village_name: "Desert Village"
 
   resource:
    wood: "木材"

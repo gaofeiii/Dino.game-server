@@ -129,6 +129,7 @@ module ShoppingConst
 				price = book.cell(i, 'e').to_i
 				item_cat = book.cell(i, 'f').to_i
 				item_type = book.cell(i, 'g').to_i
+				desc = book.cell(i, 'h')
 
 				@@all_goods[key_name] << {
 					:sid => sid,
@@ -136,14 +137,16 @@ module ShoppingConst
 					:item_category => item_cat,
 					:item_type => item_type,
 					:gems => price,
-					:count => count
+					:count => count,
+					:desc => desc
 				}
 				@@all_goods_hash[sid] = {
 					:goods_type => GOODS_TYPE[:item],
 					:item_category => item_cat,
 					:item_type => item_type,
 					:gems => price,
-					:count => count
+					:count => count,
+					:desc => desc
 				}
 			end
 			@@all_goods		
