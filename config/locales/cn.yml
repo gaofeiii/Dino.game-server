@@ -20,6 +20,7 @@ cn:
    normal_gold_mine: "屌丝金矿"
    league_gold_mine: "牛逼金矿"
    use_vip_success: "使用VIP道具成功！VIP剩余：约%{vip_left_time}小时"
+   use_protect_success: "使用保护卷轴成功！保护剩余时间：约%{protect_left_time}小时"
 
   items:
    invalid_item_id: "物品已经不存在"

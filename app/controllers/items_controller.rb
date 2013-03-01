@@ -46,12 +46,13 @@ class ItemsController < ApplicationController
 			vil = Village.new(:id => @player.village_id).gets(:protection_until)
 			now_time = ::Time.now.to_i
 			if vil.protection_until < now_time
-				vil.set :protection_until, now_time + 8.hours
+				vil.set :protection_until, now_time + 6.hours
 			else
 				vil.set :protection_until, vil.protection_until + 8.hours
 			end
 			@item.delete
-			render_success(:player => @player.to_hash(:village, :items)) and return
+			protect_left_time = vil.protection_until - ::Time.now.to_i
+			render_success(:player => @player.to_hash(:village, :items), :info => I18n.t('general.use_protect_success', :protect_left_time => protect_left_time / 3600)) and return
 		else
 			render_error(Error::NORMAL, "ITEMS_NOT_DEFINED") and return
 		end
