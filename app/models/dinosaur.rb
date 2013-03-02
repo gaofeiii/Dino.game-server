@@ -2,7 +2,7 @@ class Dinosaur < Ohm::Model
 	STATUS = {:egg => 0, :infancy => 1, :adult => 2}
 	EVENTS = {:hatching => 1}
 	EMOTIONS = {:happy => 2, :normal => 1, :angry => 0}
-	ACTION_STATUS = {:idle => 0, :deployed => 1, :attacking => 2}
+	ACTION_STATUS = {:idle => 0, :deployed => 1, :deployed_gold => 2, :attacking => 3}
 	COMSUME_PER_SECOND = 5
 	HEALED_PER_SECOND = 10
 

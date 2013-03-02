@@ -18,7 +18,7 @@ class Strategy < Ohm::Model
 		hash = {}
 		hash[:village_id] = village_id if village_id
 		hash[:gold_mine_id] = gold_mine_id if gold_mine_id
-		hash[:dinosaurs] = JSON.parse(dinosaurs)
+		hash[:dinosaurs] = JSON.parse(dinosaurs) if dinosaurs.kind_of?(String)
 		hash
 	end
 
@@ -34,4 +34,16 @@ class Strategy < Ohm::Model
 			[]
 		end
 	end
+
+	def change_defense(new_ids, new_status = 0)
+		self.dinosaur_ids.each do |dino_id|
+			db.hset("Dinosaur:#{dino_id}", :action_status, 0) if Dinosaur.exists?(dino_id)
+		end
+
+		self.set :dinosaurs, new_ids.to_json if new_ids.is_a?(Array)
+		new_ids.each do |dino_id|
+			db.hset(Dinosaur.key[dino_id], :action_status, new_status) if Dinosaur.exists?(dino_id)
+		end
+	end
+
 end

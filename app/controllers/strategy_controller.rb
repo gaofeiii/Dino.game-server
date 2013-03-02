@@ -1,52 +1,68 @@
 class StrategyController < ApplicationController
 
-	before_filter :validate_village, :only => [:set_defense]
+	# before_filter :validate_village, :only => []
 	before_filter :validate_player, :only => [:attack, :get_battle_report, :refresh_battle, :match_players, 
 		:match_attack, :set_match_strategy, :league_goldmine_attack]
 
 	def set_defense
+		village = Village[params[:village_id]]
+		gold_mine = GoldMine[params[:gold_mine_id]]
 
-		sta = @village.strategy
+		target = village || gold_mine
 
-		if sta.nil?
-			sta = if params[:village_id]
-				Strategy.create :village_id => params[:village_id],
-												:player_id => @village.player_id,
-												:dinosaurs => params[:dinosaurs].to_json
-			elsif params[:gold_mine_id]
-				Strategy.create :gold_mine_id => params[:gold_mine_id],
-												:player_id => @village.player_id,
-												:dinosaurs => params[:dinosaurs].to_json
-			else
-				nil
-			end
-			@village.set(:strategy_id, sta.id) if sta && @village.strategy_id.blank?
-		else
-			JSON.parse(sta.dinosaurs).each do |dino_id|
-				if Dinosaur.exists?(dino_id)
-					Ohm.redis.hset("Dinosaur:#{dino_id}", :action_status, 0)
-				end
-			end
-			sta.set :dinosaurs, params[:dinosaurs].to_json
-			params[:dinosaurs].each do |dino_id|
-				if Dinosaur.exists?(dino_id)
-					Ohm.redis.hset("Dinosaur:#{dino_id}", :action_status, 1)
-				end
-			end
+		if target.nil?
+			render_error(Error::NORMAL, "No target to deployed") and return
+		end
+
+		@sta = target.strategy
+
+		if @sta.nil?
+			@sta = Strategy.new(:player_id => target.player_id)
+		end
+
+		dino_status = 0
+
+		if target.is_a?(Village)
+			@sta.village_id = target.id
+			dino_status = Dinosaur::ACTION_STATUS[:deployed]
+		elsif target.is_a?(GoldMine)
+			@sta.gold_mine_id = target.id
+			dino_status = Dinosaur::ACTION_STATUS[:deployed_gold]
+		end
+
+		if @sta.save
+			target.set :strategy_id, @sta.id if target.strategy_id.blank?
+		end
+
+		@sta.change_defense(params[:dinosaurs], dino_status)
+
+		@player = target.player
+		@player.gets :guide_cache, :beginning_guide_finished
+		if !@player.beginning_guide_finished && !@player.guide_cache['set_defense']
+			cache = @player.guide_cache.merge(:set_defense => true)
+			@player.set :guide_cache, cache
 		end
 		
-		if sta.nil?
-			render_error(Error::NORMAL, "wrong type of host")
-		else
-			@player = Player.new(:id => @village.player_id)
-			@player.gets :guide_cache, :beginning_guide_finished
-			if !@player.beginning_guide_finished && !@player.guide_cache['set_defense']
-				cache = @player.guide_cache.merge(:set_defense => true)
-				@player.set :guide_cache, cache
-			end
-			data = {:player => {:village => {:strategy => sta.to_hash}}}
-			render_success(data)
+		data = {}
+		if target.is_a?(Village)
+			data = {:player => {:village => {:strategy => @sta.to_hash}}}
+		elsif target.is_a?(GoldMine)
+			data = {:info => "SUCCESS", :player => @player.to_hash}	
 		end
+		render_success(data)
+		
+		# if sta.nil?
+		# 	render_error(Error::NORMAL, "wrong type of host")
+		# else
+		# 	@player = Player.new(:id => @village.player_id)
+		# 	@player.gets :guide_cache, :beginning_guide_finished
+		# 	if !@player.beginning_guide_finished && !@player.guide_cache['set_defense']
+		# 		cache = @player.guide_cache.merge(:set_defense => true)
+		# 		@player.set :guide_cache, cache
+		# 	end
+		# 	data = {:player => {:village => {:strategy => sta.to_hash}}}
+		# 	render_success(data)
+		# end
 	end
 
 	def attack

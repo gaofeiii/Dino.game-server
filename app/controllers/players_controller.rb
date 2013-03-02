@@ -60,7 +60,7 @@ class PlayersController < ApplicationController
 			next unless GoldMine.exists?(g_id)
 
 			mine = GoldMine.new :id => g_id
-			mine.gets(:x, :y, :type, :level, :player_id)
+			mine.gets(:x, :y, :type, :level, :player_id, :strategy_id)
 			mine.to_hash
 		end.compact
 

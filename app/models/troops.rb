@@ -123,10 +123,10 @@ class Troops < Ohm::Model
 					rwd = {:wood => target_player.wood/10, :stone => target_player.stone/10, :gold_coin => target_player.gold_coin/10, :items => []}
 					target_player.spend!(rwd) # The target lost resource
 					self.player.receive!(rwd) # The winner receive resource
-					i_cat = [1,2,3].sample
-					i_type = Item.const[i_cat].keys.sample
-					i_count = i_cat == 2 ? 99 : 1
-					rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
+					# i_cat = [1,2,3].sample
+					# i_type = Item.const[i_cat].keys.sample
+					# i_count = i_cat == 2 ? 99 : 1
+					# rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
 					target.set(:under_attack, 0)
 					rwd
 				when BattleModel::TARGET_TYPE[:creeps]
@@ -194,6 +194,7 @@ class Troops < Ohm::Model
 							target.add_attacking_count(player.league_id)
 							self.player.increase(:experience, 100)
 							player.league_member_ship.increase(:contribution, 200)
+							# TODO: league_war result
 							result[:league_war_result] = {:progress => rand(1..3000), :rank => rand(1..10)}
 						end
 						{} # reward = {}
