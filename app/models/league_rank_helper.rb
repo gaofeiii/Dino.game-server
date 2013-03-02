@@ -53,6 +53,18 @@ module LeagueRankHelper
 		def my_league_rank
 			db.zrevrank(League.key[:battle_rank], id).to_i + 1
 		end
+
+		def update_my_league_rank
+			record = members.ids.sum do |_member_id|
+				score = db.hget(Player.key[_member_id], :honour_score).to_i
+				score
+			end
+			db.zadd(League.key[:battle_rank], record, id)
+		end
+
+		def after_create
+			update_my_league_rank
+		end
 	end
 	
 	def self.included(receiver)

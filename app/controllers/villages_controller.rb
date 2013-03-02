@@ -15,7 +15,7 @@ class VillagesController < ApplicationController
 	def move
 		player = @village.player
 
-		if player.spend!(:gems => 100)
+		if player.spend!(:gems => 50)
 			@village.update :x => params[:x], :y => params[:y], :index => 0
 			render_success(:player => player.to_hash.merge(:village => @village.to_hash))
 		else

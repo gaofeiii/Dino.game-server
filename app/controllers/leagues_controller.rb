@@ -14,7 +14,7 @@ class LeaguesController < ApplicationController
 			render_error(Error::NORMAL, "Should type a name for league") and return
 		end
 
-		if @player.spend!(:gems => 10)
+		if @player.spend!(:gold => 10000)
 			lg = League.create :name => name, :desc => params[:desc], :president_id => @player.id
 			lms = LeagueMemberShip.create :player_id => @player.id, 
 																		:league_id => lg.id, 
@@ -137,6 +137,10 @@ class LeaguesController < ApplicationController
 			render_error(Error::NORMAL, "You are not in a league") and return
 		end
 
+		if @league.president_id.to_i != @player.id
+			render_error(Error::NORMAL, "You are not the president") and return
+		end
+
 		@friend = Player[params[:friend_id]]
 		if @friend.nil?
 			render_error(Error::NORMAL, "Invalid friend id") and return
@@ -144,7 +148,7 @@ class LeaguesController < ApplicationController
 
 		mail = Mail.create_league_invite_mail(:receiver_name => @friend.nickname, :player_name => @player.nickname, :league_name => @league.name, :league_id => @league.id)
 		
-		p "==== mail ====", mail
+
 		if mail
 			render_success
 		else
@@ -280,7 +284,7 @@ class LeaguesController < ApplicationController
 
 	def change_info
 		if @league.president_id.to_i != @player.id
-			render_error(Error::NORMAL, "NOT PRESIDENT") and return
+			render_error(Error::NORMAL, "You are not the president") and return
 		end
 
 		@league.set :desc, params[:desc]

@@ -243,9 +243,11 @@ class Dinosaur < Ohm::Model
 		time = ::Time.now.to_i
 		dt = time - updated_hp_time
 
-		return false if dt < HEALED_PER_SECOND
+		healed_per_second = total_hp / (level * 60)
 
-		dhp = dt / HEALED_PER_SECOND
+		dhp = dt / healed_per_second
+		return false if dhp < 1
+
 		self.current_hp += dhp
 		self.current_hp = total_hp if self.current_hp > total_hp
 
