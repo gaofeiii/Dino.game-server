@@ -11,14 +11,17 @@ class FriendsController < ApplicationController
 
 		result = ids.map do |id|
 			player = Player.new :id => id
-			player.gets(:nickname, :level, :player_type)
+			player.gets(:nickname, :level, :player_type, :league_id)
+			league_name = League.new(:id => player.league_id).get(:name)
+
 			rank = rand(1..1000)
 			if !player.is_npc?
 				{
 					:id => id.to_i,
 					:nickname => player.nickname,
 					:level => player.level,
-					:rank => rank
+					:rank => rank,
+					:league_name => league_name
 				}
 			end
 		end.compact
@@ -74,6 +77,9 @@ class FriendsController < ApplicationController
 	end
 
 	def apply_friend
+		if @player_id == @friend.id
+			render_error(Error::NORMAL, "Cannot add yourself") and return
+		end
 
 		Mail.create_friend_invite_mail 	:receiver_id => @friend.id, 
 																		:player_id => @player.id,

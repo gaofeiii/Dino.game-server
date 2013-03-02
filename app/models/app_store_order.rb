@@ -27,7 +27,9 @@ class AppStoreOrder < Ohm::Model
   	request.content_type = 'application/json'
   	request.body = {'receipt-data' => rcp}.to_json
 
-  	res = http.start{ |h| h.request(request) }
+  	# res = http.start{ |h| h.request(request) }
+    res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true){ |h| h.request(request) }
+
   	result = JSON.parse(res.body)
 
     result.deep_symbolize_keys

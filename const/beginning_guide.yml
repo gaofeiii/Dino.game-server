@@ -75,9 +75,9 @@ Reward:
   gold_coin: 300
   gems: 3
  16:
-  wood: 100
-  stone: 100
-  gold_coin: 100
+  wood: 500
+  stone: 500
+  gold_coin: 500
   gems: 1
  17:
   wood: 1000

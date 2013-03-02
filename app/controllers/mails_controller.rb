@@ -117,6 +117,11 @@ class MailsController < ApplicationController
 		# 好友邀请
 		when Mail::SYS_TYPE[:friend_invite]
 			@friend = Player.new(:id => mail.cached_data[:player_id]).gets(:nickname)
+
+			if @player.id == @friend.id
+				render_error(Error::NORMAL, "Cannot add yourself as friend") and return
+			end
+
 			if @player.friends.include?(@friend)
 				render_error(Error::NORMAL, I18n.t('friends_error.already_add_friend', :friend_name => @friend.nickname)) and return
 			end
@@ -126,6 +131,7 @@ class MailsController < ApplicationController
 			else
 				render_error(Error::NORMAL, I18n.t('friends_error.add_friend_failed'))
 			end
+			mail.delete
 		# 公会邀请
 		when Mail::SYS_TYPE[:league_invite]
 			if not @player.league_id.blank?
@@ -146,6 +152,7 @@ class MailsController < ApplicationController
 			else
 				render_error(Error::NORMAL, I18n.t('general.server_busy'))
 			end
+			mail.delete
 		when Mail::SYS_TYPE[:league_apply]
 			league = League[mail.cached_data[:league_id]]
 			if league.nil?
@@ -170,7 +177,7 @@ class MailsController < ApplicationController
 			else
 				render_error(Error::NORMAL, I18n.t('general.server_busy'))
 			end
-
+			mail.delete
 		else
 			render_error(Error::NORMAL, I18n.t('general.server_busy'))
 		end

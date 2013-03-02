@@ -11,8 +11,6 @@ class Player < Ohm::Model
 	include BattleReport
 	include PlayerExp
 
-	include RankModel
-
 	include DailyQuest
 	include PlayerTechHelper
 	include PlayerGodHelper
@@ -21,6 +19,7 @@ class Player < Ohm::Model
 	include PlayerCreepsHelper
 	include PlayerHonourHelper
 	include PlayerLuckyRewardHelper
+	include PlayerBattleRankHelper
 
 	TYPE = {
 		:normal => 0,
