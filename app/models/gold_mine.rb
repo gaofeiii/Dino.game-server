@@ -56,7 +56,7 @@ class GoldMine < Ohm::Model
 		if player_id
 			db.hget(Player.key[player_id], :nickname)
 		else
-			"Monster"
+			I18n.t('monster_name.general')
 		end
 	end
 

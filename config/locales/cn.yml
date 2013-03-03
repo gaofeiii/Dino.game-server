@@ -5,6 +5,8 @@ cn:
   hello: "Hello 你妹"
 
   system: "系统"
+  monster_name:
+   general: "野怪"
 
   general:
    server_busy: "网络不给力啊，请稍后再试~~"
