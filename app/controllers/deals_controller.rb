@@ -71,6 +71,10 @@ class DealsController < ApplicationController
 
 		price = params[:price].to_f
 
+		if price > 999999
+			render_error(Error::NORMAL, "Price should less than 999999") and return
+		end
+
 		case goods_cat
 		when Deal::CATEGORIES[:res]
 			type = params[:type]

@@ -43,7 +43,6 @@ class BuildingsController < ApplicationController
 																						:status => Building::STATUS[:new],
 																						:has_worker => wkr
 
-			@player.earn_exp!(150)
 			data = {
 				:message => Error.success_message, 
 				:player => @player.to_hash(:queue_info).merge({:village => @village.to_hash.merge(:buildings => [@building.to_hash])})
@@ -71,7 +70,11 @@ class BuildingsController < ApplicationController
 		end
 
 		if @player.spend!(:gems => @building.build_speed_up_gem_cost)
-			@building.update :status => 2, :start_building_time => 0
+			# @building.update :status => 2, :start_building_time => 0
+			@building.start_building_time = 0
+			if @building.update_status!
+				@player.earn_exp!(150)
+			end
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gems')) and return
 		end
@@ -86,7 +89,10 @@ class BuildingsController < ApplicationController
 	end
 
 	def complete
-		@building.update_status!
+		if @building.update_status!
+			@player = Player[@building.player_id]
+			@player.earn_exp!(150)
+		end
 		render_success(:player => {:village => {:buildings => [@building.to_hash(:harvest_info)]}})
 	end
 

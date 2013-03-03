@@ -80,10 +80,10 @@ class Technology < Ohm::Model
 				self.level = level + 1
 				self.start_time = 0
 				self.finish_time = 0
+				self.player.earn_exp!(Player.research_exp[level + 1])
 				self.save
 			end
 		end
-		self
 	end
 
 	def speed_up_gem_cost

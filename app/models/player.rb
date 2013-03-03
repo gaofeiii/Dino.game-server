@@ -146,7 +146,9 @@ class Player < Ohm::Model
 			when :village
 				hash[:village] = village.to_hash(:all)
 			when :techs
-				hash[:techs] = technologies.to_a.map{|t| t.update_status!}.map{|t| t.to_hash}
+				hash[:techs] = techs_info
+				hash[:level] = level
+				hash[:experience] = experience
 			when :dinosaurs
 				hash[:dinosaurs] = dinosaurs_info
 			when :items
@@ -170,7 +172,7 @@ class Player < Ohm::Model
 			when :troops
 				hash[:troops] = troops
 			when :god
-				if not gods.blank?
+				if curr_god && !curr_god.expired?
 					hash[:god] = curr_god.to_hash
 				end
 			when :daily_quest
@@ -180,6 +182,14 @@ class Player < Ohm::Model
 
 		end
 		return hash
+	end
+
+	def techs_info
+		technologies.map do |tech|
+			tech.update_status!
+			self.gets(:level, :experience)
+			tech.to_hash
+		end
 	end
 
 	def can_get_league_gold
@@ -193,8 +203,6 @@ class Player < Ohm::Model
 	end
 
 	def dinosaurs_info
-		# dinosaurs.find(:status => Dinosaur::STATUS[:infancy]).map(&:to_hash) + 
-		# 	dinosaurs.find(:status => Dinosaur::STATUS[:adult]).map(&:to_hash)
 		dinosaurs.map do |dino|
 			dino.update_status!
 			dino.to_hash

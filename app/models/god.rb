@@ -25,9 +25,8 @@ class God < Ohm::Model
 		}
 	end
 
-	protected
-
-	def before_save
-		self.end_time = self.start_time + 1.day.to_i
+	def expired?
+		::Time.now.to_i >= end_time
 	end
+
 end

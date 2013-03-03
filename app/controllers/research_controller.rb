@@ -34,7 +34,6 @@ class ResearchController < ApplicationController
 			end
 
 			tech.research!(b_id, time_reduce)
-			@player.earn_exp!(Player.research_exp[tech.level + 1])
 			if !@player.beginning_guide_finished && !@player.guide_cache['has_researched']
 				cache = @player.guide_cache.merge(:has_researched => true)
 				@player.set :guide_cache, cache
@@ -59,8 +58,8 @@ class ResearchController < ApplicationController
 		end
 
 		if @player.spend!(tech.speed_up_cost)
-			p '--- speed_up'
 			tech.speed_up!
+			@player.load!
 		else
 			render_error(Error::NORMAL, "Not enough gems") and return
 		end

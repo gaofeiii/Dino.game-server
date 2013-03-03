@@ -8,13 +8,13 @@ class GodController < ApplicationController
 		end
 
 		god = @player.curr_god
-		cost = {:wood => 1000, :stone => 1000, :gold_coin => 100}
+		cost = {:wood => 1000, :stone => 1000, :gold_coin => 1000}
 
 		if @player.spend!(cost)
 			if god
-				god.update :type => params[:god_type], :start_time => Time.now.to_i
+				god.update :type => params[:god_type], :start_time => Time.now.to_i, :end_time => Time.now.to_i + 1.day.to_i
 			else
-				God.create(:type => params[:god_type], :level => 1, :start_time => Time.now.to_i, :player_id => @player.id)
+				God.create(:type => params[:god_type], :level => 1, :start_time => Time.now.to_i, :player_id => @player.id, :end_time => Time.now.to_i + 1.day.to_i)
 			end
 		end
 

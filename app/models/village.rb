@@ -77,7 +77,7 @@ class Village < Ohm::Model
 			when :buildings
 				hash[:buildings] = buildings.to_a.map(&:update_status!).map(&:to_hash)
 			when :buildings_with_harvest
-				hash[:buildings] = buildings.to_a.map(&:update_status!).map { |b| b.to_hash(:harvest_info) }
+				hash[:buildings] = buildings_info
 			when :strategy
 				hash[:strategy] = strategy.try(:to_hash)
 			end
@@ -92,6 +92,13 @@ class Village < Ohm::Model
 			:wood_max => warehouse_size,
 			:stone_max => warehouse_size
 		}
+	end
+
+	def buildings_info
+		buildings.map do |build|
+			build.update_status!
+			build.to_hash(:harvest_info)
+		end
 	end
 
 	# def create_building(building_type, level = 1, x, y, st)
