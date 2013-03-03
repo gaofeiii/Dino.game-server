@@ -141,9 +141,10 @@ class WorldMapController < ApplicationController
 		if Player.exists?(params[:player_id])
 			left_ids.select!{ |idx| country.empty_map_info[idx] >= 0 }
 
-			player = Player.new(:id => params[:player_id]).gets(:adapt_level)
+			player = Player.new(:id => params[:player_id])#.gets(:adapt_level)
+			player.update_adapt_level
+
 			tmp_creeps_idx = player.temp_creeps_idx & left_ids
-			p tmp_creeps_idx
 
 			vil = Village.new(:id => player.gets(:village_id).village_id).gets(:x, :y)
 			my_x, my_y = vil.x, vil.y

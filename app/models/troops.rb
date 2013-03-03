@@ -23,7 +23,7 @@ class Troops < Ohm::Model
 			:dinosaurs => dinosaurs,
 			:target_type => target_type,
 			:target_id => target_id.to_i,
-			:total_time => arrive_time - start_time,
+			:total_time => arrive_time - start_time + 2,
 			:time_pass => Time.now.to_i - start_time,
 			:x => target_x,
 			:y => target_y
@@ -130,40 +130,42 @@ class Troops < Ohm::Model
 					target.set(:under_attack, 0)
 					rwd
 				when BattleModel::TARGET_TYPE[:creeps]
-					has_reward = Tool.rate(0.4)
+					# has_reward = Tool.rate(0.4)
 
-					if has_reward
-						if Tool.rate(0.25)
-							reward = {
-								:items => [{
-									:item_cat => Item.categories[:food], 
-									:item_type => Specialty.types.sample, 
-									:item_count => target.reward[:food_count]
-								}]
-							}
-						elsif Tool.rate(0.25)
-							reward = {
-								:wood => target.reward[:res_count],
-								:stone => target.reward[:res_count]
-							}
-						elsif Tool.rate(0.125)
-							reward = {
-								:items => [{
-									:item_cat => Item.categories[:egg], 
-									:item_type => target.reward[:egg_type].sample, 
-									:item_count => 1
-								}]
-							}
-						elsif Tool.rate(0.125)
-							reward = {
-								:items => [{
-									:item_cat => Item.categories[:scroll],
-									:item_type => target.reward[:scroll_type].sample,
-									:item_count => 1
-								}]
-							}
-						end
-					end
+					# if has_reward
+					# 	if Tool.rate(0.25)
+					# 		reward = {
+					# 			:items => [{
+					# 				:item_cat => Item.categories[:food], 
+					# 				:item_type => Specialty.types.sample, 
+					# 				:item_count => target.reward[:food_count]
+					# 			}]
+					# 		}
+					# 	elsif Tool.rate(0.25)
+					# 		reward = {
+					# 			:wood => target.reward[:res_count],
+					# 			:stone => target.reward[:res_count]
+					# 		}
+					# 	elsif Tool.rate(0.125)
+					# 		reward = {
+					# 			:items => [{
+					# 				:item_cat => Item.categories[:egg], 
+					# 				:item_type => target.reward[:egg_type].sample, 
+					# 				:item_count => 1
+					# 			}]
+					# 		}
+					# 	elsif Tool.rate(0.125)
+					# 		reward = {
+					# 			:items => [{
+					# 				:item_cat => Item.categories[:scroll],
+					# 				:item_type => target.reward[:scroll_type].sample,
+					# 				:item_count => 1
+					# 			}]
+					# 		}
+					# 	end
+					# end
+					reward = Reward.judge!(target.type)
+					p 'reward', reward
 					
 					if not player.finish_daily_quest
 						player.daily_quest_cache[:kill_monsters] += 1
@@ -181,14 +183,8 @@ class Troops < Ohm::Model
 					end
 					
 					if target.type == GoldMine::TYPE[:normal]
-						# TODO: 攻打普通金矿的奖励
 						target.update :player_id => player.id, :under_attack => false
-						rwd = {:wood => 1500, :stone => 1500, :gold_coin => 200, :items => []}
-						i_cat = Item.categories.values.sample
-						i_type = Item.const[i_cat].keys.sample
-						i_count = i_cat == 1 ? 1 : 100
-						rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
-						rwd
+						Reward.judge!(target.level)
 					else
 						unless player.league.nil?
 							target.add_attacking_count(player.league_id)
