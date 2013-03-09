@@ -132,9 +132,15 @@ module DailyQuest
 			end
 		end
 
+		def find_reward_by_index(idx)
+			self.class.daily_quests_const[:data][idx]
+		end
+
 		def set_rewarded(idx)
 			quest = find_quest_by_index(idx)
-			if quest && quest[:total_steps] > quest[:finished_steps]
+			if quest && quest[:total_steps] <= quest[:finished_steps]
+				rwd = find_reward_by_index(idx)
+				self.receive_reward!(rwd[:reward]) if rwd
 				quest[:rewarded] = true
 			end
 		end

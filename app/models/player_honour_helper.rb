@@ -1,4 +1,6 @@
 module PlayerHonourHelper
+	HONOUR_BATTLE_COUNT = 20
+
 	module ClassMethods
 		@@honour_scores_asc = Array.new
 		@@honour_scores_desc = Array.new
@@ -77,8 +79,15 @@ module PlayerHonourHelper
 			{:gold => self.class.honour_gold_cost[level]}
 		end
 
-		def refresh_honour_count
-			
+		def todays_count
+			if self.honour_refresh_time < Time.now.beginning_of_day.to_i
+				self.sets(:honour_refresh_time => Time.now.to_i, :honour_battle_count => HONOUR_BATTLE_COUNT)
+			end
+			self.honour_battle_count
+		end
+
+		def desr_honour_battle_count(count = 1)
+			self.increase :honour_battle_count, -count
 		end
 
 		def add_honour(count)
@@ -100,7 +109,7 @@ module PlayerHonourHelper
 		model.class_eval do
 			remove_method :honour_strategy
 		end
-		model.attribute :honour_battle_count, Ohm::DataTypes::Type::Integer
+		model.attribute :honour_battle_count, Ohm::DataTypes::Type::Integer # 用户记录当天挑战的次数
 		model.attribute :honour_refresh_time, Ohm::DataTypes::Type::Integer
 
 		model.extend         ClassMethods

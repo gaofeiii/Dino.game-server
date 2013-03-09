@@ -16,8 +16,10 @@ class DailyQuestController < ApplicationController
 
 		if @player.set_rewarded(params[:quest_id])
 			@player.set :daily_quest, @player.daily_quest.to_json
+			render_success(:player => @player.to_hash(:daily_quest))
+		else
+			render_error(Error::NORMAL, I18n.t('quests_error.not_finished_yet'))
 		end
-		# render_success(:player => @player.to_hash.merge(:daily_quests => [quest]))
-		render_success(:player => @player.to_hash(:daily_quest))
+		
 	end
 end

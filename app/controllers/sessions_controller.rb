@@ -9,6 +9,7 @@ class SessionsController < ApplicationController
 	# TODO:
 	# 试玩
 	def demo
+		p "In DEMO method, client locale is: #{request.env["HTTP_CLIENT_LOCALE"]}"
 		result = trying(:server_ip => params[:server_ip])
 		data = if result[:success]
 			player = create_player(result[:account_id])
@@ -34,6 +35,7 @@ class SessionsController < ApplicationController
 
 	# 登录
 	def create
+		p "In login method, client locale is: #{request.env["HTTP_CLIENT_LOCALE"]}"
 		rcv_msg = account_authenticate :username 	=> params[:username], 
 																	 :email 	 	=> params[:email], 
 																	 :password 	=> params[:password],

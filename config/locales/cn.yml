@@ -103,12 +103,16 @@ cn:
    dino_hp_is_zero: "不能派遣HP为0的恐龙"
    dino_is_attacking: "不能派遣正在进攻中的恐龙"
    honour_score_not_match: "不能攻打战斗力不匹配的玩家"
+   honour_count_full: "对不起，今日挑战次数已经用。每次挑战次数：%{count}"
 
   dinosaur_error:
    not_enough_food: "食物不足"
    reach_max_growth_point: "恐龙的成长已达到最大值"
    cannot_release_hatching_dino: "不能放生正在孵化的恐龙"
    dinosaur_is_full: "恐龙已经喂饱了哦"
+
+  quests_error:
+   not_finished_yet: "任务还没有完成"
 
   god_effect_mail:
    argriculture:

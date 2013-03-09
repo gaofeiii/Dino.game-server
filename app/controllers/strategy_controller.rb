@@ -118,7 +118,7 @@ class StrategyController < ApplicationController
 			end
 		end
 
-		army = params[:dinosaurs].to_a.map do |dino_id|
+		army = params[:dinosaurs].uniq.to_a.map do |dino_id|
 			dino = Dinosaur[dino_id]
 
 			if dino && dino.status > 0
@@ -242,6 +242,10 @@ class StrategyController < ApplicationController
 
 		if @enemy.nil?
 			render_error(Error::NORMAL, "Invalid enemy id") and return
+		end
+
+		if @player.todays_count <= 0
+			render_error(Error::NORMAL, I18n.t('strategy_error.honour_count_full', :count => Player::HONOUR_BATTLE_COUNT)) and return
 		end
 
 		if (@player.honour_score - @enemy.honour_score).abs >= 199

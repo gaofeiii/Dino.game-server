@@ -16,13 +16,13 @@ en:
    add_friend_success: "Friend Added"
    not_enough_gold: "Need More Gold"
    not_enough_res: "Need More Resource"
-   get_league_gold_success: "Congratulation！You get%{gold_count}gold！"
+   get_league_gold_success: "Congratulation！You get %{gold_count} gold！"
    apply_league_success: "Joining Tribe Succeed"
    apply_league_fail: "Tribe Application Failed"
    normal_gold_mine: "Normal goldmine"
    league_gold_mine: "Supper goldmine"
    use_vip_success: "VIP used！VIP left：%{vip_left_time}hour"
-   use_protect_success: "Protection casted！Left：%{protect_left_time}hour"
+   use_protect_success: "Protection casted！Left：%{protect_left_time} hour"
 
   items:
    invalid_item_id: "Item not found"
@@ -103,12 +103,16 @@ en:
    dino_hp_is_zero: "Cannot send HP 0 dinos"
    dino_is_attacking: "Cannot send attacking state dinos"
    honour_score_not_match: "Cannot attack low matching points players"
+   honour_count_full: "Sorry, you have challenged too many players. The daily limit is: %{count}"
 
   dinosaur_error:
    not_enough_food: "Need more food"
    reach_max_growth_point: "Growth is full"
    cannot_release_hatching_dino: "Cannot release hatching state dino"
    dinosaur_is_full: "I’m Already full"
+
+  quests_error:
+   not_finished_yet: "Quest is not finished yet"
 
   god_effect_mail:
    argriculture:
@@ -127,15 +131,15 @@ en:
   mail:
    friend_invitation:
     title: "Friend Application"
-    content: "%{friend_name}hope to be your friend"
+    content: "%{friend_name} hopes to be your friend"
 
    league_invitation:
     title: "From%{league_name}’s Tribe invitation"
-    content: "%{player_name}invite you to join Tribe：%{league_name}。"
+    content: "%{player_name} invite you to join Tribe：%{league_name}。"
 
    league_application:
     title: "Tribe application"
-    content: "%{player_name}want to join Tribe：%{league_name}"
+    content: "%{player_name} want to join Tribe：%{league_name}"
 
    battle_report:
     title: "Battle Report"

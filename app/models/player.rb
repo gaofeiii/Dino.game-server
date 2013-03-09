@@ -407,6 +407,8 @@ class Player < Ohm::Model
 
 	def receive_reward!(reward)
 		self.receive!(reward)
+		self.earn_exp!(reward[:xp]) if reward.has_key?(:xp)
+
 		if reward.has_key?(:items)
 			reward[:items].each do |itm|
 				if itm[:item_cat] = Item.categories[:food]
