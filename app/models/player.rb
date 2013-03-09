@@ -292,10 +292,10 @@ class Player < Ohm::Model
   end
 
   def locale
-  	if @locale.blank?
-  		@locale = 'cn'
+  	if @attributes[:locale].blank?
+  		@attributes[:locale] = 'en'
   	end
-  	@locale
+  	@attributes[:locale]
   end
 
   def my_selling_list
