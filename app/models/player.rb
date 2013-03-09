@@ -411,7 +411,7 @@ class Player < Ohm::Model
 	def before_create
 		return if player_type == TYPE[:npc]
 		self.gold_coin = 600
-		self.gems = 20000
+		self.gems = 200
 		self.wood = 600
 		self.stone = 600
 		self.level = 1 if (level.nil? or level == 0)
@@ -425,12 +425,16 @@ class Player < Ohm::Model
 		return if player_type == TYPE[:npc]
 		create_village
 
-		# TODO: == Just for Test ==
-		1.upto(3) do |i|
-			Item.create :item_type => i, :item_category => 1, :player_id => id
+		# Initial eggs:
+		Item.create :item_type => 1, :item_category => Item.categories[:egg], :player_id => id, :quality => 4
+		Item.create :item_type => 2, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
+		Item.create :item_type => 3, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
+		Item.create :item_type => 4, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
+
+		# Initial food:
+		(1..8).each do |i|
 			Specialty.create :type => i, :count => 80, :player_id => id
 		end
-		Item.create :item_type => 9, :item_category => 1, :player_id => id
 	end
 
 	def after_delete

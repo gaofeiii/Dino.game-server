@@ -19,7 +19,13 @@ class AppStoreOrder < Ohm::Model
   reference :player, 	Player
 
   def self.validate_iap(rcp)
-  	uri = URI("https://sandbox.itunes.apple.com/verifyReceipt")
+  	uri = URI("https://buy.itunes.apple.com/verifyReceipt")
+    uri = case ServerInfo.info[:env]
+    when "production"
+      URI("https://buy.itunes.apple.com/verifyReceipt")
+    else
+      URI("https://sandbox.itunes.apple.com/verifyReceipt")
+    end
   	http = Net::HTTP.new(uri.host, uri.port)
   	http.use_ssl = true
 
