@@ -197,9 +197,11 @@ module DailyQuest
 
 		def daily_quests_full_info
 			self.daily_quest.map do |quest|
-				info = self.class.find_daily_quest_info_by_index(quest[:number], self.locale)
-				quest.merge(info)
-			end
+				if quest[:rewarded] == false
+					info = self.class.find_daily_quest_info_by_index(quest[:number], self.locale)
+					quest.merge(info)
+				end
+			end.compact
 		end
 
 		def clear_daily_quests
