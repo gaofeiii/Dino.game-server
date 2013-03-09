@@ -100,6 +100,7 @@ class WorldMapController < ApplicationController
 						:name => "Gold Mine",
 						:level => g_mine.level,
 						:owner_name => g_mine.owner_name,
+						:owner_id => g_mine.player_id.to_i,
 						:output => g_mine.output,
 						:goldmine_type => g_mine.goldmine_type,
 						:left_time => 0,

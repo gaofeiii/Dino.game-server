@@ -16,8 +16,10 @@ module LeagueRankHelper
 				result << _league.id
 			end
 
-			db.del League.key[:battle_rank]
-			db.zadd League.key[:battle_rank], result
+			unless result.blank?
+				db.del League.key[:battle_rank]
+				db.zadd League.key[:battle_rank], result
+			end
 		end
 		
 		def battle_rank(count = 20)

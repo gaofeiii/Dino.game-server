@@ -7,12 +7,16 @@ module PlayerBattleRankHelper
 			result = []
 			self.none_npc.ids.each do |_player_id|
 				_player = self.new(:id => _player_id).gets(:honour_score)
-				result << _player.honour_score
-				result << _player_id
+				if _player.exists?
+					result << _player.honour_score
+					result << _player_id
+				end
 			end
 
-			db.del self.key[:battle_rank]
-			db.zadd self.key[:battle_rank], result
+			unless result.blank?
+				db.del self.key[:battle_rank]
+				db.zadd self.key[:battle_rank], result
+			end
 		end
 
 		def battle_rank(count = 20)
