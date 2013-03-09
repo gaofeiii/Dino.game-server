@@ -1,144 +1,157 @@
-# Sample localization file for English. Add more files in this directory for other locales.
+﻿# Sample localization file for English. Add more files in this directory for other locales.
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello 你妹"
+  hello: "Hello"
 
-  system: "系统"
+  system: "system"
   monster_name:
-   general: "野怪"
+   general: "monster"
 
   general:
-   server_busy: "网络不给力啊，请稍后再试~~"
-   not_enough_gems: "宝石不足"
-   invitation_expired: "邀请函已经过期。"
-   join_league_success: "成功加入公会！"
-   add_friend_success: "添加好友成功！"
-   not_enough_gold: "金币不足"
-   not_enough_res: "资源不足"
-   get_league_gold_success: "恭喜你！成功领取%{gold_count}金币！"
-   apply_league_success: "申请加入部落成功！"
-   apply_league_fail: "申请加入部落失败"
-   normal_gold_mine: "屌丝金矿"
-   league_gold_mine: "牛逼金矿"
-   use_vip_success: "使用VIP道具成功！VIP剩余：约%{vip_left_time}小时"
-   use_protect_success: "使用保护卷轴成功！保护剩余时间：约%{protect_left_time}小时"
+   server_busy: "Connection interrupted,Try later!"
+   not_enough_gems: "Need more gems"
+   invitation_expired: "Invitation over time"
+   join_league_success: "Join Succeed"
+   add_friend_success: "Friend Added"
+   not_enough_gold: "Need More Gold"
+   not_enough_res: "Need More Resource"
+   get_league_gold_success: "Congratulation！You get%{gold_count}gold！"
+   apply_league_success: "Joining Tribe Succeed"
+   apply_league_fail: "Tribe Application Failed"
+   normal_gold_mine: "Normal goldmine"
+   league_gold_mine: "Supper goldmine"
+   use_vip_success: "VIP used！VIP left：%{vip_left_time}hour"
+   use_protect_success: "Protection casted！Left：%{protect_left_time}hour"
 
   items:
-   invalid_item_id: "物品已经不存在"
+   invalid_item_id: "Item not found"
 
   player:
-   whos_village: "%{player_name}的村庄"
-   empty_village_name: "一座空城"
+   whos_village: "%{player_name}’s village"
+   empty_village_name: "an empty village"
 
   resource:
-   wood: "木材"
-   stone: "石料"
-   gold_coin: "金币"
-   gems: "宝石"
+   wood: "wood"
+   stone: "stone"
+   gold_coin: "gold"
+   gems: "gems"
 
   god:
    full_name:
-    argriculture: "农业之神-赛纳斯"
-    business: "商业之神-墨丘利"
-    war: "战争之神-玛尔斯"
-    intelligence: "智慧之神-考伊斯"
+    argriculture: "God of Farmming-Ceres"
+    business: "God of Bussiness-Mercury"
+    war: "God of War-Mars"
+    intelligence: "God of Wisdom-Coeus"
    short_name:
-    argriculture: "赛纳斯"
-    business: "墨丘利"
-    war: "玛尔斯"
-    intelligence: "考伊斯"
+    argriculture: "Ceres"
+    business: "Mercury"
+    war: "Mars"
+    intelligence: "Coeus"
 
   building_names:
-   residential: "民居"
-   lumber_mill: "伐木场"
-   quarry: "采石场"
-   hunting_field: "狩猎场"
-   collecting_farm: "采集场"
-   habitat: "孵化园"
-   beastiary: "兽栏"
-   market: "市场"
-   workshop: "工坊"
-   temple: "神庙"
-   warehouse: "仓库"
+   residential: "Residential"
+   lumber_mill: "Lumber mill"
+   quarry: "Quarry"
+   hunting_field: "Hunter’s house"
+   collecting_farm: "Farm"
+   habitat: "Incubation house"
+   beastiary: "Heastiary"
+   market: "Market"
+   workshop: "Workshop"
+   temple: "Temple"
+   warehouse: "Warehouse"
 
   research_error:
-   research_queue_full: "研究队列已满"
-   research_not_complete: "研究尚未完成"
+   research_queue_full: "Research queue is full"
+   research_not_complete: "Research not Completed"
 
   login_error:
-   INVALID_PLAYER_ID: "错误的用户ID"
-   INCORRECT_USERNAME_OR_PASSWORD: "用户名和密码不匹配"
-   EMPTY_USERNAME_OR_PASSWORD: "用户名或密码不能为空"
-   duplicated_nickname: "昵称已经存在"
+   INVALID_PLAYER_ID: "Invalid user ID"
+   INCORRECT_USERNAME_OR_PASSWORD: "Incorrect username or password"
+   EMPTY_USERNAME_OR_PASSWORD: "Empty username or password"
+   duplicated_nickname: "Duplicated nickname"
 
   building_error:
-   building_destroyed: "建筑已经被拆毁啦！"
-   keep_one_residential: "至少要保留一间民居哦！"
-   building_exist: "%{building_name}已经存在"
-   building_queue_is_full: "建筑工人不够哦亲！"
-   building_finished: "建筑已经完成修建！"
-   invalid_coords: "不能在这个位置放置建筑"
+   building_destroyed: "Building has been destroyed！"
+   keep_one_residential: "Keep at least one Residential！"
+   building_exist: "%{building_name}already exist"
+   building_queue_is_full: "Not enough workers！"
+   building_finished: "Building Compete"
+   invalid_coords: "Cannot place here"
 
   league_error:
-   league_not_found: "公会不存在"
-   already_in_a_league: "你已经加入了公会。"
-   already_in_this_league: "你已经加入公会：[%{league_name}]"
-   not_in_a_league: "您还没有加入公会。"
-   contribution_count_is_zero: "公会贡献值不足"
-   member_already_in_a_league: "该玩家已经加入其他公会了"
-   member_already_join_in: "该玩家已经加入公会"
-   member_does_not_exist: "玩家不存在"
-   accept_member_success: "加入公会成功"
+   league_not_found: "Tribe not found"
+   already_in_a_league: "You have already joined a Tribe"
+   already_in_this_league: "You have already in this Tribe：[%{league_name}]"
+   not_in_a_league: "Not in a Tribe yet"
+   contribution_count_is_zero: "Need more contribution points"
+   member_already_in_a_league: "He has already been in a Tribe"
+   member_already_join_in: "This guy already have joined a Tribe"
+   member_does_not_exist: "Player does not exist"
+   accept_member_success: "Tribe Joining Success"
 
   friends_error:
-   already_add_friend: "%{friend_name}已经是你的好友了！"
-   add_friend_failed: "添加好友失败。"
-   invitation_expired: "好友邀请已经过期。"
-   cannot_add_self: "不能添加自己为好友。"
+   already_add_friend: "%{friend_name}has been added friend already！"
+   add_friend_failed: "Friend add failed"
+   invitation_expired: "Invitation expired"
+   cannot_add_self: "Cannot add yourself"
 
   strategy_error:
-   not_in_a_league: "您还没有加入公会。"
-   wrong_type_of_goldmine: "不能在公会战中攻打此类型的金矿"
-   dino_hp_is_zero: "不能派遣HP为0的恐龙"
-   dino_is_attacking: "不能派遣正在进攻中的恐龙"
-   honour_score_not_match: "不能攻打战斗力不匹配的玩家"
+   not_in_a_league: "No Tribe yet"
+   wrong_type_of_goldmine: "Cannot attack this type of goldmine during the TribeWar"
+   dino_hp_is_zero: "Cannot send HP 0 dinos"
+   dino_is_attacking: "Cannot send attacking state dinos"
+   honour_score_not_match: "Cannot attack low matching points players"
 
   dinosaur_error:
-   not_enough_food: "食物不足"
-   reach_max_growth_point: "恐龙的成长已达到最大值"
-   cannot_release_hatching_dino: "不能放生正在孵化的恐龙"
-   dinosaur_is_full: "恐龙已经喂饱了哦"
+   not_enough_food: "Need more food"
+   reach_max_growth_point: "Growth is full"
+   cannot_release_hatching_dino: "Cannot release hatching state dino"
+   dinosaur_is_full: "I’m Already full"
 
   god_effect_mail:
    argriculture:
-    title: "来自赛纳斯的祝福"
-    content: "由于你对农业之神-赛纳斯的虔诚供奉，赛纳斯决定揭露仓库中隐藏的%{res_name}！"
+    title: "Bless from Ceres"
+    content: "Because of your consecration ,Ceres desides to get your more%{res_name}！"
    business:
-    title: "来自墨丘利的祝福"
-    content: "由于你对商业之神-墨丘利的虔诚供奉，墨丘利决定让你这次交易获得双倍的利润！"
+    title: "Bless from Mercury"
+    content: " Because of your consecration，Mercury get you double profit in this trade "
    war:
-    title: "来自玛尔斯的祝福"
-    content: "由于你对战争之神-玛尔斯的虔诚供奉，玛尔斯决定在战斗中助你一臂之力！"
+    title: " Bless from Mars"
+    content: " Because of your consecration，Mars will help you in the war！"
    intelligence:
-    title: "来自考伊斯的祝福"
-    content: "由于你对智慧之神-考伊斯的虔诚供奉，考伊斯决定减少%{time_reduce}的研究时间！"
+    title: " Bless from Coeus"
+    content: " Because of your consecration，Coeus decrease you %{time_reduce}research time！"
 
   mail:
    friend_invitation:
-    title: "好友申请通知"
-    content: "%{friend_name}希望加你为好友。"
+    title: "Friend Application"
+    content: "%{friend_name}hope to be your friend"
 
    league_invitation:
-    title: "来自%{league_name}公会的邀请"
-    content: "%{player_name}邀请你加入他的公会：%{league_name}。"
+    title: "From%{league_name}’s Tribe invitation"
+    content: "%{player_name}invite you to join Tribe：%{league_name}。"
 
    league_application:
-    title: "公会申请通知"
-    content: "%{player_name}申请加入你的公会：%{league_name}"
+    title: "Tribe application"
+    content: "%{player_name}want to join Tribe：%{league_name}"
 
    battle_report:
-    title: "战斗报告"
+    title: "Battle Report"
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

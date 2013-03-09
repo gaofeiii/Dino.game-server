@@ -148,12 +148,17 @@ class StrategyController < ApplicationController
 				BattleModel::TARGET_TYPE[:gold_mine]
 		end
 
+		my_vil = @player.village
+		marching_time = Math.sqrt((my_vil.x - target.x)**2 + (my_vil.y - target.y)**2)
+		marching_time = 1 if marching_time < 1
+		marching_time = 300 if marching_time > 300
+
 		if Troops.create 	:player_id => @player.id, 
 											:dinosaurs => params[:dinosaurs].to_json,
 											:target_type => target_type,
 											:target_id => target.id,
 											:start_time => Time.now.to_i,
-											:arrive_time => Time.now.to_i + 2.seconds,
+											:arrive_time => Time.now.to_i + marching_time,
 											:monster_type => target_monster_type,
 											:target_x => target.x,
 											:target_y => target.y,

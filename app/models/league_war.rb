@@ -11,8 +11,7 @@ module LeagueWar
 	end
 
 	def can_fight_danger_village?(time = Time.now.to_i)
-		# in_period_of_fight?(time)
-		false
+		in_period_of_fight?(time)
 	end
 
 	def calc_battle_result

@@ -130,42 +130,7 @@ class Troops < Ohm::Model
 					target.set(:under_attack, 0)
 					rwd
 				when BattleModel::TARGET_TYPE[:creeps]
-					# has_reward = Tool.rate(0.4)
-
-					# if has_reward
-					# 	if Tool.rate(0.25)
-					# 		reward = {
-					# 			:items => [{
-					# 				:item_cat => Item.categories[:food], 
-					# 				:item_type => Specialty.types.sample, 
-					# 				:item_count => target.reward[:food_count]
-					# 			}]
-					# 		}
-					# 	elsif Tool.rate(0.25)
-					# 		reward = {
-					# 			:wood => target.reward[:res_count],
-					# 			:stone => target.reward[:res_count]
-					# 		}
-					# 	elsif Tool.rate(0.125)
-					# 		reward = {
-					# 			:items => [{
-					# 				:item_cat => Item.categories[:egg], 
-					# 				:item_type => target.reward[:egg_type].sample, 
-					# 				:item_count => 1
-					# 			}]
-					# 		}
-					# 	elsif Tool.rate(0.125)
-					# 		reward = {
-					# 			:items => [{
-					# 				:item_cat => Item.categories[:scroll],
-					# 				:item_type => target.reward[:scroll_type].sample,
-					# 				:item_count => 1
-					# 			}]
-					# 		}
-					# 	end
-					# end
 					reward = Reward.judge!(target.type)
-					p 'reward', reward
 					
 					if not player.finish_daily_quest
 						player.daily_quest_cache[:kill_monsters] += 1
