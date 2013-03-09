@@ -139,6 +139,7 @@ class Troops < Ohm::Model
 
 					player.del_temp_creeps(target.index)
 					target.delete
+					player.receive_reward!(reward)
 					reward
 
 				when BattleModel::TARGET_TYPE[:gold_mine]
@@ -149,7 +150,9 @@ class Troops < Ohm::Model
 					
 					if target.type == GoldMine::TYPE[:normal]
 						target.update :player_id => player.id, :under_attack => false
-						Reward.judge!(target.level)
+						rwd = Reward.judge!(target.level)
+						player.receive_reward!(rwd)
+						rwd
 					else
 						unless player.league.nil?
 							target.add_attacking_count(player.league_id)
