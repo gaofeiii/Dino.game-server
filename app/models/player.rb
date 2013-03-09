@@ -405,6 +405,21 @@ class Player < Ohm::Model
 		end
 	end
 
+	def receive_reward!(reward)
+		self.receive!(reward)
+		if reward.has_key?(:items)
+			reward[:items].each do |itm|
+				if itm[:item_cat] = Item.categories[:food]
+					p "itm[:item_type]: #{itm[:item_type]}"
+					p "itm[:item_count]: #{itm[:item_count]}"
+					self.receive_food!(itm[:item_type], itm[:item_count])
+				else
+					Item.create(:item_category => itm[:item_cat], :item_type => itm[:item_type], :player_id => id)
+				end
+			end
+		end
+	end
+
 	# Callbacks
 	protected
 
