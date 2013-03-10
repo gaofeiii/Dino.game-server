@@ -29,7 +29,7 @@ class ShoppingController < ApplicationController
 		goods = Shopping.find_by_sid(sid)
 
 		if goods.nil?
-			render_error(Error::NORMAL, "Invalid serial id") and return
+			render_error(Error::NORMAL, "INVALID_SID") and return
 		end
 
 		puts "--- sid: #{sid} ---"

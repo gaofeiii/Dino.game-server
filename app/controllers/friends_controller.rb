@@ -69,7 +69,7 @@ class FriendsController < ApplicationController
 		friend = Player[params[:friend_id]]
 
 		if friend.nil?
-			render :json => {:error => "FRIEND_NOT_FOUND"} and return
+			render :json => {:error => I18n.t('friends_error.friend_not_exist')} and return
 		end
 
 		data = if @player.friends.delete(friend)
@@ -122,7 +122,7 @@ class FriendsController < ApplicationController
 	def validate_friend
 		@friend = Player[params[:friend_id]]
 		if @friend.nil?
-			render_error(Error::NORMAL, "invalid friend id")
+			render_error(Error::NORMAL, "INVALID_FRIEND_ID")
 			return
 		end
 	end

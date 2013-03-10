@@ -8,11 +8,13 @@ cn:
   general:
    server_busy: "网络不给力啊，请稍后再试~~"
    not_enough_gems: "宝石不足"
+   not_enough_gem: "宝石不足"
    invitation_expired: "邀请函已经过期。"
-   join_league_success: "成功加入公会！"
+   join_league_success: "成功加入部落！"
    add_friend_success: "添加好友成功！"
    not_enough_gold: "金币不足"
    not_enough_res: "资源不足"
+   not_enough_food: "食物数量不足"
    get_league_gold_success: "恭喜你！成功领取%{gold_count}金币！"
    apply_league_success: "申请加入部落成功！"
    apply_league_fail: "申请加入部落失败"
@@ -20,9 +22,14 @@ cn:
    league_gold_mine: "牛逼金矿"
    use_vip_success: "使用VIP道具成功！VIP剩余：约%{vip_left_time}小时"
    use_protect_success: "使用保护卷轴成功！保护剩余时间：约%{protect_left_time}小时"
+   be_stolen_for_tree: "该玩家今天已经被偷取3次食物了，请明天再来"
 
-  items:
-   invalid_item_id: "物品已经不存在"
+  players_error:
+   invalid_nickname: "昵称不合法"
+   set_nickname_failed: "设置昵称失败"
+
+  items_error:
+   hatch_in_incu: "恐龙只能在孵化园中孵化"
 
   player:
    whos_village: "%{player_name}的村庄"
@@ -65,8 +72,8 @@ cn:
 
   login_error:
    INVALID_PLAYER_ID: "错误的用户ID"
-   INCORRECT_USERNAME_OR_PASSWORD: "用户名和密码不匹配"
-   EMPTY_USERNAME_OR_PASSWORD: "用户名或密码不能为空"
+   incorrect_username_or_password: "用户名和密码不匹配"
+   empty_username_or_password: "用户名或密码不能为空"
    duplicated_nickname: "昵称已经存在"
 
   building_error:
@@ -78,25 +85,31 @@ cn:
    invalid_coords: "不能在这个位置放置建筑"
 
   league_error:
-   league_not_found: "公会不存在"
-   already_in_a_league: "你已经加入了公会。"
-   already_in_this_league: "你已经加入公会：[%{league_name}]"
-   not_in_a_league: "您还没有加入公会。"
-   contribution_count_is_zero: "公会贡献值不足"
-   member_already_in_a_league: "该玩家已经加入其他公会了"
-   member_already_join_in: "该玩家已经加入公会"
+   league_not_found: "部落不存在"
+   already_in_a_league: "你已经加入了部落。"
+   already_in_this_league: "你已经加入部落：[%{league_name}]"
+   not_in_a_league: "您还没有加入部落。"
+   contribution_count_is_zero: "部落贡献值不足"
+   member_already_in_a_league: "该玩家已经加入其他部落了"
+   member_already_join_in: "该玩家已经加入部落"
    member_does_not_exist: "玩家不存在"
-   accept_member_success: "加入公会成功"
+   accept_member_success: "加入部落成功"
+   should_set_a_league_name: "部落需要一个名称"
+   you_are_not_president: "你不是会长，无权进行此操作"
+   league_not_exist: "部落不存在"
+   member_not_in_league: "会员已经不在部落中"
+   you_have_left_this_league: "你已经离开了部落"
 
   friends_error:
    already_add_friend: "%{friend_name}已经是你的好友了！"
    add_friend_failed: "添加好友失败。"
    invitation_expired: "好友邀请已经过期。"
    cannot_add_self: "不能添加自己为好友。"
+   friend_not_exist: "好友已经不存在"
 
   strategy_error:
-   not_in_a_league: "您还没有加入公会。"
-   wrong_type_of_goldmine: "不能在公会战中攻打此类型的金矿"
+   not_in_a_league: "您还没有加入部落。"
+   wrong_type_of_goldmine: "不能在部落战中攻打此类型的金矿"
    dino_hp_is_zero: "不能派遣HP为0的恐龙"
    dino_is_attacking: "不能派遣正在进攻中的恐龙"
    honour_score_not_match: "不能攻打战斗力不匹配的玩家"
@@ -108,6 +121,9 @@ cn:
    target_under_attack: "目标正在遭受攻击"
    send_at_least_one: "至少要派遣一只恐龙"
    report_has_been_removed: "战报已经被清除"
+   cannot_attack_self_goldmine: "不能攻打自己的金矿"
+   enemy_not_set_strategy: "对方还没有设定出战的恐龙"
+   you_have_not_set_strategy: "你还没有设定出战的恐龙"
 
   dinosaur_error:
    not_enough_food: "食物不足"
@@ -118,9 +134,34 @@ cn:
    egg_already_hatched: "这只恐龙已经被孵化了哦！"
    not_a_egg: "只能孵化恐龙蛋哦亲！"
    must_be_hatched_in_cuba: "恐龙只能在孵化园中进行孵化"
+   invalid_dino_name: "名字不合法"
 
   quests_error:
    not_finished_yet: "任务还没有完成"
+
+  advisors_error:
+   already_an_advisor: "你已经是顾问了"
+   cannot_hire_yourself: "不能雇佣自己为顾问"
+   advisor_not_exist: "顾问不存在"
+   has_hired: "已经被其他人雇佣了"
+
+  chat_error:
+   to_player_not_exist: "玩家不存在"
+
+  deals_error:
+   trade_has_close: "交易已经关闭"
+   cannot_buy_self_goods: "不能购买自己的商品"
+   price_too_high: "交易价格过高"
+   count_must_more_than_zero: "商品数量不能为0"
+   price_must_more_than_zero: "商品价格不能为0"
+   already_sold: "商品已经出售"
+
+  mails_error:
+   receiver_not_exist: "收件人不存在"
+   mail_has_been_deleted: "邮件已经被删除"
+
+  guide_error:
+   quest_not_finished: "任务尚未完成"
 
   god_effect_mail:
    argriculture:
@@ -142,12 +183,12 @@ cn:
     content: "%{friend_name}希望加你为好友。"
 
    league_invitation:
-    title: "来自%{league_name}公会的邀请"
-    content: "%{player_name}邀请你加入他的公会：%{league_name}。"
+    title: "来自%{league_name}部落的邀请"
+    content: "%{player_name}邀请你加入他的部落：%{league_name}。"
 
    league_application:
-    title: "公会申请通知"
-    content: "%{player_name}申请加入你的公会：%{league_name}"
+    title: "部落申请通知"
+    content: "%{player_name}申请加入你的部落：%{league_name}"
 
    battle_report:
     title: "战斗报告"

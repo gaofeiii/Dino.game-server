@@ -20,11 +20,11 @@ class DealsController < ApplicationController
 		deal = Deal[params[:deal_id]]
 
 		if deal.nil? || deal.status == Deal::STATUS[:closed]
-			render_error(Error::NORMAL, "Trade has been finished") and return
+			render_error(Error::NORMAL, I18n.t('deals_error.trade_has_close')) and return
 		end
 
 		if deal.seller_id.to_i == @player.id
-			render_error(Error::NORMAL, "CANNOT BUY YOURSELF GOODS") and return
+			render_error(Error::NORMAL, I18n.t('deals_error.cannot_buy_self_goods')) and return
 		end
 
 		deal.mutex(0.5) do
@@ -45,7 +45,7 @@ class DealsController < ApplicationController
 					if @player.spend!(cost)
 						@player.receive!(goods)
 					else
-						render_error(Error::NORMAL, I18n.t("deals_error.not_enough_gold")) and return
+						render_error(Error::NORMAL, I18n.t("general.not_enough_gold")) and return
 					end
 				end
 			when Deal::CATEGORIES[:egg]
@@ -56,7 +56,7 @@ class DealsController < ApplicationController
 				return nil if food.nil?
 				food.increase(:count, deal.count)
 			else
-				render_error(Error::NORMAL, "Invalid cate id") and return
+				render_error(Error::NORMAL, "INVALID_ITEM_CATE") and return
 			end
 
 			# deal.set :status, Deal::STATUS[:closed]
@@ -72,7 +72,7 @@ class DealsController < ApplicationController
 		price = params[:price].to_f
 
 		if price > 999999
-			render_error(Error::NORMAL, "Price should less than 999999") and return
+			render_error(Error::NORMAL, I18n.t('deals_error.price_too_high')) and return
 		end
 
 		case goods_cat
@@ -89,11 +89,11 @@ class DealsController < ApplicationController
 			
 
 			error = if res_name.nil? || count <= 0 || price <= 0.0
-				"invalid resource type"
+				"INVALID_RES_TYPE"
 			elsif count <= 0
-				"count should be more than zero"
-			elsif price <= 0.0
-				"price shoudl be more than zero"
+				I18n.t('deals_error.count_must_more_than_zero')
+			elsif price <= 0.1
+				I18n.t('deals_error.price_must_more_than_zero')
 			else
 				nil
 			end
@@ -114,13 +114,13 @@ class DealsController < ApplicationController
 			gid = params[:gid]
 			egg = Item[gid]
 			if egg.nil?
-				render_error(Error::NORMAL, "Invalid Item Id") and return
+				render_error(Error::NORMAL, "INVALID_ITEM_ID") and return
 			end
 			if !egg.is_egg?
 				render_error(Error::NORMAL, "It is not a egg") and return
 			end
 			if egg.player_id.blank?
-				render_error(Error::NORMAL, "Already sold") and return
+				render_error(Error::NORMAL, I18n.t('deals_error.already_sold')) and return
 			end
 
 			if Deal.create  :status => Deal::STATUS[:selling],
@@ -138,9 +138,9 @@ class DealsController < ApplicationController
 			count = params[:count].to_i
 
 			error = if !type.in?(Dinosaur.const.keys)
-				"Invalid egg type"
+				"INVALID_EGG_TYPE"
 			elsif count <= 0
-				"count should be more than zero"
+				I18n.t('deals_error.count_must_more_than_zero')
 			else
 				nil
 			end
@@ -150,7 +150,7 @@ class DealsController < ApplicationController
 
 			food = @player.foods.find(:type => type).first
 			if food.nil? || food.count < count
-				render_error(Error::NORMAL, "Not enough food") and return
+				render_error(Error::NORMAL, I18n.t('general.not_enough_food')) and return
 			else
 				food.increase(:count, -count)
 				Deal.create :status => Deal::STATUS[:selling],

@@ -17,7 +17,7 @@ class GuideController < ApplicationController
 			{
 				:message => Error.failed_message,
 				:error_type => Error::NORMAL,
-				:error => "QUEST_NOT_FINISHED"
+				:error => I18n.t('guide_error.quest_not_finished')
 			}
 		end
 		render :json => data
@@ -44,7 +44,7 @@ class GuideController < ApplicationController
 			{
 				:message => Error.failed_message,
 				:error_type => Error::NORMAL,
-				:error => "QUEST_NOT_FINISHED"
+				:error => I18n.t('guide_error.quest_not_finished')
 			}
 		end
 		render :json => data

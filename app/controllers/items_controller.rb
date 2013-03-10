@@ -10,12 +10,12 @@ class ItemsController < ApplicationController
 		@item = Item[params[:item_id]]
 
 		if @item.nil?
-			render_error(Error::NORMAL, I18n.t('items.invalid_item_id')) and return
+			render_error(Error::NORMAL, "INVALID_ITEM_ID") and return
 		end
 		
 		# ==== If using egg ====
 		if @item.item_category == Item.categories[:egg]
-			render_error(Error::NORMAL, "Hatch egg in Incubation") and return
+			render_error(Error::NORMAL, I18n.t('')) and return
 			
 		# ==== If using lottery ====
 		elsif @item.item_category == Item.categories[:lottery]
@@ -59,7 +59,7 @@ class ItemsController < ApplicationController
 			protect_left_time = vil.protection_until - ::Time.now.to_i
 			render_success(:player => @player.to_hash(:village, :items), :info => I18n.t('general.use_protect_success', :protect_left_time => protect_left_time / 3600)) and return
 		else
-			render_error(Error::NORMAL, "ITEMS_NOT_DEFINED") and return
+			render_error(Error::NORMAL, "INVALID_ITEM_TYPE") and return
 		end
 		
 		

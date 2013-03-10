@@ -11,7 +11,7 @@ class StrategyController < ApplicationController
 		target = village || gold_mine
 
 		if target.nil?
-			render_error(Error::NORMAL, "No target to deployed") and return
+			render_error(Error::NORMAL, "NO_TARGET_TO_DEPLOY") and return
 		end
 
 		@sta = target.strategy
@@ -83,7 +83,7 @@ class StrategyController < ApplicationController
 		end
 
 		if target.blank?
-			render_error(Error::NORMAL, "Invalid target") and return
+			render_error(Error::NORMAL, "INVALID_TARGET") and return
 		end
 
 		if target.is_a?(Village)
@@ -102,7 +102,7 @@ class StrategyController < ApplicationController
 
 		if target.is_a?(GoldMine)
 			if target.type == GoldMine::TYPE[:normal] && target.player_id.to_i == @player.id
-				render_error(Error::NORMAL, "The gold mine is yours") and return
+				render_error(Error::NORMAL, I18n.t('strategy_error.cannot_attack_self_goldmine')) and return
 			elsif target.type == GoldMine::TYPE[:league] 
 				if @player.league_id.blank?
 					render_error(Error::NORMAL, I18n.t('strategy_error.not_in_a_league')) and return
@@ -243,7 +243,7 @@ class StrategyController < ApplicationController
 		@enemy = Player[params[:enemy_id]]
 
 		if @enemy.nil?
-			render_error(Error::NORMAL, "Invalid enemy id") and return
+			render_error(Error::NORMAL, "INVALID_ENEMY_ID") and return
 		end
 
 		if @player.todays_count <= 0
@@ -262,8 +262,12 @@ class StrategyController < ApplicationController
 			dino
 		end.compact
 
+		if player_dinos.blank?
+			render_error(Error::NORMAL, I18n.t('strategy_error.you_have_not_set_strategy')) and return
+		end
+
 		if @enemy.honour_strategy.blank?
-			render_error(Error::NORMAL, "Enemy's army not set") and return
+			render_error(Error::NORMAL, I18n.t('strategy_error.enemy_not_set_strategy')) and return
 		end
 
 		enemy_dinos = @enemy.honour_strategy.map do |d_id|

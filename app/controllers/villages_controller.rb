@@ -19,7 +19,7 @@ class VillagesController < ApplicationController
 			@village.update :x => params[:x], :y => params[:y], :index => 0
 			render_success(:player => player.to_hash.merge(:village => @village.to_hash))
 		else
-			render_error(Error::NORMAL, "NOT_ENOUGH_GEMS")
+			render_error(Error::NORMAL, I18n.t('general.not_enough_gems'))
 		end
 	end
 
@@ -29,7 +29,7 @@ class VillagesController < ApplicationController
 		if friend
 			render_success(:friend => friend.visit_info)
 		else
-			render_error(Error::NORMAL, "friend not found")
+			render_error(Error::NORMAL, I18n.t('friends_error.friend_not_exist'))
 		end
 	end
 
@@ -37,13 +37,13 @@ class VillagesController < ApplicationController
 		@building = Building[params[:building_id]]
 
 		if @building.nil?
-			render_error(Error::NORMAL, "Invalid building id") and return
+			render_error(Error::NORMAL, "INVALID_BUILDING_ID") and return
 		end
 
 		@village = @building.village
 
 		if @village.last_stolen_time >= Time.now.beginning_of_day.to_i && @village.stolen_count >= Village::MAX_STEAL_TIME
-			render_error(Error::NORMAL, "This player has been stolen for 3 times. Try it tomorrow :)") and return
+			render_error(Error::NORMAL, I18n.t('general.be_stolen_for_tree')) and return
 		end
 
 		if @building.is_resource_building?
@@ -63,10 +63,10 @@ class VillagesController < ApplicationController
 				end
 				render_success(:count => count)
 			else
-				render_error(Error::NORMAL, "harvest not finished") and return
+				render_error(Error::NORMAL, "HARVEST_NOT_FINISHED") and return
 			end
 		else
-			render_error(Error::NORMAL, "not a resource building")
+			render_error(Error::NORMAL, "NOT_A_RESOURCE_BUILDING")
 		end
 	end
 

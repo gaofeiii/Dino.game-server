@@ -21,11 +21,7 @@ class AdvisorsController < ApplicationController
 	# 申请成为顾问
 	def apply
 		if not Player.exists?(params[:player_id])
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error::NORMAL,
-				:error => Error.format_message("invalid player id")
-			}
+			render_error(Error::NORMAL, "INVALID_PLAYER_ID_WHEN_APPLY_AN_ADVISOR")
 			return
 		end
 
@@ -33,22 +29,14 @@ class AdvisorsController < ApplicationController
 		advisor.gets(:is_advisor, :is_hired, :player_type)
 
 		if !advisor.is_npc? && advisor.is_advisor && advisor.is_hired
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error::NORMAL,
-				:error => Error.format_message("you are already an advisor")
-			}
+			render_error(Error::NORMAL, I18n.t('advisors_error.already_an_advisor'))
 			return
 		end
 
 		if Advisor.create_by_type_and_days(params[:player_id], params[:type], params[:days])
 			render :json => {:message => Error.success_message}
 		else
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error::NORMAL,
-				:error => Error.format_message("Unknown error")
-			}
+			render_error(Error::NORMAL, "UNKNOWN_ERROR_WHEN_APPLY_AN_ADVISOR")
 		end
 
 	end
@@ -56,11 +44,7 @@ class AdvisorsController < ApplicationController
 	# 聘用顾问
 	def hire
 		if params[:employer_id].to_i == params[:advisor_id].to_i
-			render :json => {
-				:message => Error.failed_message,
-				:error_type => Error::NORMAL,
-				:error => Error.format_message("cannot hire yourself")
-			}
+			render_error(Error::NORMAL, I18n.t('advisors_error.cannot_hire_yourself'))
 			return
 		end
 
@@ -75,9 +59,9 @@ class AdvisorsController < ApplicationController
 
 		if !advisor.is_npc?
 			if is_adv.to_i == 0 || adv_info.blank?
-				err = Error.format_message("advisor not exist")
+				err = I18n.t('advisors_error.advisor_not_exist')
 			elsif is_hired.to_i == 1
-				err = Error.format_message("advisor has been hired")
+				err = I18n.t('advisors_error.has_hired')
 			end
 		end
 
@@ -95,7 +79,7 @@ class AdvisorsController < ApplicationController
 			end
 			render_success(:player => employer.to_hash(:advisors))
 		else
-			render_error(Error::NORMAL, "not enough gold")
+			render_error(Error::NORMAL, I18n.t('general.not_enough_gold'))
 		end
 	end
 

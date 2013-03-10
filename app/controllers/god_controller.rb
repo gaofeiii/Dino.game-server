@@ -4,7 +4,7 @@ class GodController < ApplicationController
 	# 供奉神灵
 	def worship_gods
 		if not params[:god_type].in?(God.hashes.values)
-			render_error(Error::NORMAL, "Invalid god type") and return
+			render_error(Error::NORMAL, "INVALID_GOD_TYPE") and return
 		end
 
 		god = @player.curr_god
@@ -34,7 +34,7 @@ class GodController < ApplicationController
 		god = @player.gods.find(:type => params[:god_type]).first
 
 		if god.nil? || !params[:god_type].in?(God::TYPE.keys)
-			render_error(Error::NORMAL, "Invalid god type") and return
+			render_error(Error::NORMAL, "INVALID_GOD_TYPE") and return
 		end
 
 		god.delete

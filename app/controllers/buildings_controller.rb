@@ -127,7 +127,7 @@ class BuildingsController < ApplicationController
 
 	def harvest
 		if not Building.resource_building_types.include?(@building.type)
-			render_error(Error::NORMAL, "building_error.THIS_BUILDING_CANNOT_BE_HARVESTED") and return
+			render_error(Error::NORMAL, "INVALID_RES_BUILDING_TYPE") and return
 		end
 		@building.update_harvest
 		if @building.is_lumber_mill? || @building.is_quarry?

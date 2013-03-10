@@ -7,7 +7,7 @@ class MailsController < ApplicationController
 		# sender = Player.with(:nickname, params[:sender])
 		sender = Player.find(:nickname => params[:sender]).first
 		if sender.nil?
-			render_error(Error::NORMAL, "Invalid sender name") and return
+			render_error(Error::NORMAL, I18n.t('mails_error.receiver_not_exist')) and return
 		end
 
 		mail_type = params[:mail_type].to_i
@@ -18,7 +18,7 @@ class MailsController < ApplicationController
 			# receiver = Player.with(:nickname, params[:receiver])
 			receiver = Player.find(:nickname => params[:receiver]).first
 			if receiver.nil?
-				render_error(Error::NORMAL, "Invalid receiver name") and return
+				render_error(Error::NORMAL, I18n.t('mails_error.receiver_not_exist')) and return
 			end
 
 			Mail.create :mail_type => Mail::TYPE[:private],
@@ -44,7 +44,7 @@ class MailsController < ApplicationController
 
 			render_success
 		else
-			render_error(Error::NORMAL, "Invalid mail type") and return
+			render_error(Error::NORMAL, "INVALID_MAIL_TYPE") and return
 		end
 	end
 
@@ -79,7 +79,7 @@ class MailsController < ApplicationController
 	def read_mail
 		@mail = Mail[params[:mail_id]]
 		if @mail.nil?
-			render_error(Error::NORMAL, "Mail not exist") and return
+			render_error(Error::NORMAL, I18n.t('mails.mail_has_been_deleted')) and return
 		end
 
 		result = {
@@ -119,7 +119,7 @@ class MailsController < ApplicationController
 			@friend = Player.new(:id => mail.cached_data[:player_id]).gets(:nickname)
 
 			if @player.id == @friend.id
-				render_error(Error::NORMAL, "Cannot add yourself as friend") and return
+				render_error(Error::NORMAL, I18n.t('friends_error.cannot_add_self')) and return
 			end
 
 			if @player.friends.include?(@friend)

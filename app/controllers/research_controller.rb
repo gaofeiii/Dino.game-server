@@ -40,7 +40,7 @@ class ResearchController < ApplicationController
 			end
 			render_success(:player => @player.to_hash(:techs, :resources))
 		else
-			render_error(Error::NORMAL, "NOT_ENOUGH_RESOURCES")
+			render_error(Error::NORMAL, I18n.t('general.not_enough_res'))
 		end
 	end
 
@@ -48,7 +48,7 @@ class ResearchController < ApplicationController
 		tech_type = params[:tech_type].to_i
 
 		if not tech_type.in?(Technology.types)
-			render_error(Error::NORMAL, "Wrong type of technology") and return
+			render_error(Error::NORMAL, "INVALID_TECH_TYPE") and return
 		end
 
 		tech = @player.technologies.find(:type => tech_type).first
@@ -61,7 +61,7 @@ class ResearchController < ApplicationController
 			tech.speed_up!
 			@player.load!
 		else
-			render_error(Error::NORMAL, "Not enough gems") and return
+			render_error(Error::NORMAL, I18n.t('general.not_enough_gems')) and return
 		end
 
 		render :json => {

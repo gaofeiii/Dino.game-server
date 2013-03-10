@@ -91,7 +91,7 @@ class DinosaurController < ApplicationController
 	def rename
 		new_name = params[:new_name].to_s
 		if new_name.sensitive?
-			render_error(Error::NORMAL, "INVALID_DINO_NAME") and return
+			render_error(Error::NORMAL, I18n.t('dinosaur_error.invalid_dino_name')) and return
 		end
 
 		@dinosaur.set :name, new_name

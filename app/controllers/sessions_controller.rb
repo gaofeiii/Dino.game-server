@@ -48,15 +48,13 @@ class SessionsController < ApplicationController
 			else
 				@player.sets 	:device_token => @device_token,
 											:locale => LocaleHelper.get_server_locale_name(request.env["HTTP_CLIENT_LOCALE"])
-				# @player.village.buildings.find(:status => [Building::STATUS[:new], Building::STATUS[:half]]).map(&:update_status!)
-				# @player.technologies.find(:status => Technology::STATUS[:researching]).map(&:update_status!)
 				@player.refresh_village_status
 				@player.reset_daily_quest!
 				@player.refresh_god_status!
 			end
 			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all)})
 		else
-			data.merge!({:message => Error.failed_message, :error => I18n.t('login_error.INCORRECT_USERNAME_OR_PASSWORD')})
+			data.merge!({:message => Error.failed_message, :error => I18n.t('login_error.incorrect_username_or_password')})
 		end
 		render :json => data
 	end
@@ -105,7 +103,7 @@ class SessionsController < ApplicationController
 	def change_password
 		username, old_pass, new_pass = params[:username], params[:old_pass], params[:new_pass]
 		if username.blank? || old_pass.blank? || new_pass.blank?
-			render_error(Error::NORMAL, I18n.t("login_error.EMPTY_USERNAME_OR_PASSWORD")) and return
+			render_error(Error::NORMAL, I18n.t("login_error.empty_username_or_password")) and return
 		end
 
 		result = account_change_pass 	:username => username,

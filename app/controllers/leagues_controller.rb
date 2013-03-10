@@ -6,12 +6,12 @@ class LeaguesController < ApplicationController
 
 	def create
 		if League.exists?(@player.league_id)
-			render_error(Error::NORMAL, "YOU_ARE_ALREADY_IN_A_LEAGUE") and return
+			render_error(Error::NORMAL, I18n.t('league_error.already_in_a_league')) and return
 		end
 
 		name = params[:name]
 		if name.blank?
-			render_error(Error::NORMAL, "Should type a name for league") and return
+			render_error(Error::NORMAL, I18n.t('league_error.should_set_a_league_name')) and return
 		end
 
 		if @player.spend!(:gold => 10000)
@@ -22,7 +22,7 @@ class LeaguesController < ApplicationController
 			@player.update :league_id => lg.id, :league_member_ship_id => lms.id
 			render :json => {:player => @player.to_hash(:league)}
 		else
-			render :json => {:error => "NOT_ENOUGH_SUNS"}
+			render_error(Error::NORMAL, I18n.t('general.not_enough_gold'))
 		end
 	end
 
@@ -134,16 +134,16 @@ class LeaguesController < ApplicationController
 	def invite
 		@league = @player.league
 		if @league.nil?
-			render_error(Error::NORMAL, "You are not in a league") and return
+			render_error(Error::NORMAL, I18n.t('league_error.not_in_a_league')) and return
 		end
 
 		if @league.president_id.to_i != @player.id
-			render_error(Error::NORMAL, "You are not the president") and return
+			render_error(Error::NORMAL, I18n.t('league_error.you_are_not_president')) and return
 		end
 
 		@friend = Player[params[:friend_id]]
 		if @friend.nil?
-			render_error(Error::NORMAL, "Invalid friend id") and return
+			render_error(Error::NORMAL, "INVALID_FRIEND_ID") and return
 		end
 
 		mail = Mail.create_league_invite_mail(:receiver_name => @friend.nickname, :player_name => @player.nickname, :league_name => @league.name, :league_id => @league.id)
@@ -160,12 +160,12 @@ class LeaguesController < ApplicationController
 		# already validated @player
 		@mail = Mail[params[:mail_id]]
 		if @mail.nil?
-			render_error(Error::NORMAL, "Invalid mail id") and return
+			render_error(Error::NORMAL, "INVALID_MAIL_ID") and return
 		end
 
 		@league = @mail.league
 		if @league.nil?
-			render_error(Error::NORMAL, "League not exists") and return
+			render_error(Error::NORMAL, I18n.t('league_error.league_not_exist')) and return
 		end
 
 		if @league.add_new_member(@player)
@@ -181,7 +181,7 @@ class LeaguesController < ApplicationController
 	def donate
 		donate_type = params[:type].to_i
 		if donate_type <= 0 || donate_type > 2
-			render_error(Error::NORMAL, "Invalid resource type") and return
+			render_error(Error::NORMAL, "INVALID_RESOURCE_TYPE") and return
 		end
 
 		count = params[:count].to_i
@@ -242,21 +242,21 @@ class LeaguesController < ApplicationController
 		player_relation = LeagueMemberShip[Player.get(params[:player_id], :league_member_ship_id)]
 
 		if player_relation.nil?
-			render_error(Error::NORMAL, "u r not a league member") and return
+			render_error(Error::NORMAL, I18n.t('league_error.not_in_a_league')) and return
 		end
 
 		if player_relation.level != LeagueMemberShip::LEVELS[:president]
-			render_error(Error::NORMAL, "only president can do it") and return
+			render_error(Error::NORMAL, I18n.t('league_error.you_are_not_president')) and return
 		end
 
 		member_relation = LeagueMemberShip[Player.get(params[:member_id], :league_member_ship_id)]
 
 		if member_relation.nil?
-			render_error(Error::NORMAL, "member is not in league") and return
+			render_error(Error::NORMAL, I18n.t('')) and return
 		end
 
 		if member_relation.league_id.to_i != params[:league_id].to_i
-			render_error(Error::NORMAL, "you have no right to do it") and return
+			render_error(Error::NORMAL, I18n.t('league_error.you_are_not_president')) and return
 		end
 
 		member_relation.delete
@@ -269,7 +269,7 @@ class LeaguesController < ApplicationController
 		@league = @player.league
 
 		if @league.nil?
-			render_error(Error::NORMAL, "You are not in this league now")
+			render_error(Error::NORMAL, I18n.t('league_error.you_have_left_this_league'))
 		else
 			@player.league_member_ship.delete
 			@player.update :league_id => nil
@@ -284,7 +284,7 @@ class LeaguesController < ApplicationController
 
 	def change_info
 		if @league.president_id.to_i != @player.id
-			render_error(Error::NORMAL, "You are not the president") and return
+			render_error(Error::NORMAL, I18n.t('league_error.you_are_not_president')) and return
 		end
 
 		@league.set :desc, params[:desc]

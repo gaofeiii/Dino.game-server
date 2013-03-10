@@ -13,7 +13,7 @@ class PlayersController < ApplicationController
 			render :json => {
 				:message => Error.failed_message,
 				:error_type => Error::NORMAL,
-				:error => Error.format_message("Player not found")
+				:error => Error.format_message("INVALID_PLAYER_ID")
 				}, :status => 999 and return
 		end
 		render :json => {:player => player.to_hash(:all)}
@@ -37,7 +37,7 @@ class PlayersController < ApplicationController
 			render :json => {
 				:message => Error.failed_message,
 				:error_type => Error::NORMAL,
-				:error => Error.format_message("Wrong type of avatar_id")
+				:error => Error.format_message("INVALID_AVATAR_ID")
 			}
 			return
 		end
@@ -49,7 +49,7 @@ class PlayersController < ApplicationController
 			render :json => {
 				:message => Error.failed_message,
 				:error_type => Error::NORMAL,
-				:error => Error.format_message("Invalid player id")
+				:error => Error.format_message("INVALID_PLAYER_ID")
 			}
 		end
 	end
@@ -73,7 +73,7 @@ class PlayersController < ApplicationController
 	def modify_nickname
 		nkname = params[:nickname]
 		if nkname.sensitive?
-			render_error(Error::NORMAL, "Invalid nickname") and return
+			render_error(Error::NORMAL, I18n.t('players_error.invalid_nickname')) and return
 		end
 
 		if Player.find(:nickname => nkname).any?
@@ -89,7 +89,7 @@ class PlayersController < ApplicationController
 			@player.village.set(:name, I18n.t("player.whos_village", :locale => @player.locale, :player_name => nkname))
 			render_success(:player => {:nickname => @player.nickname}, :username => @player.nickname)
 		else
-			render_error(Error::NORMAL, "Set nickname failed")
+			render_error(Error::NORMAL, I18n.t('players_error.set_nickname_failed'))
 		end
 		
 	end

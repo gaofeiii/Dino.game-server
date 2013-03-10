@@ -6,23 +6,30 @@
    general: "monster"
 
   general:
-   server_busy: "Connection interrupted,Try later!"
+   server_busy: "Connection interrupted, Try later!"
    not_enough_gems: "Need more gems"
+   not_enough_gem: "Need more gems"
    invitation_expired: "Invitation over time"
    join_league_success: "Join Succeed"
    add_friend_success: "Friend Added"
    not_enough_gold: "Need More Gold"
    not_enough_res: "Need More Resource"
+   not_enough_food: "Need More Food"
    get_league_gold_success: "Congratulation！You get %{gold_count} gold！"
    apply_league_success: "Joining Tribe Succeed"
    apply_league_fail: "Tribe Application Failed"
    normal_gold_mine: "Normal goldmine"
    league_gold_mine: "Supper goldmine"
    use_vip_success: "VIP used！VIP left：%{vip_left_time}hour"
-   use_protect_success: "Protection casted！Left：%{protect_left_time} hour"
+   use_protect_success: "Protection casted！Left：%{protect_left_time} hour(s)"
+   be_stolen_for_tree: "One can only be stolen for 3 times per day"
 
-  items:
-   invalid_item_id: "Item not found"
+  players_error:
+   invalid_nickname: "Nickname illegal"
+   set_nickname_failed: "Setting nickname failed"
+
+  items_error:
+   hatch_in_incu: "Please incubate egg in the incubation house"
 
   player:
    whos_village: "%{player_name}’s village"
@@ -53,7 +60,7 @@
    hunting_field: "Hunter’s house"
    collecting_farm: "Farm"
    habitat: "Incubation house"
-   beastiary: "Heastiary"
+   beastiary: "Bestiary"
    market: "Market"
    workshop: "Workshop"
    temple: "Temple"
@@ -65,8 +72,8 @@
 
   login_error:
    INVALID_PLAYER_ID: "Invalid user ID"
-   INCORRECT_USERNAME_OR_PASSWORD: "Incorrect username or password"
-   EMPTY_USERNAME_OR_PASSWORD: "Empty username or password"
+   incorrect_username_or_password: "Incorrect username or password"
+   empty_username_or_password: "Empty username or password"
    duplicated_nickname: "Duplicated nickname"
 
   building_error:
@@ -87,12 +94,18 @@
    member_already_join_in: "This guy already have joined a Tribe"
    member_does_not_exist: "Player does not exist"
    accept_member_success: "Tribe Joining Success"
+   should_set_a_league_name: "Need a Tribe name"
+   you_are_not_president: "Only TribeChief can do this"
+   league_not_exist: "Tribe does not exist"
+   member_not_in_league: "Member is not in the Tribe"
+   you_have_left_this_league: "You left the Tribe"
 
   friends_error:
    already_add_friend: "%{friend_name}has been added friend already！"
    add_friend_failed: "Friend add failed"
    invitation_expired: "Invitation expired"
    cannot_add_self: "Cannot add yourself"
+   friend_not_exist: "Friend does not exist"
 
   strategy_error:
    not_in_a_league: "No Tribe yet"
@@ -101,31 +114,59 @@
    dino_is_attacking: "Cannot send attacking state dinos"
    honour_score_not_match: "Cannot attack low matching points players"
    honour_count_full: "Sorry, you have challenged too many players. The daily limit is: %{count}"
-   cannot_attack_self_village: "不能攻打自己的村落"
-   village_under_protection: "该村落正在受保护中"
-   cannot_attack_when_league_started: "部落金矿战已经开战，不能攻打该类型的村落"
-   league_war_not_started: "部落金矿战还没有开始"
-   target_under_attack: "目标正在遭受攻击"
-   send_at_least_one: "至少要派遣一只恐龙"
-   report_has_been_removed: "战报已经被移除"
+   cannot_attack_self_village: "Cannot attack yourself"
+   village_under_protection: "Village under protection"
+   cannot_attack_when_league_started: "Cannot attack this one while TribeWar"
+   league_war_not_started: "TribeWar not started yet"
+   target_under_attack: "Target is under attack"
+   send_at_least_one: "At least one dinosaur!”
+   report_has_been_removed: "Report has been removed"
+   cannot_attack_self_goldmine: "Cannot attack yourself"
+   enemy_not_set_strategy: "Enemy formation empty"
+   you_have_not_set_strategy: "Set your formation first"
 
   dinosaur_error:
    not_enough_food: "Need more food"
    reach_max_growth_point: "Growth is full"
    cannot_release_hatching_dino: "Cannot release hatching state dino"
    dinosaur_is_full: "I’m Already full"
-   not_enough_space: "兽栏的空间不足，请在兽栏中扩展空间或升级驯养技术"
-   egg_already_hatched: "这只恐龙已经被孵化了哦！"
-   not_a_egg: "只能孵化恐龙蛋哦亲！"
-   must_be_hatched_in_cuba: "恐龙只能在孵化园中进行孵化"
+   not_enough_space: "Not enough space in bestiary, upgrade or expand!”
+   egg_already_hatched: "Egg already hatched！"
+   not_a_egg: "You can only hatch egg here"
+   must_be_hatched_in_cuba: "Must be hatched in Incubation house"
+   invalid_dino_name: "Illegal name"
 
   quests_error:
    not_finished_yet: "Quest is not finished yet"
 
+  advisors_error:
+   already_an_advisor: "You have become a advisor already"
+   cannot_hire_yourself: "Cannot hire yourself"
+   advisor_not_exist: "Advisor does not exist"
+   has_hired: "Advisor has been hired"
+
+  chat_error:
+   to_player_not_exist: "Player does not exist"
+
+  deals_error:
+   trade_has_close: "Trade has been closed"
+   cannot_buy_self_goods: "Cannot buy your own stuffs"
+   price_too_high: "Too much price!”
+   count_must_more_than_zero: "Count cannot be 0"
+   price_must_more_than_zero: "Price cannot be 0"
+   already_sold: "Stuff were sold"
+
+  mails_error:
+   receiver_not_exist: "Receiver doesn’t exist"
+   mail_has_been_deleted: "Mail deleted"
+
+  guide_error:
+   quest_not_finished: "Quest not competed"
+
   god_effect_mail:
    argriculture:
     title: "Bless from Ceres"
-    content: "Because of your consecration ,Ceres desides to get your more%{res_name}！"
+    content: "Because of your consecration ,Ceres decides to get your more%{res_name}！"
    business:
     title: "Bless from Mercury"
     content: " Because of your consecration，Mercury get you double profit in this trade "
@@ -151,6 +192,18 @@
 
    battle_report:
     title: "Battle Report"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
