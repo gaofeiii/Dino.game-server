@@ -15,13 +15,13 @@
    not_enough_gold: "Need More Gold"
    not_enough_res: "Need More Resource"
    not_enough_food: "Need More Food"
-   get_league_gold_success: "Congratulation！You get %{gold_count} gold！"
-   apply_league_success: "Joining Tribe Succeed"
+   get_league_gold_success: "Congratulation! You get %{gold_count} gold coins!"
+   apply_league_success: "Joining Tribe Succeeded"
    apply_league_fail: "Tribe Application Failed"
    normal_gold_mine: "Normal goldmine"
    league_gold_mine: "Supper goldmine"
-   use_vip_success: "VIP used！VIP left：%{vip_left_time}hour"
-   use_protect_success: "Protection casted！Left：%{protect_left_time} hour(s)"
+   use_vip_success: "VIP used! VIP left: %{vip_left_time} hour(s)"
+   use_protect_success: "Protection casted!Left: %{protect_left_time} hour(s)"
    be_stolen_for_tree: "One can only be stolen for 3 times per day"
 
   players_error:
@@ -77,10 +77,10 @@
    duplicated_nickname: "Duplicated nickname"
 
   building_error:
-   building_destroyed: "Building has been destroyed！"
-   keep_one_residential: "Keep at least one Residential！"
+   building_destroyed: "Building has been destroyed!"
+   keep_one_residential: "Keep at least one Residential!"
    building_exist: "%{building_name}already exist"
-   building_queue_is_full: "Not enough workers！"
+   building_queue_is_full: "Not enough workers!"
    building_finished: "Building Compete"
    invalid_coords: "Cannot place here"
    not_enough_worker: "Need more worker for this building, please upgrade residential tech first"
@@ -88,39 +88,39 @@
   league_error:
    league_not_found: "Tribe not found"
    already_in_a_league: "You have already joined a Tribe"
-   already_in_this_league: "You have already in this Tribe：[%{league_name}]"
+   already_in_this_league: "You are already in this Tribe: [%{league_name}]"
    not_in_a_league: "Not in a Tribe yet"
    contribution_count_is_zero: "Need more contribution points"
-   member_already_in_a_league: "He has already been in a Tribe"
-   member_already_join_in: "This guy already have joined a Tribe"
+   member_already_in_a_league: "This guy has been in another Tribe"
+   member_already_join_in: "This guy have joined your Tribe"
    member_does_not_exist: "Player does not exist"
-   accept_member_success: "Tribe Joining Success"
+   accept_member_success: "Join Tribe Success"
    should_set_a_league_name: "Need a Tribe name"
    you_are_not_president: "Only TribeChief can do this"
    league_not_exist: "Tribe does not exist"
    member_not_in_league: "Member is not in the Tribe"
-   you_have_left_this_league: "You left the Tribe"
+   you_have_left_this_league: "You have left the Tribe"
 
   friends_error:
-   already_add_friend: "%{friend_name}has been added friend already！"
-   add_friend_failed: "Friend add failed"
+   already_add_friend: "%{friend_name} has been your friend already!"
+   add_friend_failed: "Adding friend failed"
    invitation_expired: "Invitation expired"
    cannot_add_self: "Cannot add yourself"
    friend_not_exist: "Friend does not exist"
 
   strategy_error:
    not_in_a_league: "No Tribe yet"
-   wrong_type_of_goldmine: "Cannot attack this type of goldmine during the TribeWar"
-   dino_hp_is_zero: "Cannot send HP 0 dinos"
+   wrong_type_of_goldmine: "Cannot attack this kind of goldmine during the TribeWar"
+   dino_hp_is_zero: "Cannot send injured dinos"
    dino_is_attacking: "Cannot send attacking state dinos"
    honour_score_not_match: "Cannot attack low matching points players"
    honour_count_full: "Sorry, you have challenged too many players. The daily limit is: %{count}"
    cannot_attack_self_village: "Cannot attack yourself"
-   village_under_protection: "Village under protection"
-   cannot_attack_when_league_started: "Cannot attack this one while TribeWar"
+   village_under_protection: "This village is under protection"
+   cannot_attack_when_league_started: "Cannot attack this one when TribeWar has started"
    league_war_not_started: "TribeWar not started yet"
    target_under_attack: "Target is under attack"
-   send_at_least_one: "At least one dinosaur!"
+   send_at_least_one: "You should send at least one dinosaur!"
    report_has_been_removed: "Report has been removed"
    cannot_attack_self_goldmine: "Cannot attack yourself"
    enemy_not_set_strategy: "Enemy formation empty"
@@ -128,12 +128,12 @@
 
   dinosaur_error:
    not_enough_food: "Need more food"
-   reach_max_growth_point: "Growth is full"
+   reach_max_growth_point: "Growth is reached max point"
    cannot_release_hatching_dino: "Cannot release hatching state dino"
-   dinosaur_is_full: "I’m Already full"
+   dinosaur_is_full: "I’m already full"
    not_enough_space: "Not enough space in bestiary, upgrade or expand!"
-   egg_already_hatched: "Egg already hatched！"
-   not_a_egg: "You can only hatch egg here"
+   egg_already_hatched: "Egg has already been hatched!"
+   not_a_egg: "You can only hatch eggs here"
    must_be_hatched_in_cuba: "Must be hatched in Incubation house"
    invalid_dino_name: "Illegal name"
 
@@ -152,7 +152,7 @@
   deals_error:
    trade_has_close: "Trade has been closed"
    cannot_buy_self_goods: "Cannot buy your own stuffs"
-   price_too_high: "Too much price!"
+   price_too_high: "The price is too high"
    count_must_more_than_zero: "Count cannot be 0"
    price_must_more_than_zero: "Price cannot be 0"
    already_sold: "Stuff were sold"
@@ -167,29 +167,29 @@
   god_effect_mail:
    argriculture:
     title: "Bless from Ceres"
-    content: "Because of your consecration ,Ceres decides to get your more%{res_name}！"
+    content: "Because of your consecration ,Ceres decides to get your more% {res_name}!"
    business:
     title: "Bless from Mercury"
-    content: " Because of your consecration，Mercury get you double profit in this trade "
+    content: " Because of your consecration, Mercury get you double profit in this trade "
    war:
     title: " Bless from Mars"
-    content: " Because of your consecration，Mars will help you in the war！"
+    content: " Because of your consecration, Mars will help you in the war!"
    intelligence:
     title: " Bless from Coeus"
-    content: " Because of your consecration，Coeus decrease you %{time_reduce}research time！"
+    content: " Because of your consecration, Coeus decrease you %{time_reduce} research time!"
 
   mail:
    friend_invitation:
     title: "Friend Application"
-    content: "%{friend_name} hopes to be your friend"
+    content: "%{friend_name} wants to be your friend"
 
    league_invitation:
-    title: "From%{league_name}’s Tribe invitation"
-    content: "%{player_name} invite you to join Tribe：%{league_name}。"
+    title: "Tribe invitation from %{league_name}"
+    content: "%{player_name} invite you to join Tribe: %{league_name}。"
 
    league_application:
     title: "Tribe application"
-    content: "%{player_name} want to join Tribe：%{league_name}"
+    content: "%{player_name} want to join your Tribe: %{league_name}"
 
    battle_report:
     title: "Battle Report"
