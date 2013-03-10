@@ -1,7 +1,4 @@
-﻿# Sample localization file for English. Add more files in this directory for other locales.
-# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
-en:
+﻿en:
   hello: "Hello"
 
   system: "system"
@@ -104,12 +101,23 @@ en:
    dino_is_attacking: "Cannot send attacking state dinos"
    honour_score_not_match: "Cannot attack low matching points players"
    honour_count_full: "Sorry, you have challenged too many players. The daily limit is: %{count}"
+   cannot_attack_self_village: "不能攻打自己的村落"
+   village_under_protection: "该村落正在受保护中"
+   cannot_attack_when_league_started: "部落金矿战已经开战，不能攻打该类型的村落"
+   league_war_not_started: "部落金矿战还没有开始"
+   target_under_attack: "目标正在遭受攻击"
+   send_at_least_one: "至少要派遣一只恐龙"
+   report_has_been_removed: "战报已经被移除"
 
   dinosaur_error:
    not_enough_food: "Need more food"
    reach_max_growth_point: "Growth is full"
    cannot_release_hatching_dino: "Cannot release hatching state dino"
    dinosaur_is_full: "I’m Already full"
+   not_enough_space: "兽栏的空间不足，请在兽栏中扩展空间或升级驯养技术"
+   egg_already_hatched: "这只恐龙已经被孵化了哦！"
+   not_a_egg: "只能孵化恐龙蛋哦亲！"
+   must_be_hatched_in_cuba: "恐龙只能在孵化园中进行孵化"
 
   quests_error:
    not_finished_yet: "Quest is not finished yet"

@@ -49,138 +49,143 @@ class Troops < Ohm::Model
 		return if target.nil?
 		scroll = Item[scroll_id]
 
-		if Time.now.to_i >= arrive_time
-			army = dinosaurs.map do |dino_id|
-				dino = Dinosaur[dino_id]
-				if dino && dino.status > 0
-					dino.update_status!
-					dino
+		self.mutex(5) do
+			if Time.now.to_i >= arrive_time
+				army = dinosaurs.map do |dino_id|
+					dino = Dinosaur[dino_id]
+					if dino && dino.status > 0
+						dino.update_status!
+						dino
+					end
+				end.compact
+				attacker_army = army
+				defender_army = target.defense_troops
+
+				attacker = {
+					:player => player,
+					:owner_info => {
+						:type => 'Player',
+						:id => player_id.to_i,
+						:name => player.nickname,
+						:avatar_id => player.avatar_id
+					},
+					:scroll_effect => scroll.try(:scroll_effect).to_h, # Note: Only ruby 2.0+
+					:buff_info => [],
+					:army => attacker_army
+				}
+				attacker[:buff_info] << scroll.to_hash if scroll
+
+				defender_name = nil
+				defender_type = nil
+				defense_player = nil
+
+				if target_type == BattleModel::TARGET_TYPE[:village]
+					defender_name = target.player_name
+					defense_player = target.player
+				elsif target_type == BattleModel::TARGET_TYPE[:creeps]
+					defender_name = "Creeps"
+					defender_type = target.type
+				elsif target_type == BattleModel::TARGET_TYPE[:gold_mine]
+					defender_name = target.owner_name
 				end
-			end.compact
-			attacker_army = army
-			defender_army = target.defense_troops
+				defender = {
+					:player => defense_player,
+					:owner_info => {
+						:type => target.class.name,
+						:id => target.id,
+						:name => defender_name,
+						:monster_type => target.type
+					},
+					:buff_info => [],
+					:scroll_effect => {},
+					:army => defender_army
+				}
 
-			attacker = {
-				:player => player,
-				:owner_info => {
-					:type => 'Player',
-					:id => player_id.to_i,
-					:name => player.nickname,
-					:avatar_id => player.avatar_id
-				},
-				:buff_info => [],
-				:army => attacker_army
-			}
-			attacker[:buff_info] << scroll.to_hash if scroll
+				defender[:owner_info][:avatar_id] = target.player.avatar_id if target.is_a?(Village)
 
-			defender_name = nil
-			defender_type = nil
-			defense_player = nil
-
-			if target_type == BattleModel::TARGET_TYPE[:village]
-				defender_name = target.player_name
-				defense_player = target.player
-			elsif target_type == BattleModel::TARGET_TYPE[:creeps]
-				defender_name = "Creeps"
-				defender_type = target.type
-			elsif target_type == BattleModel::TARGET_TYPE[:gold_mine]
-				defender_name = target.owner_name
-			end
-			defender = {
-				:player => defense_player,
-				:owner_info => {
-					:type => target.class.name,
-					:id => target.id,
-					:name => defender_name,
-					:monster_type => target.type
-				},
-				:buff_info => [],
-				:army => defender_army
-			}
-
-			defender[:owner_info][:avatar_id] = target.player.avatar_id if target.is_a?(Village)
-
-			result = BattleModel.normal_attack(attacker, defender)
-			
-			# 如果进攻方获胜，计算奖励
-			reward = {}
-			if result[:winner] == 'attacker'
-				reward = case target_type
-				when BattleModel::TARGET_TYPE[:village]
-					if not player.finish_daily_quest
-						player.daily_quest_cache[:attack_players] += 1
-						player.set :daily_quest_cache, player.daily_quest_cache.to_json
-					end
-
-					if target.in_dangerous_area?
-						tx, ty, ti = target.x, target.y, target.index
-						target.move_to_random_coords
-						target.set :protection_until, ::Time.now.to_i + 10.minutes
-						self.player.village.update :x => tx, :y => ty, :index => ti
-					end
-
-					target_player = target.player
-					rwd = {:wood => target_player.wood/10, :stone => target_player.stone/10, :gold_coin => target_player.gold_coin/10, :items => []}
-					target_player.spend!(rwd) # The target lost resource
-					self.player.receive!(rwd) # The winner receive resource
-					# i_cat = [1,2,3].sample
-					# i_type = Item.const[i_cat].keys.sample
-					# i_count = i_cat == 2 ? 99 : 1
-					# rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
-					target.set(:under_attack, 0)
-					rwd
-				when BattleModel::TARGET_TYPE[:creeps]
-					reward = Reward.judge!(target.type)
-					
-					if not player.finish_daily_quest
-						player.daily_quest_cache[:kill_monsters] += 1
-						player.set :daily_quest_cache, player.daily_quest_cache.to_json
-					end
-
-					player.del_temp_creeps(target.index)
-					target.delete
-					player.receive_reward!(reward)
-					reward
-
-				when BattleModel::TARGET_TYPE[:gold_mine]
-					if not player.finish_daily_quest
-						player.daily_quest_cache[:occupy_gold_mines] += 1
-						player.set :daily_quest_cache, player.daily_quest_cache.to_json
-					end
-					
-					if target.type == GoldMine::TYPE[:normal]
-						target.update :player_id => player.id, :under_attack => false
-						rwd = Reward.judge!(target.level)
-						player.receive_reward!(rwd)
-						rwd
-					else
-						unless player.league.nil?
-							target.add_attacking_count(player.league_id)
-							self.player.increase(:experience, 100)
-							player.league_member_ship.increase(:contribution, 200)
-							# TODO: league_war result
-							result[:league_war_result] = {:progress => rand(1..3000), :rank => rand(1..10)}
+				result = BattleModel.normal_attack(attacker, defender)
+				
+				# 如果进攻方获胜，计算奖励
+				reward = {}
+				if result[:winner] == 'attacker'
+					reward = case target_type
+					when BattleModel::TARGET_TYPE[:village]
+						if not player.finish_daily_quest
+							player.daily_quest_cache[:attack_players] += 1
+							player.set :daily_quest_cache, player.daily_quest_cache.to_json
 						end
-						{} # reward = {}
-					end
-					
-				else
-					{}
-				end
-				player.receive!(reward)
-			end # End of winner reward
 
-			# Check beginning guide
-			if !player.beginning_guide_finished && !player.guide_cache['attack_monster']
-				player.set :guide_cache, player.guide_cache.merge('attack_monster' => true)
+						if target.in_dangerous_area?
+							tx, ty, ti = target.x, target.y, target.index
+							target.move_to_random_coords
+							target.set :protection_until, ::Time.now.to_i + 10.minutes
+							self.player.village.update :x => tx, :y => ty, :index => ti
+						end
+
+						target_player = target.player
+						rwd = {:wood => target_player.wood/10, :stone => target_player.stone/10, :gold_coin => target_player.gold_coin/10, :items => []}
+						target_player.spend!(rwd) # The target lost resource
+						self.player.receive!(rwd) # The winner receive resource
+						# i_cat = [1,2,3].sample
+						# i_type = Item.const[i_cat].keys.sample
+						# i_count = i_cat == 2 ? 99 : 1
+						# rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
+						target.set(:under_attack, 0)
+						rwd
+					when BattleModel::TARGET_TYPE[:creeps]
+						reward = Reward.judge!(target.type)
+						
+						if not player.finish_daily_quest
+							player.daily_quest_cache[:kill_monsters] += 1
+							player.set :daily_quest_cache, player.daily_quest_cache.to_json
+						end
+
+						player.del_temp_creeps(target.index)
+						target.delete
+						player.receive_reward!(reward)
+						reward
+
+					when BattleModel::TARGET_TYPE[:gold_mine]
+						if not player.finish_daily_quest
+							player.daily_quest_cache[:occupy_gold_mines] += 1
+							player.set :daily_quest_cache, player.daily_quest_cache.to_json
+						end
+						
+						if target.type == GoldMine::TYPE[:normal]
+							target.update :player_id => player.id, :under_attack => false
+							rwd = Reward.judge!(target.level)
+							player.receive_reward!(rwd)
+							rwd
+						else
+							unless player.league.nil?
+								target.add_attacking_count(player.league_id)
+								self.player.increase(:experience, 100)
+								player.league_member_ship.increase(:contribution, 200)
+								# TODO: league_war result
+								result[:league_war_result] = {:progress => rand(1..3000), :rank => rand(1..10)}
+							end
+							{} # reward = {}
+						end
+						
+					else
+						{}
+					end
+					player.receive!(reward)
+				end # End of winner reward
+
+				# Check beginning guide
+				if !player.beginning_guide_finished && !player.guide_cache['attack_monster']
+					player.set :guide_cache, player.guide_cache.merge('attack_monster' => true)
+				end
+				
+				result.merge!(:reward => reward)
+				army.each do |dino|
+					dino.set :is_attacking, 0
+				end
+				player.save_battle_report(self.id, result)
+				scroll.delete if scroll
+				self.dissolve!
 			end
-			
-			result.merge!(:reward => reward)
-			army.each do |dino|
-				dino.set :is_attacking, 0
-			end
-			player.save_battle_report(self.id, result)
-			self.dissolve!
 		end
 	end
 

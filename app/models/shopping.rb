@@ -14,6 +14,8 @@ class Shopping
 			self.list[:gems].each do |itm|
 				return itm[:count] if itm[:product_id] == product_id
 			end
+			
+			nil
 		end
 
 		# args.keys => :item_type, :player_id

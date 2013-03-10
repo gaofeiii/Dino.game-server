@@ -1,6 +1,3 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
 cn:
   hello: "Hello 你妹"
 
@@ -104,12 +101,23 @@ cn:
    dino_is_attacking: "不能派遣正在进攻中的恐龙"
    honour_score_not_match: "不能攻打战斗力不匹配的玩家"
    honour_count_full: "对不起，今日挑战次数已经用。每次挑战次数：%{count}"
+   cannot_attack_self_village: "不能攻打自己的村落"
+   village_under_protection: "该村落正在受保护中"
+   cannot_attack_when_league_started: "部落金矿战已经开战，不能攻打该类型的村落"
+   league_war_not_started: "部落金矿战还没有开始"
+   target_under_attack: "目标正在遭受攻击"
+   send_at_least_one: "至少要派遣一只恐龙"
+   report_has_been_removed: "战报已经被清除"
 
   dinosaur_error:
    not_enough_food: "食物不足"
    reach_max_growth_point: "恐龙的成长已达到最大值"
    cannot_release_hatching_dino: "不能放生正在孵化的恐龙"
    dinosaur_is_full: "恐龙已经喂饱了哦"
+   not_enough_space: "兽栏的空间不足，请在兽栏中扩展空间或升级驯养技术"
+   egg_already_hatched: "这只恐龙已经被孵化了哦！"
+   not_a_egg: "只能孵化恐龙蛋哦亲！"
+   must_be_hatched_in_cuba: "恐龙只能在孵化园中进行孵化"
 
   quests_error:
    not_finished_yet: "任务还没有完成"

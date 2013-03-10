@@ -5,16 +5,20 @@ class FriendsController < ApplicationController
 
 	def search_friend
 		# TODO: Should not use 'keys' method.
-		ids = Ohm.redis.keys("Player:indices:nickname:*#{params[:name]}*").map do |key|
-			Ohm.redis.smembers(key)
-		end.flatten
+		ids = []
+		if params[:name].blank?
+			ids = Player.none_npc.ids.sample(10) # 限制空白搜索出来的玩家数
+		else
+			ids = Ohm.redis.keys("Player:indices:nickname:*#{params[:name]}*").map { |key| Ohm.redis.smembers(key) }.flatten
+			ids = ids.sample(15) if ids.size > 15
+		end
 
 		result = ids.map do |id|
 			player = Player.new :id => id
-			player.gets(:nickname, :level, :player_type, :league_id)
+			player.gets(:nickname, :level, :player_type, :league_id, :honour_score)
 			league_name = League.new(:id => player.league_id).get(:name)
 
-			rank = rand(1..1000)
+			rank = player.my_battle_rank
 			if !player.is_npc?
 				{
 					:id => id.to_i,

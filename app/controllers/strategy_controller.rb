@@ -88,15 +88,15 @@ class StrategyController < ApplicationController
 
 		if target.is_a?(Village)
 			if target.player_id.to_i == @player.id
-				render_error(Error::NORMAL, "Cannot attack your own village") and return
+				render_error(Error::NORMAL, I18n.t('strategy_error.cannot_attack_self_village')) and return
 			end
 
 			if target.under_protection
-				render_error(Error::NORMAL, "Village is under protection") and return
+				render_error(Error::NORMAL, I18n.t('strategy_error.village_under_protection')) and return
 			end
 
 			if target.in_dangerous_area? && !LeagueWar.can_fight_danger_village?
-				render_error(Error::NORMAL, "Cannot attack when league war started") and return
+				render_error(Error::NORMAL, I18n.t('strategy_error.cannot_attack_when_league_started')) and return
 			end
 		end
 
@@ -107,14 +107,14 @@ class StrategyController < ApplicationController
 				if @player.league_id.blank?
 					render_error(Error::NORMAL, I18n.t('strategy_error.not_in_a_league')) and return
 				elsif not LeagueWar.in_period_of_fight?
-					render_error(Error::NORMAL, "League not started") and return
+					render_error(Error::NORMAL, I18n.t('strategy_error.league_war_not_started')) and return
 				end
 			end
 		end
 
 		if target.is_a?(Creeps)
 			if target.under_attack
-				render_error(Error::NORMAL, "Target is under attack") and return
+				render_error(Error::NORMAL, I18n.t('strategy_error.target_under_attack')) and return
 			end
 		end
 
@@ -134,7 +134,7 @@ class StrategyController < ApplicationController
 
 		# army = army.blank? ? @player.dinosaurs.to_a.select{|d| d.status > 0}[0, 5] : army
 		if army.blank?
-			render_error(Error::NORMAL, "Should sent one dinosaur at least") and return
+			render_error(Error::NORMAL, I18n.t('strategy_error.send_at_least_one')) and return
 		end
 
 		target_monster_type = nil
@@ -153,16 +153,18 @@ class StrategyController < ApplicationController
 		marching_time = 1 if marching_time < 1
 		marching_time = 300 if marching_time > 300
 
-		if Troops.create 	:player_id => @player.id, 
-											:dinosaurs => params[:dinosaurs].to_json,
-											:target_type => target_type,
-											:target_id => target.id,
-											:start_time => Time.now.to_i,
-											:arrive_time => Time.now.to_i + marching_time,
-											:monster_type => target_monster_type,
-											:target_x => target.x,
-											:target_y => target.y,
-											:scroll_id => params[:scroll_id]
+		trps = Troops.new		:player_id => @player.id, 
+												:dinosaurs => params[:dinosaurs].to_json,
+												:target_type => target_type,
+												:target_id => target.id,
+												:start_time => Time.now.to_i,
+												:arrive_time => Time.now.to_i + marching_time,
+												:monster_type => target_monster_type,
+												:target_x => target.x,
+												:target_y => target.y,
+												:scroll_id => params[:scroll_id]
+
+		if trps.save
 			target.set(:under_attack, 1)
 
 			if target.is_a?(Village) || (target.is_a?(GoldMine) && !target.player_id.blank?)
@@ -180,7 +182,7 @@ class StrategyController < ApplicationController
 		# if !@player.beginning_guide_finished && !@player.guide_cache['attack_monster']
 		# 	@player.set :guide_cache, @player.guide_cache.merge('attack_monster' => true)
 		# end
-		render_success(:player => @player.to_hash(:troops))
+		render_success(:player => @player.to_hash.merge(:troops => [trps.to_hash]))
 	end
 
 	def refresh_battle
@@ -195,7 +197,7 @@ class StrategyController < ApplicationController
 		if report
 			render_success(report)
 		else
-			render_error(Error::NORMAL, "Report has been cleaned")
+			render_error(Error::NORMAL, I18n.t('strategy_error.report_has_been_removed'))
 		end
 	end
 
@@ -281,6 +283,7 @@ class StrategyController < ApplicationController
 				:avatar_id => @player.avatar_id
 			},
 			:buff_info => [],
+			:scroll_effect => {},
 			:army => player_dinos
 		}
 
@@ -293,6 +296,7 @@ class StrategyController < ApplicationController
 				:avatar_id => @enemy.avatar_id
 			},
 			:buff_info => [],
+			:scroll_effect => {},
 			:army => enemy_dinos
 		}
 
@@ -344,7 +348,7 @@ class StrategyController < ApplicationController
 		dino_ids = params[:dinosaurs]
 
 		if dino_ids.blank?
-			render_error(Error::NORMAL, "Should sent one dinosaur at least") and return
+			render_error(Error::NORMAL, I18n.t('strategy_error.send_at_least_one')) and return
 		end
 
 		army = dino_id.map do |d_id|
@@ -366,7 +370,7 @@ class StrategyController < ApplicationController
 		end.compact
 
 		if army.blank?
-			render_error(Error::NORMAL, "Should sent one dinosaur at least") and return
+			render_error(Error::NORMAL, I18n.t('strategy_error.send_at_least_one')) and return
 		end
 
 		if Troops.create 	:player_id => @player.id, 
@@ -379,6 +383,8 @@ class StrategyController < ApplicationController
 											:target_y => @gold_mine.y,
 											:scroll_id => params[:scroll_id]
 
+			scroll = Item[params[:scroll_id]]
+			scroll.update :player_id => nil if scroll
 			@gold_mine.set(:under_attack, 1)
 			params[:dinosaurs].each do |dino_id|
 				if Dinosaur.exists?(dino_id)

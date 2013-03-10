@@ -8,12 +8,28 @@ class BattleModel
 
 	class << self
 
+		# 调用战斗算法之前必须先调用这个方法
 		def extend_battle_methods(*battle_objects)
 			battle_objects.each do |obj|
 				obj.extend(BattlePlayerModule)
 				obj[:army].extend(BattleArmyModule)
 				obj[:army].each do |fighter|
 					fighter.extend(BattleFighterModule)
+
+					# 初始化攻击、防御和血量————卷轴和玩家科技的影响
+					attack_inc 	= obj[:player].try(:tech_attack_inc).to_f + obj[:scroll_effect][:attack_inc].to_f
+					speed_inc		= obj[:scroll_effect][:speed_inc].to_f # 没有科技对恐龙速度产生影响
+					defense_inc = obj[:player].try(:tech_defense_inc).to_f + obj[:scroll_effect][:defense_inc].to_f
+					hp_inc			= obj[:player].try(:tech_hp_inc).to_f + obj[:scroll_effect][:hp_inc].to_f
+
+					fighter.curr_attack *= (1 + attack_inc)
+					fighter.curr_speed *= (1 + speed_inc)
+					fighter.curr_defense *= (1 + defense_inc)
+					fighter.curr_hp *= (1 + hp_inc)
+					fighter.skill_trigger_inc = obj[:scroll_effect][:skill_trigger_inc].to_f
+					fighter.exp_inc = obj[:scroll_effect][:exp_inc].to_f
+					# ======================================
+
 					fighter.army = obj[:army]
 					fighter.skills.each{ |sk| sk.extend(SkillModule) }
 				end
@@ -111,7 +127,7 @@ class BattleModel
 					skill_result = nil
 					fighter.skills.each do |skill|
 						if not skill.triggered
-							if skill.trigger?
+							if skill.trigger?(fighter.skill_trigger_inc)
 								case skill.effect_key
 								when :double_damage	# 双倍伤害
 									skill_effect = {:double_damage => 2.0}
@@ -326,7 +342,7 @@ end
 
 module BattleFighterModule
 	attr_accessor :curr_attack, :curr_defense, :curr_speed, :curr_hp, :total_hp, :skills, :stunned_count,
-		:bleeding_count, :bleeding_val, :army
+		:bleeding_count, :bleeding_val, :army, :skill_trigger_inc, :exp_inc
 
 	def curr_attack
 		@curr_attack ||= self.total_attack
@@ -387,6 +403,16 @@ module BattleFighterModule
 	def bleeding_val
 		@bleeding_val ||= 0
 		@bleeding_val
+	end
+
+	def skill_trigger_inc
+		@skill_trigger_inc ||= 0
+		@skill_trigger_inc
+	end
+
+	def exp_inc
+		@exp_inc ||= 0
+		@exp_inc
 	end
 
 	def curr_info
@@ -480,11 +506,8 @@ module BattleArmyModule
 			enemy_avg_level = total_level / target_count
 			enemy_avg_level = 1 if enemy_avg_level <= 0
 
-			p "enemy_avg_level: #{enemy_avg_level}"
-
 			each_exp = total_exp / alive_count
 			player_exp = Player.battle_exp[enemy_avg_level]
-			p "player_exp: #{player_exp}"
 		end
 
 		self.each do |fighter|
@@ -559,13 +582,13 @@ module SkillModule
 		@triggered
 	end
 
-	def trigger?
+	def trigger?(ext = 0)
 		if trigger_chance >= 1
 			return true
 		elsif trigger_chance <= 0
 			return false
 		else
-			Tool.rate(trigger_chance)
+			Tool.rate(trigger_chance + ext)
 		end
 	end
 

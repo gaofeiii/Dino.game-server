@@ -135,7 +135,7 @@ class BuildingsController < ApplicationController
 			@player.receive!(res => @building.harvest_count)
 
 			# 判断是否出发神灵效果
-			if @player.curr_god.type == God.hashes[:argriculture]
+			if @player.curr_god && @player.curr_god.type == God.hashes[:argriculture]
 				@player.trigger_god_effect
 				@player.gets(:wood, :stone)
 			end

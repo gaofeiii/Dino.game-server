@@ -45,10 +45,15 @@ class ItemsController < ApplicationController
 		elsif @item.item_category == Item.categories[:protection]
 			vil = Village.new(:id => @player.village_id).gets(:protection_until)
 			now_time = ::Time.now.to_i
-			if vil.protection_until < now_time
-				vil.set :protection_until, now_time + 6.hours
+			add_time = if @player.is_vip?
+				12.hours
 			else
-				vil.set :protection_until, vil.protection_until + 8.hours
+				6.hours
+			end
+			if vil.protection_until < now_time
+				vil.set :protection_until, now_time + add_time
+			else
+				vil.set :protection_until, vil.protection_until + add_time
 			end
 			@item.delete
 			protect_left_time = vil.protection_until - ::Time.now.to_i

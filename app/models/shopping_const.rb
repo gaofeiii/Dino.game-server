@@ -10,6 +10,7 @@ module ShoppingConst
 		
 		@@all_goods = Hash.new
 		@@all_goods_hash = Hash.new
+		@@goods_desc = Hash.new
 
 		def const
 			if @@all_goods.blank?
@@ -26,6 +27,13 @@ module ShoppingConst
 			@@all_goods_hash
 		end
 
+		def descs
+			if @@goods_desc.blank?
+				reload!
+			end
+			@@goods_desc
+		end
+
 		def reload!
 			@@all_goods = {
 				:gems => [],
@@ -39,6 +47,8 @@ module ShoppingConst
 				:lottery => []
 
 			}
+			@@all_goods_hash.clear
+
 			book = Roo::Excelx.new("#{Rails.root}/const/shopping_list.xlsx")
 
 			book.default_sheet = "宝石"
@@ -129,7 +139,8 @@ module ShoppingConst
 				price = book.cell(i, 'e').to_i
 				item_cat = book.cell(i, 'f').to_i
 				item_type = book.cell(i, 'g').to_i
-				desc = book.cell(i, 'h')
+				cn_desc = book.cell(i, 'h')
+				en_desc = book.cell(i, 'i')
 
 				@@all_goods[key_name] << {
 					:sid => sid,
@@ -138,7 +149,6 @@ module ShoppingConst
 					:item_type => item_type,
 					:gems => price,
 					:count => count,
-					:desc => desc
 				}
 				@@all_goods_hash[sid] = {
 					:goods_type => GOODS_TYPE[:item],
@@ -146,7 +156,10 @@ module ShoppingConst
 					:item_type => item_type,
 					:gems => price,
 					:count => count,
-					:desc => desc
+				}
+				@@goods_desc[sid] = {
+					:cn => cn_desc,
+					:en => en_desc
 				}
 			end
 			@@all_goods		
@@ -155,6 +168,10 @@ module ShoppingConst
 		def find_by_sid(sid)
 			self.hashes[sid]
 		end # End of find_by_sid
+
+		def find_desc_by_sid(sid)
+			self.descs[sid]
+		end
 	end
 	
 	module InstanceMethods

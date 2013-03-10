@@ -13,6 +13,7 @@ class Item < Ohm::Model
 	reference :player, :Player
 
 	include ItemsConst
+	include ScrollHelper
 
 	def use!(options = {})
 		item_info = info

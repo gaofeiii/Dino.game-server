@@ -9,22 +9,22 @@ class DinosaurController < ApplicationController
 
 	def hatch
 		if @player.dinosaurs.size >= @player.dinosaurs_capacity + @player.tech_dinosaurs_size
-			render_error(Error::NORMAL, "NOT_ENOUGH_SPACE") and return
+			render_error(Error::NORMAL, I18n.t('dinosaur_error.not_enough_space')) and return
 		end
 
 		@egg = Item[params[:egg_id]]
 
 		if @egg.nil?
-			render_error(Error::NORMAL, "This egg has been hatched!!") and return
+			render_error(Error::NORMAL, I18n.t('dinosaur_error.egg_already_hatched')) and return
 		end
 
 		if not @egg.is_egg?
-			render_error(Error::NORMAL, "This is not an egg!!!") and return
+			render_error(Error::NORMAL, I18n.t('dinosaur_error.not_a_egg')) and return
 		end
 
 		@building = Building[params[:building_id]]
 		if @building.nil?
-			render_error(Error::NORMAL, "Egg should be hatched in Incubation") and return
+			render_error(Error::NORMAL, I18n.t('dinosaur_error.must_be_hatched_in_cuba')) and return
 		end
 
 		if @egg.use!(:building_id => @building.id)
