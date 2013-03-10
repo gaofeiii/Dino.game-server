@@ -20,7 +20,7 @@ class StrategyController < ApplicationController
 			@sta = Strategy.new(:player_id => target.player_id)
 		end
 
-		dino_status = 0
+		dino_status = Dinosaur::ACTION_STATUS[:idle]
 
 		if target.is_a?(Village)
 			@sta.village_id = target.id
@@ -34,6 +34,13 @@ class StrategyController < ApplicationController
 			target.set :strategy_id, @sta.id if target.strategy_id.blank?
 		end
 
+		params[:dinosaurs].each do |dino_id|
+			next if dino_id <= 0
+
+			if not Dinosaur.exists?(dino_id)
+				render_error(Error::NORMAL, I18n.t('strategy_error.dino_not_exist')) and return
+			end
+		end
 		@sta.change_defense(params[:dinosaurs], dino_status)
 
 		@player = target.player
@@ -50,22 +57,10 @@ class StrategyController < ApplicationController
 			data = {:info => "SUCCESS", :player => @player.to_hash}	
 		end
 		render_success(data)
-		
-		# if sta.nil?
-		# 	render_error(Error::NORMAL, "wrong type of host")
-		# else
-		# 	@player = Player.new(:id => @village.player_id)
-		# 	@player.gets :guide_cache, :beginning_guide_finished
-		# 	if !@player.beginning_guide_finished && !@player.guide_cache['set_defense']
-		# 		cache = @player.guide_cache.merge(:set_defense => true)
-		# 		@player.set :guide_cache, cache
-		# 	end
-		# 	data = {:player => {:village => {:strategy => sta.to_hash}}}
-		# 	render_success(data)
-		# end
 	end
 
 	def attack
+		# 读取target信息
 		target = if params[:village_id]
 			Village[params[:village_id]]
 		elsif params[:gold_mine_id]
@@ -82,6 +77,7 @@ class StrategyController < ApplicationController
 			nil
 		end
 
+		# 验证target信息
 		if target.blank?
 			render_error(Error::NORMAL, "INVALID_TARGET") and return
 		end
@@ -118,6 +114,7 @@ class StrategyController < ApplicationController
 			end
 		end
 
+		# 获取并验证出征军队的信息
 		army = params[:dinosaurs].uniq.to_a.map do |dino_id|
 			dino = Dinosaur[dino_id]
 
@@ -132,7 +129,6 @@ class StrategyController < ApplicationController
 			end
 		end.compact
 
-		# army = army.blank? ? @player.dinosaurs.to_a.select{|d| d.status > 0}[0, 5] : army
 		if army.blank?
 			render_error(Error::NORMAL, I18n.t('strategy_error.send_at_least_one')) and return
 		end
@@ -148,17 +144,19 @@ class StrategyController < ApplicationController
 				BattleModel::TARGET_TYPE[:gold_mine]
 		end
 
+		# 计算行军时间
 		my_vil = @player.village
 		marching_time = Math.sqrt((my_vil.x - target.x)**2 + (my_vil.y - target.y)**2)
 		marching_time = 1 if marching_time < 1
 		marching_time = 300 if marching_time > 300
 
+		# 创建Troops
 		trps = Troops.new		:player_id => @player.id, 
 												:dinosaurs => params[:dinosaurs].to_json,
 												:target_type => target_type,
 												:target_id => target.id,
 												:start_time => Time.now.to_i,
-												:arrive_time => Time.now.to_i + marching_time,
+												:arrive_time => Time.now.to_i + 2,#marching_time,
 												:monster_type => target_monster_type,
 												:target_x => target.x,
 												:target_y => target.y,
@@ -172,17 +170,19 @@ class StrategyController < ApplicationController
 				now_time = ::Time.now.to_i
 				vil.set(:protection_until, Time.now.to_i) if vil.protection_until > Time.now.to_i
 			end
-			
-			params[:dinosaurs].each do |dino_id|
-				if Dinosaur.exists?(dino_id)
-					Ohm.redis.hset("Dinosaur:#{dino_id}", :is_attacking, 1)
+
+			army.each do |dino|
+				dino_sta = dino.strategy
+				if dino_sta
+					dino_sta.remove_dinosaur!(dino.id)
 				end
+				dino.sets(:action_status => Dinosaur::ACTION_STATUS[:attacking], :strategy_id => 0)
+
+				
 			end
 		end
-		# if !@player.beginning_guide_finished && !@player.guide_cache['attack_monster']
-		# 	@player.set :guide_cache, @player.guide_cache.merge('attack_monster' => true)
-		# end
-		render_success(:player => @player.to_hash.merge(:troops => [trps.to_hash]))
+		
+		render_success(:player => @player.to_hash.merge(:troops => [trps.to_hash], :village => @player.village.to_hash(:strategy)))
 	end
 
 	def refresh_battle

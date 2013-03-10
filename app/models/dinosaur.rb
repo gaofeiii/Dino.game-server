@@ -2,7 +2,13 @@ class Dinosaur < Ohm::Model
 	STATUS = {:egg => 0, :infancy => 1, :adult => 2}
 	EVENTS = {:hatching => 1}
 	EMOTIONS = {:happy => 2, :normal => 1, :angry => 0}
-	ACTION_STATUS = {:idle => 0, :deployed => 1, :deployed_gold => 2, :attacking => 3}
+	ACTION_STATUS = {
+		:idle => 0, 
+		:deployed => 1, 
+		:deployed_village => 1, 
+		:deployed_gold => 2, 
+		:attacking => 3
+	} # deployed = deployed_village
 	COMSUME_PER_SECOND = 5
 	HEALED_PER_SECOND = 10
 
@@ -19,7 +25,7 @@ class Dinosaur < Ohm::Model
 	attribute :level, 				Type::Integer
 	attribute :experience, 		Type::Integer
 	attribute :type, 					Type::Integer
-	attribute :status, 				Type::Integer
+	attribute :status, 				Type::Integer # Expired attribute
 	attribute :emotion, 			Type::Integer
 	attribute :feed_point, 		Type::Integer
 	attribute :updated_feed_time, Type::Integer
@@ -28,7 +34,7 @@ class Dinosaur < Ohm::Model
 	attribute :feed_count, 		Type::Integer
 
 	attribute :quality,						Type::Integer
-	attribute :action_status,			Type::Integer
+	attribute :action_status,			Type::Integer # 恐龙的攻击状态 - see ACTION_STATUS
 
 	attribute :updated_hp_time, 	Type::Integer
 
@@ -41,8 +47,12 @@ class Dinosaur < Ohm::Model
 
 	attribute :growth_point, 	Type::Integer
 
-	attribute :building_id
+	attribute :building_id, 	Type::Integer
 
+	attribute :strategy_id, 	Type::Integer
+	def strategy
+		Strategy[strategy_id]
+	end
 	
 
 	reference :player, 		Player

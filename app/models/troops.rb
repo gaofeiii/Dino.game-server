@@ -179,9 +179,7 @@ class Troops < Ohm::Model
 				end
 				
 				result.merge!(:reward => reward)
-				army.each do |dino|
-					dino.set :is_attacking, 0
-				end
+				
 				player.save_battle_report(self.id, result)
 				scroll.delete if scroll
 				self.dissolve!
@@ -191,10 +189,9 @@ class Troops < Ohm::Model
 
 	def dissolve!
 		self.dinosaurs.each do |dino_id|
-			dino = Dinosaur[dino_id]
-			if dino
-				dino.set :is_attacking, 0
-			end
+			next if dino_id <= 0
+
+			db.hset(Dinosaur.key[dino_id], :action_status, Dinosaur::ACTION_STATUS[:idle])
 		end
 		delete
 	end

@@ -28,8 +28,8 @@ class BuildingsController < ApplicationController
 			return
 		end
 
-		if @player.action_queue_size >= @village.res_buildings_size
-			render_error(:player => @player.to_hash(:village), :info => I18n.t('building_error.not_enough_worker'))
+		if b_type.in?(Building.resource_building_types) && @player.action_queue_size <= @village.res_buildings_size
+			render_success(:player => @player.to_hash(:village), :info => I18n.t('building_error.not_enough_worker'))
 			return
 		end
 

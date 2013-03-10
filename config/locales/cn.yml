@@ -125,6 +125,7 @@ cn:
    cannot_attack_self_goldmine: "不能攻打自己的金矿"
    enemy_not_set_strategy: "对方还没有设定出战的恐龙"
    you_have_not_set_strategy: "你还没有设定出战的恐龙"
+   dino_not_exist: "恐龙不存在"
 
   dinosaur_error:
    not_enough_food: "食物不足"

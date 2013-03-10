@@ -125,6 +125,7 @@
    cannot_attack_self_goldmine: "Cannot attack yourself"
    enemy_not_set_strategy: "Enemy formation empty"
    you_have_not_set_strategy: "Set your formation first"
+   dino_not_exist: "Dinosaur doesn’t exist"
 
   dinosaur_error:
    not_enough_food: "Need more food"
