@@ -83,6 +83,7 @@
    building_queue_is_full: "Not enough workers！"
    building_finished: "Building Compete"
    invalid_coords: "Cannot place here"
+   not_enough_worker: "Need more worker for this building, please upgrade residential tech first"
 
   league_error:
    league_not_found: "Tribe not found"
@@ -119,7 +120,7 @@
    cannot_attack_when_league_started: "Cannot attack this one while TribeWar"
    league_war_not_started: "TribeWar not started yet"
    target_under_attack: "Target is under attack"
-   send_at_least_one: "At least one dinosaur!”
+   send_at_least_one: "At least one dinosaur!"
    report_has_been_removed: "Report has been removed"
    cannot_attack_self_goldmine: "Cannot attack yourself"
    enemy_not_set_strategy: "Enemy formation empty"
@@ -130,7 +131,7 @@
    reach_max_growth_point: "Growth is full"
    cannot_release_hatching_dino: "Cannot release hatching state dino"
    dinosaur_is_full: "I’m Already full"
-   not_enough_space: "Not enough space in bestiary, upgrade or expand!”
+   not_enough_space: "Not enough space in bestiary, upgrade or expand!"
    egg_already_hatched: "Egg already hatched！"
    not_a_egg: "You can only hatch egg here"
    must_be_hatched_in_cuba: "Must be hatched in Incubation house"
@@ -151,7 +152,7 @@
   deals_error:
    trade_has_close: "Trade has been closed"
    cannot_buy_self_goods: "Cannot buy your own stuffs"
-   price_too_high: "Too much price!”
+   price_too_high: "Too much price!"
    count_must_more_than_zero: "Count cannot be 0"
    price_must_more_than_zero: "Price cannot be 0"
    already_sold: "Stuff were sold"

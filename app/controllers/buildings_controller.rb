@@ -9,6 +9,9 @@ class BuildingsController < ApplicationController
 		@player = @village.player
 
 		# check if this kind of building existed
+		# 判断建筑单一规则：
+		# 1. 非资源建筑只能有一种
+		# 2. 资源建筑受民居科技提供工人数的影响，
 		if !b_type.in?(Building.resource_building_types) && @village.buildings.find(:type => b_type).any?
 			error_msg = I18n.t("building_error.building_exist", :building_name => Building.get_locale_name_by_type(b_type))
 			render_success(:player => @player.to_hash(:village), :info => error_msg)
@@ -22,6 +25,11 @@ class BuildingsController < ApplicationController
 			# 	:error => I18n.t('building_error.building_queue_is_full')
 			# } and return
 			render_success(:player => @player.to_hash(:village), :info => I18n.t('building_error.building_queue_is_full'))
+			return
+		end
+
+		if @player.action_queue_size >= @village.res_buildings_size
+			render_error(:player => @player.to_hash(:village), :info => I18n.t('building_error.not_enough_worker'))
 			return
 		end
 

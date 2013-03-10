@@ -83,6 +83,7 @@ cn:
    building_queue_is_full: "建筑工人不够哦亲！"
    building_finished: "建筑已经完成修建！"
    invalid_coords: "不能在这个位置放置建筑"
+   not_enough_worker: "工人不够哦亲，请先升级民居科技吧"
 
   league_error:
    league_not_found: "部落不存在"

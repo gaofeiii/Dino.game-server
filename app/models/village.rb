@@ -167,10 +167,6 @@ class Village < Ohm::Model
 		::Time.now.to_i < protection_until
 	end
 
-	def find_random_coords
-		
-	end
-
 	def move_to_random_coords
 		country = Country.first
 		random_coord = (country.town_nodes_info.keys - country.used_town_nodes).sample
@@ -184,6 +180,13 @@ class Village < Ohm::Model
 
 	def in_dangerous_area?
 		x.in?(Country::GOLD_MINE_X_RANGE) && y.in?(Country::GOLD_MINE_Y_RANGE)
+	end
+
+	# 得到村落当前资源建筑的数量
+	def res_buildings_size
+		Building.resource_building_types.sum do |b_type|
+			buildings.find(:type => b_type).size
+		end
 	end
 
 	protected
