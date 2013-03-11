@@ -1,5 +1,5 @@
 module PlayerGodHelper
-	GOD_TRIGGER_CHANCE = 1
+	GOD_TRIGGER_CHANCE = 0.05
 	module ClassMethods
 		
 	end
