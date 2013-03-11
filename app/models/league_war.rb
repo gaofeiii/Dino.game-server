@@ -1,5 +1,5 @@
 module LeagueWar
-	include Ohm::Model
+	# include Ohm::Model
 
 	def in_period_of_fight?(time = Time.now.to_i)
 		begin_day = Time.now.beginning_of_day.to_i
