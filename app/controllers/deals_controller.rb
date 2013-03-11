@@ -44,6 +44,7 @@ class DealsController < ApplicationController
 
 					if @player.spend!(cost)
 						@player.receive!(goods)
+						deal.seller.receive!(cost)
 					else
 						render_error(Error::NORMAL, I18n.t("general.not_enough_gold")) and return
 					end
@@ -51,10 +52,12 @@ class DealsController < ApplicationController
 			when Deal::CATEGORIES[:egg]
 				i = Item[deal.gid]
 				i.update :player_id => @player.id
+				deal.seller.receive!(:gold => deal.price.to_i)
 			when Deal::CATEGORIES[:food]
 				food = @player.foods.find(:type => deal.type).first
 				return nil if food.nil?
 				food.increase(:count, deal.count)
+				deal.seller.receive!(:gold => deal.price.to_i)
 			else
 				render_error(Error::NORMAL, "INVALID_ITEM_CATE") and return
 			end
@@ -106,7 +109,7 @@ class DealsController < ApplicationController
 										:category => goods_cat,
 										:type => goods_type,
 										:count => count,
-										:price => price * count,
+										:price => price,
 										:end_time => Time.now.to_i + 3.days,
 										:seller_id => @player.id
 			end
