@@ -9,13 +9,13 @@ class SessionsController < ApplicationController
 	# TODO:
 	# 试玩
 	def demo
-		p "In DEMO method, client locale is: #{request.env["HTTP_CLIENT_LOCALE"]}"
 		result = trying(:server_ip => params[:server_ip])
 		data = if result[:success]
 			player = create_player(result[:account_id])
 			player.reset_daily_quest!
 			player.refresh_village_status
 			player.refresh_god_status!
+			player.login!
 			Rails.logger.debug("*** New Player_id:#{player.id} ***")
 			{
 				:message => Error.success_message, 
@@ -35,7 +35,6 @@ class SessionsController < ApplicationController
 
 	# 登录
 	def create
-		p "In login method, client locale is: #{request.env["HTTP_CLIENT_LOCALE"]}"
 		rcv_msg = account_authenticate :username 	=> params[:username], 
 																	 :email 	 	=> params[:email], 
 																	 :password 	=> params[:password],
@@ -52,6 +51,7 @@ class SessionsController < ApplicationController
 				@player.reset_daily_quest!
 				@player.refresh_god_status!
 			end
+			player.login!
 			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all)})
 		else
 			data.merge!({:message => Error.failed_message, :error => I18n.t('login_error.incorrect_username_or_password')})

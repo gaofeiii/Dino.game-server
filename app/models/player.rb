@@ -55,6 +55,8 @@ class Player < Ohm::Model
 
 	attribute :vip_expired_time, 	Type::Integer
 
+	attribute :last_login_time, 	Type::Integer
+
 	collection :dinosaurs, 				Dinosaur
 	collection :technologies, 		Technology
 	collection :specialties, 			Specialty
@@ -103,6 +105,10 @@ class Player < Ohm::Model
 	# 玩家是否在线？
 	def logined?
 		(session && session.expired_at > ::Time.now.utc) ? true : false
+	end
+
+	def login!
+		self.set :last_login_time, ::Time.now.to_i
 	end
 
 	def in_league?
