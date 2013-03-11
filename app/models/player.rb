@@ -463,6 +463,7 @@ class Player < Ohm::Model
 		%w(dinosaurs technologies specialties items league_applys gods troops).each do |coll|
 			self.send(coll).map(&:delete)
 		end
+		db.zadd(Player.key[:battle_rank], self.honour_score, id)
 	end
 
 	private
