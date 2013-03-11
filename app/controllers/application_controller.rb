@@ -120,7 +120,7 @@ class ApplicationController < ActionController::Base
   def validate_building
     @building = Building[params[:building_id]]
     if @building.nil?
-      rrender_error(Error::NORMAL, "Invalid building id") and return
+      render_error(Error::NORMAL, "Invalid building id") and return
     end
   end
 
