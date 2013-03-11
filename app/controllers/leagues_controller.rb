@@ -225,7 +225,7 @@ class LeaguesController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('league_error.not_in_a_league')) and return
 		end
 
-		if membership.contribution <= 10
+		if membership.contribution <= 100
 			render_error(Error::NORMAL, I18n.t('league_error.contribution_count_is_zero')) and return
 		end
 

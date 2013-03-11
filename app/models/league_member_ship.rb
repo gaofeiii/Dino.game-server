@@ -17,6 +17,9 @@ class LeagueMemberShip < Ohm::Model
 	attribute :level, 	Type::Integer
 	attribute :contribution, Type::Integer
 
+	attribute :receive_gold_count, 	Type::Integer
+	attribute :receive_gold_time,		Type::Integer
+
 	def self.levels
 		LEVELS
 	end
