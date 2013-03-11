@@ -72,7 +72,11 @@ class PlayersController < ApplicationController
 
 	def modify_nickname
 		nkname = params[:nickname]
-		if nkname.sensitive?
+		if nkname.sensitive?# || nkname =~ /[~!@#$\%^&*()_+|\[\];:\'\",.<>\/?\\\s。，、？！“”·：；‘]/
+			render_error(Error::NORMAL, I18n.t('players_error.invalid_nickname')) and return
+		end
+
+		if nkname =~ /[a-zA-Z0-9_]{4,16}/
 			render_error(Error::NORMAL, I18n.t('players_error.invalid_nickname')) and return
 		end
 

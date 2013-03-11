@@ -16,7 +16,15 @@ class VillagesController < ApplicationController
 		player = @village.player
 
 		if player.spend!(:gems => 50)
-			@village.update :x => params[:x], :y => params[:y], :index => 0
+			@village.x = params[:x]
+			@village.y = params[:y]
+			@village.index = 0
+
+			if @village.in_dangerous_area?
+				@village.protection_until = ::Time.now.to_i
+			end
+
+			@village.save
 			render_success(:player => player.to_hash.merge(:village => @village.to_hash))
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gems'))
