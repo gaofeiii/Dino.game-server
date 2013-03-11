@@ -144,7 +144,7 @@ class DinosaurController < ApplicationController
 		end
 		
 		if @player.spend!(:gold => @dinosaur.training_cost)
-			@dinosaur.increase(:growth_point, @dinosaur.training_growth)
+			@dinosaur.increase_by_float(:growth_point, @dinosaur.training_growth)
 			render_success(:growth_point => @dinosaur.growth_point, :gold_coin => @player.gold_coin)
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gold'))

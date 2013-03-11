@@ -305,6 +305,7 @@ class StrategyController < ApplicationController
 		}
 
 		result = BattleModel.match_attack attacker, defender
+		@player.desr_honour_battle_count
 
 		winner, loser = if result[:winner] == "attacker"
 			[@player, @enemy]
