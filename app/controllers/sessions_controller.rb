@@ -51,7 +51,7 @@ class SessionsController < ApplicationController
 				@player.reset_daily_quest!
 				@player.refresh_god_status!
 			end
-			player.login!
+			@player.login!
 			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all)})
 		else
 			data.merge!({:message => Error.failed_message, :error => I18n.t('login_error.incorrect_username_or_password')})
