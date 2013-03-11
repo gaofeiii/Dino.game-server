@@ -11,7 +11,6 @@ module LeagueWar
 		period_3 = (begin_day + 16)..(begin_day + 16 + 30.minutes.to_i)
 
 		time.in?(period_1) && time.in?(period_2) && time.in?(period_3)
-		true
 	end
 
 	def can_fight_danger_village?(time = Time.now.to_i)
