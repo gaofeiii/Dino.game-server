@@ -22,7 +22,7 @@ cn:
    league_gold_mine: "牛逼金矿"
    use_vip_success: "使用VIP道具成功！VIP剩余：约%{vip_left_time}小时"
    use_protect_success: "使用保护卷轴成功！保护剩余时间：约%{protect_left_time}小时"
-   be_stolen_for_tree: "该玩家今天已经被偷取3次食物了，请明天再来"
+   be_stolen_for_three: "该玩家今天已经被偷取3次食物了，请明天再来"
 
   players_error:
    invalid_nickname: "昵称不合法"

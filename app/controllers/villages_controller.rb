@@ -43,7 +43,7 @@ class VillagesController < ApplicationController
 		@village = @building.village
 
 		if @village.last_stolen_time >= Time.now.beginning_of_day.to_i && @village.stolen_count >= Village::MAX_STEAL_TIME
-			render_error(Error::NORMAL, I18n.t('general.be_stolen_for_tree')) and return
+			render_error(Error::NORMAL, I18n.t('general.be_stolen_for_three')) and return
 		end
 
 		if @building.is_resource_building?

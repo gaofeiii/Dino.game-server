@@ -22,7 +22,7 @@
    league_gold_mine: "Supper goldmine"
    use_vip_success: "VIP used! VIP left: %{vip_left_time} hour(s)"
    use_protect_success: "Protection casted!Left: %{protect_left_time} hour(s)"
-   be_stolen_for_tree: "One can only be stolen for 3 times per day"
+   be_stolen_for_three: "One can only be stolen for 3 times per day"
 
   players_error:
    invalid_nickname: "Nickname illegal"

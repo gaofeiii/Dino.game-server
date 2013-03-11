@@ -209,6 +209,7 @@ class Building < Ohm::Model
 
 			if player.wood >= warehouse_size
 				self.harvest_count = 0
+				self.harvest_updated_time = ::Time.now.to_i
 				return
 			end
 
@@ -230,6 +231,7 @@ class Building < Ohm::Model
 
 			if player.stone >= warehouse_size
 				self.harvest_count = 0
+				self.harvest_updated_time = ::Time.now.to_i
 				return
 			end
 			
