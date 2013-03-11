@@ -1,5 +1,8 @@
 module LeagueWar
 	# include Ohm::Model
+	def key
+		@key ||= Nest.new("LeagueWar")
+	end
 
 	def in_period_of_fight?(time = Time.now.to_i)
 		begin_day = Time.now.beginning_of_day.to_i
@@ -24,6 +27,6 @@ module LeagueWar
 		end
 	end
 
-	module_function :in_period_of_fight?, :can_fight_danger_village?, :calc_battle_result
+	module_function :key, :in_period_of_fight?, :can_fight_danger_village?, :calc_battle_result
 
 end

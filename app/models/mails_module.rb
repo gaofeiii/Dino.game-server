@@ -51,16 +51,8 @@ module MailsModule
 		end
 
 		def system_mails(args = {})
-			# last_id = args[:last_id].to_i
-			# if last_id <= 0
-			# 	count = args[:count] ||= 10
-			# 	Mail.find(:mail_type => Mail::TYPE[:system], :sys_mail_type => Mail::SYS_TYPE[:normal]).sort_by(:created_at, :order => 'DESC', :limit => [0, count])
-			# else
-			# 	Mail.find(:mail_type => Mail::TYPE[:system], :sys_mail_type => Mail::SYS_TYPE[:normal]).ids.map do |m_id|
-			# 		Mail[m_id] if m_id.to_i > last_id
-			# 	end.compact
-			# end
 			last_id = args[:last_id].to_i
+			
 			if last_id <= 0
 				count = args[:count] ||= 10
 				Mail.find(:mail_type => Mail::TYPE[:system], :receiver_name => nickname).sort_by(:created_at, :order => 'DESC', :limit => [0, count])

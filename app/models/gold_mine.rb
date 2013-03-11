@@ -17,6 +17,9 @@ class GoldMine < Ohm::Model
 	attribute :finish_time, Type::Integer
 	attribute :under_attack, Type::Boolean
 
+	attribute :occupy_time,	Type::Integer
+	attribute :update_gold_time, 	Type::Integer
+
 	collection :monsters, 	Monster
 
 	reference :player, 	Player
@@ -97,12 +100,41 @@ class GoldMine < Ohm::Model
 		end
 	end
 
+	# per hour
 	def output
 		self.class.gold_output(level)
 	end
 
 	def strategy
 		Strategy[strategy_id]
+	end
+
+	def refresh_gold!(t = Time.now.to_i)
+		@player = self.player
+		if @player
+			delta_t = (t - self.update_gold_time) / 3600.0
+			harvest_gold_count = (delta_t * output).to_i
+
+			if harvest_gold_count > 0
+				@player.receive!(:gold => harvest_gold_count)
+				Mail.create_goldmine_harvest_mail :receiver_id 		=> @player.id,
+																					:receiver_name 	=> @player.nickname,
+																					:locale 				=> @player.locale,
+																					:x 							=> x,
+																					:y 							=> y,
+																					:count 					=> harvest_gold_count
+				self.set :update_gold_time, t
+				move_to_refresh_queue(self.update_gold_time + 1.hour)
+			end
+			
+		end
+		
+
+	end
+
+	# 将goldmine列入刷新队列
+	def move_to_refresh_queue(refresh_time)
+		Background.add_queue(self.class, id, 'refresh_gold!', refresh_time)
 	end
 
 

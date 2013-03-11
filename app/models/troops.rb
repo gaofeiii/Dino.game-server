@@ -152,7 +152,11 @@ class Troops < Ohm::Model
 						end
 						
 						if target.type == GoldMine::TYPE[:normal]
-							target.update :player_id => player.id, :under_attack => false
+							target.update :player_id => player.id, 
+														:under_attack => false,
+														:occupy_time => ::Time.now.to_i,
+														:update_gold_time => ::Time.now.to_i
+							target.move_to_refresh_queue(target.update_gold_time + 1.hour)
 							rwd = Reward.judge!(target.level)
 							player.receive_reward!(rwd)
 							rwd

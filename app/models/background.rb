@@ -34,6 +34,7 @@ class Background
 					Ohm.redis.zrem queue_key, k_id
 					next
 				end
+
 				obj.send(action)
 				Ohm.redis.zrem queue_key, k_id
 			end
@@ -67,7 +68,7 @@ class Background
 			@@cronjob = Ohm.redis.smembers "Background:cronjobs"
 		end
 		@@cronjob
-	end	
+	end
 
 	def self.refresh_cronjobs
 		self.all_cronjobs.map do |cron_key|

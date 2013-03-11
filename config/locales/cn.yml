@@ -195,6 +195,10 @@ cn:
    battle_report:
     title: "战斗报告"
 
+   goldmine_receive:
+    title: "金矿收获报告"
+    content: "恭喜你！你所占占领的金矿(%{x}, %{y})产出%{count}金币，已收获到仓库中"
+
 
 
 
