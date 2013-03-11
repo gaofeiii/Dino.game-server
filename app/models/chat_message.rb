@@ -15,6 +15,17 @@ class ChatMessage < Ohm::Model
 	attribute :player_id
 	attribute :content
 
+	def self.clean_up!
+		self.all.ids.each do |c_id|
+			chat = self[c_id]
+			if chat.created_at <= 1.day.ago.to_i
+				chat.delete
+			else
+				break
+			end
+		end
+	end
+
 	protected
 	def before_save
 		if speaker.blank?

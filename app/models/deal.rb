@@ -109,10 +109,7 @@ class Deal < Ohm::Model
 					self.delete
 				end
 			when CATEGORIES[:food]
-				food = seller.foods.find(:type => type).first
-				return nil if food.nil?
-
-				food.increase(:count, count)
+				seller.receive_food!(type, count)
 				self.delete
 			end
 		end
@@ -120,6 +117,18 @@ class Deal < Ohm::Model
 
 	def expired?
 		::Time.now.to_i >= end_time
+	end
+
+	def refresh!
+		if expired?
+			cancel!
+		end
+	end
+
+	protected
+
+	def after_create
+		Background.add_queue(self.class, self.id, "cancel!", self.end_time)
 	end
 
 end
