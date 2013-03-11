@@ -61,4 +61,23 @@ class AdviseRelation < Ohm::Model
 			:effect_value => effect_value
 		}
 	end
+
+	def refresh!
+		if ::Time.now.to_i >= finish_time
+			self.delete
+		end
+	end
+
+	def self.clean_up!
+		self.all.ids.each do |r_id|
+			relation = self.new :id => r_id
+			relation.gets(:start_time, :days)
+			relation.refresh!
+		end
+	end
+
+	protected
+	def after_create
+		Background.add_queue(self.class, 'refresh!', finish_time + 5.seconds)
+	end
 end

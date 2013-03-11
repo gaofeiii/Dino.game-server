@@ -26,6 +26,7 @@ class BattleModel
 					fighter.curr_speed *= (1 + speed_inc)
 					fighter.curr_defense *= (1 + defense_inc)
 					fighter.curr_hp *= (1 + hp_inc)
+					fighter.total_hp *= (1 + hp_inc)
 					fighter.skill_trigger_inc = obj[:scroll_effect][:skill_trigger_inc].to_f
 					fighter.exp_inc = obj[:scroll_effect][:exp_inc].to_f
 					# ======================================
