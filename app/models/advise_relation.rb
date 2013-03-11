@@ -78,6 +78,6 @@ class AdviseRelation < Ohm::Model
 
 	protected
 	def after_create
-		Background.add_queue(self.class, 'refresh!', finish_time + 5.seconds)
+		Background.add_queue(self.class, id, 'refresh!', finish_time + 5.seconds)
 	end
 end
