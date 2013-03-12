@@ -119,7 +119,7 @@
    cannot_attack_self_village: "Cannot attack yourself"
    village_under_protection: "This village is under protection"
    cannot_attack_when_league_started: "Cannot attack this one when TribeWar has started"
-   league_war_not_started: "TribeWar not started yet"
+   league_war_not_started: "TribeWar doesn't start yet. Time left: about %{time} mintue(s)"
    target_under_attack: "Target is under attack"
    send_at_least_one: "You should send at least one dinosaur!"
    report_has_been_removed: "Report has been removed"
@@ -199,6 +199,30 @@
    goldmine_receive:
     title: "Goldmine harvested"
     content: "Congratulations! Your goldmine (%{x}, %{y}) has produced %{count} gold coins. They are all moved into your warehouse."
+
+   defense_village_win_mail:
+    title: "防守村落获胜"
+    content: "玩家【%{attacker}】（来自(%{x}, %{y})）对你的村落发起了一起攻击，你成功抵御了这次进攻！"
+
+   defense_village_lose_mail:
+    title: "防守村落失败"
+    content: "玩家【%{attacker}】（来自(%{x}, %{y})）对你的村落发起了一起攻击，由于防守失败，被对方掠夺了10%的资源！"
+
+   match_win_mail:
+    title: "挑战赛胜利"
+    content: "玩家【%{attacker}】向你发起挑战，你赢得了胜利，并获得%{score}分。"
+
+   match_lose_mail:
+    title: "挑战赛失败"
+    content: "玩家【%{attacker}】向你发起挑战，你输掉了比赛，损失了%{score}分。"
+
+   goldmine_defense_win:
+    title: "金矿防守成功"
+    content: "你的金矿(%{gx}, %{gy})成功抵御来自(%{ax}, %{ay})%{attacker}的进攻！"
+
+   goldmine_defense_lose:
+    title: "金矿被掠夺"
+    content: "你的金矿(%{gx}, %{gy})受到来自(%{ax}, %{ay})%{attacker}的进攻，由于防守不利，被对方抢占了金矿！"
 
 
 

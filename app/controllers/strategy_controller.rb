@@ -31,7 +31,7 @@ class StrategyController < ApplicationController
 		end
 
 		if @sta.save
-			target.set :strategy_id, @sta.id if target.strategy_id.blank?
+			target.set :strategy_id, @sta.id
 		end
 
 		params[:dinosaurs].each do |dino_id|
@@ -103,7 +103,7 @@ class StrategyController < ApplicationController
 				if @player.league_id.blank?
 					render_error(Error::NORMAL, I18n.t('strategy_error.not_in_a_league')) and return
 				elsif not LeagueWar.in_period_of_fight?
-					render_error(Error::NORMAL, I18n.t('strategy_error.league_war_not_started')) and return
+					render_error(Error::NORMAL, I18n.t('strategy_error.league_war_not_started', :time => LeagueWar.time_left / 60)) and return
 				end
 			end
 		end
@@ -156,7 +156,7 @@ class StrategyController < ApplicationController
 												:target_type => target_type,
 												:target_id => target.id,
 												:start_time => Time.now.to_i,
-												:arrive_time => Time.now.to_i + marching_time,
+												:arrive_time => Time.now.to_i + 2,#marching_time,
 												:monster_type => target_monster_type,
 												:target_x => target.x,
 												:target_y => target.y,
@@ -202,6 +202,10 @@ class StrategyController < ApplicationController
 	end
 
 	def match_players
+		if @player.todays_count <= 0
+			render_error(Error::NORMAL, I18n.t('strategy_error.honour_count_full', :count => Player::HONOUR_BATTLE_COUNT)) and return
+		end
+
 		if @player.spend!(@player.match_cost)
 			count = 0
 			players = []
@@ -227,7 +231,7 @@ class StrategyController < ApplicationController
 					:nickname => player.nickname,
 					:level => player.level,
 					:power_point => player.honour_score,
-					:rank => rand(1..Player.count),
+					:rank => player.my_battle_rank,
 					:avatar_id => player.avatar_id
 				}
 			end
@@ -255,11 +259,12 @@ class StrategyController < ApplicationController
 		end
 
 		player_dinos = @player.honour_strategy.map do |d_id|
-			dino = Dinosaur[d_id]
-			if dino
-				dino.set :current_hp, dino.total_hp
-			end
-			dino
+			# dino = Dinosaur[d_id]
+			# if dino
+			# 	dino.set :current_hp, dino.total_hp
+			# end
+			# dino
+			Dinosaur[d_id]
 		end.compact
 
 		if player_dinos.blank?
@@ -319,6 +324,18 @@ class StrategyController < ApplicationController
 			winner.daily_quest_cache[:win_match_game] += 1
 			winner.daily_quest_cache[:win_honour_val] += win_score
 			winner.set :daily_quest_cache, winner.daily_quest_cache.to_json
+
+			Mail.create_match_lose_mail :receiver_name => loser.nickname,
+																	:receiver_id => loser.id,
+																	:attacker => winner.nickname,
+																	:score => win_score,
+																	:locale => loser.locale
+		else
+			Mail.create_match_win_mail 	:receiver_name => winner.nickname,
+																	:receiver_id => winner.id,
+																	:attacker => winner.nickname,
+																	:score => win_score,
+																	:locale => winner.locale
 		end
 
 		winner.add_honour(win_score)

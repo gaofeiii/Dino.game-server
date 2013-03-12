@@ -433,22 +433,34 @@ class Player < Ohm::Model
 		factor = Country::COORD_TRANS_FACTOR
 
 
-		55.step(499, 2) do |coord_fact|
-			min_x = start_x - coord_fact
-			max_x = start_x + coord_fact
-			min_y = start_y - coord_fact
-			max_y = start_y + coord_fact
+		# 55.step(499, 2) do |coord_fact|
+		# 	min_x = start_x - coord_fact
+		# 	max_x = start_x + coord_fact
+		# 	min_y = start_y - coord_fact
+		# 	max_y = start_y + coord_fact
 
-			all_points = ([min_x, max_x].product((min_y..max_y).to_a) + [min_y, max_y].product((min_x..max_x).to_a)).uniq
+		# 	all_points = ([min_x, max_x].product((min_y..max_y).to_a) + [min_y, max_y].product((min_x..max_x).to_a)).uniq
 
-			avai_nodes = all_points.map!{|point| point[0] + point[1] * factor} & empty_town_nodes
+		# 	avai_nodes = all_points.map!{|point| point[0] + point[1] * factor} & empty_town_nodes
 
-			node = avai_nodes.sample
+		# 	node = avai_nodes.sample
+		# 	avai_nodes.delete(node)
 
-			if node
-				return [node % factor, node / factor]
-			end
-		end
+		# 	until !node.in?(country.used_town_nodes)
+		# 		if node
+		# 			return [node % factor, node / factor]
+		# 		end
+
+		# 		if avai_nodes.empty?
+		# 			break
+		# 		else
+		# 			node = avai_nodes.sample
+		# 			avai_nodes.delete(node)
+		# 		end
+		# 	end
+
+			
+		# end
 
 		rand_node = empty_town_nodes.sample
 		[rand_node % factor, rand_node / factor]

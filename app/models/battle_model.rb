@@ -8,8 +8,11 @@ class BattleModel
 
 	class << self
 
+		# options参数：
+		# 	:match_attack => true
 		# 调用战斗算法之前必须先调用这个方法
-		def extend_battle_methods(*battle_objects)
+		def extend_battle_methods(*battle_objects, options)
+			options ||= {}
 			battle_objects.each do |obj|
 				obj.extend(BattlePlayerModule)
 				obj[:army].extend(BattleArmyModule)
@@ -27,6 +30,7 @@ class BattleModel
 					fighter.curr_defense *= (1 + defense_inc)
 					fighter.curr_hp *= (1 + hp_inc)
 					fighter.total_hp *= (1 + hp_inc)
+					fighter.curr_hp = fighter.total_hp if options[:match_attack] # 如果是荣誉战，恐龙满血满状态
 					fighter.skill_trigger_inc = obj[:scroll_effect][:skill_trigger_inc].to_f
 					fighter.exp_inc = obj[:scroll_effect][:exp_inc].to_f
 					# ======================================
@@ -249,7 +253,7 @@ class BattleModel
 		# }
 		# => defender: The same as attacker
 		def normal_attack(attacker = {}, defender = {})
-			self.extend_battle_methods(attacker, defender)
+			self.extend_battle_methods(attacker, defender, {})
 
 			result = {
 				:attacker => attacker.to_hash,
@@ -282,7 +286,7 @@ class BattleModel
 
 		# 荣誉战斗计算
 		def match_attack(attacker = {}, defender = {})
-			self.extend_battle_methods(attacker, defender)
+			self.extend_battle_methods(attacker, defender, :match_attack => true)
 
 			result = {
 				:attacker => attacker.to_hash,

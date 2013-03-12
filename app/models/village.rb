@@ -154,7 +154,8 @@ class Village < Ohm::Model
 			str.dinosaur_ids.map do |d_id|
 				dino = Dinosaur[d_id]
 				if dino
-					dino.set :current_hp, dino.total_hp
+					# dino.set :current_hp, dino.total_hp
+					dino.current_hp = dino.total_hp
 					dino
 				end
 			end.compact

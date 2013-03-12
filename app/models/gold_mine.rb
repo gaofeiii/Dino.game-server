@@ -50,8 +50,14 @@ class GoldMine < Ohm::Model
 			end
 			monsters.to_a
 		else
-			# TODO: player's defense troops
-			[]
+			sta = Strategy[strategy_id]
+			if sta
+				sta.dinosaurs.map do |dino_id|
+					Dinosaur[dino_id]
+				end.compact
+			else
+				[]
+			end
 		end
 	end
 
@@ -76,7 +82,7 @@ class GoldMine < Ohm::Model
 			:goldmine_type => goldmine_type
 		}
 
-		stra = Strategy[strategy_id]
+		stra = strategy
 		hash[:strategy] = stra.to_hash if stra
 
 		left_time = if player_id

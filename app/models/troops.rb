@@ -87,6 +87,7 @@ class Troops < Ohm::Model
 					defender_type = target.type
 				elsif target_type == BattleModel::TARGET_TYPE[:gold_mine]
 					defender_name = target.owner_name
+					defense_player = target.player
 				end
 				defender = {
 					:player => defense_player,
@@ -100,6 +101,11 @@ class Troops < Ohm::Model
 					:scroll_effect => {},
 					:army => defender_army
 				}
+
+				if defense_player
+					defender[:owner_info][:monster_type] = 0
+					defender[:owner_info][:avatar_id] = defense_player.avatar_id
+				end
 
 				defender[:owner_info][:avatar_id] = target.player.avatar_id if target.is_a?(Village)
 
@@ -122,7 +128,7 @@ class Troops < Ohm::Model
 							self.player.village.update :x => tx, :y => ty, :index => ti
 						end
 
-						target_player = target.player
+						target_player = defense_player
 						rwd = {:wood => target_player.wood/10, :stone => target_player.stone/10, :gold_coin => target_player.gold_coin/10, :items => []}
 						target_player.spend!(rwd) # The target lost resource
 						self.player.receive!(rwd) # The winner receive resource
@@ -131,6 +137,14 @@ class Troops < Ohm::Model
 						# i_count = i_cat == 2 ? 99 : 1
 						# rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
 						target.set(:under_attack, 0)
+
+						attacker_vil = Village.new(:id => player.village_id).gets(:x, :y)
+						Mail.create_defense_village_lose_mail :receiver_id => target_player.id, 
+																									:receiver_name => target_player.nickname,
+																									:attacker => player.nickname,
+																									:x => attacker_vil.x,
+																									:y => attacker_vil.y,
+																									:locale => target_player.locale
 						rwd
 					when BattleModel::TARGET_TYPE[:creeps]
 						reward = Reward.judge!(target.type)
@@ -152,10 +166,23 @@ class Troops < Ohm::Model
 						end
 						
 						if target.type == GoldMine::TYPE[:normal]
+							if not target.player_id.blank?
+								target_player = target.player
+								ax, ay = db.hmget(Village.key[player.village_id], :x, :y).map!(&:to_i)
+
+								Mail.create_goldmine_defense_lose_mail 	:receiver_name => target_player.nickname,
+																												:receiver_id => target_player.id,
+																												:attacker => player.nickname,
+																												:gx => target.x, :gy => target.y,
+																												:ax => ax, :ay => ay,
+																												:locale => target_player.locale
+							end
+
 							target.update :player_id => player.id, 
 														:under_attack => false,
 														:occupy_time => ::Time.now.to_i,
 														:update_gold_time => ::Time.now.to_i
+							target.strategy.try(:delete)
 							target.move_to_refresh_queue(target.update_gold_time + 1.hour)
 							rwd = Reward.judge!(target.level)
 							player.receive_reward!(rwd)
@@ -175,6 +202,29 @@ class Troops < Ohm::Model
 						{}
 					end
 					player.receive!(reward)
+				else # attacker lose
+					case target_type
+					when BattleModel::TARGET_TYPE[:village]
+						attacker_vil = Village.new(:id => player.village_id).gets(:x, :y)
+						Mail.create_defense_village_win_mail 	:receiver_id => defense_player.id, 
+																									:receiver_name => defense_player.nickname,
+																									:attacker => player.nickname,
+																									:x => attacker_vil.x,
+																									:y => attacker_vil.y,
+																									:locale => defense_player.locale
+					when BattleModel::TARGET_TYPE[:gold_mine]
+						if not target.player_id.blank?
+							target_player = target.player
+							ax, ay = db.hmget(Village.key[player.village_id], :x, :y).map!(&:to_i)
+
+							Mail.create_goldmine_defense_win_mail :receiver_name => target_player.nickname,
+																										:receiver_id => target_player.id,
+																										:attacker => player.nickname,
+																										:gx => target.x, :gy => target.y,
+																										:ax => ax, :ay => ay,
+																										:locale => target_player.locale
+						end
+					end
 				end # End of winner reward
 
 				# Check beginning guide

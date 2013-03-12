@@ -79,6 +79,7 @@ class Mail < Ohm::Model
 	# 	:league_name 		=> "xxxxx"
 	# 	:locale 				=> 'en'
 	# }
+	# 创建公会邀请信
 	def self.create_league_invite_mail(args = {})
 		return if args.blank?
 		self.create :mail_type 			=> TYPE[:system],
@@ -98,6 +99,7 @@ class Mail < Ohm::Model
 	# 	:league_name 	=> 'xxx',
 	# 	:locale 			=> 'en'
 	# }
+	# 创建公会申请加入邮件
 	def self.create_league_apply_mail(args = {})
 		return if args.blank?
 		self.create :mail_type 			=> TYPE[:system],
@@ -109,6 +111,7 @@ class Mail < Ohm::Model
 								:cached_data 		=> {:player_id => args[:player_id], :receiver_id => args[:receiver_id], :league_id => args[:league_id]}
 	end
 
+	# 创建普通金矿收获邮件
 	def self.create_goldmine_harvest_mail(args = {})
 		locale = args[:locale] || :en
 		mail = self.new :mail_type 			=> TYPE[:system],
@@ -119,6 +122,85 @@ class Mail < Ohm::Model
 										:title 					=> I18n.t('mail.goldmine_receive.title', :locale => locale),
 										:content				=> I18n.t('mail.goldmine_receive.content', :locale => locale, :x => args[:x], :y => args[:y], :count => args[:count])
 		mail.save
+	end
+
+	# args.include {:x => x, :y => y, :attacker => "attacker_name"}
+	# 创建村落成功防守邮件
+	def self.create_defense_village_win_mail(args = {})
+		p "---creating defense village WIN mail---"
+		locale = args[:locale] || :en
+		self.create :mail_type 			=> TYPE[:system],
+								:sys_mail_type 	=> SYS_TYPE[:normal],
+								:sender_name 		=> I18n.t('system', :locale => locale),
+								:receiver_name 	=> args[:receiver_name],
+								:receiver_id		=> args[:receiver_id],
+								:title 					=> I18n.t('mail.defense_village_win_mail.title', :locale => locale),
+								:content				=> I18n.t('mail.defense_village_win_mail.content', :locale => locale, :x => args[:x], :y => args[:y], :attacker => args[:attacker])
+	end
+
+	# args.include {:x => x, :y => y, :attacker => "attacker_name"}
+	# 创建村落防守失败邮件
+	def self.create_defense_village_lose_mail(args = {})
+		p "---creating defense village LOSE mail---"
+		locale = args[:locale] || :en
+		self.create :mail_type 			=> TYPE[:system],
+								:sys_mail_type 	=> SYS_TYPE[:normal],
+								:sender_name 		=> I18n.t('system', :locale => locale),
+								:receiver_name 	=> args[:receiver_name],
+								:receiver_id		=> args[:receiver_id],
+								:title 					=> I18n.t('mail.defense_village_lose_mail.title', :locale => locale),
+								:content				=> I18n.t('mail.defense_village_lose_mail.content', :locale => locale, :x => args[:x], :y => args[:y], :attacker => args[:attacker])
+	end
+
+	# args = {}
+	# 创建荣誉战胜利邮件
+	def self.create_match_win_mail(args = {})
+		locale = args[:locale] || :en
+		self.create :mail_type 			=> TYPE[:system],
+								:sys_mail_type 	=> SYS_TYPE[:normal],
+								:sender_name 		=> I18n.t('system', :locale => locale),
+								:receiver_name 	=> args[:receiver_name],
+								:receiver_id		=> args[:receiver_id],
+								:title 					=> I18n.t('mail.match_win_mail.title', :locale => locale),
+								:content				=> I18n.t('mail.match_win_mail.content', :locale => locale, :attacker => args[:attacker], :score => args[:score])
+	end
+
+	# 创建荣誉战失败邮件
+	def self.create_match_lose_mail(args = {})
+		locale = args[:locale] || :en
+		self.create :mail_type 			=> TYPE[:system],
+								:sys_mail_type 	=> SYS_TYPE[:normal],
+								:sender_name 		=> I18n.t('system', :locale => locale),
+								:receiver_name 	=> args[:receiver_name],
+								:receiver_id		=> args[:receiver_id],
+								:title 					=> I18n.t('mail.match_lose_mail.title', :locale => locale),
+								:content				=> I18n.t('mail.match_lose_mail.content', :locale => locale, :attacker => args[:attacker], :score => args[:score])
+	end
+
+	# 创建防守金矿成功邮件
+	def self.create_goldmine_defense_win_mail(args = {})
+		p "---creating defense goldmine WIN mail---"
+		locale = args[:locale] || :en
+		self.create :mail_type 			=> TYPE[:system],
+								:sys_mail_type 	=> SYS_TYPE[:normal],
+								:sender_name 		=> I18n.t('system', :locale => locale),
+								:receiver_name 	=> args[:receiver_name],
+								:receiver_id		=> args[:receiver_id],
+								:title 					=> I18n.t('mail.goldmine_defense_win.title', :locale => locale),
+								:content				=> I18n.t('mail.goldmine_defense_win.content', :locale => locale, :attacker => args[:attacker], :gx => args[:gx], :gy => args[:gy], :ax => args[:ax], :ay => args[:ay])
+	end
+
+	# 创建防守金矿失败邮件
+	def self.create_goldmine_defense_lose_mail(args = {})
+		p "---creating defense goldmine LOSE mail---"
+		locale = args[:locale] || :en
+		self.create :mail_type 			=> TYPE[:system],
+								:sys_mail_type 	=> SYS_TYPE[:normal],
+								:sender_name 		=> I18n.t('system', :locale => locale),
+								:receiver_name 	=> args[:receiver_name],
+								:receiver_id		=> args[:receiver_id],
+								:title 					=> I18n.t('mail.goldmine_defense_lose.title', :locale => locale),
+								:content				=> I18n.t('mail.goldmine_defense_lose.content', :locale => locale, :attacker => args[:attacker], :gx => args[:gx], :gy => args[:gy], :ax => args[:ax], :ay => args[:ay])
 	end
 
 	def to_hash(*args)

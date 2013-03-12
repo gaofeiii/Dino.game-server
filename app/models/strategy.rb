@@ -25,19 +25,6 @@ class Strategy < Ohm::Model
 		hash
 	end
 
-	def dinosaur_ids
-		if self.dinosaurs.blank?
-			return []
-		end
-
-		re = JSON(dinosaurs)
-		if re.is_a?(Array)
-			re.select {|d_id| d_id > 0 }
-		else
-			[]
-		end
-	end
-
 	# New dinosaurs attr
 	def dinosaurs
 		if @attributes[:dinosaurs].is_a?(String)
@@ -94,6 +81,13 @@ class Strategy < Ohm::Model
 		self.set :dinosaurs, new_ids.to_json if new_ids.is_a?(Array)
 		new_ids.each do |dino_id|
 			db.hmset(Dinosaur.key[dino_id], :action_status, new_status, :strategy_id, id)
+		end
+	end
+
+	protected
+	def before_delete
+		self.dinosaur_ids.each do |dino_id|
+			db.hmset("Dinosaur:#{dino_id}", :action_status, 0, :strategy_id, 0)
 		end
 	end
 

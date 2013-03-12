@@ -18,7 +18,11 @@ module LeagueWar
 		begin_time + WAR_INTERVAL
 	end
 
-	module_function :begin_time, :end_time, :next_begin_time
+	def time_left
+		next_begin_time - ::Time.now.to_i
+	end
+
+	module_function :begin_time, :end_time, :next_begin_time, :time_left
 
 	# 部落战时间改为每小时一次，整点开始，持续15分钟
 	def in_period_of_fight?

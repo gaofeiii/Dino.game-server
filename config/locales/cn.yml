@@ -119,7 +119,7 @@ cn:
    cannot_attack_self_village: "不能攻打自己的村落"
    village_under_protection: "该村落正在受保护中"
    cannot_attack_when_league_started: "部落金矿战已经开战，不能攻打该类型的村落"
-   league_war_not_started: "部落金矿战还没有开始"
+   league_war_not_started: "部落金矿战还没有开始。剩余时间：%{time}秒"
    target_under_attack: "目标正在遭受攻击"
    send_at_least_one: "至少要派遣一只恐龙"
    report_has_been_removed: "战报已经被清除"
@@ -199,6 +199,30 @@ cn:
    goldmine_receive:
     title: "金矿收获报告"
     content: "恭喜你！你所占占领的金矿(%{x}, %{y})产出%{count}金币，已收获到仓库中"
+
+   defense_village_win_mail:
+    title: "防守村落获胜"
+    content: "玩家【%{attacker}】（来自(%{x}, %{y})）对你的村落发起了一起攻击，你成功抵御了这次进攻！"
+
+   defense_village_lose_mail:
+    title: "防守村落失败"
+    content: "玩家【%{attacker}】（来自(%{x}, %{y})）对你的村落发起了一起攻击，由于防守失败，被对方掠夺了10%的资源！"
+
+   match_win_mail:
+    title: "挑战赛获胜"
+    content: "玩家【%{attacker}】向你发起挑战，你赢得了胜利，并获得%{score}点战斗力。"
+
+   match_lose_mail:
+    title: "挑战赛失败"
+    content: "玩家【%{attacker}】向你发起挑战，你输掉了比赛，损失了%{score}点战斗力。"
+
+   goldmine_defense_win:
+    title: "金矿防守成功"
+    content: "你的金矿(%{gx}, %{gy})成功抵御来自(%{ax}, %{ay})%{attacker}的进攻！"
+
+   goldmine_defense_lose:
+    title: "金矿被掠夺"
+    content: "你的金矿(%{gx}, %{gy})受到来自(%{ax}, %{ay})%{attacker}的进攻，由于防守不利，被对方抢占了金矿！"
 
 
 

@@ -129,7 +129,7 @@ class WorldMapController < ApplicationController
 						:owner_name => g_mine.owner_name,
 						:output => g_mine.output,
 						:goldmine_type => g_mine.goldmine_type,
-						:left_time => 0,
+						:left_time => LeagueWar.time_left,
 						:can_attack => LeagueWar.in_period_of_fight?
 					}
 				}
