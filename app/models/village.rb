@@ -206,7 +206,7 @@ class Village < Ohm::Model
 	end
 
 	def before_create
-		self.protection_until = ::Time.now.to_i + 3.day
+		self.protection_until = ::Time.now.to_i + 6.hours
 	end
 
 

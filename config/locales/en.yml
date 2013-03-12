@@ -201,28 +201,28 @@
     content: "Congratulations! Your goldmine (%{x}, %{y}) has produced %{count} gold coins. They are all moved into your warehouse."
 
    defense_village_win_mail:
-    title: "防守村落获胜"
-    content: "玩家【%{attacker}】（来自(%{x}, %{y})）对你的村落发起了一起攻击，你成功抵御了这次进攻！"
+    title: "Defend Village Succeeded"
+    content: "Player [%{attacker}] from (%{x}, %{y}) led an army to attack you, and you defeated them!"
 
    defense_village_lose_mail:
-    title: "防守村落失败"
-    content: "玩家【%{attacker}】（来自(%{x}, %{y})）对你的村落发起了一起攻击，由于防守失败，被对方掠夺了10%的资源！"
+    title: "Defend Village Failed"
+    content: "Player [%{attacker}] from (%{x}, %{y}) raided your village and grabbed 10 percent of your resources!"
 
    match_win_mail:
-    title: "挑战赛胜利"
-    content: "玩家【%{attacker}】向你发起挑战，你赢得了胜利，并获得%{score}分。"
+    title: "Challenge won"
+    content: "Player [%{attacker}] challenged you but defeated, you won %{score} power."
 
    match_lose_mail:
-    title: "挑战赛失败"
-    content: "玩家【%{attacker}】向你发起挑战，你输掉了比赛，损失了%{score}分。"
+    title: "Challenge lost"
+    content: "Player [%{attacker}] challenged you and won, you lost %{score} power."
 
    goldmine_defense_win:
-    title: "金矿防守成功"
-    content: "你的金矿(%{gx}, %{gy})成功抵御来自(%{ax}, %{ay})%{attacker}的进攻！"
+    title: "Defend Goldmine Succeeded"
+    content: "Your goldmine (%{gx}, %{gy}) was attacked by %{attacker} from (%{ax}, %{ay}). You defeated him."
 
    goldmine_defense_lose:
-    title: "金矿被掠夺"
-    content: "你的金矿(%{gx}, %{gy})受到来自(%{ax}, %{ay})%{attacker}的进攻，由于防守不利，被对方抢占了金矿！"
+    title: "Defend Goldmine Failed"
+    content: "Your goldmine (%{gx}, %{gy}) was attacked by %{attacker} from (%{ax}, %{ay}). You lost it."
 
 
 
