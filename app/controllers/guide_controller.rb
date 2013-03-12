@@ -7,20 +7,8 @@ class GuideController < ApplicationController
 		@player.refresh_village_status
 		@player.guide_info.check_finished(q_index)
 
-		data = if @player.guide_info[q_index].finished?
-			@player.save
-			{
-				:message => Error.success_message,
-				:player => @player.to_hash(:beginning_guide)
-			}
-		else
-			{
-				:message => Error.failed_message,
-				:error_type => Error::NORMAL,
-				:error => I18n.t('guide_error.quest_not_finished')
-			}
-		end
-		render :json => data
+		@player.save if q_index > 0 && @player.guide_info[q_index].finished?
+		render_success(:player => @player.to_hash(:beginning_guide))
 	end
 
 	def get_reward

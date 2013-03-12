@@ -152,6 +152,7 @@ module BeginningGuideHelper
 
 	def check_finished(index)
 		quest = self[index]
+		return false unless quest
 
 		sig = case index
 		# 建造采集场
