@@ -4,7 +4,7 @@ class Background
 
 	# Background.add_queue(Troops, 1, "refresh!", 1360045836)
 	def self.add_queue(klass, id, action, time)
-		key = klass.key[:queue][action]
+		key = "#{klass}:queue:#{action}"
 		@@queue << key
 		Ohm.redis.multi do |t|
 			t.sadd "Background:queues", key
@@ -44,7 +44,7 @@ class Background
 	end
 
 	def self.remove_queue(klass, id, action)
-		key = klass.key[:queue][:action]
+		key = "#{klass}:queue:#{action}"
 
 		Ohm.redis.multi do |t|
 			t.srem "Background:queues", key
@@ -70,7 +70,7 @@ class Background
 	# 默认从当前时间的整点开始计时
 	# 例如，当前时间为1:05，time_duration = 15.minutes，执行时间为1:15，1:30，1:45，以此类推
 	def self.add_cronjob(klass, action, time_duration)
-		key = klass.key[:cronjob][action]
+		key = "#{klass}:cronjob:#{action}"
 		@@cronjob << key
 
 		begin_time = Time.now.beginning_of_hour.to_i

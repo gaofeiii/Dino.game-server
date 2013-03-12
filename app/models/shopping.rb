@@ -9,13 +9,26 @@ class Shopping
 	include ShoppingConst
 
 	class << self
+		def iap_product_ids
+			list[:gems].map{|x| x[:product_id]}
+		end
+
+		def find_iap_info_by_product_id(product_id)
+			self.list[:gems].each do |itm|
+				return itm if itm[:product_id] == product_id
+			end
+		end
 
 		def find_gems_count_by_product_id(product_id)
-			self.list[:gems].each do |itm|
-				return itm[:count] if itm[:product_id] == product_id
-			end
+			itm = find_iap_info_by_product_id(product_id)
 			
-			nil
+			return itm[:count] if itm
+		end
+
+		def find_iap_price_by_product_id(product_id)
+			itm = find_iap_info_by_product_id(product_id)
+
+			return itm[:price] if itm
 		end
 
 		# args.keys => :item_type, :player_id
