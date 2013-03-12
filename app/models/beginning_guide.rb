@@ -193,8 +193,9 @@ module BeginningGuideHelper
 			village_with_id.has_built_building?(Building.hashes[:workshop])
 		# 研究科技
 		when 11
-			ret = player.guide_cache['has_researched']
-			ret.nil? ? false : ret
+			# ret = player.guide_cache['has_researched']
+			# ret.nil? ? false : ret
+			player.tech_residential.try(:level) > 0
 		# 建造神庙
 		when 12
 			village_with_id.has_built_building?(Building.hashes[:temple])
