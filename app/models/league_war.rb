@@ -1,31 +1,103 @@
 module LeagueWar
-	# include Ohm::Model
+	WAR_TIME = 15.minutes.to_i
+	WAR_INTERVAL = 1.hour.to_i
+
 	def key
 		@key ||= Nest.new("LeagueWar")
 	end
 
-	def in_period_of_fight?(time = Time.now.to_i)
-		begin_day = Time.now.beginning_of_day.to_i
-		period_1 = begin_day..(begin_day + 30.minutes.to_i)
-		period_2 = (begin_day + 8)..(begin_day + 8 + 30.minutes.to_i)
-		period_3 = (begin_day + 16)..(begin_day + 16 + 30.minutes.to_i)
-
-		time.in?(period_1) && time.in?(period_2) && time.in?(period_3)
+	def begin_time
+		Time.now.beginning_of_hour.to_i
 	end
 
-	def can_fight_danger_village?(time = Time.now.to_i)
-		in_period_of_fight?(time)
+	def end_time
+		begin_time + WAR_TIME
 	end
 
+	def next_begin_time
+		begin_time + WAR_INTERVAL
+	end
+
+	module_function :begin_time, :end_time, :next_begin_time
+
+	# 部落战时间改为每小时一次，整点开始，持续15分钟
+	def in_period_of_fight?
+		Time.now.to_i.in?(begin_time..end_time)
+	end
+
+	def can_fight_danger_village?
+		not in_period_of_fight?
+	end
+
+	# 整点1刻进行此操作
 	def calc_battle_result
+		return false if Time.now.to_i < calc_time
+
 		GoldMine.find(:type => 2).each do |gold_mine|
 			winner_league = League[gold_mine.winner_league_id]
 			if winner_league
 				winner_league.winned_mines.add(gold_mine)
 			end
 		end
+		set_next_calc_time
 	end
 
-	module_function :key, :in_period_of_fight?, :can_fight_danger_village?, :calc_battle_result
+	# 整点进行重置金矿的操作
+	def reset_gold_mine
+		return false if Time.now.to_i < reset_time
+
+		League.all.ids.each do |league_id|
+			league = League.new :id => league_id
+			Ohm.redis.del league.winned_mines.key
+		end
+
+		set_reset_time
+	end
+
+	def set_calc_result_this_period
+		time = end_time
+		Ohm.redis.set(key[:calc_time], time)
+	end
+
+	def set_next_calc_time
+		Ohm.redis.set(key[:calc_time], end_time + WAR_INTERVAL)
+	end
+
+	def set_reset_time
+		time = begin_time + WAR_INTERVAL
+		Ohm.redis.set(key[:reset_time], time)
+	end
+
+	def calc_time
+		Ohm.redis.get(key[:calc_time]).to_i
+	end
+
+	def reset_time
+		Ohm.redis.get(key[:reset_time]).to_i
+	end
+
+	module_function :set_calc_result_this_period, :set_next_calc_time, :set_reset_time, :calc_time, :reset_time
+
+	def start!
+		set_calc_result_this_period
+		set_reset_time
+	end
+
+	def perform!
+		calc_battle_result
+		reset_gold_mine
+	end
+
+
+
+	module_function(
+		:key, 
+		:in_period_of_fight?, 
+		:can_fight_danger_village?, 
+		:calc_battle_result, 
+		:reset_gold_mine,
+		:start!,
+		:perform!
+	)
 
 end

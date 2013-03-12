@@ -29,7 +29,7 @@ class RealTimeInfoController < ApplicationController
 				:lottery_reward => LuckyReward.const(1).values,
 				:match_gold_cost => Player.honour_gold_cost,
 				:advisor_cost => Advisor.const.values.map{|x| x[:price_per_day]},
-				:league_gold_cost => 10000,
+				:league_gold_cost => 1000,
 				:move_town_gems_cost => 50
 			}
 		}

@@ -16,6 +16,7 @@ class Background
 		if @@queue.empty?
 			@@queue = Ohm.redis.smembers "Background:queues"
 		end
+
 		@@queue
 	end
 
@@ -28,6 +29,7 @@ class Background
 			raise "Invalid queue class:#{klass} @#{__FILE__}:#{__LINE__}" if klass.nil?
 
 			ids = Ohm.redis.zrangebyscore queue_key, "-inf", Time.now.to_i
+
 			ids.each do |k_id|
 				obj = klass[k_id]
 				if obj.nil?
@@ -39,6 +41,17 @@ class Background
 				Ohm.redis.zrem queue_key, k_id
 			end
 		end
+	end
+
+	def self.remove_queue(klass, id, action)
+		key = klass.key[:queue][:action]
+
+		Ohm.redis.multi do |t|
+			t.srem "Background:queues", key
+			t.zrem key, id
+		end
+
+		@@queue.delete(key)
 	end
 
 	Cronjob = Struct.new(:duration, :last_exec_time) do
@@ -54,20 +67,36 @@ class Background
 		end
 	end
 
+	# 默认从当前时间的整点开始计时
+	# 例如，当前时间为1:05，time_duration = 15.minutes，执行时间为1:15，1:30，1:45，以此类推
 	def self.add_cronjob(klass, action, time_duration)
 		key = klass.key[:cronjob][action]
 		@@cronjob << key
+
+		begin_time = Time.now.beginning_of_hour.to_i
+
 		Ohm.redis.multi do |t|
 			t.sadd "Background:cronjobs", key
-			t.hmset key, 'time_duration', time_duration
+			t.hmset key, 'time_duration', time_duration, 'next_exec_time', begin_time + time_duration
 		end
 	end
 
 	def self.all_cronjobs
 		if @@cronjob.empty?
-			@@cronjob = Ohm.redis.smembers "Background:cronjobs"
+			@@cronjob = Ohm.redis.smembers("Background:cronjobs")
 		end
 		@@cronjob
+	end
+
+	def self.clear_all_cronjobs
+		jobs = all_cronjobs
+
+		Ohm.redis.multi do |t|
+			t.del *jobs if not jobs.empty?
+			t.del "Background:cronjobs"
+		end
+
+		@@cronjob.clear
 	end
 
 	def self.refresh_cronjobs
@@ -79,15 +108,20 @@ class Background
 			end
 
 			now_time = ::Time.now.to_i
-			if cron['last_exec_time'].to_i + cron['time_duration'].to_i <= now_time
+
+			# if cron['last_exec_time'].to_i + cron['time_duration'].to_i <= now_time
+			next_exec_time = cron['next_exec_time'].to_i
+
+			if now_time >= cron['next_exec_time'].to_i
 				key_arr = cron_key.split(':')
 				klass = key_arr.first.constantize
 				action = key_arr.last
 				
 				raise "Invalid cronjob class:#{klass} @#{__FILE__}:#{__LINE__}" if klass.nil?
 				klass.send(action)
-				Ohm.redis.hset cron_key, 'last_exec_time', now_time
+				Ohm.redis.hmset cron_key, 'next_exec_time', next_exec_time + cron['time_duration'].to_i
 			end
+
 		end
 	end
 

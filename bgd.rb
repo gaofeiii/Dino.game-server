@@ -30,6 +30,7 @@ Daemons.run_proc('Refreshing', options) do
 	loop do
 		begin
 			Background.perform!
+			LeagueWar.perform!
 		ensure
 			sleep(1)
 		end

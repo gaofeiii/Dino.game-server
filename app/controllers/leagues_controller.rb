@@ -14,7 +14,7 @@ class LeaguesController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('league_error.should_set_a_league_name')) and return
 		end
 
-		if @player.spend!(:gold => 10000)
+		if @player.spend!(:gold => 1000)
 			lg = League.create :name => name, :desc => params[:desc], :president_id => @player.id
 			lms = LeagueMemberShip.create :player_id => @player.id, 
 																		:league_id => lg.id, 
