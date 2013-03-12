@@ -51,6 +51,11 @@ module LeagueWar
 			Ohm.redis.del league.winned_mines.key
 		end
 
+		LeagueMemberShip.all.ids.each do |membership_id|
+			memebership = LeagueMemberShip.new :id => membership_id
+			memebership.set :receive_gold_count, 0
+		end
+
 		set_reset_time
 	end
 

@@ -4,6 +4,8 @@ class LeagueMemberShip < Ohm::Model
 	include Ohm::Callbacks
 	include OhmExtension
 
+	TOTAL_GOLD_COUNT = 1
+
 	LEVELS = {
 		:president => 10,
 		:vice_president => 9,

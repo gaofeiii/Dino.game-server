@@ -100,6 +100,7 @@
    league_not_exist: "Tribe does not exist"
    member_not_in_league: "Member is not in the Tribe"
    you_have_left_this_league: "You have left the Tribe"
+   had_received_gold: "You have already received gold coins"
 
   friends_error:
    already_add_friend: "%{friend_name} has been your friend already!"

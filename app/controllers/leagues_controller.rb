@@ -225,6 +225,10 @@ class LeaguesController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('league_error.not_in_a_league')) and return
 		end
 
+		if membership.receive_gold_count > 0
+			render_error(Error::NORMAL, I18n.t('league_error.had_received_gold')) and return
+		end
+
 		if membership.contribution <= 100
 			render_error(Error::NORMAL, I18n.t('league_error.contribution_count_is_zero')) and return
 		end
@@ -232,6 +236,7 @@ class LeaguesController < ApplicationController
 		if membership.increase(:contribution, -100)
 			gold = @player.league.harvest_gold
 			@player.receive!(:gold => gold)
+			membership.increase(:receive_gold_count, -1)
 			render_success(:player => @player.to_hash(:league), :info => I18n.t("general.get_league_gold_success", :gold_count => gold))
 		else
 			render_error(Error::NORMAL, "Unknown League Error")

@@ -100,6 +100,7 @@ cn:
    league_not_exist: "部落不存在"
    member_not_in_league: "会员已经不在部落中"
    you_have_left_this_league: "你已经离开了部落"
+   had_received_gold: "已经收获了部落战金币"
 
   friends_error:
    already_add_friend: "%{friend_name}已经是你的好友了！"
