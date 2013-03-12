@@ -17,24 +17,6 @@ module CountryDataHelper
 		:gold_mine 	=> 3
 	}
 
-	::Point = Struct.new(:x, :y, :type) do
-		def index
-			return (self.x.to_i + (self.y.to_i * COORD_TRANS_FACTOR))
-		end
-
-		def +(other)
-			self.class.new(self.x + other.x, self.y + other.y)
-		end
-
-		def ==(other)
-			if self.x == other.x && self.y == other.y
-				return true
-			else
-				return false
-			end
-		end
-	end
-
 	module ClassMethods
 		
 	end

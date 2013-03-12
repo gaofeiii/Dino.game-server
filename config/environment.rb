@@ -33,3 +33,31 @@ class Float
 		end
 	end
 end
+
+::Point = Struct.new(:x, :y, :type) do
+	def index
+		return (self.x.to_i + (self.y.to_i * Country::COORD_TRANS_FACTOR))
+	end
+
+	def +(other)
+		self.class.new(self.x + other.x, self.y + other.y)
+	end
+
+	def ==(other)
+		if self.x == other.x && self.y == other.y
+			return true
+		else
+			return false
+		end
+	end
+
+	# Return an array of points
+	def product(other)
+		[self.x, self.y].product([other.x, other.y]).map!{|coords| Point.new(*coords)}
+	end
+
+	# Return the points of the straight line between two points
+	def self.line_points(pt1, pt2)
+		[]
+	end
+end

@@ -189,6 +189,13 @@ class Village < Ohm::Model
 		end
 	end
 
+	def self.validate_index
+		country = Country.first
+		self.all.each do |v|
+			country.add_used_town_nodes(v.index)
+		end
+	end
+
 	protected
 
 	def before_save

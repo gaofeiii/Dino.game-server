@@ -425,6 +425,40 @@ class Player < Ohm::Model
 		end
 	end
 
+	# Return [x, y]
+	def find_rand_coords(country = Country.first)
+		# random_coord = (country.town_nodes_info.keys - country.used_town_nodes).sample
+		# x = random_coord % Country::COORD_TRANS_FACTOR
+		# y = random_coord / Country::COORD_TRANS_FACTOR
+		start_x, start_y = 500, 500
+
+		empty_town_nodes = country.town_nodes_info.keys - country.used_town_nodes
+		factor = Country::COORD_TRANS_FACTOR
+
+
+		# 55.step(499, 1) do |coord_fact|
+		# 	min_x = start_x - coord_fact
+		# 	max_x = start_x + coord_fact
+		# 	min_y = start_y - coord_fact
+		# 	max_y = start_y + coord_fact
+
+		# 	all_points = ([min_x, max_x].product((min_y..max_y).to_a) + [min_y, max_y].product((min_x..max_x).to_a)).uniq
+
+		# 	all_points.each do |point_ary|
+		# 		idx = point_ary[0] + point_ary[1] * Country::COORD_TRANS_FACTOR
+		# 		count += 1
+		# 		if idx.in?(empty_town_nodes)
+		# 			puts "--- count: #{count}"
+		# 			return point_ary
+		# 		end
+		# 	end
+		# end
+
+		rand_node = empty_town_nodes.sample
+		[rand_node % factor, rand_node / factor]
+		# [x, y]
+	end
+
 	# Callbacks
 	protected
 
@@ -471,11 +505,8 @@ class Player < Ohm::Model
 	# 为新玩家创建村庄
 	def create_village
 		country = Country.first
-
-		random_coord = (country.town_nodes_info.keys - country.used_town_nodes).sample
-		x = random_coord % Country::COORD_TRANS_FACTOR
-		y = random_coord / Country::COORD_TRANS_FACTOR
-
+		x, y = find_rand_coords(country)
+		random_coord = x + y * Country::COORD_TRANS_FACTOR
 		vil = Village.create :name => "#{self.nickname}'s village", :player_id => self.id, 
 		:x => x, :y => y, :country_index => 1
 		country.add_used_town_nodes(random_coord)
