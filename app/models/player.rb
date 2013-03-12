@@ -427,32 +427,28 @@ class Player < Ohm::Model
 
 	# Return [x, y]
 	def find_rand_coords(country = Country.first)
-		# random_coord = (country.town_nodes_info.keys - country.used_town_nodes).sample
-		# x = random_coord % Country::COORD_TRANS_FACTOR
-		# y = random_coord / Country::COORD_TRANS_FACTOR
 		start_x, start_y = 500, 500
 
 		empty_town_nodes = country.town_nodes_info.keys - country.used_town_nodes
 		factor = Country::COORD_TRANS_FACTOR
 
 
-		# 55.step(499, 1) do |coord_fact|
-		# 	min_x = start_x - coord_fact
-		# 	max_x = start_x + coord_fact
-		# 	min_y = start_y - coord_fact
-		# 	max_y = start_y + coord_fact
+		55.step(499, 2) do |coord_fact|
+			min_x = start_x - coord_fact
+			max_x = start_x + coord_fact
+			min_y = start_y - coord_fact
+			max_y = start_y + coord_fact
 
-		# 	all_points = ([min_x, max_x].product((min_y..max_y).to_a) + [min_y, max_y].product((min_x..max_x).to_a)).uniq
+			all_points = ([min_x, max_x].product((min_y..max_y).to_a) + [min_y, max_y].product((min_x..max_x).to_a)).uniq
 
-		# 	all_points.each do |point_ary|
-		# 		idx = point_ary[0] + point_ary[1] * Country::COORD_TRANS_FACTOR
-		# 		count += 1
-		# 		if idx.in?(empty_town_nodes)
-		# 			puts "--- count: #{count}"
-		# 			return point_ary
-		# 		end
-		# 	end
-		# end
+			avai_nodes = all_points.map!{|point| point[0] + point[1] * factor} & empty_town_nodes
+
+			node = avai_nodes.sample
+
+			if node
+				return [node % factor, node / factor]
+			end
+		end
 
 		rand_node = empty_town_nodes.sample
 		[rand_node % factor, rand_node / factor]
