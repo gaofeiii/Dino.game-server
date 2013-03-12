@@ -195,7 +195,7 @@ module BeginningGuideHelper
 		when 11
 			# ret = player.guide_cache['has_researched']
 			# ret.nil? ? false : ret
-			player.tech_residential.try(:level) > 0
+			player.tech_residential.try(:level).to_i > 0
 		# 建造神庙
 		when 12
 			village_with_id.has_built_building?(Building.hashes[:temple])
