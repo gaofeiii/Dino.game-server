@@ -185,8 +185,8 @@ class LeaguesController < ApplicationController
 		end
 
 		count = params[:count].to_i
-		if count <= League::DONATE_FACTOR * 10
-			render_error(Error::NORMAL, "Count must greater than #{League::DONATE_FACTOR * 10}") and return
+		if count <= @league.donate_exp_factor
+			render_error(Error::NORMAL, "Count must greater than #{@league.donate_exp_factor}") and return
 		end
 
 		cost = case donate_type
@@ -197,9 +197,9 @@ class LeaguesController < ApplicationController
 		end
 
 		if @player.spend!(cost)
-			@player.league_member_ship.increase(:contribution, count / 1000)
-			@league.increase(:contribution, count / League::DONATE_FACTOR)
-			@league.increase(:xp, count / League::DONATE_FACTOR)
+			@player.league_member_ship.increase(:contribution, (count / @league.donate_exp_factor).to_i)
+			@league.increase(:contribution, (count / @league.donate_exp_factor).to_i)
+			@league.increase(:xp, (count / @league.donate_exp_factor).to_i)
 			@league.update_level!
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_res')) and return

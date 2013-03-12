@@ -29,7 +29,7 @@ class League < Ohm::Model
 		:stone => 2
 	}
 
-	DONATE_FACTOR = 10
+	DONATE_FACTOR = 192
 
 	def update_level!
 		if xp >= next_level_xp

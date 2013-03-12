@@ -59,6 +59,14 @@ module LeagueConst
 		def info
 			self.class.const[level]
 		end
+
+		def donate_exp_factor
+			info[:dkp_wood_unit]
+		end
+
+		def donate_contrib_factor
+			info[:dkp_wood_unit]
+		end
 	end
 	
 	def self.included(receiver)
