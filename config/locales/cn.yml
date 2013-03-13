@@ -101,6 +101,7 @@ cn:
    member_not_in_league: "会员已经不在部落中"
    you_have_left_this_league: "你已经离开了部落"
    had_received_gold: "今天已经收获了部落战金币了哦！"
+   still_in_league_war: "部落战期间不能领取金币"
 
   friends_error:
    already_add_friend: "%{friend_name}已经是你的好友了！"

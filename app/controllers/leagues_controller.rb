@@ -221,6 +221,10 @@ class LeaguesController < ApplicationController
 	def receive_gold
 		membership = @player.league_member_ship
 
+		if LeagueWar.in_period_of_fight?
+			render_error(Error::NORMAL, I18n.t('league_error.still_in_league_war')) and return
+		end
+
 		if membership.nil?
 			render_error(Error::NORMAL, I18n.t('league_error.not_in_a_league')) and return
 		end

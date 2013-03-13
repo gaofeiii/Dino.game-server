@@ -22,6 +22,8 @@ class League < Ohm::Model
 	collection :league_applys, LeagueApply
 	set :winned_mines, GoldMine
 
+	attribute :most_gold, 	Type::Integer
+
 	index :name
 
 	DONATE_TYPE = {
@@ -86,7 +88,18 @@ class League < Ohm::Model
 	end
 
 	def harvest_gold
-		(winned_mines.sum{|gold_mine| gold_mine.output}).to_i
+		# (winned_mines.sum{|gold_mine| gold_mine.output}).to_i
+		most_gold
+	end
+
+	def calc_harvest_gold
+		curr = winned_mines.ids[0, 5].sum{|g_id| GoldMine[g_id].try(:output).to_i}.to_i
+		self.most_gold = curr if curr.to_i > most_gold
+	end
+
+	def calc_harvest_gold!
+		calc_harvest_gold
+		self.set :most_gold, most_gold
 	end
 
 	def dismiss!

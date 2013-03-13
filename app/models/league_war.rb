@@ -43,6 +43,7 @@ module LeagueWar
 				winner_league.winned_mines.add(gold_mine)
 			end
 		end
+
 		set_next_calc_time
 	end
 
@@ -85,7 +86,13 @@ module LeagueWar
 		Ohm.redis.get(key[:reset_time]).to_i
 	end
 
-	module_function :set_calc_result_this_period, :set_next_calc_time, :set_reset_time, :calc_time, :reset_time
+	def refresh_league_gold_coins
+		League.all.each do |league|
+			league.calc_harvest_gold!
+		end
+	end
+
+	module_function :set_calc_result_this_period, :set_next_calc_time, :set_reset_time, :calc_time, :reset_time, :refresh_league_gold_coins
 
 	def start!
 		set_calc_result_this_period
