@@ -77,7 +77,7 @@ class League < Ohm::Model
 	end
 
 	def add_new_member(member)
-		membership = LeagueMemberShip.create :player_id => member.id,
+		membership = LeagueMemberShip.create 	:player_id => member.id,
 																					:league_id => self.id,
 																					:level => League.positions[:member]
 		if membership
@@ -86,7 +86,7 @@ class League < Ohm::Model
 	end
 
 	def harvest_gold
-		(winned_mines.sum{|gold_mine| gold_mine.output * 8} * 0.8).to_i
+		(winned_mines.sum{|gold_mine| gold_mine.output}).to_i
 	end
 
 	def dismiss!

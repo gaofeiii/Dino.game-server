@@ -190,8 +190,8 @@ class Troops < Ohm::Model
 						else
 							unless player.league.nil?
 								target.add_attacking_count(player.league_id)
-								self.player.increase(:experience, 100)
-								player.league_member_ship.increase(:contribution, 200)
+								self.player.increase(:experience, 25)
+								player.league_member_ship.increase(:contribution, 25)
 								# TODO: league_war result
 								result[:league_war_result] = {:progress => rand(1..3000), :rank => rand(1..10)}
 							end
