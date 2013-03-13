@@ -127,7 +127,7 @@ class Stat
 
 				if order.is_validated && order.is_valid
 					result[:valid_count] += 1
-					result[:total_sale] += Shopping.find_iap_price_by_product_id(order.product_id)
+					result[:total_sale] += Shopping.find_iap_price_by_product_id(order.product_id).to_f
 				end
 			end
 			result
