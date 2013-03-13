@@ -15,3 +15,4 @@ Background.add_cronjob(League, 'update_all_battle_rank!', 1.hour.to_i)
 Background.add_cronjob(LeagueWar, 'calc_battle_result', 	30.minutes.to_i)
 LeagueWar.start!
 Background.add_cronjob(Stat, 'record_all', 1.hour)
+Background.add_cronjob(Mail, 'clean_up!', 6.hours)

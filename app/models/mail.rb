@@ -242,6 +242,18 @@ class Mail < Ohm::Model
 		@invite_league ||= League[cached_data[:league_id]]
 	end
 
+	def self.clean_up!
+		curr_time = Time.now.beginning_of_day.to_i
+
+		self.all.ids.each do |m_id|
+			m = Mail.new(:id => m_id).gets(:created_at)
+
+			if m.created_at < curr_time
+				m.delete
+			end
+		end
+	end
+
 	protected
 	def before_save
 		if cached_data.is_a?(Hash)

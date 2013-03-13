@@ -328,17 +328,17 @@ class StrategyController < ApplicationController
 			winner.daily_quest_cache[:win_honour_val] += win_score
 			winner.set :daily_quest_cache, winner.daily_quest_cache.to_json
 
-			Mail.create_match_lose_mail :receiver_name => loser.nickname,
-																	:receiver_id => loser.id,
-																	:attacker => winner.nickname,
+			Mail.create_match_lose_mail :receiver_name => @enemy.nickname,
+																	:receiver_id => @enemy.id,
+																	:attacker => @player.nickname,
 																	:score => win_score,
-																	:locale => loser.locale
+																	:locale => @enemy.locale
 		else
-			Mail.create_match_win_mail 	:receiver_name => winner.nickname,
-																	:receiver_id => winner.id,
-																	:attacker => winner.nickname,
+			Mail.create_match_win_mail 	:receiver_name => @enemy.nickname,
+																	:receiver_id => @enemy.id,
+																	:attacker => @player.nickname,
 																	:score => win_score,
-																	:locale => winner.locale
+																	:locale => @enemy.locale
 		end
 
 		winner.add_honour(win_score)
