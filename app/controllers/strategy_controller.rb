@@ -146,9 +146,12 @@ class StrategyController < ApplicationController
 
 		# 计算行军时间
 		my_vil = @player.village
+
 		marching_time = Math.sqrt((my_vil.x - target.x)**2 + (my_vil.y - target.y)**2)
 		marching_time = 1 if marching_time < 1
 		marching_time = 300 if marching_time > 300
+
+		marching_time = 2 if Rails.env.development?
 
 		# 创建Troops
 		trps = Troops.new		:player_id => @player.id, 
