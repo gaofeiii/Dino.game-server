@@ -17,6 +17,7 @@ class Shopping
 			self.list[:gems].each do |itm|
 				return itm if itm[:product_id] == product_id
 			end
+			nil
 		end
 
 		def find_gems_count_by_product_id(product_id)
