@@ -37,7 +37,7 @@ class GoldMine < Ohm::Model
 		:league => 2
 	}
 
-	def defense_troops
+	def defense_troops(index = nil)
 		if player_id.blank?
 
 			if monsters.blank?
