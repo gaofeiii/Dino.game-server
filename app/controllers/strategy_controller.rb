@@ -97,7 +97,6 @@ class StrategyController < ApplicationController
 		end
 
 		if target.is_a?(GoldMine)
-			p "-------- gold mine size : #{@player.gold_mines.size}"
 			if @player.gold_mines.size >= 5
 				render_error(Error::NORMAL, I18n.t('strategy_error.reach_gold_mine_max')) and return
 			end
