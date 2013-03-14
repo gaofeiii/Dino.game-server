@@ -16,3 +16,5 @@ Background.add_cronjob(LeagueWar, 'calc_battle_result', 	30.minutes.to_i)
 LeagueWar.start!
 Background.add_cronjob(Stat, 'record_all', 1.hour)
 Background.add_cronjob(Mail, 'clean_up!', 6.hours)
+Background.add_cronjob(AdviseRelation, 'clean_up!', 1.hours)
+Background.add_cronjob(Deal, 'clean_up!', 1.hours)
