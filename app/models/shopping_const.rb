@@ -65,7 +65,8 @@ module ShoppingConst
 					:count => count,
 					:product_id => product_id,
 					:reference_name => reference_name,
-					:price => usd_price
+					:price => usd_price,
+					:goods_type => 2
 				}
 			end
 
@@ -101,6 +102,8 @@ module ShoppingConst
 				gem_price = book.cell(i, 'E').to_i
 				item_cat = book.cell(i, 'F').to_i
 				item_type = book.cell(i, 'G').to_i
+				cn_desc = book.cell(i, 'H').to_s
+				en_desc = book.cell(i, 'I').to_s
 
 				record = {:sid => sid, :count => count, :gem => gem_price, :cat => item_cat, :type => item_type}
 				goods_type = case name
@@ -115,12 +118,17 @@ module ShoppingConst
 					GOODS_TYPE[:item]
 				end
 				@@all_goods_hash[sid] = {
-					:goods_type => goods_type,
+					:goods_type => 2,#goods_type,
 					:item_type => item_type, 
 					:item_category => item_cat,
 					:gems => gem_price,
 					:count => count
 				}
+
+				if !en_desc.empty? && !cn_desc.empty?
+					@@goods_desc[sid] = {	:en => en_desc,	:cn => cn_desc }
+				end
+				
 			end
 
 			book.default_sheet = '其他'

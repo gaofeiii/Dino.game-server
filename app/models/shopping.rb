@@ -81,9 +81,9 @@ class Shopping
 				end
 			elsif item_type == 2
 				case rand(1..10000)
-				when 1..6000
+				when 1..4000
 					2
-				when 6001..9000
+				when 4001..9000
 					3
 				when 9001..9990
 					4
