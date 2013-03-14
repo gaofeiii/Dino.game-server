@@ -168,12 +168,14 @@ class WorldMapController < ApplicationController
 					m_count = case m_level
 					when 1
 						1
-					when 2..5
+					when 2..3
 						2
-					when 6..15
+					when 4..5
 						3
-					when 16..35
+					when 6..8
 						4
+					when 9..10
+						5
 					else
 						5
 					end

@@ -179,7 +179,6 @@ class Mail < Ohm::Model
 
 	# 创建防守金矿成功邮件
 	def self.create_goldmine_defense_win_mail(args = {})
-		p "---creating defense goldmine WIN mail---"
 		locale = args[:locale] || :en
 		self.create :mail_type 			=> TYPE[:system],
 								:sys_mail_type 	=> SYS_TYPE[:normal],
@@ -192,7 +191,6 @@ class Mail < Ohm::Model
 
 	# 创建防守金矿失败邮件
 	def self.create_goldmine_defense_lose_mail(args = {})
-		p "---creating defense goldmine LOSE mail---"
 		locale = args[:locale] || :en
 		self.create :mail_type 			=> TYPE[:system],
 								:sys_mail_type 	=> SYS_TYPE[:normal],
@@ -201,6 +199,19 @@ class Mail < Ohm::Model
 								:receiver_id		=> args[:receiver_id],
 								:title 					=> I18n.t('mail.goldmine_defense_lose.title', :locale => locale),
 								:content				=> I18n.t('mail.goldmine_defense_lose.content', :locale => locale, :attacker => args[:attacker], :gx => args[:gx], :gy => args[:gy], :ax => args[:ax], :ay => args[:ay])
+	end
+
+	# args.keys.include?(:receiver_name, :receiver_id, :buyer, :gold, :goods_name, :count)
+	# 创建交易成功邮件
+	def self.create_deal_succses_mail(args = {})
+		locale = args[:locale] || :en
+		self.create :mail_type 			=> TYPE[:system],
+								:sys_mail_type 	=> SYS_TYPE[:normal],
+								:sender_name 		=> I18n.t('system', :locale => locale),
+								:receiver_name 	=> args[:receiver_name],
+								:receiver_id		=> args[:receiver_id],
+								:title 					=> I18n.t('mail.deal_success.title', :locale => locale),
+								:content				=> I18n.t('mail.deal_success.content', :locale => locale, :buyer => args[:buyer], :gold => args[:gold], :goods_name => args[:goods_name], :count => args[:count])
 	end
 
 	def to_hash(*args)

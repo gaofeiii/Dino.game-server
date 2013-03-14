@@ -18,7 +18,7 @@ class RealTimeInfoController < ApplicationController
 				:speed_up_info => {
 					:building => 300, # 每300秒消耗1个宝石
 					:tech => 300,
-					:dino_hp_recovery => 300,
+					:dino_hp_recovery => 30000,
 					:hatch_speed_up => 300
 				},
 				:god_cost => {

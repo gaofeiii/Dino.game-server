@@ -21,10 +21,10 @@ module SpecialtyConst
 
 		def load_const!
 			@@const = {
-				1 => {:name => :waterlemon, 		:feed_point => 100},
+				1 => {:name => :pitaya,			 		:feed_point => 100},
 				2 => {:name => :corn, 					:feed_point => 100},
-				3 => {:name => :potato, 				:feed_point => 100},
-				4 => {:name => :apple, 					:feed_point => 100},
+				3 => {:name => :watermelon,			:feed_point => 100},
+				4 => {:name => :pineapple,			:feed_point => 100},
 				5 => {:name => :fish, 					:feed_point => 100},
 				6 => {:name => :tiger, 					:feed_point => 100},
 				7 => {:name => :mammuthus, 			:feed_point => 100},

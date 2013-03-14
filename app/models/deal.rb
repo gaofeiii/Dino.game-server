@@ -25,21 +25,30 @@ class Deal < Ohm::Model
 		1 => :wood,
 		:stone => 2,
 		2 => :stone
-		# CATEGORIES[:res] => {
-		# 	:wood => 1,
-		# 	1 => :wood,
-		# 	:stone => 2,
-		# 	2 => :stone
-		# },
-
-		# CATEGORIES[:egg] => {
-
-		# },
-
-		# CATEGORIES[:food] => {
-
-		# },
 	}
+
+	EGG_NAME = {
+		1 => "scud", 
+		2 => "king", 
+		3 => "thorn", 
+		4 => "hammer", 
+		5 => "ripper", 
+		6 => "headache", 
+		7 => "raptor", 
+		8 => "earthquake", 
+		9 => "tyrant"
+	}
+
+	FOOD_NAME = {
+		1 => 'pitaya', 
+		2 => 'corn', 
+		3 => 'watermelon', 
+		4 => 'pineapple', 
+		5 => 'fish', 
+		6 => 'tiger', 
+		7 => 'mammuthus', 
+		8 => 'brachiosaurus'
+	} 
 
 	attribute :status, 		Type::Integer		# Deal的状态，1表示出售者，2表示交易关闭
 	attribute :category,	Type::Integer 	# 交易物品的种类
@@ -112,6 +121,33 @@ class Deal < Ohm::Model
 				seller.receive_food!(type, count)
 				self.delete
 			end
+		end
+	end
+
+	# CATEGORIES = {
+	# 	:res 	=> 1,
+	# 	:egg 	=> 2,
+	# 	:food => 3
+	# }
+
+	# RES_TYPES = {
+	# 	:wood => 1,
+	# 	1 => :wood,
+	# 	:stone => 2,
+	# 	2 => :stone
+	# }
+	def goods_name(locale = :en)
+		case category
+		when CATEGORIES[:res]
+			if type == 1
+				I18n.t('resource.wood', :locale => locale)
+			elsif type == 2
+				I18n.t('resource.stone', :locale => locale)
+			end
+		when CATEGORIES[:egg]
+			I18n.t("egg_name.#{EGG_NAME[type]}", :locale => locale)
+		when CATEGORIES[:food]
+			I18n.t("food_name.#{FOOD_NAME[type]}", :locale => locale)
 		end
 	end
 

@@ -41,6 +41,27 @@ cn:
    gold_coin: "金币"
    gems: "宝石"
 
+  egg_name:
+   scud: "窃蛋龙蛋"
+   king: "肿头龙蛋"
+   thorn: "三角龙蛋"
+   hammer: "剑角龙蛋"
+   ripper: "重爪龙蛋"
+   headache: "冥河龙蛋"
+   raptor: "迅猛龙蛋"
+   earthquake: "震龙蛋"
+   tyrant: "霸王龙蛋"
+
+  food_name:
+   pitaya: "火龙果"
+   corn: "玉米"
+   watermelon: "西瓜"
+   pineapple: "菠萝"
+   fish: "鱼肉"
+   tiger: "虎肉"
+   mammuthus: "猛犸肉"
+   brachiosaurus: "恐龙肉"
+
   god:
    full_name:
     argriculture: "农业之神-赛纳斯"
@@ -128,6 +149,7 @@ cn:
    enemy_not_set_strategy: "对方还没有设定出战的恐龙"
    you_have_not_set_strategy: "你还没有设定出战的恐龙"
    dino_not_exist: "恐龙不存在"
+   reach_gold_mine_max: "你已经占有很多金矿了，不能再攻打金矿啦！"
 
   dinosaur_error:
    not_enough_food: "食物不足"
@@ -224,6 +246,10 @@ cn:
    goldmine_defense_lose:
     title: "金矿被掠夺"
     content: "你的金矿(%{gx}, %{gy})受到来自(%{ax}, %{ay})%{attacker}的进攻，由于防守不利，被对方抢占了金矿！"
+
+   deal_success:
+    title: "商品已经出售"
+    content: "%{buyer}以%{gold}金币购买了你的：%{goods_name} X %{count}。"
 
 
 

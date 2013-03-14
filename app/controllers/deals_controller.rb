@@ -27,19 +27,20 @@ class DealsController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('deals_error.cannot_buy_self_goods')) and return
 		end
 
+		p "--- after: deal.goods_name: #{deal.goods_name(deal.seller.locale)}"
+
 		deal.mutex(0.5) do
 			case deal.category
 			when Deal::CATEGORIES[:res]
-				goods = if deal.type = Deal::RES_TYPES[:wood]
+				goods = if deal.type == Deal::RES_TYPES[:wood]
 					{:wood => deal.count}
-				elsif deal.type = Deal::RES_TYPES[:stone]
+				elsif deal.type == Deal::RES_TYPES[:stone]
 					{:stone => deal.count}
 				else
 					{}
 				end
 
 				if !goods.blank?
-					# p "--- deal.price: #{deal.price.to_i}"
 					cost = {:gold_coin => deal.price.to_i}
 
 					if @player.spend!(cost)
@@ -62,7 +63,14 @@ class DealsController < ApplicationController
 				render_error(Error::NORMAL, "INVALID_ITEM_CATE") and return
 			end
 
-			# deal.set :status, Deal::STATUS[:closed]
+			p "--- after: deal.goods_name: #{deal.goods_name(deal.seller.locale)}"
+			seller = deal.seller
+			Mail.create_deal_succses_mail :receiver_name => seller.nickname,
+																		:receiver_id => seller.id,
+																		:buyer => @player.nickname,
+																		:gold => deal.price.to_i,
+																		:goods_name => deal.goods_name(seller.locale),
+																		:count => deal.count
 			deal.delete
 		end
 		render_success(:player => @player.to_hash(:resources), :deal_id => deal.id)
@@ -95,7 +103,7 @@ class DealsController < ApplicationController
 				"INVALID_RES_TYPE"
 			elsif count <= 0
 				I18n.t('deals_error.count_must_more_than_zero')
-			elsif price <= 0.1
+			elsif price <= 1
 				I18n.t('deals_error.price_must_more_than_zero')
 			else
 				nil
@@ -156,11 +164,12 @@ class DealsController < ApplicationController
 				render_error(Error::NORMAL, I18n.t('general.not_enough_food')) and return
 			else
 				food.increase(:count, -count)
+
 				Deal.create :status => Deal::STATUS[:selling],
 										:category => goods_cat,
 										:type => food.type,
 										:count => count,
-										:price => price * count,
+										:price => price,
 										:gid => gid,
 										:end_time => Time.now.to_i + 3.days,
 										:seller_id => @player.id

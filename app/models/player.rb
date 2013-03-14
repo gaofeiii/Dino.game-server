@@ -158,7 +158,7 @@ class Player < Ohm::Model
 			:in_league => in_league?
 		}
 		opts = if args.include?(:all)
-			args | [:god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :beginning_guide, :queue_info]
+			args | [:league, :god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :beginning_guide, :queue_info]
 		else
 			args
 		end

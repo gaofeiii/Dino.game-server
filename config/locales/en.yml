@@ -41,6 +41,27 @@
    gold_coin: "gold"
    gems: "gems"
 
+  egg_name:
+   scud: "Scud Egg"
+   king: "King Egg"
+   thorn: "Thorn Egg"
+   hammer: "Hammer Egg"
+   ripper: "Ripper Egg"
+   headache: "Headache Egg"
+   raptor: "Raptor Egg"
+   earthquake: "Earthquake Egg"
+   tyrant: "Tyrant Egg"
+
+  food_name:
+   pitaya: "Pitaya"
+   corn: "Corn"
+   watermelon: "Watermelon"
+   pineapple: "Pineapple"
+   fish: "Fish"
+   tiger: "Tiger"
+   mammuthus: "Mammuthus"
+   brachiosaurus: "Brachiosaurus"
+
   god:
    full_name:
     argriculture: "God of Farmming-Ceres"
@@ -128,6 +149,7 @@
    enemy_not_set_strategy: "Enemy formation empty"
    you_have_not_set_strategy: "Set your formation first"
    dino_not_exist: "Dinosaur doesn’t exist"
+   reach_gold_mine_max: "Reached goldmines' max count"
 
   dinosaur_error:
    not_enough_food: "Need more food"
@@ -224,6 +246,10 @@
    goldmine_defense_lose:
     title: "Defend Goldmine Failed"
     content: "Your goldmine (%{gx}, %{gy}) was attacked by %{attacker} from (%{ax}, %{ay}). You lost it."
+
+   deal_success:
+    title: "Goods Sold"
+    content: "%{buyer} had bought your %{goods_name} X %{count} with %{gold} gold coins."
 
 
 
