@@ -59,7 +59,8 @@ class Troops < Ohm::Model
 					end
 				end.compact
 				attacker_army = army
-				defender_army = target.defense_troops
+				bill_number = player.curr_bill_quest[:number]
+				defender_army = target.defense_troops(bill_number)
 
 				attacker = {
 					:player => player,
@@ -116,36 +117,44 @@ class Troops < Ohm::Model
 				if result[:winner] == 'attacker'
 					reward = case target_type
 					when BattleModel::TARGET_TYPE[:village]
-						if not player.finish_daily_quest
-							player.daily_quest_cache[:attack_players] += 1
-							player.set :daily_quest_cache, player.daily_quest_cache.to_json
+						if target.is_bill?
+							player.curr_bill_quest[:finished_steps] = 1
+							player.set :kill_bill_quests, player.kill_bill_quests.to_json
+							defender_army.map(&:delete)
+							{}
+						else
+							if not player.finish_daily_quest
+								player.daily_quest_cache[:attack_players] += 1
+								player.set :daily_quest_cache, player.daily_quest_cache.to_json
+							end
+
+							if target.in_dangerous_area?
+								tx, ty, ti = target.x, target.y, target.index
+								target.move_to_random_coords
+								target.set :protection_until, ::Time.now.to_i + 10.minutes
+								self.player.village.update :x => tx, :y => ty, :index => ti
+							end
+
+							target_player = defense_player
+							rwd = {:wood => target_player.wood/10, :stone => target_player.stone/10, :gold_coin => target_player.gold_coin/10, :items => []}
+							target_player.spend!(rwd) # The target lost resource
+							self.player.receive!(rwd) # The winner receive resource
+							# i_cat = [1,2,3].sample
+							# i_type = Item.const[i_cat].keys.sample
+							# i_count = i_cat == 2 ? 99 : 1
+							# rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
+							target.set(:under_attack, 0)
+
+							attacker_vil = Village.new(:id => player.village_id).gets(:x, :y)
+							Mail.create_defense_village_lose_mail :receiver_id => target_player.id, 
+																										:receiver_name => target_player.nickname,
+																										:attacker => player.nickname,
+																										:x => attacker_vil.x,
+																										:y => attacker_vil.y,
+																										:locale => target_player.locale
+							rwd
 						end
-
-						if target.in_dangerous_area?
-							tx, ty, ti = target.x, target.y, target.index
-							target.move_to_random_coords
-							target.set :protection_until, ::Time.now.to_i + 10.minutes
-							self.player.village.update :x => tx, :y => ty, :index => ti
-						end
-
-						target_player = defense_player
-						rwd = {:wood => target_player.wood/10, :stone => target_player.stone/10, :gold_coin => target_player.gold_coin/10, :items => []}
-						target_player.spend!(rwd) # The target lost resource
-						self.player.receive!(rwd) # The winner receive resource
-						# i_cat = [1,2,3].sample
-						# i_type = Item.const[i_cat].keys.sample
-						# i_count = i_cat == 2 ? 99 : 1
-						# rwd[:items] << {:item_cat => i_cat, :item_type => i_type, :item_count => i_count}
-						target.set(:under_attack, 0)
-
-						attacker_vil = Village.new(:id => player.village_id).gets(:x, :y)
-						Mail.create_defense_village_lose_mail :receiver_id => target_player.id, 
-																									:receiver_name => target_player.nickname,
-																									:attacker => player.nickname,
-																									:x => attacker_vil.x,
-																									:y => attacker_vil.y,
-																									:locale => target_player.locale
-						rwd
+						
 					when BattleModel::TARGET_TYPE[:creeps]
 						reward = Reward.judge!(target.type)
 						

@@ -40,7 +40,6 @@ module PlayerResourceHelper
 		# playe.spend!(:wood => 100, :gold => 100, :gem => 10)
 		def receive!(args = {})
 			args_dup = args.dup
-			p args_dup
 			args_dup[:gold_coin] = args[:gold] if args[:gold]
 			args_dup[:gems] = args[:gem] if args[:gem]
 

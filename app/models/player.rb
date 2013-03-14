@@ -20,11 +20,13 @@ class Player < Ohm::Model
 	include PlayerHonourHelper
 	include PlayerLuckyRewardHelper
 	include PlayerBattleRankHelper
+	include KillBillQuest
 
 	TYPE = {
 		:normal => 0,
 		:vip => 1,
-		:npc => 2
+		:npc => 2,
+		:bill => 3
 	}
 
 	# Player的属性
@@ -89,8 +91,22 @@ class Player < Ohm::Model
 		player_type == TYPE[:vip]
 	end
 
+	def is_bill?
+		player_type == TYPE[:bill]
+	end
+
 	def self.none_npc
 		self.find(:player_type => TYPE[:normal]).union(:player_type => TYPE[:vip])
+	end
+
+	def self.bill
+		@@bill ||= self.find(:player_type => TYPE[:bill]).first
+		@@bill
+	end
+
+	def self.bill_village
+		@@bill_village ||= self.bill.village
+		@@bill_village
 	end
 
 	def village
@@ -183,7 +199,7 @@ class Player < Ohm::Model
 				end
 			when :daily_quest
 				reset_daily_quest!
-				hash[:daily_quests] = daily_quests_full_info
+				hash[:daily_quests] = (daily_quests_full_info << curr_bill_quest_full_info).compact
 			end
 
 		end

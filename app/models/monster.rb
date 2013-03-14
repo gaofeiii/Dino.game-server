@@ -29,7 +29,7 @@ class Monster < Ohm::Model
 	# args = {:level => 1, :type => 1}
 	def self.new_by(args = {})
 		if args[:level].nil?
-			args[:level] = 1
+			args[:level] ||= 1
 		end
 
 		if args[:type].nil?

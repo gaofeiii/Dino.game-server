@@ -130,17 +130,32 @@ module DailyQuest
 					return d_quest
 				end
 			end
+			return nil
 		end
 
 		def find_reward_by_index(idx)
-			self.class.daily_quests_const[:data][idx]
+			quest = self.class.daily_quests_const[:data][idx]
+			return quest[:reward] if quest
+		end
+
+		def receive_daily_reward!(reward)
+			self.receive!(reward)
+			# self.earn_exp!(reward[:xp]) if reward.has_key?(:xp)
+
+			if reward[:item_cat]
+				if reward[:item_cat] == Item.categories[:food]
+					receive_food!(reward[:item_type], reward[:item_count])
+				else
+					Item.create(:item_category => reward[:item_cat], :item_type => reward[:item_type], :quality => reward[:egg_quality], :player_id => id)
+				end
+			end
 		end
 
 		def set_rewarded(idx)
 			quest = find_quest_by_index(idx)
 			if quest && quest[:total_steps] <= quest[:finished_steps]
 				rwd = find_reward_by_index(idx)
-				self.receive_reward!(rwd[:reward]) if rwd
+				self.receive_daily_reward!(rwd) if rwd
 				quest[:rewarded] = true
 			end
 		end

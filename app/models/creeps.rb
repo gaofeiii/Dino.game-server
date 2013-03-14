@@ -41,18 +41,18 @@ class Creeps < Ohm::Model
 	# 	monsters.to_a
 	# end
 
-	def defense_troops
+	def defense_troops(idx = nil)
 		if @mons.nil?
 			m_count = case level
 			when 1
 				1
-			when 2..5
+			when 2..3
 				2
-			when 6..15
+			when 4..5
 				3
-			when 16..35
+			when 6..8
 				4
-			when 36..80
+			when 9..10
 				5
 			else
 				5

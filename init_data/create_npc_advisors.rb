@@ -8,3 +8,8 @@ if Player.find(:player_type => Player::TYPE[:npc]).size < 1
 		Advisor.create_by_type_and_days(player.id, idx + 1, 1)
 	end
 end
+
+if Player.bill.blank?
+	Player.create :nickname => "bill", :player_type => Player::TYPE[:bill], :avatar_id => 1, :level => 10
+	Player.bill.village.set :protection_until, ::Time.now.to_i
+end

@@ -148,7 +148,25 @@ class Village < Ohm::Model
 		@country
 	end
 
-	def defense_troops
+	def is_bill?
+		db.hget("Player:#{player_id}", :player_type).to_i == Player::TYPE[:bill]
+	end
+
+	def defense_troops(idx = nil)
+		if is_bill?
+			monst_info = Player.bill_monsters(idx)
+
+			if monst_info
+				mons = monst_info[:monst_num].times.map do
+					m_type = (1..5).to_a.sample
+					Monster.create_by(:level => monst_info[:monst_level], :type => m_type, :status => Monster::STATUS[:adult])
+				end
+				return mons
+			else
+				return []
+			end
+		end
+
 		str = self.strategy
 		if str
 			str.dinosaur_ids.map do |d_id|

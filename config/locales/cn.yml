@@ -120,7 +120,7 @@ cn:
    cannot_attack_self_village: "不能攻打自己的村落"
    village_under_protection: "该村落正在受保护中"
    cannot_attack_when_league_started: "部落金矿战已经开战，不能攻打该类型的村落"
-   league_war_not_started: "部落金矿战还没有开始。剩余时间：%{time}秒"
+   league_war_not_started: "部落金矿战还没有开始。剩余时间：%{time}分钟"
    target_under_attack: "目标正在遭受攻击"
    send_at_least_one: "至少要派遣一只恐龙"
    report_has_been_removed: "战报已经被清除"
