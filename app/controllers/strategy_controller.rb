@@ -97,12 +97,12 @@ class StrategyController < ApplicationController
 		end
 
 		if target.is_a?(GoldMine)
+			p "-------- gold mine size : #{@player.gold_mines.size}"
+			if @player.gold_mines.size >= 5
+				render_error(Error::NORMAL, I18n.t('strategy_error.reach_gold_mine_max')) and return
+			end
 			if target.type == GoldMine::TYPE[:normal] && target.player_id.to_i == @player.id
 				render_error(Error::NORMAL, I18n.t('strategy_error.cannot_attack_self_goldmine')) and return
-
-				if @player.gold_mines.size >= 5
-					render_error(Error::NORMAL, I18n.t('strategy_error.reach_gold_mine_max')) and return
-				end
 			elsif target.type == GoldMine::TYPE[:league] 
 				if @player.league_id.blank?
 					render_error(Error::NORMAL, I18n.t('strategy_error.not_in_a_league')) and return
