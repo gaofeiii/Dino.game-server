@@ -155,9 +155,11 @@ module KillBillQuest
 			return if curr[:rewarded] == true
 
 			reward = self.class.bill_quests[:data][curr[:number]][:reward]
-			self.receive_bill_reward!(reward)
-			curr[:rewarded] = true
-			self.set :kill_bill_quests, kill_bill_quests.to_json
+			self.mutex do
+				self.receive_bill_reward!(reward)
+				curr[:rewarded] = true
+				self.set :kill_bill_quests, kill_bill_quests.to_json
+			end
 		end
 	end
 	
