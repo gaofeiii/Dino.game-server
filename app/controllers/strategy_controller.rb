@@ -87,6 +87,10 @@ class StrategyController < ApplicationController
 				render_error(Error::NORMAL, I18n.t('strategy_error.cannot_attack_self_village')) and return
 			end
 
+			if @player.friends.ids.include?(target.player_id)
+				render_error(Error::NORMAL, I18n.t('strategy_error.cannot_attack_friend_village')) and return
+			end
+
 			if target.under_protection
 				render_error(Error::NORMAL, I18n.t('strategy_error.village_under_protection')) and return
 			end
@@ -100,6 +104,11 @@ class StrategyController < ApplicationController
 			if @player.gold_mines.size >= 5
 				render_error(Error::NORMAL, I18n.t('strategy_error.reach_gold_mine_max')) and return
 			end
+
+			if @player.friends.ids.include?(target.player_id)
+				render_error(Error::NORMAL, I18n.t('strategy_error.cannot_attack_friend_goldmine')) and return
+			end
+
 			if target.type == GoldMine::TYPE[:normal] && target.player_id.to_i == @player.id
 				render_error(Error::NORMAL, I18n.t('strategy_error.cannot_attack_self_goldmine')) and return
 			elsif target.type == GoldMine::TYPE[:league] 

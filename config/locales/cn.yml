@@ -150,6 +150,8 @@ cn:
    you_have_not_set_strategy: "你还没有设定出战的恐龙"
    dino_not_exist: "恐龙不存在"
    reach_gold_mine_max: "你已经占有很多金矿了，不能再攻打金矿啦！"
+   cannot_attack_friend_village: "不能攻打好友哦！"
+   cannot_attack_friend_goldmine: "不能攻打好友的金矿哦！"
 
   dinosaur_error:
    not_enough_food: "食物不足"

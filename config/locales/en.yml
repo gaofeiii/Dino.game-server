@@ -150,6 +150,8 @@
    you_have_not_set_strategy: "Set your formation first"
    dino_not_exist: "Dinosaur doesn’t exist"
    reach_gold_mine_max: "Reached goldmines' max count"
+   cannot_attack_friend_village: "Cannot attack friend's village"
+   cannot_attack_friend_goldmine: "Cannot attack friend's goldmine"
 
   dinosaur_error:
    not_enough_food: "Need more food"
