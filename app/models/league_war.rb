@@ -102,6 +102,7 @@ module LeagueWar
 	def perform!
 		calc_battle_result
 		reset_gold_mine
+		refresh_league_gold_coins
 	end
 
 
