@@ -17,4 +17,5 @@ LeagueWar.start!
 Background.add_cronjob(Stat, 'record_all', 1.hour)
 Background.add_cronjob(Mail, 'clean_up!', 6.hours)
 Background.add_cronjob(AdviseRelation, 'clean_up!', 1.hours)
-Background.add_cronjob(Deal, 'clean_up!', 1.hours)
+Background.add_cronjob(Deal, 'clean_up!', 1.hour)
+Background.add_cronjob(GoldMine, 'refresh_all_players_goldmine', 1.hour)
