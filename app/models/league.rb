@@ -93,7 +93,7 @@ class League < Ohm::Model
 	end
 
 	def calc_harvest_gold
-		curr = winned_mines.ids[0, 5].sum{|g_id| GoldMine[g_id].try(:output).to_i}.to_i
+		curr = winned_mines.ids[0, 5].sum{|g_id| GoldMine[g_id].try(:output).to_i * 24}.to_i
 		self.most_gold = curr if curr.to_i > most_gold
 	end
 
