@@ -192,7 +192,7 @@ class Troops < Ohm::Model
 														:occupy_time => ::Time.now.to_i,
 														:update_gold_time => ::Time.now.to_i
 							target.strategy.try(:delete)
-							target.move_to_refresh_queue(target.update_gold_time + 1.hour)
+
 							rwd = Reward.judge!(target.level)
 							player.receive_reward!(rwd)
 							rwd
@@ -202,7 +202,7 @@ class Troops < Ohm::Model
 								self.player.increase(:experience, 25)
 								player.league_member_ship.increase(:contribution, 25)
 								# TODO: league_war result
-								result[:league_war_result] = {:progress => rand(1..3000), :rank => rand(1..10)}
+								result[:league_war_result] = {:progress => rand(1..100), :rank => rand(1..10)}
 							end
 							{} # reward = {}
 						end

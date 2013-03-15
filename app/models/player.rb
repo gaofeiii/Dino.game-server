@@ -483,6 +483,11 @@ class Player < Ohm::Model
 		# [x, y]
 	end
 
+	def curr_goldmine_size
+		return 5 if level <= 10
+		return 5 + (level - 10) / 2
+	end
+
 	# Callbacks
 	protected
 
