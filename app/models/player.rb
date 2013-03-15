@@ -21,6 +21,7 @@ class Player < Ohm::Model
 	include PlayerLuckyRewardHelper
 	include PlayerBattleRankHelper
 	include KillBillQuest
+	include PlayerCave
 
 	TYPE = {
 		:normal => 0,
