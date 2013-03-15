@@ -63,6 +63,8 @@ class Player < Ohm::Model
 
 	attribute :has_lottery,				Type::Boolean
 
+	attribute :session_key
+
 	collection :dinosaurs, 				Dinosaur
 	collection :technologies, 		Technology
 	collection :specialties, 			Specialty

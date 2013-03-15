@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   before_filter :redis_access_log
   before_filter :set_default_locale
   before_filter :validate_sig
+  before_filter :validate_session
 
   private
 
@@ -21,7 +22,16 @@ class ApplicationController < ActionController::Base
     logger.debug format("%-64s", '='*64)
     logger.debug "\n"
     # logger.debug '---- Response body ----'
-    # logger.debug response.body 
+    # p response.body
+  end
+
+  def validate_session
+    client_session_key = request.env['HTTP_GAME_SESSION']
+    p "--- client_session_key: #{client_session_key} ---"
+
+    if client_session_key.blank? || !Session.has_player_id?(client_session_key)
+      render_error(Error::NORMAL, "One account, one login") and return
+    end
   end
 
   def set_default_locale

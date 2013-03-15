@@ -4,9 +4,9 @@ class SessionsController < ApplicationController
 
 	before_filter :get_device_token, :only => [:demo, :create, :register]
 	before_filter :validate_player, :only => [:update]
+	skip_filter :validate_session, :only => [:demo, :create, :register, :update]
 
 
-	# TODO:
 	# 试玩
 	def demo
 		result = trying(:server_ip => params[:server_ip])
@@ -16,12 +16,18 @@ class SessionsController < ApplicationController
 			player.refresh_village_status
 			player.refresh_god_status!
 			player.login!
+
+			new_session_key = generate_session_key(player)
+			player.set :session_key, new_session_key
+			Session.set_player_session(player.id, new_session_key)
+			
 			Rails.logger.debug("*** New Player_id:#{player.id} ***")
 			{
 				:message => Error.success_message, 
 				:player => player.to_hash(:all), 
 				:username => result[:username],
 				:password => result[:password],
+				:session_key => player.session_key,
 				:const_version => ServerInfo.const_version
 			}
 		else
@@ -52,7 +58,12 @@ class SessionsController < ApplicationController
 				@player.refresh_god_status!
 			end
 			@player.login!
-			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all)})
+
+			new_session_key = generate_session_key(@player)
+			@player.set :session_key, new_session_key
+			Session.set_player_session(@player.id, new_session_key)
+
+			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all), :session_key => new_session_key})
 		else
 			data.merge!({:message => Error.failed_message, :error => I18n.t('login_error.incorrect_username_or_password')})
 		end
