@@ -1,6 +1,6 @@
 class RealTimeInfoController < ApplicationController
 
-	skip_filter :validate_sig
+	skip_filter :validate_sig, :only => [:info]
 
 	def info
 		shop_list = Shopping.list
@@ -13,6 +13,7 @@ class RealTimeInfoController < ApplicationController
 		
 		data = {
 			:data => {
+				:version => ServerInfo.info[:info_const_version],
 				:buildings => Building.cost,
 				:technologies => Technology.cost,
 				:guide_reward => Player.beginning_guide_reward,
@@ -38,5 +39,9 @@ class RealTimeInfoController < ApplicationController
 		}
 			
 		render_success(data)
+	end
+
+	def rating_us
+		render_success
 	end
 end

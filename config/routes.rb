@@ -192,6 +192,8 @@ DinosaurGame::Application.routes.draw do
     post 'get_reward' => 'daily_quest#get_reward'
   end
 
+  match 'rating_us' => 'real_time_info#rating_us', :via => :post
+
   root :to => 'players#deny_access'
 
   

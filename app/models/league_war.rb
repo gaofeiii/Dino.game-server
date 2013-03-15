@@ -26,7 +26,8 @@ module LeagueWar
 
 	# 部落战时间改为每小时一次，整点开始，持续15分钟
 	def in_period_of_fight?
-		Time.now.to_i.in?(begin_time..end_time)
+		# Time.now.to_i.in?(begin_time..end_time)
+		true
 	end
 
 	def can_fight_danger_village?
@@ -102,6 +103,7 @@ module LeagueWar
 	def perform!
 		calc_battle_result
 		reset_gold_mine
+		refresh_league_gold_coins
 	end
 
 
