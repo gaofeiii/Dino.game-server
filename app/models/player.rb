@@ -61,6 +61,8 @@ class Player < Ohm::Model
 
 	attribute :last_login_time, 	Type::Integer
 
+	attribute :has_lottery,				Type::Boolean
+
 	collection :dinosaurs, 				Dinosaur
 	collection :technologies, 		Technology
 	collection :specialties, 			Specialty
@@ -128,11 +130,14 @@ class Player < Ohm::Model
 	def login!
 		curr_time = ::Time.now.to_i
 
+		todays_begin_time = ::Time.now.beginning_of_day.to_i
+
 		self.login_days = 0 if curr_time - last_login_time > 1.day.to_i
-
-		self.login_days += 1
-
-		self.sets :last_login_time => curr_time, :login_days => login_days
+		if last_login_time < todays_begin_time && curr_time > todays_begin_time
+			self.has_lottery = false
+			self.login_days += 1
+		end
+		self.sets :last_login_time => curr_time, :login_days => login_days, :has_lottery => has_lottery
 	end
 
 	def in_league?
@@ -164,6 +169,7 @@ class Player < Ohm::Model
 			:warehouse_size => tech_warehouse_size,
 			:tax_rate => Deal::ORIGIN_TAX,
 			:login_days => login_days,
+			:has_lottery => true,
 			:in_league => in_league?
 		}
 		opts = if args.include?(:all)

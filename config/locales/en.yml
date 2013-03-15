@@ -31,6 +31,7 @@
 
   items_error:
    hatch_in_incu: "Please incubate egg in the incubation house"
+   already_use_lottery: "You have already got lottery reward today"
 
   player:
    whos_village: "%{player_name}’s village"

@@ -15,7 +15,7 @@ class ItemsController < ApplicationController
 		
 		# ==== If using egg ====
 		if @item.item_category == Item.categories[:egg]
-			render_error(Error::NORMAL, I18n.t('')) and return
+			render_error(Error::NORMAL, I18n.t('items_error.hatch_in_incu')) and return
 			
 		# ==== If using lottery ====
 		elsif @item.item_category == Item.categories[:lottery]
@@ -26,8 +26,6 @@ class ItemsController < ApplicationController
 											:category => @item.item_category,
 											:player => @player.to_hash(:items)
 			return
-		# ==== End lottery ====
-
 		# ==== Using VIP ====
 		elsif @item.item_category == Item.categories[:vip]
 			@player.player_type = Player::TYPE[:vip]
@@ -41,7 +39,7 @@ class ItemsController < ApplicationController
 			@item.delete
 			vip_left_time = @player.vip_expired_time - ::Time.now.to_i
 			render_success(:player => @player.to_hash(:dinosaurs, :items), :info => I18n.t('general.use_vip_success', :vip_left_time => vip_left_time / 3600))
-		# ==== End VIP ====
+		# ==== Using protection ====
 		elsif @item.item_category == Item.categories[:protection]
 			vil = Village.new(:id => @player.village_id).gets(:protection_until)
 			now_time = ::Time.now.to_i
@@ -87,6 +85,16 @@ class ItemsController < ApplicationController
 	end
 
 	def gift_lottery
+		if not @player.has_lottery
+			rwd = LuckyReward.rand_one(1)
+			@player.receive_lucky_reward(rwd)
+			@player.set :has_lottery, 1
+			render_success 	:reward => rwd, 
+											:category => Item.categories[:lottery],
+											:has_lottery => @player.has_lottery
+		else
+			render_error(Error::NORMAL, I18n.t('items_error.already_use_lottery'))
+		end
 		
 	end
 

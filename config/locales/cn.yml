@@ -31,6 +31,7 @@ cn:
 
   items_error:
    hatch_in_incu: "恐龙只能在孵化园中孵化"
+   already_use_lottery: "您已经抽过奖了，请明天再来"
 
   player:
    whos_village: "%{player_name}的村庄"
