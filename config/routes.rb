@@ -64,6 +64,7 @@ DinosaurGame::Application.routes.draw do
     post 'lucky_reward' => 'items#lucky_reward'
     post 'special_items_list' => 'items#special_items_list'
     post 'drop'         => 'items#drop'
+    post 'gift_lottery' => 'items#gift_lottery'
   end
 
   # 恐龙相关
@@ -190,6 +191,12 @@ DinosaurGame::Application.routes.draw do
   scope :path => 'daily_quest', :as => 'daily_quest' do
     post 'refresh'   => 'daily_quest#refresh'
     post 'get_reward' => 'daily_quest#get_reward'
+  end
+
+  # 巢穴副本
+  scope :path => 'cave', :as => 'cave' do
+    post 'attack_cave'    => 'cave#attack_cave'
+    post 'get_caves_info' => 'cave#get_caves_info'
   end
 
   match 'rating_us' => 'real_time_info#rating_us', :via => :post

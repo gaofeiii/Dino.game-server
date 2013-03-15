@@ -1,31 +1,40 @@
-module PlayerCave
-	module ClassMethods
-		@@cave_const = {}
+class PlayerCave < Ohm::Model
+	include Ohm::DataTypes
+	include Ohm::Timestamps
+	include Ohm::Callbacks
+	include Ohm::Locking
+	include OhmExtension
 
-		def cave_const
-			if @@cave_const.blank?
-				load_cave_const!
+	reference :player, 		Player
+	collection :monsters, 	Monster, :cave
+
+	attribute :index,											Type::Integer
+	attribute :stars,											Type::Integer
+	attribute :get_perfect_reward, 				Type::Boolean
+	attribute :todays_count,							Type::Integer
+	attribute :update_count_time,					Type::Integer
+
+	index :index
+
+	include PlayerCaveConst
+
+	def defense_troops
+		if monsters.blank?
+			_info = self.info
+			mons_level, mons_num = _info[:monster_level], _info[:monster_num]
+
+			mons_num.times do
+				Monster.create_by(:level => mons_level, :type => (1..5).to_a.sample, :cave_id => id)
 			end
-			@@cave_const
 		end
-
-		def load_cave_const!
-			book = Roo::Excelx.new("#{Rails.root}/const/cave.xlsx")
-
-			book.default_sheet = "cave"
-
-			3.upto(book.last_row) do |i|
-				
-			end
-		end
+		monsters.to_a
 	end
-	
-	module InstanceMethods
-		
+
+	def name(locale:'en')
+		"#{I18n.t('monster_name.cave', :locale => locale)} #{index}"
 	end
-	
-	def self.included(receiver)
-		receiver.extend         ClassMethods
-		receiver.send :include, InstanceMethods
+
+	def before_save
+		self.update_count_time = ::Time.now.to_i
 	end
 end

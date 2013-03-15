@@ -4,6 +4,7 @@ cn:
   system: "系统"
   monster_name:
    general: "野怪"
+   cave: "巢穴"
 
   general:
    server_busy: "网络不给力啊，请稍后再试~~"
@@ -187,6 +188,11 @@ cn:
   mails_error:
    receiver_not_exist: "收件人不存在"
    mail_has_been_deleted: "邮件已经被删除"
+
+  cave_error:
+   cave_is_locked: "巢穴还未解锁，请先攻破上一关！"
+   no_dino_sent: "未派遣恐龙"
+   reach_cave_max: "每个巢穴每天只能刷新三次"
 
   guide_error:
    quest_not_finished: "任务尚未完成"

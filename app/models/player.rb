@@ -21,7 +21,8 @@ class Player < Ohm::Model
 	include PlayerLuckyRewardHelper
 	include PlayerBattleRankHelper
 	include KillBillQuest
-	include PlayerCave
+	include PlayerCaveHelper
+	include PlayerLoginGiftHelper
 
 	TYPE = {
 		:normal => 0,
@@ -125,7 +126,13 @@ class Player < Ohm::Model
 	end
 
 	def login!
-		self.set :last_login_time, ::Time.now.to_i
+		curr_time = ::Time.now.to_i
+
+		self.login_days = 0 if curr_time - last_login_time > 1.day.to_i
+
+		self.login_days += 1
+
+		self.sets :last_login_time => curr_time, :login_days => login_days
 	end
 
 	def in_league?
@@ -156,6 +163,7 @@ class Player < Ohm::Model
 			:player_type => player_type,
 			:warehouse_size => tech_warehouse_size,
 			:tax_rate => Deal::ORIGIN_TAX,
+			:login_days => login_days,
 			:in_league => in_league?
 		}
 		opts = if args.include?(:all)

@@ -86,4 +86,8 @@ class ItemsController < ApplicationController
 		render_success
 	end
 
+	def gift_lottery
+		
+	end
+
 end
