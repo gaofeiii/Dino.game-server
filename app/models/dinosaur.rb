@@ -215,11 +215,15 @@ class Dinosaur < Ohm::Model
 			self.experience -= next_level_exp
 			self.level += 1
 			self.growth_point = 0
+
 			upgrade_atts
+
 			self.current_hp = self.total_hp
 			if self.level.in?([1, 2])
 				self.total_hp = self.basic_hp
 			end
+
+			self.status = STATUS[:adult] if level >= 8
 		end
 		self
 	end
