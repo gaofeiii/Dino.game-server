@@ -152,6 +152,7 @@
    reach_gold_mine_max: "Reached goldmines' max count"
    cannot_attack_friend_village: "Cannot attack friend's village"
    cannot_attack_friend_goldmine: "Cannot attack friend's goldmine"
+   dino_is_hungry: "Your dinos are starving!!! Feed them before you send them."
 
   dinosaur_error:
    not_enough_food: "Need more food"

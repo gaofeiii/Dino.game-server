@@ -152,6 +152,7 @@ cn:
    reach_gold_mine_max: "你已经占有很多金矿了，不能再攻打金矿啦！"
    cannot_attack_friend_village: "不能攻打好友哦！"
    cannot_attack_friend_goldmine: "不能攻打好友的金矿哦！"
+   dino_is_hungry: "你的恐龙宝宝饿啦！出战之前请喂饱它们！"
 
   dinosaur_error:
    not_enough_food: "食物不足"
