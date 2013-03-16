@@ -34,6 +34,7 @@ class ShoppingController < ApplicationController
 
 		puts "--- sid: #{sid} ---"
 
+
 		case goods[:goods_type]
 		# Buy resources...
 		when Shopping::GOODS_TYPE[:res]
@@ -75,6 +76,7 @@ class ShoppingController < ApplicationController
 		when Shopping::GOODS_TYPE[:egg]
 			if @player.spend!(goods.slice(:gems))
 				egg = Shopping.buy_random_egg(:item_type => goods[:item_type], :player_id => @player.id)
+				p "---egg", egg
 				if egg
 					render_success(:player => @player.to_hash(:items)) and return
 				end

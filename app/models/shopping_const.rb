@@ -118,7 +118,7 @@ module ShoppingConst
 					GOODS_TYPE[:item]
 				end
 				@@all_goods_hash[sid] = {
-					:goods_type => 2,#goods_type,
+					:goods_type => goods_type,
 					:item_type => item_type, 
 					:item_category => item_cat,
 					:gems => gem_price,
