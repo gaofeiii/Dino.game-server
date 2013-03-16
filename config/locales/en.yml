@@ -195,7 +195,7 @@
   god_effect_mail:
    argriculture:
     title: "Bless from Ceres"
-    content: "Because of your consecration ,Ceres decides to get your more% {res_name}!"
+    content: "Because of your consecration ,Ceres decides to get your more %{res_name}!"
    business:
     title: "Bless from Mercury"
     content: " Because of your consecration, Mercury get you double profit in this trade "

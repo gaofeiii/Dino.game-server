@@ -132,6 +132,7 @@ class StrategyController < ApplicationController
 				dino.update_status!
 				render_error(Error::NORMAL, I18n.t('strategy_error.dino_hp_is_zero')) and return if dino.current_hp < dino.total_hp * 0.1
 				render_error(Error::NORMAL, I18n.t('strategy_error.dino_is_hungry')) and return if dino.feed_point <= 5
+				render_error(Error::NORMAL, I18n.t('strategy_error.dino_is_attacking')) and return if dino.action_status >= 3
 				dino
 			else
 				nil

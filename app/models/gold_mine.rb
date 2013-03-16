@@ -117,7 +117,10 @@ class GoldMine < Ohm::Model
 
 	def refresh_gold!(t = Time.now.to_i)
 		@player = self.player
+
 		if @player
+			self.set :update_gold_time, ::Time.now.to_i if update_gold_time.zero?
+			
 			delta_t = (t - self.update_gold_time) / 3600.0
 			harvest_gold_count = (delta_t * output).to_i
 
