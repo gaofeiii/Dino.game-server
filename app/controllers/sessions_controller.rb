@@ -8,39 +8,48 @@ class SessionsController < ApplicationController
 
 
 	# 试玩
+	# 	0. 检查是否有Game Center相关账号(gk_player_id)
+	# 	1. 从服务器获取试玩账号
+	# 	2. 创建新的player
 	def demo
-		result = trying(:server_ip => params[:server_ip])
-		data = if result[:success]
-			player = create_player(result[:account_id])
-			player.reset_daily_quest!
-			player.refresh_village_status
-			player.refresh_god_status!
-			player.login!
+		@player = Player.find_by_gk_player_id(params[:gk_player_id])
+		@demo_account = {}
 
-			new_session_key = generate_session_key(player)
-			player.set :session_key, new_session_key
-			Session.set_player_session(player.id, new_session_key)
-			
-			Rails.logger.debug("*** New Player_id:#{player.id} ***")
-			{
-				:message => Error.success_message, 
-				:player => player.to_hash(:all), 
-				:username => result[:username],
-				:password => result[:password],
-				:session_key => player.session_key,
-				:const_version => ServerInfo.const_version
-			}
-		else
-			{
-				:message => Error.failed_message,
-				:error_type => Error::NORMAL
-			}
+		# Get a demo account from AccountServer
+		unless @player
+			@demo_account = trying(:server_ip => params[:server_ip])
+			p "-- demo_account", @demo_account
+
+			render_error(Error::NORMAL, I18n.t('general.server_busy')) and return if not @demo_account[:success]
+
+			@player = creating_player(:account_id => @demo_account[:account_id], :gk_player_id => params[:gk_player_id])
+
+			render_error(Error::NORMAL, I18n.t('general.server_busy')) and return if @player.nil?
 		end
-		render :json => data
+
+		p "--- player", @player
+
+		# Updating player's stuffs...
+		@player.reset_daily_quest!
+		@player.refresh_village_status
+		@player.refresh_god_status!
+		@player.login!
+
+		# create new session_key
+		new_session_key = generate_session_key(@player)
+		@player.set :session_key, new_session_key
+
+		render_success 	:player 				=> @player.to_hash(:all),
+										:is_new 				=> !@demo_account.empty?,
+										:username 			=> @demo_account[:username],
+										:password 			=> @demo_account[:password],
+										:session_key 		=> @player.session_key,
+										:const_version 	=> ServerInfo.const_version
 	end
 
 	# 登录
 	def create
+		p "--- Game Center ID", params
 		rcv_msg = account_authenticate :username 	=> params[:username], 
 																	 :email 	 	=> params[:email], 
 																	 :password 	=> params[:password],
@@ -138,6 +147,17 @@ class SessionsController < ApplicationController
 									:nickname => n_name, 
 									:device_token => @device_token,
 									:locale => LocaleHelper.get_server_locale_name(request.env["HTTP_CLIENT_LOCALE"])
+	end
+
+	def creating_player(account_id: 0, nickname: "", gk_player_id: "")
+		guest_id = Ohm.redis.get(Player.key[:id]).to_i + 1
+		nkname = nickname.blank? ? "Player_#{guest_id}" : nickname
+
+		Player.create :account_id 	=> account_id,
+									:nickname			=> nkname,
+									:device_token => @device_token,
+									:locale 			=> request.env["HTTP_CLIENT_LOCALE"],
+									:gk_player_id => gk_player_id
 	end
 
 	def get_device_token

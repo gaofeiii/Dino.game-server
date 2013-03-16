@@ -1,6 +1,7 @@
 class RealTimeInfoController < ApplicationController
 
 	skip_filter :validate_sig, :only => [:info]
+	skip_filter :validate_session, :only => [:info]
 
 	def info
 		shop_list = Shopping.list

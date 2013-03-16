@@ -2,6 +2,7 @@ include SessionsHelper
 class PlayersController < ApplicationController
 
 	before_filter :validate_player, :only => [:refresh, :modify_nickname, :modify_password]
+	skip_filter :validate_session, :only => [:modify_nickname]
 
 	def deny_access
 		render :text => "Request denied." and return
