@@ -59,6 +59,7 @@ class Player < Ohm::Model
 
 	attribute :last_login_time, 	Type::Integer
 
+
 	collection :dinosaurs, 				Dinosaur
 	collection :technologies, 		Technology
 	collection :specialties, 			Specialty

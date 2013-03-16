@@ -125,7 +125,7 @@ class Stat
 			ids.each do |order_id|
 				order = AppStoreOrder.new(:id => order_id).gets(:product_id, :is_validated, :is_valid)
 
-				if order.is_validated && order.is_valid
+				if order.is_validated && order.is_valid && order.product_id.in?(Shopping.iap_product_ids)
 					result[:valid_count] += 1
 					result[:total_sale] += Shopping.find_iap_price_by_product_id(order.product_id).to_f
 				end
