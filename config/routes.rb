@@ -11,10 +11,11 @@ DinosaurGame::Application.routes.draw do
 
   # 玩家信息
   scope :path => 'players', :as => 'players' do
-    post 'refresh'          => 'players#refresh'
-    post 'change_avatar'    => 'players#change_avatar'
-    post 'my_gold_mines'    => 'players#my_gold_mines'
-    post 'modify_nickname'  => 'players#modify_nickname'
+    post 'refresh'                => 'players#refresh'
+    post 'change_avatar'          => 'players#change_avatar'
+    post 'my_gold_mines'          => 'players#my_gold_mines'
+    post 'modify_nickname'        => 'players#modify_nickname'
+    post 'register_game_center'   => 'players#register_game_center'
   end
 
   # 村落

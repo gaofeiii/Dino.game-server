@@ -7,7 +7,8 @@ class ChatMessage < Ohm::Model
 	CHANNELS = {
 		:world => 1,
 		:league => 2,
-		:private => 3
+		:private => 3,
+		:system => 4
 	}
 
 	attribute :channel, 	Type::Integer

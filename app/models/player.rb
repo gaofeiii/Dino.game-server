@@ -118,6 +118,10 @@ class Player < Ohm::Model
 		@@bill_village
 	end
 
+	def self.find_by_account_id(account_id)
+		self.find(:account_id => account_id).first
+	end
+
 	def self.find_by_nickname(nkname)
 		self.find(:nickname => nkname).first
 	end
@@ -184,7 +188,8 @@ class Player < Ohm::Model
 			:tax_rate => Deal::ORIGIN_TAX,
 			:login_days => login_days,
 			:has_lottery => true,
-			:in_league => in_league?
+			:in_league => in_league?,
+			:game_center_account => gk_player_id
 		}
 		opts = if args.include?(:all)
 			args | [:league, :god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :beginning_guide, :queue_info]

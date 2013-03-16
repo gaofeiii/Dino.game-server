@@ -18,7 +18,6 @@ class SessionsController < ApplicationController
 		# Get a demo account from AccountServer
 		unless @player
 			@demo_account = trying(:server_ip => params[:server_ip])
-			p "-- demo_account", @demo_account
 
 			render_error(Error::NORMAL, I18n.t('general.server_busy')) and return if not @demo_account[:success]
 
@@ -26,8 +25,6 @@ class SessionsController < ApplicationController
 
 			render_error(Error::NORMAL, I18n.t('general.server_busy')) and return if @player.nil?
 		end
-
-		p "--- player", @player
 
 		# Updating player's stuffs...
 		@player.reset_daily_quest!
@@ -49,34 +46,48 @@ class SessionsController < ApplicationController
 
 	# 登录
 	def create
-		p "--- Game Center ID", params
-		rcv_msg = account_authenticate :username 	=> params[:username], 
-																	 :email 	 	=> params[:email], 
-																	 :password 	=> params[:password],
-																	 :server_id => params[:server_id]
-		data = {:const_version => ServerInfo.const_version}
-		if rcv_msg[:success]
-			@player = Player.find(:account_id => rcv_msg[:account_id]).first
+		@player = Player.find_by_gk_player_id(params[:gk_player_id])
+		@rcv_msg = {}
+		new_player = false
+
+		p "--- game center player", @player
+
+		# if current game center account is not registerted, create or find player
+		unless @player
+			@rcv_msg = account_authenticate :username 	=> params[:username], 
+																		 	:email 	 	=> params[:email], 
+																		 	:password 	=> params[:password],
+																		 	:server_id => params[:server_id]
+
+p @rcv_msg
+
+			render_error(Error::NORMAL, I18n.t('login_error.incorrect_username_or_password')) and return if not @rcv_msg[:success]
+
+			@player = Player.find_by_account_id(@rcv_msg[:account_id])
+
 			if @player.nil?
-				@player = create_player(rcv_msg[:account_id])
+				@player = creating_player(:account_id => @rcv_msg[:account_id], :gk_player_id => params[:gk_player_id])
+				new_player = true
 			else
-				@player.sets 	:device_token => @device_token,
-											:locale => LocaleHelper.get_server_locale_name(request.env["HTTP_CLIENT_LOCALE"])
-				@player.refresh_village_status
-				@player.reset_daily_quest!
-				@player.refresh_god_status!
+				@player.update :gk_player_id => params[:gk_player_id] if not params[:gk_player_id].blank?
 			end
-			@player.login!
 
-			new_session_key = generate_session_key(@player)
-			@player.set :session_key, new_session_key
-			Session.set_player_session(@player.id, new_session_key)
-
-			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all), :session_key => new_session_key})
-		else
-			data.merge!({:message => Error.failed_message, :error => I18n.t('login_error.incorrect_username_or_password')})
 		end
-		render :json => data
+
+		# Updating player's stuffs...
+		@player.reset_daily_quest!
+		@player.refresh_village_status
+		@player.refresh_god_status!
+		@player.login!
+
+		# create new session_key
+		new_session_key = generate_session_key(@player)
+		@player.set :session_key, new_session_key
+
+		render_success 	:player 				=> @player.to_hash(:all),
+										:is_new 				=> new_player,
+										:session_key 		=> @player.session_key,
+										:const_version 	=> ServerInfo.const_version
 	end
 
 	
@@ -149,6 +160,7 @@ class SessionsController < ApplicationController
 									:locale => LocaleHelper.get_server_locale_name(request.env["HTTP_CLIENT_LOCALE"])
 	end
 
+	# Always return a new player
 	def creating_player(account_id: 0, nickname: "", gk_player_id: "")
 		guest_id = Ohm.redis.get(Player.key[:id]).to_i + 1
 		nkname = nickname.blank? ? "Player_#{guest_id}" : nickname
