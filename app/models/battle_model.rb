@@ -313,6 +313,35 @@ class BattleModel
 			return result
 		end
 
+		# attacker: 玩家
+		def cave_attack(attacker = {}, defender = {})
+			self.extend_battle_methods(attacker, defender, nil)
+
+			result = {
+				:attacker => attacker.to_hash,
+				:defender => defender.to_hash,
+				:all_rounds => [],
+				:reward => {}
+			}
+
+			self.start_rounds(attacker, defender, result)
+
+			if attacker[:army].all_curr_hp.zero?
+				result[:winner] = 'defender'
+				attacker[:is_win] = false
+				defender[:is_win] = true
+				attacker[:army].write_army!(attacker[:is_win], defender, attacker[:player], [:hp])
+				return result.merge!(:time => Time.now.to_f)
+			elsif defender[:army].all_curr_hp.zero? # 玩家胜利
+				result[:winner] = 'attacker'
+				attacker[:is_win] = true
+				defender[:is_win] = false
+				write_result(attacker, defender, :exp, :hp)
+				return result.merge!(:time => Time.now.to_f)
+			end
+			return result
+		end
+
 		# options => :exp, :hp
 		def write_result(attacker = {}, defender = {}, *options)
 			# attacker[:army].write_hp!(attacker[:is_win], defender)

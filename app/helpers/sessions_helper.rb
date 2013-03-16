@@ -34,6 +34,10 @@ module SessionsHelper
 		player.update :session_id => sess.id
 	end
 
+	def generate_session_key(player)
+		Digest::MD5.hexdigest("#{player.nickname}:#{Time.now.to_s}:#{String.sample(4)}")
+	end
+
 
 	
 	# 私有方法

@@ -1,7 +1,8 @@
 include SessionsHelper
 class PlayersController < ApplicationController
 
-	before_filter :validate_player, :only => [:refresh, :modify_nickname, :modify_password]
+	before_filter :validate_player, :only => [:refresh, :modify_nickname, :modify_password, :register_game_center]
+	skip_filter :validate_session, :only => [:modify_nickname]
 
 	def deny_access
 		render :text => "Request denied." and return
@@ -95,6 +96,14 @@ class PlayersController < ApplicationController
 		else
 			render_error(Error::NORMAL, I18n.t('players_error.set_nickname_failed'))
 		end
-		
+	end
+
+	def register_game_center
+		if Player.find(:gk_player_id => params[:gk_player_id]).blank?
+			@player.update :gk_player_id => params[:gk_player_id]
+			render_success(:player => @player.to_hash)
+		else
+			render_error(Error::NORMAL, "Failed")
+		end
 	end
 end
