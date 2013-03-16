@@ -21,8 +21,6 @@ class Player < Ohm::Model
 	include PlayerLuckyRewardHelper
 	include PlayerBattleRankHelper
 	include KillBillQuest
-	include PlayerCaveHelper
-	include PlayerLoginGiftHelper
 
 	TYPE = {
 		:normal => 0,
@@ -61,11 +59,6 @@ class Player < Ohm::Model
 
 	attribute :last_login_time, 	Type::Integer
 
-	attribute :has_lottery,				Type::Boolean
-
-	attribute :session_key
-
-	attribute :gk_player_id	# Game Center player id
 
 	collection :dinosaurs, 				Dinosaur
 	collection :technologies, 		Technology
@@ -90,7 +83,6 @@ class Player < Ohm::Model
 	index :experience
 	index :country_id
 	index :player_type
-	index :gk_player_id
 
 	def is_npc?
 		player_type == TYPE[:npc]
@@ -118,19 +110,6 @@ class Player < Ohm::Model
 		@@bill_village
 	end
 
-	def self.find_by_account_id(account_id)
-		self.find(:account_id => account_id).first
-	end
-
-	def self.find_by_nickname(nkname)
-		self.find(:nickname => nkname).first
-	end
-
-	def self.find_by_gk_player_id(gk_id)
-		return nil if gk_id.blank?
-		self.find(:gk_player_id => gk_id).first
-	end
-
 	def village
 		Village[village_id]
 	end
@@ -146,16 +125,7 @@ class Player < Ohm::Model
 	end
 
 	def login!
-		curr_time = ::Time.now.to_i
-
-		todays_begin_time = ::Time.now.beginning_of_day.to_i
-
-		self.login_days = 0 if curr_time - last_login_time > 1.day.to_i
-		if last_login_time < todays_begin_time && curr_time > todays_begin_time
-			self.has_lottery = false
-			self.login_days += 1
-		end
-		self.sets :last_login_time => curr_time, :login_days => login_days, :has_lottery => has_lottery
+		self.set :last_login_time, ::Time.now.to_i
 	end
 
 	def in_league?
@@ -186,10 +156,7 @@ class Player < Ohm::Model
 			:player_type => player_type,
 			:warehouse_size => tech_warehouse_size,
 			:tax_rate => Deal::ORIGIN_TAX,
-			:login_days => login_days,
-			:has_lottery => true,
-			:in_league => in_league?,
-			:game_center_account => gk_player_id
+			:in_league => in_league?
 		}
 		opts = if args.include?(:all)
 			args | [:league, :god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :beginning_guide, :queue_info]
@@ -217,7 +184,7 @@ class Player < Ohm::Model
 				hash[:advisors] = my_advisors_info
 			when :beginning_guide
 				has_beginning_guide = !beginning_guide_finished
-				has_beginning_guide = false
+				# has_beginning_guide = false
 				hash[:has_beginning_guide] = has_beginning_guide
 				hash[:beginning_guide] = guide_info.current if has_beginning_guide
 			when :queue_info
@@ -286,7 +253,7 @@ class Player < Ohm::Model
 				:id => friend.id.to_i,
 				:nickname => friend.nickname,
 				:level => friend.level,
-				:rank => friend.my_battle_rank,
+				:rank => rand(1..1000),
 				:x => vil.x,
 				:y => vil.y,
 				:league_name => friend_league.name

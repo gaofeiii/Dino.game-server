@@ -11,11 +11,10 @@ DinosaurGame::Application.routes.draw do
 
   # 玩家信息
   scope :path => 'players', :as => 'players' do
-    post 'refresh'                => 'players#refresh'
-    post 'change_avatar'          => 'players#change_avatar'
-    post 'my_gold_mines'          => 'players#my_gold_mines'
-    post 'modify_nickname'        => 'players#modify_nickname'
-    post 'register_game_center'   => 'players#register_game_center'
+    post 'refresh'          => 'players#refresh'
+    post 'change_avatar'    => 'players#change_avatar'
+    post 'my_gold_mines'    => 'players#my_gold_mines'
+    post 'modify_nickname'  => 'players#modify_nickname'
   end
 
   # 村落
@@ -65,7 +64,6 @@ DinosaurGame::Application.routes.draw do
     post 'lucky_reward' => 'items#lucky_reward'
     post 'special_items_list' => 'items#special_items_list'
     post 'drop'         => 'items#drop'
-    post 'gift_lottery' => 'items#gift_lottery'
   end
 
   # 恐龙相关
@@ -193,14 +191,6 @@ DinosaurGame::Application.routes.draw do
     post 'refresh'   => 'daily_quest#refresh'
     post 'get_reward' => 'daily_quest#get_reward'
   end
-
-  # 巢穴副本
-  scope :path => 'cave', :as => 'cave' do
-    post 'attack_cave'    => 'cave#attack_cave'
-    post 'get_caves_info' => 'cave#get_caves_info'
-  end
-
-  match 'rating_us' => 'real_time_info#rating_us', :via => :post
 
   root :to => 'players#deny_access'
 

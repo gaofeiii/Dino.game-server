@@ -4,90 +4,59 @@ class SessionsController < ApplicationController
 
 	before_filter :get_device_token, :only => [:demo, :create, :register]
 	before_filter :validate_player, :only => [:update]
-	skip_filter :validate_session, :only => [:demo, :create, :register, :update]
 
 
+	# TODO:
 	# 试玩
-	# 	0. 检查是否有Game Center相关账号(gk_player_id)
-	# 	1. 从服务器获取试玩账号
-	# 	2. 创建新的player
 	def demo
-		@player = Player.find_by_gk_player_id(params[:gk_player_id])
-		@demo_account = {}
-
-		# Get a demo account from AccountServer
-		unless @player
-			@demo_account = trying(:server_ip => params[:server_ip])
-
-			render_error(Error::NORMAL, I18n.t('general.server_busy')) and return if not @demo_account[:success]
-
-			@player = creating_player(:account_id => @demo_account[:account_id], :gk_player_id => params[:gk_player_id])
-
-			render_error(Error::NORMAL, I18n.t('general.server_busy')) and return if @player.nil?
+		result = trying(:server_ip => params[:server_ip])
+		data = if result[:success]
+			player = create_player(result[:account_id])
+			player.reset_daily_quest!
+			player.refresh_village_status
+			player.refresh_god_status!
+			player.login!
+			Rails.logger.debug("*** New Player_id:#{player.id} ***")
+			{
+				:message => Error.success_message, 
+				:player => player.to_hash(:all), 
+				:username => result[:username],
+				:password => result[:password],
+				:const_version => ServerInfo.const_version
+			}
+		else
+			{
+				:message => Error.failed_message,
+				:error_type => Error::NORMAL
+			}
 		end
-
-		# Updating player's stuffs...
-		@player.reset_daily_quest!
-		@player.refresh_village_status
-		@player.refresh_god_status!
-		@player.login!
-
-		# create new session_key
-		new_session_key = generate_session_key(@player)
-		@player.set :session_key, new_session_key
-
-		render_success 	:player 				=> @player.to_hash(:all),
-										:is_new 				=> !@demo_account.empty?,
-										:username 			=> @demo_account[:username],
-										:password 			=> @demo_account[:password],
-										:session_key 		=> @player.session_key,
-										:const_version 	=> ServerInfo.const_version
+		render :json => data
 	end
 
 	# 登录
 	def create
-		@player = Player.find_by_gk_player_id(params[:gk_player_id])
-		@rcv_msg = {}
-		new_player = false
-
-		p "--- game center player", @player
-
-		# if current game center account is not registerted, create or find player
-		unless @player
-			@rcv_msg = account_authenticate :username 	=> params[:username], 
-																		 	:email 	 	=> params[:email], 
-																		 	:password 	=> params[:password],
-																		 	:server_id => params[:server_id]
-
-p @rcv_msg
-
-			render_error(Error::NORMAL, I18n.t('login_error.incorrect_username_or_password')) and return if not @rcv_msg[:success]
-
-			@player = Player.find_by_account_id(@rcv_msg[:account_id])
-
+		rcv_msg = account_authenticate :username 	=> params[:username], 
+																	 :email 	 	=> params[:email], 
+																	 :password 	=> params[:password],
+																	 :server_id => params[:server_id]
+		data = {:const_version => ServerInfo.const_version}
+		if rcv_msg[:success]
+			@player = Player.find(:account_id => rcv_msg[:account_id]).first
 			if @player.nil?
-				@player = creating_player(:account_id => @rcv_msg[:account_id], :gk_player_id => params[:gk_player_id])
-				new_player = true
+				@player = create_player(rcv_msg[:account_id])
 			else
-				@player.update :gk_player_id => params[:gk_player_id] if not params[:gk_player_id].blank?
+				@player.sets 	:device_token => @device_token,
+											:locale => LocaleHelper.get_server_locale_name(request.env["HTTP_CLIENT_LOCALE"])
+				@player.refresh_village_status
+				@player.reset_daily_quest!
+				@player.refresh_god_status!
 			end
-
+			@player.login!
+			data.merge!({:message => Error.success_message, :player => @player.to_hash(:all)})
+		else
+			data.merge!({:message => Error.failed_message, :error => I18n.t('login_error.incorrect_username_or_password')})
 		end
-
-		# Updating player's stuffs...
-		@player.reset_daily_quest!
-		@player.refresh_village_status
-		@player.refresh_god_status!
-		@player.login!
-
-		# create new session_key
-		new_session_key = generate_session_key(@player)
-		@player.set :session_key, new_session_key
-
-		render_success 	:player 				=> @player.to_hash(:all),
-										:is_new 				=> new_player,
-										:session_key 		=> @player.session_key,
-										:const_version 	=> ServerInfo.const_version
+		render :json => data
 	end
 
 	
@@ -158,18 +127,6 @@ p @rcv_msg
 									:nickname => n_name, 
 									:device_token => @device_token,
 									:locale => LocaleHelper.get_server_locale_name(request.env["HTTP_CLIENT_LOCALE"])
-	end
-
-	# Always return a new player
-	def creating_player(account_id: 0, nickname: "", gk_player_id: "")
-		guest_id = Ohm.redis.get(Player.key[:id]).to_i + 1
-		nkname = nickname.blank? ? "Player_#{guest_id}" : nickname
-
-		Player.create :account_id 	=> account_id,
-									:nickname			=> nkname,
-									:device_token => @device_token,
-									:locale 			=> request.env["HTTP_CLIENT_LOCALE"],
-									:gk_player_id => gk_player_id
 	end
 
 	def get_device_token

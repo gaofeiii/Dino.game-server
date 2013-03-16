@@ -22,7 +22,6 @@ class Monster < Ohm::Model
 	attribute 	:name
 
 	reference 	:gold_mine, GoldMine
-	reference		:cave,			PlayerCave
 	attribute		:creeps_id
 
 	index :creeps_id
