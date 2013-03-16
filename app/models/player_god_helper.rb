@@ -25,10 +25,10 @@ module PlayerGodHelper
 		end
 
 		def trigger_god_effect
-			return 0 if self.god_taken_effect_time > Time.now.beginning_of_day.to_i
+			return 0 if self.god_taken_effect_time >= Time.now.beginning_of_day.to_i
 
 			if Tool.rate(GOD_TRIGGER_CHANCE)
-				case curr_god.type
+				effect = case curr_god.type
 				when God.hashes[:argriculture]
 					res = ['wood', 'stone'].sample
 					self.set res, self.tech_warehouse_size
@@ -67,6 +67,9 @@ module PlayerGodHelper
 				else
 					0
 				end
+
+				self.set :god_taken_effect_time, Time.now.to_i
+				effect
 			else
 				0
 			end
