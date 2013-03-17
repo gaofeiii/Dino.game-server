@@ -133,6 +133,18 @@ namespace :background do
   end
 end
 
+namespace :server do
+  desc "Soft shutdown"
+  task :shutdown, :roles => :app do
+    run "sudo /usr/local/bin/redis-cli del Server:status"
+  end
+
+  desc "Soft start server"
+  task :start, :roles => :app do
+    run "sudo /usr/local/bin/redis-cli set Server:status 1"
+  end
+end
+
 task :deploy_all do
   find_and_execute_task("deploy:cleanup")
   find_and_execute_task("deploy")
