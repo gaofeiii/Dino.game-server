@@ -1,5 +1,7 @@
 puts "--- Data Refreshing... ---"
 
+Ohm.redis.set('Server:status', 1)
+
 Player.update_all_battle_rank!
 League.update_all_battle_rank!
 

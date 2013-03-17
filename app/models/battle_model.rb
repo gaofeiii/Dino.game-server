@@ -336,7 +336,8 @@ class BattleModel
 				result[:winner] = 'attacker'
 				attacker[:is_win] = true
 				defender[:is_win] = false
-				write_result(attacker, defender, :exp, :hp)
+				# write_result(attacker, defender, :exp, :hp)
+				write_result(attacker, defender, :exp)
 				return result.merge!(:time => Time.now.to_f)
 			end
 			return result

@@ -38,7 +38,7 @@ module PlayerCaveConst
 				star_3_chance = book.cell(i, 'O').to_f
 
 				reward = {}
-				reward[:gold] = gold if gold > 0
+				reward[:gold_coin] = gold if gold > 0
 				reward[:wood] = wood if wood > 0
 				reward[:stone] = stone if stone > 0
 

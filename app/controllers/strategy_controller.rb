@@ -354,7 +354,7 @@ class StrategyController < ApplicationController
 		winner.add_honour(win_score)
 		loser.dec_honour(win_score)
 
-		render_success(result.merge(:score => @player.honour_score))
+		render_success(result.merge(:score => @player.honour_score, :my_rank => @player.my_battle_rank))
 	end
 
 	def set_match_strategy

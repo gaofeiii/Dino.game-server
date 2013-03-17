@@ -10,13 +10,14 @@ class RealTimeInfoController < ApplicationController
 		shop_list[:lottery].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])[I18n.locale]}
 		shop_list[:scrolls].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])[I18n.locale]}
 		shop_list[:eggs].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])[I18n.locale]}
+		shop_list[:gems].each{|x| x[:desc] = 'gems hohoho'}
 
 		
 		data = {
 			:data => {
 				:version => ServerInfo.info[:info_const_version],
 				:buildings => Building.cost,
-				:technologies => Technology.cost,
+				# :technologies => Technology.cost,
 				:guide_reward => Player.beginning_guide_reward,
 				:shopping_list => shop_list,
 				:dinosaurs => {:recovery_speed => 60}, # 等级*60秒

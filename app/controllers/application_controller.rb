@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   after_filter :log_info if Rails.env.development?
 
+  before_filter :check_server_status
+
   before_filter :redis_access_log
   before_filter :set_default_locale
   before_filter :validate_sig
@@ -9,6 +11,14 @@ class ApplicationController < ActionController::Base
   private
 
   # === Logs ===
+
+  def check_server_status
+    is_on = Ohm.redis.get('Server:status')
+
+    if is_on.nil?
+      render_error(Error::NORMAL, "Server shutdown") and return
+    end
+  end
 
   def redis_access_log
     $redis_count = 0
@@ -74,7 +84,8 @@ class ApplicationController < ActionController::Base
   # Render error message.
   def render_error(error_type = nil, error_message = nil)
     render :json => {
-      :message => Error.failed_message,
+      # :message => Error.failed_message,
+      :message => error_message,
       :error_type => error_type.to_i,
       :error => error_message
     }
