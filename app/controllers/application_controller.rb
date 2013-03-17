@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_version
+    p "=======", request.env['HTTP_USER_AGENT']
     if Ohm.redis.exists('Server:check_version')
       # TODO: 
     end

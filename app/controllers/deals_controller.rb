@@ -139,7 +139,8 @@ class DealsController < ApplicationController
 											:price => price,
 											:gid => gid,
 											:end_time => Time.now.to_i + 3.days,
-											:seller_id => @player.id
+											:seller_id => @player.id,
+											:quality => egg.quality
 				egg.update :player_id => nil
 			end
 		when Deal::CATEGORIES[:food]

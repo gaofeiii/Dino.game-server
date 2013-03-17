@@ -53,6 +53,7 @@ class Deal < Ohm::Model
 	attribute :status, 		Type::Integer		# Deal的状态，1表示出售者，2表示交易关闭
 	attribute :category,	Type::Integer 	# 交易物品的种类
 	attribute :type,	 		Type::Integer		# 物品的类型
+	attribute :quality,		Type::Integer		# 恐龙蛋的品质
 	attribute :gid, 			Type::Integer		# 非资源性物品的id
 	attribute :count,			Type::Integer		# 资源物品的数量
 	attribute :end_time,	Type::Integer		# 结束时间
@@ -89,7 +90,8 @@ class Deal < Ohm::Model
 			:seller_name => @seller.nickname,
 			:seller_id => @seller.id,
 			:count => count,
-			:price => price
+			:price => price,
+			:quality => quality
 		}
 		case category
 		when CATEGORIES[:egg]
