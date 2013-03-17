@@ -2,6 +2,7 @@
   hello: "Hello"
 
   system: "system"
+  system_maintaining: "The server is under maintaining for a few mins, please try again later"
   monster_name:
    general: "monster"
    cave: "Cave"
