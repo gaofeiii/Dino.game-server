@@ -27,8 +27,6 @@ class DealsController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('deals_error.cannot_buy_self_goods')) and return
 		end
 
-		p "--- after: deal.goods_name: #{deal.goods_name(deal.seller.locale)}"
-
 		deal.mutex(0.5) do
 			case deal.category
 			when Deal::CATEGORIES[:res]
@@ -63,14 +61,14 @@ class DealsController < ApplicationController
 				render_error(Error::NORMAL, "INVALID_ITEM_CATE") and return
 			end
 
-			p "--- after: deal.goods_name: #{deal.goods_name(deal.seller.locale)}"
 			seller = deal.seller
 			Mail.create_deal_succses_mail :receiver_name => seller.nickname,
 																		:receiver_id => seller.id,
 																		:buyer => @player.nickname,
 																		:gold => deal.price.to_i,
 																		:goods_name => deal.goods_name(seller.locale),
-																		:count => deal.count
+																		:count => deal.count,
+																		:locale => seller.locale
 			deal.delete
 		end
 		render_success(:player => @player.to_hash(:resources), :deal_id => deal.id)
