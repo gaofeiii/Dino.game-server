@@ -1,10 +1,15 @@
 require 'net/http'
 
 module SessionsHelper
+
+	def test_log_info
+		p "--- account server: #{ServerInfo.account_server} ---"
+	end
 	
 	# 与账户服务器交互的方法	
 
 	def account_authenticate(params = {})
+		test_log_info
 		http_post "#{ServerInfo.account_server}/signin", params
 	end
 
@@ -25,6 +30,7 @@ module SessionsHelper
 	end
 
 	def trying(params = {})
+		test_log_info
 		http_post("#{ServerInfo.account_server}/try_playing", params)
 	end
 

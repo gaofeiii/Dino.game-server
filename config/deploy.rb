@@ -5,9 +5,10 @@ require 'bundler/capistrano'
 # Server list
 @linode = "106.187.91.156"
 @a001 = "50.112.84.136"
+@ali001 = "42.120.23.41"
 
 # Deploy server
-@@server = [@linode]
+@@server = [@ali001]
 
 set :rvm_ruby_string, "2.0.0@dinosaur_game"
 set :rvm_type, :user

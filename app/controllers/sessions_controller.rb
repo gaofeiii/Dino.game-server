@@ -15,6 +15,8 @@ class SessionsController < ApplicationController
 		@player = Player.find_by_gk_player_id(params[:gk_player_id])
 		@demo_account = {}
 
+		p '--- player', @player
+
 		# Get a demo account from AccountServer
 		unless @player
 			@demo_account = trying(:server_ip => params[:server_ip])
@@ -26,16 +28,19 @@ class SessionsController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('general.server_busy')) and return if @player.nil?
 		end
 
-		# Updating player's stuffs...
+		p "Updating player's stuffs..."
 		@player.reset_daily_quest!
 		@player.refresh_village_status
 		@player.refresh_god_status!
 		@player.login!
 
-		# create new session_key
+		p "create new session_key"
 		new_session_key = generate_session_key(@player)
+
+		p 'set session_key'
 		@player.set :session_key, new_session_key
 
+		p '--- rendering...'
 		render_success 	:player 				=> @player.to_hash(:all),
 										:is_new 				=> !@demo_account.empty?,
 										:username 			=> @demo_account[:username],
@@ -50,7 +55,6 @@ class SessionsController < ApplicationController
 		@rcv_msg = {}
 		new_player = false
 
-		p "--- game center player", @player
 
 		# if current game center account is not registerted, create or find player
 		unless @player
@@ -59,7 +63,6 @@ class SessionsController < ApplicationController
 																		 	:password 	=> params[:password],
 																		 	:server_id => params[:server_id]
 
-p @rcv_msg
 
 			render_error(Error::NORMAL, I18n.t('login_error.incorrect_username_or_password')) and return if not @rcv_msg[:success]
 
