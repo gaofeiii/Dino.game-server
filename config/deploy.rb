@@ -81,7 +81,12 @@ end
 namespace :redis do
   desc "Starting redis in production mode"
   task :start, :roles => :app do
-    run "sudo /usr/local/bin/redis-server #{current_path}/config/redis/redis-production.conf"
+    run "sudo /usr/local/bin/redis-server #{deploy_to}/shared/redis-production.conf"
+  end
+
+  desc "Uploading redis conf"
+  task :update, :roles => :app do
+    run "cp #{current_path}/config/redis/redis-production.conf #{deploy_to}/shared/"
   end
 
   task :stop do
