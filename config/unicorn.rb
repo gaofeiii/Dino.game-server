@@ -40,14 +40,14 @@ before_fork do |server, worker|
       # someone else did our job for us
     end
   end
-  # Ohm.redis.quit
-  Redis.current.quit
+  Ohm.redis.quit
+  # Redis.current.quit
 end
 
 after_fork do |server, worker|
-  # Ohm.connect :host => "127.0.0.7", :port => 6379, :driver => :hiredis
+  Ohm.connect :host => "127.0.0.7", :port => 6379, :driver => :hiredis
   # Redis.connect :host => "127.0.0.7", :port => 6379, :driver => :hiredis
-  Redis.connect(ServerInfo.current.redis.merge(:driver => :hiredis))
+  # Redis.connect(ServerInfo.current.redis.merge(:driver => :hiredis))
   # the following is *required* for Rails + "preload_app true",
   # if defined?(ActiveRecord::Base)
   #   ActiveRecord::Base.establish_connection
