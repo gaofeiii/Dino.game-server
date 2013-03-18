@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
     if status.nil?
       render :json => {
         :message => I18n.t('system_maintaining'),
-        :error_type => error_type.to_i,
+        :error_type => Error::NORMAL,
         :error => I18n.t('system_maintaining')
       }
     end

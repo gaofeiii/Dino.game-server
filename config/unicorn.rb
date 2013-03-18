@@ -1,7 +1,6 @@
 require 'ohm'
 require 'redis/connection/hiredis'
 
-
 application = "dinosaur"
 
 working_directory "/var/games/servers/#{application}/current"
@@ -42,10 +41,13 @@ before_fork do |server, worker|
     end
   end
   Ohm.redis.quit
+  # Redis.current.quit
 end
 
 after_fork do |server, worker|
   Ohm.connect :host => "127.0.0.7", :port => 6379, :driver => :hiredis
+  # Redis.connect :host => "127.0.0.7", :port => 6379, :driver => :hiredis
+  # Redis.connect(ServerInfo.current.redis.merge(:driver => :hiredis))
   # the following is *required* for Rails + "preload_app true",
   # if defined?(ActiveRecord::Base)
   #   ActiveRecord::Base.establish_connection

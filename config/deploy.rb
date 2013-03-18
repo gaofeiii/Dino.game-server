@@ -7,7 +7,7 @@ require 'bundler/capistrano'
 @a001 = "50.112.84.136"
 
 # Deploy server
-@@server = [@a001]
+@@server = [@linode]
 
 set :rvm_ruby_string, "2.0.0@dinosaur_game"
 set :rvm_type, :user
@@ -26,7 +26,7 @@ set :keep_releases, 5
 
 set :repository,  "gitolite@106.187.91.156:dinosaur_game_server.git"
 set :scm, :git
-set :branch, "master"
+set :branch, "v101"
 
 role :web, *@@server
 role :app, *@@server
@@ -81,7 +81,12 @@ end
 namespace :redis do
   desc "Starting redis in production mode"
   task :start, :roles => :app do
-    run "sudo /usr/local/bin/redis-server #{current_path}/config/redis/redis-production.conf"
+    run "sudo /usr/local/bin/redis-server #{deploy_to}/shared/redis-production.conf"
+  end
+
+  desc "Uploading redis conf"
+  task :update, :roles => :app do
+    run "cp #{current_path}/config/redis/redis-production.conf #{deploy_to}/shared/"
   end
 
   task :stop do
@@ -133,7 +138,7 @@ namespace :background do
   end
 end
 
-namespace :server do
+namespace :game do
   desc "Soft shutdown"
   task :shutdown, :roles => :app do
     run "sudo /usr/local/bin/redis-cli del Server:status"
