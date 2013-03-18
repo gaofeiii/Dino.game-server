@@ -7,7 +7,7 @@ require 'bundler/capistrano'
 @a001 = "50.112.84.136"
 
 # Deploy server
-@@server = [@a001]
+@@server = [@linode]
 
 set :rvm_ruby_string, "2.0.0@dinosaur_game"
 set :rvm_type, :user
@@ -133,7 +133,7 @@ namespace :background do
   end
 end
 
-namespace :server do
+namespace :game do
   desc "Soft shutdown"
   task :shutdown, :roles => :app do
     run "sudo /usr/local/bin/redis-cli del Server:status"

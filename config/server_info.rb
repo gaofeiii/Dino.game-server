@@ -11,6 +11,27 @@ class Hash
   end unless Hash.method_defined?(:deep_symbolize_keys)
 end
 
+module ServerHelper
+
+	module RedisHelper
+		def host
+			self[:host]
+		end
+
+		def port
+			self[:port]
+		end
+
+		def address
+			"#{host}:#{port}"
+		end
+	end
+	
+	def redis
+		self[:redis].extend(RedisHelper)
+	end
+end
+
 class ServerInfo
 	# include OhmExtension
 
@@ -36,8 +57,9 @@ class ServerInfo
 		end
 
 		def info
-			all[server_name]
+			all[server_name].extend(ServerHelper)
 		end
+		alias current info
 
 		def account_server
 			"http://#{info[:account_server_ip]}:#{info[:account_server_port]}"
