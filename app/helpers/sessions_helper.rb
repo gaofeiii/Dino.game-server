@@ -81,7 +81,7 @@ module SessionsHelper
 			http.request(req)
 		end
 
-		# res = Net::HTTP.post_form uri, params
+		# res = Net::HTTP.post_form uri , params
 		data = JSON.parse(res.body).deep_symbolize_keys
 		p "--- account server data ---", data
 		data
