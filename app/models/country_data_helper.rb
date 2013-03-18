@@ -138,21 +138,21 @@ module CountryDataHelper
 
 						points = [
 							# 1
-							Point.new(x+3, y+3, 1),
-							Point.new(x+10, y+3, 2),
-							Point.new(x+10, y+10, 1),
+							::Point.new(x+3, y+3, 1),
+							::Point.new(x+10, y+3, 2),
+							::Point.new(x+10, y+10, 1),
 							# 2
-							Point.new(x+3, y+17, 1),
-							Point.new(x+10, y+17, 2),
-							Point.new(x+10, y+24, 1),
+							::Point.new(x+3, y+17, 1),
+							::Point.new(x+10, y+17, 2),
+							::Point.new(x+10, y+24, 1),
 							# 3
-							Point.new(x+17, y+3, 1),
-							Point.new(x+24, y+3, 2),
-							Point.new(x+24, y+10, 1),
+							::Point.new(x+17, y+3, 1),
+							::Point.new(x+24, y+3, 2),
+							::Point.new(x+24, y+10, 1),
 							# 4
-							Point.new(x+17, y+17, 1),
-							Point.new(x+24, y+17, 2),
-							Point.new(x+24, y+24, 1),
+							::Point.new(x+17, y+17, 1),
+							::Point.new(x+24, y+17, 2),
+							::Point.new(x+24, y+24, 1),
 						]
 
 						points.each do |point|
@@ -167,7 +167,7 @@ module CountryDataHelper
 									break
 								end
 
-								e_point = Point.new(node % COORD_TRANS_FACTOR, node / COORD_TRANS_FACTOR)
+								e_point = ::Point.new(node % COORD_TRANS_FACTOR, node / COORD_TRANS_FACTOR)
 								if e_point.x.in?(GOLD_MINE_X_RANGE) && e_point.y.in?(GOLD_MINE_Y_RANGE)
 									ret = false
 									break
@@ -191,12 +191,12 @@ module CountryDataHelper
 				## 公会争夺战-危险村庄和特殊金矿的位置
 				# 二级地图中，公会战的区域为(450,450)~(550,550)
 				# 其中海的区域宽度为10的环状，危险村庄的区域为宽度为10的环状，中间60*60的区域为金矿区
-				start_point = Point.new(465, 467)
-				end_point = Point.new(535, 537)
+				start_point = ::Point.new(465, 467)
+				end_point = ::Point.new(535, 537)
 
 				points = []
-				start_point.x.step(end_point.x, 5) { |x| points += [Point.new(x, start_point.y + rand(-2..2)), Point.new(x, end_point.y + rand(-2..2))] }
-				start_point.y.step(end_point.y, 5) { |y| points += [Point.new(start_point.x + rand(-2..2), y), Point.new(end_point.x + rand(-2..2), y)] }
+				start_point.x.step(end_point.x, 5) { |x| points += [::Point.new(x, start_point.y + rand(-2..2)), ::Point.new(x, end_point.y + rand(-2..2))] }
+				start_point.y.step(end_point.y, 5) { |y| points += [::Point.new(start_point.x + rand(-2..2), y), ::Point.new(end_point.x + rand(-2..2), y)] }
 
 				points.uniq!
 				points.each do |pt|
@@ -214,17 +214,17 @@ module CountryDataHelper
 					end
 				end
 				
-				gold_start = Point[470, 470]
-				gold_end 	 = Point[530, 530]
+				gold_start = ::Point[470, 470]
+				gold_end 	 = ::Point[530, 530]
 
 				gold_start.x.step(gold_end.x - 1, 15) do |x|
 					gold_start.y.step(gold_end.y - 1, 15) do |y|
 
 						gold_points = [
-							Point.new(x+3, y+3),
-							Point.new(x+3, y+11),
-							Point.new(x+11, y+3),
-							# Point.new(x+11, y+11),
+							::Point.new(x+3, y+3),
+							::Point.new(x+3, y+11),
+							::Point.new(x+11, y+3),
+							# ::Point.new(x+11, y+11),
 						]
 
 						gold_points.each do |point|

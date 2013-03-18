@@ -53,7 +53,7 @@ end
 
 	# Return an array of points
 	def product(other)
-		[self.x, self.y].product([other.x, other.y]).map!{|coords| Point.new(*coords)}
+		[self.x, self.y].product([other.x, other.y]).map!{|coords| ::Point.new(*coords)}
 	end
 
 	# Return the points of the straight line between two points
