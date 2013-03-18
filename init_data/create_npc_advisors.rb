@@ -1,3 +1,12 @@
+if Country.count <= 0
+	puts '--- Initializing country and maps info ---'
+	1.upto(1) do |i|
+		country = Country.create :index => i
+		country.init_new!
+		country.create_gold_mines
+	end
+end
+
 if Player.find(:player_type => Player::TYPE[:npc]).size < 1
 	puts "--- Creating NPC Players ---"
 	players = 4.times.map do
