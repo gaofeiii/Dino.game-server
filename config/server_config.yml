@@ -6,7 +6,7 @@ gaofei.local:
  info_const_version: 5
  env: dev
  redis:
-  host: 106.187.91.156
+  host: 42.120.23.41
   port: 6379
 
 dinotest:
