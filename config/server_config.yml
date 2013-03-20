@@ -6,7 +6,7 @@ gaofei.local:
  info_const_version: 5
  env: dev
  redis:
-  host: 192.168.1.200
+  host: 127.0.0.1
   port: 6379
 
 
@@ -17,6 +17,9 @@ dinotest:
  account_server_port: 10001
  info_const_version: 5
  env: dev
+ redis:
+  host: 127.0.0.1
+  port: 6379
 
 a001:
  ip: 50.112.84.136
@@ -25,3 +28,6 @@ a001:
  account_server_port: 10001
  info_const_version: 5
  env: production
+ redis:
+  host: 127.0.0.1
+  port: 6379
