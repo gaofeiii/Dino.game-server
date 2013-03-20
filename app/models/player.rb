@@ -495,7 +495,7 @@ class Player < Ohm::Model
 
 		total = mines.sum do |mine|
 			delta_t = (Time.now.to_i - mine.update_gold_time) / 3600.0
-			harvest_gold_count = (delta_t * output).to_i
+			harvest_gold_count = (delta_t * mine.output).to_i
 
 			self.receive!(:gold => harvest_gold_count) if harvest_gold_count > 0
 			harvest_gold_count.to_i
