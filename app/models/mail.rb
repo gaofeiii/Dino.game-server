@@ -132,8 +132,8 @@ class Mail < Ohm::Model
 										:sender_name 		=> I18n.t('system', :locale => locale),
 										:receiver_name 	=> args[:receiver_name],
 										:receiver_id		=> args[:receiver_id],
-										:title 					=> I18n.t('mail.goldmine_receive.title', :locale => locale),
-										:content				=> I18n.t('mail.goldmine_receive.content', :locale => locale, :count => args[:count])
+										:title 					=> I18n.t('mail.goldmine_receive_total.title', :locale => locale),
+										:content				=> I18n.t('mail.goldmine_receive_total.content', :locale => locale, :count => args[:count])
 		mail.save
 	end
 
