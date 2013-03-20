@@ -8,11 +8,9 @@ require 'ohm/contrib'
 
 Redis.current = case Rails.env
 when "production"
-  #Redis.new ServerInfo.current.redis.merge(:driver => :hiredis, :db => 0)
-  Ohm.connect ServerInfo.current.redis.merge(:driver => :hiredis, :db => 0)
+  Redis.new ServerInfo.current.redis.merge(:driver => :hiredis, :db => 0)
 when "development"
-  #Redis.new ServerInfo.current.redis.merge(:driver => :hiredis, :db => 0)
-  Ohm.connect ServerInfo.current.redis.merge(:driver => :hiredis, :db => 0)
+  Redis.new ServerInfo.current.redis.merge(:driver => :hiredis, :db => 0)
 when "test"
   Redis.new :host => "127.0.0.1", :port => 6377, :driver => :hiredis, :db => 0
 end
@@ -21,24 +19,24 @@ $my_config = {:redis_access_log => false}
 
 module Ohm
 
-  #def self.redis
-  #  if Rails.env.development?
-  #    $redis_count ||= 0
-  #    $redis_count += 1
-  #    puts "*--- Ohm.redis ---*" if $my_config[:redis_access_log]
-  #  end
-  #  Redis.current
-  #end
+  def self.redis
+   if Rails.env.development?
+     $redis_count ||= 0
+     $redis_count += 1
+     puts "*--- Ohm.redis ---*" if $my_config[:redis_access_log]
+   end
+   Redis.current
+  end
 
   class Model
-    #def self.db
-    #  if Rails.env.development?
-    #    $redis_count ||= 0
-    #    $redis_count += 1
-    #    puts "*--- Model.db ---*" if $my_config[:redis_access_log]
-    #  end
-    #  Redis.current
-    #end
+    def self.db
+     if Rails.env.development?
+       $redis_count ||= 0
+       $redis_count += 1
+       puts "*--- Model.db ---*" if $my_config[:redis_access_log]
+     end
+     Redis.current
+    end
 
     def id
       raise MissingID if not defined?(@id)
