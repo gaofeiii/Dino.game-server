@@ -141,16 +141,12 @@ class GoldMine < Ohm::Model
 
 	# 将goldmine列入刷新队列
 	def move_to_refresh_queue(refresh_time)
-		Background.add_queue(self.class, id, 'refresh_gold!', refresh_time)
+		# Background.add_queue(self.class, id, 'refresh_gold!', refresh_time)
 	end
 
 	def self.refresh_all_players_goldmine
-		Player.none_npc.ids.each do |player_id|
-			player = Player.new(:id => player_id)
-
-			player.gold_mines.each do |goldmine|
-				goldmine.refresh_gold!
-			end
+		Player.none_npc.each do |player|
+			player.harvest_gold_mines
 		end
 	end
 

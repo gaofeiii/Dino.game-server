@@ -499,7 +499,9 @@ class Player < Ohm::Model
 
 			self.receive!(:gold => harvest_gold_count) if harvest_gold_count > 0
 			harvest_gold_count.to_i
+			mine.set :update_gold_time, Time.now.to_i
 		end
+		
 		Mail.create_goldmine_total_harvest_mail :receiver_id 		=> self.id,
 																						:receiver_name 	=> self.nickname,
 																						:locale 				=> self.locale,
