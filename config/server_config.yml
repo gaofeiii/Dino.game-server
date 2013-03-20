@@ -6,7 +6,7 @@ gaofei.local:
  info_const_version: 5
  env: dev
  redis:
-  host: 42.120.23.41
+  host: 127.0.0.1
   port: 6379
 
 dinotest:
@@ -17,7 +17,7 @@ dinotest:
  info_const_version: 9
  env: dev
  redis:
-  host: 106.187.91.156
+  host: 127.0.0.1
   port: 6379
 
 a001:
@@ -28,7 +28,7 @@ a001:
  info_const_version: 9
  env: production
  redis:
-  host: 50.112.84.136
+  host: 127.0.0.1
   port: 6379
 
 ali001:
