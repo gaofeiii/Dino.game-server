@@ -133,8 +133,6 @@ class GoldMine < Ohm::Model
 			end
 			
 		end
-		
-
 	end
 
 	# 将goldmine列入刷新队列
