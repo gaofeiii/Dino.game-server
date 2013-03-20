@@ -111,7 +111,7 @@ class Mail < Ohm::Model
 								:cached_data 		=> {:player_id => args[:player_id], :receiver_id => args[:receiver_id], :league_id => args[:league_id]}
 	end
 
-	# 创建普通金矿收获邮件
+	# 创建普通金矿收获邮件1
 	def self.create_goldmine_harvest_mail(args = {})
 		locale = args[:locale] || :en
 		mail = self.new :mail_type 			=> TYPE[:system],
@@ -121,6 +121,19 @@ class Mail < Ohm::Model
 										:receiver_id		=> args[:receiver_id],
 										:title 					=> I18n.t('mail.goldmine_receive.title', :locale => locale),
 										:content				=> I18n.t('mail.goldmine_receive.content', :locale => locale, :x => args[:x], :y => args[:y], :count => args[:count])
+		mail.save
+	end
+
+	# 创建普通金矿收获邮件2
+	def self.create_goldmine_total_harvest_mail(args = {})
+		locale = args[:locale] || :en
+		mail = self.new :mail_type 			=> TYPE[:system],
+										:sys_mail_type 	=> SYS_TYPE[:normal],
+										:sender_name 		=> I18n.t('system', :locale => locale),
+										:receiver_name 	=> args[:receiver_name],
+										:receiver_id		=> args[:receiver_id],
+										:title 					=> I18n.t('mail.goldmine_receive.title', :locale => locale),
+										:content				=> I18n.t('mail.goldmine_receive.content', :locale => locale, :count => args[:count])
 		mail.save
 	end
 
