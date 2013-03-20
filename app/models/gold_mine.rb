@@ -82,6 +82,10 @@ class GoldMine < Ohm::Model
 			:goldmine_type => goldmine_type
 		}
 
+		if type == TYPE[:league] && !winner_league_id.blank?
+			hash[:owner_name] = db.hget(League.key[winner_league_id], :name)
+		end
+
 		stra = strategy
 		hash[:strategy] = stra.to_hash if stra
 
