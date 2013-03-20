@@ -127,12 +127,12 @@ class GoldMine < Ohm::Model
 
 			if harvest_gold_count > 0
 				@player.receive!(:gold => harvest_gold_count)
-				Mail.create_goldmine_harvest_mail :receiver_id 		=> @player.id,
-																					:receiver_name 	=> @player.nickname,
-																					:locale 				=> @player.locale,
-																					:x 							=> x,
-																					:y 							=> y,
-																					:count 					=> harvest_gold_count
+				Mail.create_goldmine_total_harvest_mail :receiver_id 		=> @player.id,
+																								:receiver_name 	=> @player.nickname,
+																								:locale 				=> @player.locale,
+																								:x 							=> x,
+																								:y 							=> y,
+																								:count 					=> harvest_gold_count
 				self.set :update_gold_time, t
 			end
 			
