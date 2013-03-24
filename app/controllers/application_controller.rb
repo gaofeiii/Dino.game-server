@@ -26,7 +26,11 @@ class ApplicationController < ActionController::Base
   def check_version
     p "======= Client Version #{request.env['HTTP_USER_AGENT']}"
     if request.env['HTTP_USER_AGENT'] != "1.0.1"
-      render_error(Error::NORMAL, I18n.t('client_version_expired'))
+      render :json => {
+        :message => I18n.t('client_version_expired'),
+        :error_type => Error::NORMAL,
+        :error => I18n.t('client_version_expired')
+      }
     end
     # if Ohm.redis.exists('Server:check_version')
     # end
