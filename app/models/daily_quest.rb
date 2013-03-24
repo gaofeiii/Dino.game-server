@@ -19,6 +19,7 @@ module DailyQuest
 
 			reward = @@daily_quest_info[:data][idx]
 			return {} if reward.blank?
+
 			info = @@daily_quest_info[locale.to_sym][idx]
 			return info.merge(reward)
 		end

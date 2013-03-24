@@ -10,7 +10,7 @@ class RealTimeInfoController < ApplicationController
 		shop_list[:lottery].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])[I18n.locale]}
 		shop_list[:scrolls].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])[I18n.locale]}
 		shop_list[:eggs].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])[I18n.locale]}
-		shop_list[:gems].each{|x| x[:desc] = 'gems hohoho'}
+		shop_list[:gems].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])[I18n.locale]}
 
 		
 		data = {

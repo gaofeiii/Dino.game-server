@@ -59,6 +59,13 @@ module ShoppingConst
 				reference_name = book.cell(i,'F')
 				usd_price = book.cell(i, 'G').to_f
 				cny_price = book.cell(i, 'H').to_f
+				cn_desc = book.cell(i, 'M')
+				en_desc = book.cell(i, 'N')
+
+				@@goods_desc[sid] = {
+					:cn => cn_desc,
+					:en => en_desc
+				}
 
 				@@all_goods[:gems] << {
 					:sid => sid,
