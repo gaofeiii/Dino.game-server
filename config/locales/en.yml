@@ -3,6 +3,7 @@
 
   system: "system"
   system_maintaining: "The server is under maintaining for a few mins, please try again later"
+  client_version_expired: "New version v1.0.1 is available in App Store, please download and try again"
   monster_name:
    general: "monster"
    cave: "Cave"
