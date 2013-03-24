@@ -23,6 +23,7 @@ class Player < Ohm::Model
 	include KillBillQuest
 	include PlayerCaveHelper
 	include PlayerLoginGiftHelper
+	include PlayerShppingHelper
 
 	TYPE = {
 		:normal => 0,
@@ -460,16 +461,18 @@ class Player < Ohm::Model
 		end
 	end
 
-	def receive_reward!(reward)
+	def receive_reward!(reward = {})
+		return false if reward.blank?
+
 		self.receive!(reward)
 		self.earn_exp!(reward[:xp]) if reward.has_key?(:xp)
 
 		if reward.has_key?(:items)
 			reward[:items].each do |itm|
-				if itm[:item_cat] = Item.categories[:food]
+				if itm[:item_cat] == Item.categories[:food]
 					self.receive_food!(itm[:item_type], itm[:item_count])
 				else
-					Item.create(:item_category => itm[:item_cat], :item_type => itm[:item_type], :player_id => id)
+					Item.create(:item_category => itm[:item_cat], :item_type => itm[:item_type], :quality => itm[:quality], :player_id => id)
 				end
 			end
 		end

@@ -12,6 +12,19 @@ module ShoppingConst
 		@@all_goods_hash = Hash.new
 		@@goods_desc = Hash.new
 
+		@@first_time_rewards = {
+			1001 => {:gold => 100000 },
+			1002 => {:items => [{:item_cat => 1, :item_type => 9, :item_count => 1, :quality => 1}]},
+			1003 => {:items => [{:item_cat => 1, :item_type => 9, :item_count => 1, :quality => 2}]},
+			1004 => {:items => [{:item_cat => 1, :item_type => 9, :item_count => 1, :quality => 3},
+													{:item_cat => 1, :item_type => 8, :item_count => 1, :quality => 3}]},
+			1005 => {:items => [{:item_cat => 1, :item_type => 9, :item_count => 1, :quality => 4}]},
+		}
+
+		def first_time_rewards
+			@@first_time_rewards
+		end
+
 		def const
 			if @@all_goods.blank?
 				reload!

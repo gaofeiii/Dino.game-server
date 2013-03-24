@@ -44,7 +44,28 @@ class AppStoreOrder < Ohm::Model
   def validate!
   	return false if (is_validated || !is_valid)
 
-  	result = self.class.validate_iap(base64_receipt)
+    result = self.class.validate_iap(base64_receipt)
+  	# result example:
+    # result = {
+    #   :receipt=> {
+    #     :original_purchase_date_pst=>"2013-03-24 00:15:36 America/Los_Angeles", 
+    #     :purchase_date_ms=>"1364109336550",
+    #     :unique_identifier=>"22053267bb1848dc69310c3d3b7c123a917106ea", 
+    #     :original_transaction_id=>"1000000068937410", 
+    #     :bvrs=>"1.0.1", 
+    #     :transaction_id=>"1000000068937410", 
+    #     :quantity=>"1", 
+    #     :unique_vendor_identifier=>"6B68A579-E9FF-4784-B045-1ED2E78385BD", 
+    #     :item_id=>"612241660", 
+    #     :product_id=>"com.dinosaur.gems.usd4999", 
+    #     :purchase_date=>"2013-03-24 07:15:36 Etc/GMT", 
+    #     :original_purchase_date=>"2013-03-24 07:15:36 Etc/GMT", 
+    #     :purchase_date_pst=>"2013-03-24 00:15:36 America/Los_Angeles", 
+    #     :bid=>"com.gaofei.dinostyle-international", 
+    #     :original_purchase_date_ms=>"1364109336550"
+    #   },
+    #   :status=>0
+    # }
 
   	if result[:status] == 0
  			self.product_id = result[:receipt][:product_id]

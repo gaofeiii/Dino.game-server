@@ -37,7 +37,7 @@ ali001:
  account_server_ip: 50.112.84.136
  account_server_port: 10001
  info_const_version: 10
- env: dev
+ env: production
  redis:
   host: 127.0.0.1
   port: 6379

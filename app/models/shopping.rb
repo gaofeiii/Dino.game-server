@@ -20,6 +20,15 @@ class Shopping
 			nil
 		end
 
+		def find_sid_by_product_id(product_id)
+			itm = find_iap_info_by_product_id(product_id)
+			return itm[:sid] if itm
+		end
+
+		def find_first_reward_by_sid(sid)
+			first_time_rewards[sid]
+		end
+
 		def find_gems_count_by_product_id(product_id)
 			itm = find_iap_info_by_product_id(product_id)
 			

@@ -11,6 +11,16 @@ class ShoppingController < ApplicationController
 
 		if order.validate!
 			@player.get(:gems)
+
+			sid = Shopping.find_sid_by_product_id(order.product_id)
+
+			if sid && @player.first_purchase_reward[sid].blank?
+				reward = Shopping.find_first_reward_by_sid(sid)
+				@player.receive_reward!(reward)
+				@player.first_purchase_reward[sid] = 1
+				@player.set :first_purchase_reward, @player.first_purchase_reward.to_json
+			end
+
 			render_success 	:player => @player.to_hash,
 											:transaction_id => params[:transaction_id],
 											:is_finished => true

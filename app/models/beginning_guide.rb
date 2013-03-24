@@ -64,6 +64,7 @@ module BeginningGuide
 		model.extend(ClassMethods)
 	end
 	
+	# Instance methods
 	def save!
 		self.guide_info = self.guide_info.except(:player).to_json
 		self.guide_cache = {}.to_json if self.guide_cache.nil?
