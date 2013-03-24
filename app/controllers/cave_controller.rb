@@ -92,6 +92,8 @@ class CaveController < ApplicationController
 				result[:reward] = reward
 			end
 
+			@player.receive_reward!(reward)
+
 			@cave.todays_count += 1
 			@cave.stars = stars if @cave.stars < stars
 			@cave.save
