@@ -3,7 +3,7 @@ gaofei.local:
  port: 3001
  account_server_ip: 106.187.91.156
  account_server_port: 10001
- info_const_version: 5
+ info_const_version: 10
  env: dev
  redis:
   host: 127.0.0.1
@@ -14,7 +14,7 @@ dinotest:
  port: 10002
  account_server_ip: 106.187.91.156
  account_server_port: 10001
- info_const_version: 9
+ info_const_version: 10
  env: dev
  redis:
   host: 127.0.0.1
@@ -25,7 +25,7 @@ a001:
  port: 10002
  account_server_ip: 50.112.84.136
  account_server_port: 10001
- info_const_version: 9
+ info_const_version: 10
  env: production
  redis:
   host: 127.0.0.1
@@ -36,7 +36,7 @@ ali001:
  port: 10002
  account_server_ip: 50.112.84.136
  account_server_port: 10001
- info_const_version: 9
+ info_const_version: 10
  env: dev
  redis:
   host: 127.0.0.1

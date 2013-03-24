@@ -234,6 +234,10 @@ cn:
     title: "金矿收获报告"
     content: "恭喜你！你所占占领的金矿(%{x}, %{y})产出%{count}金币，已收获到仓库中"
 
+   goldmine_receive_total:
+    title: "金矿收获报告"
+    content: "恭喜你！你所占占领的金矿总共产出%{count}金币，已收获到仓库中"
+
    defense_village_win_mail:
     title: "防守村落获胜"
     content: "玩家【%{attacker}】（来自(%{x}, %{y})）对你的村落发起了一起攻击，你成功抵御了这次进攻！"

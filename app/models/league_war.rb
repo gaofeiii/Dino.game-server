@@ -53,6 +53,7 @@ module LeagueWar
 
 		League.all.ids.each do |league_id|
 			league = League.new :id => league_id
+			league.winned_mines.map { |mine| mine.reset_league_info }
 			Ohm.redis.del league.winned_mines.key
 		end
 

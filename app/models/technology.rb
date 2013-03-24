@@ -87,7 +87,7 @@ class Technology < Ohm::Model
 	end
 
 	def speed_up_gem_cost
-		l_time = finish_time - start_time
+		l_time = finish_time - Time.now.to_i
 		l_time = 0 if l_time < 0
 		(l_time / 300.0).ceil
 	end

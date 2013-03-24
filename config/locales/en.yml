@@ -235,6 +235,10 @@
     title: "Goldmine harvested"
     content: "Congratulations! Your goldmine (%{x}, %{y}) has produced %{count} gold coins. They are all moved into your warehouse."
 
+   goldmine_receive_total:
+    title: "Goldmine harvested"
+    content: "Congratulations! Your goldmines have produced totally %{count} gold coins. They are all moved into your warehouse."
+
    defense_village_win_mail:
     title: "Defend Village Succeeded"
     content: "Player [%{attacker}] from (%{x}, %{y}) led an army to attack you, and you defeated them!"

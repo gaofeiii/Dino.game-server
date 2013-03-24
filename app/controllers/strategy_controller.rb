@@ -222,7 +222,7 @@ class StrategyController < ApplicationController
 		if @player.spend!(@player.match_cost)
 			count = 0
 			players = []
-			Player.none_npc.ids.map do |player_id|
+			Player.none_npc.ids.shuffle!.map do |player_id|
 				break if count >= 5
 				if player_id.to_i == @player.id
 					next

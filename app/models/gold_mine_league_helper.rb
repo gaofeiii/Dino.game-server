@@ -15,7 +15,11 @@ module GoldMineLeagueHelper
 		end
 
 		def league_info
-			db.hgetall league_info_key
+			info = {}
+			db.hgetall(league_info_key).each do |key, val|
+				info[key.to_i] = val.to_i
+			end
+			info
 		end
 
 		def winner_league_id
@@ -29,6 +33,15 @@ module GoldMineLeagueHelper
 				end
 			end
 			winner_id.to_i
+		end
+
+		def get_league_rank(league_id)
+			info = league_info
+			league_count = info[league_id]
+			return 999 if league_count.blank?
+
+			ordered_vals = info.values.sort!.reverse!
+			ordered_vals.index(league_count) + 1
 		end
 
 		def reset_league_info

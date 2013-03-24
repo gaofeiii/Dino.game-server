@@ -82,6 +82,10 @@ class GoldMine < Ohm::Model
 			:goldmine_type => goldmine_type
 		}
 
+		if type == TYPE[:league] && !winner_league_id.blank?
+			hash[:owner_name] = db.hget(League.key[winner_league_id], :name)
+		end
+
 		stra = strategy
 		hash[:strategy] = stra.to_hash if stra
 
@@ -126,32 +130,26 @@ class GoldMine < Ohm::Model
 
 			if harvest_gold_count > 0
 				@player.receive!(:gold => harvest_gold_count)
-				Mail.create_goldmine_harvest_mail :receiver_id 		=> @player.id,
-																					:receiver_name 	=> @player.nickname,
-																					:locale 				=> @player.locale,
-																					:x 							=> x,
-																					:y 							=> y,
-																					:count 					=> harvest_gold_count
+				Mail.create_goldmine_total_harvest_mail :receiver_id 		=> @player.id,
+																								:receiver_name 	=> @player.nickname,
+																								:locale 				=> @player.locale,
+																								:x 							=> x,
+																								:y 							=> y,
+																								:count 					=> harvest_gold_count
 				self.set :update_gold_time, t
 			end
 			
 		end
-		
-
 	end
 
 	# 将goldmine列入刷新队列
 	def move_to_refresh_queue(refresh_time)
-		Background.add_queue(self.class, id, 'refresh_gold!', refresh_time)
+		# Background.add_queue(self.class, id, 'refresh_gold!', refresh_time)
 	end
 
 	def self.refresh_all_players_goldmine
-		Player.none_npc.ids.each do |player_id|
-			player = Player.new(:id => player_id)
-
-			player.gold_mines.each do |goldmine|
-				goldmine.refresh_gold!
-			end
+		Player.none_npc.each do |player|
+			player.harvest_gold_mines
 		end
 	end
 
