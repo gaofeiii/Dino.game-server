@@ -8,7 +8,7 @@ require 'bundler/capistrano'
 @ali001 = "42.120.23.41"
 
 # Deploy server
-@@server = [@ali001]
+@@server = [@a001]
 
 set :rvm_ruby_string, "2.0.0@dinosaur_game"
 set :rvm_type, :user
@@ -27,7 +27,7 @@ set :keep_releases, 5
 
 set :repository,  "gitolite@106.187.91.156:dinosaur_game_server.git"
 set :scm, :git
-set :branch, "v101"
+set :branch, "master"
 
 role :web, *@@server
 role :app, *@@server

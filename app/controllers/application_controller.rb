@@ -36,16 +36,6 @@ class ApplicationController < ActionController::Base
     # end
   end
 
-  # === Logs ===
-
-  def check_server_status
-    is_on = Ohm.redis.get('Server:status')
-
-    if is_on.nil?
-      render_error(Error::NORMAL, "Server shutdown") and return
-    end
-  end
-
   def redis_access_log
     $redis_count = 0
   end
