@@ -34,6 +34,7 @@ class SessionsController < ApplicationController
 		@player.reset_daily_quest!
 		@player.refresh_village_status
 		@player.refresh_god_status!
+		@player.get_vip_daily_reward
 		@player.login!
 
 		# "create new session_key"
@@ -86,6 +87,7 @@ class SessionsController < ApplicationController
 		@player.reset_daily_quest!
 		@player.refresh_village_status
 		@player.refresh_god_status!
+		@player.get_vip_daily_reward
 		@player.login!
 
 		# create new session_key

@@ -24,6 +24,7 @@ class Player < Ohm::Model
 	include PlayerCaveHelper
 	include PlayerLoginGiftHelper
 	include PlayerShppingHelper
+	include PlayerVipHelper
 
 	TYPE = {
 		:normal => 0,
@@ -153,7 +154,7 @@ class Player < Ohm::Model
 
 		self.login_days = 0 if curr_time - last_login_time > 1.day.to_i
 		if last_login_time < todays_begin_time && curr_time > todays_begin_time
-			self.has_lottery = false
+			self.has_lottery = true
 			self.login_days += 1
 		end
 		self.sets :last_login_time => curr_time, :login_days => login_days, :has_lottery => has_lottery
@@ -188,7 +189,7 @@ class Player < Ohm::Model
 			:warehouse_size => tech_warehouse_size,
 			:tax_rate => Deal::ORIGIN_TAX,
 			:login_days => login_days,
-			:has_lottery => true,
+			:has_lottery => has_lottery,
 			:in_league => in_league?,
 			:game_center_account => gk_player_id
 		}

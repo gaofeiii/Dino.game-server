@@ -85,10 +85,10 @@ class ItemsController < ApplicationController
 	end
 
 	def gift_lottery
-		if not @player.has_lottery
+		if @player.has_lottery
 			rwd = LuckyReward.rand_one(1)
 			@player.receive_lucky_reward(rwd)
-			@player.set :has_lottery, 1
+			@player.set :has_lottery, 0
 			render_success 	:reward => rwd, 
 											:category => Item.categories[:lottery],
 											:has_lottery => @player.has_lottery
