@@ -5,18 +5,18 @@ module Reward
 
 		reward = {}
 		case rand(1..1000)
-		when 1..300
+		# when 1..300
+		# 	reward = {
+		# 		:items => [{
+		# 			:item_cat => Item.categories[:food], 
+		# 			:item_type => Specialty.types.sample, 
+		# 			:item_count => origin[:food_count]
+		# 		}]
+		# 	}
+		when 1..900
 			reward = {
-				:items => [{
-					:item_cat => Item.categories[:food], 
-					:item_type => Specialty.types.sample, 
-					:item_count => origin[:food_count]
-				}]
-			}
-		when 301..900
-			reward = {
-				:wood => origin[:res_count],
-				:stone => origin[:res_count],
+				# :wood => origin[:res_count],
+				# :stone => origin[:res_count],
 				:gold_coin => origin[:res_count]
 			}
 		when 901..950

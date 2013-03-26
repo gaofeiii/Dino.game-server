@@ -432,7 +432,9 @@ class Player < Ohm::Model
   def update_adapt_level
   	dino_ids = self.dinosaurs.ids
   	return false if dino_ids.size <= 0
-  	new_level = dino_ids.sum{|dino_id| db.hget("Dinosaur:#{dino_id}", :level).to_i} / dino_ids.size
+  	levels = dino_ids.map{|dino_id| db.hget("Dinosaur:#{dino_id}", :level).to_i}
+  	# new_level = dino_ids.sum{|dino_id| db.hget("Dinosaur:#{dino_id}", :level).to_i} / dino_ids.size
+  	new_level = levels.max
   	if new_level <= 0
   		new_level = 1
   	end
@@ -535,8 +537,8 @@ class Player < Ohm::Model
 			harvest_gold_count = (delta_t * mine.output).to_i
 
 			self.receive!(:gold => harvest_gold_count) if harvest_gold_count > 0
-			harvest_gold_count.to_i
 			mine.set :update_gold_time, Time.now.to_i
+			harvest_gold_count.to_i
 		end
 		
 		Mail.create_goldmine_total_harvest_mail :receiver_id 		=> self.id,

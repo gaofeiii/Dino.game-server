@@ -164,7 +164,9 @@ class WorldMapController < ApplicationController
 				cy = new_creeps_index / Country::COORD_TRANS_FACTOR
 
 				unless cx.in?(Country::GOLD_MINE_X_RANGE) && cy.in?(Country::GOLD_MINE_Y_RANGE)
-					m_level = rand(1..player.adapt_level)
+					min = player.adapt_level - 5
+					min = 1 if min <= 0
+					m_level = rand(min..player.adapt_level)
 					m_count = case m_level
 					when 1
 						1

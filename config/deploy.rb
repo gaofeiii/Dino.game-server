@@ -8,7 +8,7 @@ require 'bundler/capistrano'
 @ali001 = "42.120.23.41"
 
 # Deploy server
-@@server = [@ali001]
+@@server = [@a001]
 
 set :rvm_ruby_string, "2.0.0@dinosaur_game"
 set :rvm_type, :user

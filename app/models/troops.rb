@@ -213,6 +213,8 @@ class Troops < Ohm::Model
 				else # attacker lose
 					case target_type
 					when BattleModel::TARGET_TYPE[:village]
+						return nil if target.nil?
+						
 						attacker_vil = Village.new(:id => player.village_id).gets(:x, :y)
 						Mail.create_defense_village_win_mail 	:receiver_id => defense_player.id, 
 																									:receiver_name => defense_player.nickname,
