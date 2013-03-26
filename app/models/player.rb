@@ -532,7 +532,7 @@ class Player < Ohm::Model
 		mines = self.gold_mines
 		return false if mines.size < 0
 
-		total = mines.sum do |mine|
+		all_total = mines.map do |mine|
 			delta_t = (Time.now.to_i - mine.update_gold_time) / 3600.0
 			harvest_gold_count = (delta_t * mine.output).to_i
 
@@ -540,6 +540,8 @@ class Player < Ohm::Model
 			mine.set :update_gold_time, Time.now.to_i
 			harvest_gold_count.to_i
 		end
+
+		total = all_total.sum
 		
 		Mail.create_goldmine_total_harvest_mail :receiver_id 		=> self.id,
 																						:receiver_name 	=> self.nickname,
