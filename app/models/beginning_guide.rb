@@ -29,7 +29,7 @@
 # player.guide_info.current_quest
 # => {:index=>2, :finished=>0, :rewarded=>0}
 module BeginningGuide
-	LAST_GUIDE_INDEX = 17
+	LAST_GUIDE_INDEX = 20
 	module ClassMethods
 		@@cache = Hash.new
 		@@reward = Hash.new
@@ -219,8 +219,19 @@ module BeginningGuideHelper
 		# 建造市场
 		when 17
 			village_with_id.has_built_building?(Building.hashes[:market])
+		# 宝石购买龙蛋
+		when 18
+			ret = player.guide_cache['buy_egg']
+			ret.nil? ? false : ret
+		# 攻打一次巢穴
+		when 19
+			ret = player.guide_cache['attack_cave']
+			ret.nil? ? false : ret
+		# 指向任务按钮
+		when 20
+			true
 		else
-			false
+			true
 		end
 		quest.finished = sig
 	end

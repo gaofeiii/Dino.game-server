@@ -86,7 +86,15 @@ class ShoppingController < ApplicationController
 		when Shopping::GOODS_TYPE[:egg]
 			if @player.spend!(goods.slice(:gems))
 				egg = Shopping.buy_random_egg(:item_type => goods[:item_type], :player_id => @player.id)
-				p "---egg", egg
+
+				# === Guide ===
+				@player.gets :guide_cache, :beginning_guide_finished
+				if !@player.beginning_guide_finished && !@player.guide_cache['buy_egg']
+					cache = @player.guide_cache.merge(:buy_egg => true)
+					@player.set :guide_cache, cache
+				end
+				# === End of Guide ===
+
 				if egg
 					render_success(:player => @player.to_hash(:items)) and return
 				end

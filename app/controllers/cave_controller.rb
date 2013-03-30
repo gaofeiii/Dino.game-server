@@ -95,6 +95,14 @@ class CaveController < ApplicationController
 
 			@player.receive_reward!(reward)
 
+			# === Guide ===
+			@player.gets :guide_cache, :beginning_guide_finished
+			if !@player.beginning_guide_finished && !@player.guide_cache['attack_cave']
+				cache = @player.guide_cache.merge(:attack_cave => true)
+				@player.set :guide_cache, cache
+			end
+			# === End of Guide ===
+
 			@cave.todays_count += 1
 			@cave.stars = stars if @cave.stars < stars
 			@cave.save
