@@ -34,6 +34,14 @@ class PlayerCave < Ohm::Model
 		"#{I18n.t('monster_name.cave', :locale => locale)} #{index}"
 	end
 
+	def update_cave_status
+		now_time = Time.now
+		if update_count_time < now_time.beginning_of_day.to_i
+			self.sets :todays_count => 0, :update_count_time => now_time.to_i
+		end
+	end
+
+	protected
 	def before_save
 		self.update_count_time = ::Time.now.to_i
 	end
