@@ -543,10 +543,12 @@ class Player < Ohm::Model
 
 		total = all_total.sum
 		
-		Mail.create_goldmine_total_harvest_mail :receiver_id 		=> self.id,
-																						:receiver_name 	=> self.nickname,
-																						:locale 				=> self.locale,
-																						:count 					=> total
+		if total > 0
+			Mail.create_goldmine_total_harvest_mail :receiver_id 		=> self.id,
+																							:receiver_name 	=> self.nickname,
+																							:locale 				=> self.locale,
+																							:count 					=> total
+		end
 	end	
 
 	# Callbacks

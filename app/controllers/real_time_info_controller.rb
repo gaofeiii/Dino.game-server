@@ -17,7 +17,6 @@ class RealTimeInfoController < ApplicationController
 			:data => {
 				:version => ServerInfo.info[:info_const_version],
 				:buildings => Building.cost,
-				# :technologies => Technology.cost,
 				:guide_reward => Player.beginning_guide_reward,
 				:shopping_list => shop_list,
 				:dinosaurs => {:recovery_speed => 60}, # 等级*60秒

@@ -30,9 +30,11 @@ class GuideController < ApplicationController
 			}
 		else
 			{
-				:message => Error.failed_message,
-				:error_type => Error::NORMAL,
-				:error => I18n.t('guide_error.quest_not_finished')
+				# :message => Error.failed_message,
+				# :error_type => Error::NORMAL,
+				# :error => I18n.t('guide_error.quest_not_finished')
+				:message => Error.success_message,
+				:player => @player.to_hash(:resources)
 			}
 		end
 		render :json => data
