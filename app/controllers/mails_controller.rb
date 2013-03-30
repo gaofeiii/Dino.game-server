@@ -63,6 +63,7 @@ class MailsController < ApplicationController
 	def check_new_mails
 		@player.troops.map(&:refresh!)
 		mails = @player.all_mails(:last_id => params[:last_id], :last_report_time => params[:last_report_time])
+		@player.check_rating
 		render_success 	:mails => mails, 
 										:player => {
 											:level => @player.level, 

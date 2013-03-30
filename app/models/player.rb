@@ -69,6 +69,8 @@ class Player < Ohm::Model
 
 	attribute :gk_player_id	# Game Center player id
 
+	attribute :get_rating_reward, 	Type::Boolean
+
 	collection :dinosaurs, 				Dinosaur
 	collection :technologies, 		Technology
 	collection :specialties, 			Specialty
@@ -147,11 +149,19 @@ class Player < Ohm::Model
 		(session && session.expired_at > ::Time.now.utc) ? true : false
 	end
 
+	def check_rating
+		if !get_rating_reward && beginning_guide_finished
+			self.receive!(:gems => 5)
+		end
+	end
+
 	def login!
 		curr_time = ::Time.now.to_i
 
 		todays_begin_time = ::Time.now.beginning_of_day.to_i
 
+		check_rating
+		
 		self.login_days = 0 if curr_time - last_login_time > 1.day.to_i
 		if last_login_time < todays_begin_time && curr_time > todays_begin_time
 			self.has_lottery = true
