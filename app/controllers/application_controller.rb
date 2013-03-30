@@ -108,7 +108,6 @@ class ApplicationController < ActionController::Base
   end
 
   def render_success(data = nil)
-    p '--- render_success'
     if data.is_a?(Hash)
       render :json => {:message => Error.success_message}.merge!(data)
     elsif data.is_a?(String)
@@ -116,7 +115,6 @@ class ApplicationController < ActionController::Base
     else
       render :json => {:message => Error.success_message}
     end
-    p '--- end of render_success'
   end
 
   # === Validation methods ===
