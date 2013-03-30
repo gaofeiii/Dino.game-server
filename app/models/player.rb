@@ -152,6 +152,7 @@ class Player < Ohm::Model
 	def check_rating
 		if !get_rating_reward && beginning_guide_finished
 			self.receive!(:gems => 5)
+			self.set :get_rating_reward, 1
 		end
 	end
 
