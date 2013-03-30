@@ -17,12 +17,12 @@ module ScrollHelper
 		def reload_scroll!
 			@@scroll_const.clear
 			@@scroll_const = {
-				1 => {:attack_inc => 0.05},
-				2 => {:defense_inc => 0.05},
-				3 => {:speed_inc => 0.05},
-				4 => {:hp_inc => 0.05},
-				5 => {:skill_trigger_inc => 0.05},
-				6 => {:exp_inc => 0.05},
+				1 => {:attack_inc => 20},
+				2 => {:defense_inc => 20},
+				3 => {:speed_inc => 20},
+				4 => {:hp_inc => 0.15},
+				5 => {:skill_trigger_inc => 0.15},
+				6 => {:exp_inc => 0.15},
 			}
 		end
 	end

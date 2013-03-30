@@ -77,6 +77,42 @@ class ServerInfo
 			"PZAaCr854VtQNcDrTSwBYyvfus0zZauY1Dg3WO4A45lL60LwBA1LbBXxmmAltcLqzhhMImi48oq7iK"
 		end
 
+		def server_data
+			shop_list = Shopping.list
+			shop_list[:vip].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])}
+			shop_list[:protection].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])}
+			shop_list[:lottery].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])}
+			shop_list[:scrolls].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])}
+			shop_list[:eggs].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])}
+			shop_list[:gems].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])}
+
+			{
+				:data => {
+					:version => ServerInfo.info[:info_const_version],
+					:buildings => Building.cost,
+					:guide_reward => Player.beginning_guide_reward,
+					:shopping_list => shop_list,
+					:dinosaurs => {:recovery_speed => 60},
+					:speed_up_info => {
+						:building => 300,
+						:tech => 300,
+						:dino_hp_recovery => 30000,
+						:hatch_speed_up => 300
+					},
+					:god_cost => {
+						:wood => 1000,
+						:stone => 1000,
+						:gold => 1000
+					},
+					:lottery_reward => LuckyReward.const(1).values,
+					:match_gold_cost => Player.honour_gold_cost,
+					:advisor_cost => Advisor.const.values.map{|x| x[:price_per_day]},
+					:league_gold_cost => 1000,
+					:move_town_gems_cost => 50
+				}
+			}
+		end
+
 		# def info
 		# 	SERVER_INFO[server_name]
 		# end

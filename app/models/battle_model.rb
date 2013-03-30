@@ -20,14 +20,20 @@ class BattleModel
 					fighter.extend(BattleFighterModule)
 
 					# 初始化攻击、防御和血量————卷轴和玩家科技的影响
-					attack_inc 	= obj[:player].try(:tech_attack_inc).to_f + obj[:scroll_effect][:attack_inc].to_f
+					attack_inc 	= obj[:player].try(:tech_attack_inc).to_f
+					scroll_attack_inc = obj[:scroll_effect][:attack_inc].to_f
 					speed_inc		= obj[:scroll_effect][:speed_inc].to_f # 没有科技对恐龙速度产生影响
-					defense_inc = obj[:player].try(:tech_defense_inc).to_f + obj[:scroll_effect][:defense_inc].to_f
+					scroll_speed_inc = obj[:scroll_effect][:attack_inc].to_f
+					defense_inc = obj[:player].try(:tech_defense_inc).to_f
+					scroll_defense_inc = obj[:scroll_effect][:defense_inc].to_f
 					hp_inc			= obj[:player].try(:tech_hp_inc).to_f + obj[:scroll_effect][:hp_inc].to_f
 
 					fighter.curr_attack *= (1 + attack_inc)
+					fighter.curr_attack += scroll_attack_inc
 					fighter.curr_speed *= (1 + speed_inc)
+					fighter.curr_speed += scroll_speed_inc
 					fighter.curr_defense *= (1 + defense_inc)
+					fighter.curr_defense += scroll_defense_inc
 					fighter.curr_hp *= (1 + hp_inc)
 					fighter.total_hp *= (1 + hp_inc)
 					fighter.curr_hp = fighter.total_hp if options[:match_attack] # 如果是荣誉战，恐龙满血满状态
