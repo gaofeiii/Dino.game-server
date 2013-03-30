@@ -238,6 +238,12 @@ class Dinosaur < Ohm::Model
 	end
 
 	def eat!(food, count = 1)
+		need_count = (hunger_time - self.feed_point) / food.feed_point + 1
+
+		if count > need_count
+			count = need_count
+		end
+
 		if is_my_favorite_food(food.type)
 			self.emotion = EMOTIONS[:happy]
 			self.growth_point += count * 5

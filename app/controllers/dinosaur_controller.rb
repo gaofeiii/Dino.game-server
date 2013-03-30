@@ -59,7 +59,8 @@ class DinosaurController < ApplicationController
 		count = params[:food_count].to_i
 		count = count > 0 ? count : 1
 
-		if (@dinosaur.hunger_time - @dinosaur.feed_point) < 10
+		hunger_point = @dinosaur.hunger_time - @dinosaur.feed_point
+		if (hunger_point) < 10
 			render :json => {:error => I18n.t('dinosaur_error.dinosaur_is_full')} and return
 		end
 
