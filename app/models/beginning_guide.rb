@@ -229,7 +229,8 @@ module BeginningGuideHelper
 			ret.nil? ? false : ret
 		# 指向任务按钮
 		when 20
-			true
+			ret = player.guide_cache['refresh_daily_quest']
+			ret.nil? ? false : ret
 		else
 			true
 		end

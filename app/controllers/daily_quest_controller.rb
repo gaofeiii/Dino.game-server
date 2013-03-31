@@ -4,6 +4,13 @@ class DailyQuestController < ApplicationController
 	def refresh
 		@player.update_daily_quest_status!
 		@player.reset_daily_quest!
+
+		# refresh_daily_quest
+		if !@player.beginning_guide_finished && @player.guide_cache[:refresh_daily_quest].nil?
+			cache = @player.guide_cache.merge(:refresh_daily_quest => true)
+			@player.set :guide_cache, cache.to_json
+		end
+
 		render_success(:player => @player.to_hash(:daily_quest))
 	end
 
