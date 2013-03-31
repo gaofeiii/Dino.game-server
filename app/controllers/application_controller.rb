@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
 
   def check_version
     p "======= Client Version #{request.env['HTTP_USER_AGENT']}"
-    if request.env['HTTP_USER_AGENT'] != "1.0.1"
+    if request.env['HTTP_USER_AGENT'] != "1.0.2"
       render :json => {
         :message => I18n.t('client_version_expired'),
         :error_type => Error::NORMAL,
