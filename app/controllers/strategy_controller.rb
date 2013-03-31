@@ -2,7 +2,7 @@ class StrategyController < ApplicationController
 
 	# before_filter :validate_village, :only => []
 	before_filter :validate_player, :only => [:attack, :get_battle_report, :refresh_battle, :match_players, 
-		:match_attack, :set_match_strategy, :league_goldmine_attack]
+		:match_attack, :set_match_strategy, :league_goldmine_attack, :give_up_goldmine]
 
 	def set_defense
 		village = Village[params[:village_id]]
@@ -430,5 +430,15 @@ class StrategyController < ApplicationController
 			render_success(:player => @player.to_hash(:troops))
 		end
 
+	end
+
+	def give_up_goldmine
+		gold_mine = GoldMine[params[:goldmine_id]]
+
+		if gold_mine && @player.gold_mines.include?(gold_mine)
+			gold_mine.update :player_id => nil
+		end
+
+		render_success(:gold_mines => @player.gold_mines.map(&:to_hash))
 	end
 end
