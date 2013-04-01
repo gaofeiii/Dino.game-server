@@ -49,6 +49,19 @@ module PlayerCaveHelper
 			end
 		end
 
+		# Reward Structure:
+		def receive_cave_reward!(reward = {})
+			self.receive!(reward)
+
+			if reward[:item_cat]
+				if reward[:item_cat] == Item.categories[:food]
+					receive_food!(reward[:item_type], reward[:item_count])
+				else
+					Item.create(:item_category => reward[:item_cat], :item_type => reward[:item_type], :quality => reward[:egg_quality], :player_id => id)
+				end
+			end
+		end
+
 	end
 	
 	def self.included(model)

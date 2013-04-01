@@ -475,6 +475,18 @@ class Player < Ohm::Model
 		end
 	end
 
+	# Reward Structure:
+	# {
+	# 	:wood => 1,
+	# 	:stone => 1,
+	# 	:gold => 2, :gold_coin => 2,
+	# 	:items => {
+	# 		:item_cat => 1,
+	# 		:item_type => 1,
+	# 		:item_count => 1,
+	# 		:quality => 1
+	# 	}
+	# }
 	def receive_reward!(reward = {})
 		return false if reward.blank?
 
