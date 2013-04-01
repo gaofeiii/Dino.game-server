@@ -12,6 +12,10 @@ class WorldChat < ChatMessage
 		end.compact.map{|c| c.to_hash}
 	end
 
+	def self.create_system_message(msg, locale = :en)
+		self.create :channel => 4, :speaker => I18n.t('system', :locale => locale), :content => Base64.encode64(msg)
+	end
+
 	def to_hash
 		{
 			:id => id.to_i,
