@@ -93,7 +93,7 @@ class CaveController < ApplicationController
 				result[:reward] = reward
 			end
 
-			@player.receive_reward!(reward)
+			@player.receive_cave_reward!(reward)
 
 			# === Guide ===
 			@player.gets :guide_cache, :beginning_guide_finished
