@@ -113,6 +113,13 @@ class ServerInfo
 			}
 		end
 
+		def export_server_data
+			content = server_data[:data].to_json
+			file = File.new("./server_data.json", "w")
+			file.write(content)
+			file.close
+		end
+
 		# def info
 		# 	SERVER_INFO[server_name]
 		# end
