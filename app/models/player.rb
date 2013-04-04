@@ -31,6 +31,7 @@ class Player < Ohm::Model
 	include PlayerVillageHelper
 	include PlayerDealsHelper
 	include PlayerIosHelper
+	include PlayerItemsHelper
 
 	include BeginningGuide
 	include DailyQuest
@@ -234,12 +235,6 @@ class Player < Ohm::Model
   		@attributes[:locale] = 'en'
   	end
   	@attributes[:locale]
-  end
-
-  def special_items
-  	(items.find(:item_category => 4).ids + items.find(:item_category => 5).ids + items.find(:item_category => 6).ids).map do |item_id|
-  		Item[item_id]
-  	end
   end
 
 	# Reward Structure:

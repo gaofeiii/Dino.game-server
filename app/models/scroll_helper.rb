@@ -23,6 +23,12 @@ module ScrollHelper
 				4 => {:hp_inc => 0.15},
 				5 => {:skill_trigger_inc => 0.15},
 				6 => {:exp_inc => 0.15},
+				7 => {:attack_inc => 50},
+				8 => {:defense_inc => 50},
+				9 => {:speed_inc => 50},
+				10 => {:hp_inc => 0.30},
+				11 => {:skill_trigger_inc => 0.30},
+				12 => {:exp_inc => 0.30},
 			}
 		end
 	end
