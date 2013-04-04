@@ -25,13 +25,10 @@ class Player < Ohm::Model
 	include PlayerLoginGiftHelper
 	include PlayerShppingHelper
 	include PlayerVipHelper
-
-	TYPE = {
-		:normal => 0,
-		:vip => 1,
-		:npc => 2,
-		:bill => 3
-	}
+	include PlayerLeagueHelper
+	include PlayerTypeHelper
+	include PlayerBillHelper
+	include PlayerFoodHelper
 
 	# Player的属性
 	attribute :account_id, 		Type::Integer
@@ -44,16 +41,12 @@ class Player < Ohm::Model
 	attribute :device_token
 	attribute :avatar_id, 		Type::Integer		# 玩家头像的id
 	attribute :battle_power,	Type::Integer
-
-	attribute :player_type, 	Type::Integer
 	
 	attribute :village_id, 		Type::Integer
 	attribute :session_id, 		Type::Integer
 	attribute :country_id, 		Type::Integer
 
 	attribute :locale
-
-	attribute :league_member_ship_id
 
 	attribute :is_set_nickname, 	Type::Boolean
 
@@ -67,7 +60,7 @@ class Player < Ohm::Model
 
 	attribute :session_key
 
-	attribute :gk_player_id	# Game Center player id
+	attribute :gk_player_id	# Game Center id
 
 	attribute :get_rating_reward, 	Type::Boolean
 
@@ -75,7 +68,6 @@ class Player < Ohm::Model
 	collection :technologies, 		Technology
 	collection :specialties, 			Specialty
 	collection :items, 						Item
-	collection :league_applys, 		LeagueApply
 	collection :troops,						Troops
 	collection :deals,						Deal, 	:seller
 	collection :gold_mines,				GoldMine
@@ -96,32 +88,7 @@ class Player < Ohm::Model
 	index :player_type
 	index :gk_player_id
 
-	def is_npc?
-		player_type == TYPE[:npc]
-	end
-
-	def is_vip?
-		player_type == TYPE[:vip]
-	end
-
-	def is_bill?
-		player_type == TYPE[:bill]
-	end
-
-	def self.none_npc
-		self.find(:player_type => TYPE[:normal]).union(:player_type => TYPE[:vip])
-	end
-
-	def self.bill
-		@@bill ||= self.find(:player_type => TYPE[:bill]).first
-		@@bill
-	end
-
-	def self.bill_village
-		@@bill_village ||= self.bill.village
-		@@bill_village
-	end
-
+	# Player's finding methods:
 	def self.find_by_account_id(account_id)
 		self.find(:account_id => account_id).first
 	end
@@ -139,16 +106,7 @@ class Player < Ohm::Model
 		Village[village_id]
 	end
 
-	# 玩家登录后的session
-	def session
-		Session[session_id]
-	end
-
-	# 玩家是否在线？
-	def logined?
-		(session && session.expired_at > ::Time.now.utc) ? true : false
-	end
-
+	# 评论App Store检查
 	def check_rating
 		if !get_rating_reward && beginning_guide_finished
 			self.receive!(:gems => 5)
@@ -171,9 +129,6 @@ class Player < Ohm::Model
 		self.sets :last_login_time => curr_time, :login_days => login_days, :has_lottery => has_lottery
 	end
 
-	def in_league?
-		!league_id.blank?
-	end
 
 	def to_hash(*args)
 		hash = {
@@ -261,25 +216,11 @@ class Player < Ohm::Model
 		end
 	end
 
-	def can_get_league_gold
-		@league = League.new(:id => league_id)
-
-		if !@league.exists?
-			return 0
-		else
-			return @league.harvest_gold
-		end
-	end
-
 	def dinosaurs_info
 		dinosaurs.map do |dino|
 			dino.update_status!
 			dino.to_hash
 		end
-	end
-
-	def league_member_ship
-		LeagueMemberShip[league_member_ship_id]
 	end
 
 	def foods
@@ -314,10 +255,6 @@ class Player < Ohm::Model
 		end
 	end
 
-	def send_push(message)
-		send_push_message(:device_token => device_token, :message => message)
-	end
-
 	# The queue has already been used.
 	def curr_action_queue_size
 		vil = village
@@ -340,25 +277,6 @@ class Player < Ohm::Model
 		village.buildings.find(:type => Building.hashes[:workshop]).size
 	end
 
-
-	def validate_iap(rcp)
-  	uri = URI("https://sandbox.itunes.apple.com/verifyReceipt")
-  	http = Net::HTTP.new(uri.host, uri.port)
-  	http.use_ssl = true
-
-  	request = Net::HTTP::Post.new(uri.request_uri)
-  	request.content_type = 'application/json'
-  	request.body = {'receipt-data' => rcp}.to_json
-
-  	res = http.start{ |h| h.request(request) }
-  	result = JSON.parse(res.body)
-
-    # if result['status'] == 0
-      # self.is_verified = true
-    # end
-    result.deep_symbolize_keys
-  end
-
   def locale
   	if @attributes[:locale].blank?
   		@attributes[:locale] = 'en'
@@ -368,19 +286,6 @@ class Player < Ohm::Model
 
   def my_selling_list
   	deals
-  end
-
-  def find_food_by_type(type)
-  	foods.find(:type => type).first
-  end
-
-  def receive_food!(food_type, food_count = 0)
-  	food = find_food_by_type(food_type)
-  	if food.nil?
-  		food = Specialty.create(:type => food_type, :count => food_count, :player_id => id)
-  	else
-  		food.increase(:count, food_count)
-  	end
   end
 
   def next_dino_space_gems
