@@ -15,6 +15,7 @@ DinosaurGame::Application.routes.draw do
     post 'my_gold_mines'          => 'players#my_gold_mines'
     post 'modify_nickname'        => 'players#modify_nickname'
     post 'register_game_center'   => 'players#register_game_center'
+    post 'harvest_all_goldmines'  => 'players#harvest_all_goldmines'
   end
 
   # 村落
