@@ -17,8 +17,9 @@ module PlayerIosHelper
 		end
 	end
 	
-	def self.included(receiver)
-		receiver.extend         ClassMethods
-		receiver.send :include, InstanceMethods
+	def self.included(model)
+		model.collection :app_store_orders,	AppStoreOrder
+		model.extend         ClassMethods
+		model.send :include, InstanceMethods
 	end
 end

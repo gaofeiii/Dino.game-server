@@ -29,6 +29,8 @@ class Player < Ohm::Model
 	include PlayerWorkersHelper
 	include PlayerDinosaursHelper
 	include PlayerVillageHelper
+	include PlayerDealsHelper
+	include PlayerIosHelper
 
 	include BeginningGuide
 	include DailyQuest
@@ -71,10 +73,8 @@ class Player < Ohm::Model
 	collection :specialties, 			Specialty
 	collection :items, 						Item
 	collection :troops,						Troops
-	collection :deals,						Deal, 	:seller
 	collection :gold_mines,				GoldMine
 	collection :strategies, 			Strategy
-	collection :app_store_orders,	AppStoreOrder
 
 	reference :league, League
 	
@@ -119,6 +119,20 @@ class Player < Ohm::Model
 		self.sets :last_login_time => curr_time, :login_days => login_days, :has_lottery => has_lottery
 	end
 
+	def techs_info
+		technologies.map do |tech|
+			tech.update_status!
+			self.gets(:level, :experience)
+			tech.to_hash
+		end
+	end
+
+	def dinosaurs_info
+		dinosaurs.map do |dino|
+			dino.update_status!
+			dino.to_hash
+		end
+	end
 
 	def to_hash(*args)
 		hash = {
@@ -198,21 +212,6 @@ class Player < Ohm::Model
 		return hash
 	end
 
-	def techs_info
-		technologies.map do |tech|
-			tech.update_status!
-			self.gets(:level, :experience)
-			tech.to_hash
-		end
-	end
-
-	def dinosaurs_info
-		dinosaurs.map do |dino|
-			dino.update_status!
-			dino.to_hash
-		end
-	end
-
 	# 好友列表
 	def friend_list
 		friends.map do |friend|
@@ -237,25 +236,11 @@ class Player < Ohm::Model
   	@attributes[:locale]
   end
 
-  def my_selling_list
-  	deals
-  end
-
   def special_items
   	(items.find(:item_category => 4).ids + items.find(:item_category => 5).ids + items.find(:item_category => 6).ids).map do |item_id|
   		Item[item_id]
   	end
   end
-
-  def visit_info
-		vil = self.village
-		hash = self.to_hash
-		hash[:village] = vil.to_hash
-		hash[:village][:buildings] = vil.buildings.map { |bd| bd.to_hash(:steal_info) }
-		hash
-	end
-
-	
 
 	# Reward Structure:
 	# {

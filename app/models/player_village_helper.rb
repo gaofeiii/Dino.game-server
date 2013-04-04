@@ -7,7 +7,7 @@ module PlayerVillageHelper
 		def village
 			Village[village_id]
 		end
-		
+
 		def buildings
 			vil = Village.new(:id => village_id)
 			vil.buildings
@@ -28,6 +28,14 @@ module PlayerVillageHelper
 	  	l = 3 if l > 3
 	  	l
 	  end
+
+	  def visit_info
+			vil = self.village
+			hash = self.to_hash
+			hash[:village] = vil.to_hash
+			hash[:village][:buildings] = vil.buildings.map { |bd| bd.to_hash(:steal_info) }
+			hash
+		end
 
 		# Return [x, y]
 		def find_rand_coords(country = Country.first)
