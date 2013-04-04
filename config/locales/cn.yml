@@ -94,6 +94,7 @@ cn:
   research_error:
    research_queue_full: "研究队列已满"
    research_not_complete: "研究尚未完成"
+   reached_max_level: "已升级到最高等级"
 
   login_error:
    INVALID_PLAYER_ID: "错误的用户ID"
@@ -245,7 +246,7 @@ cn:
 
    defense_village_lose_mail:
     title: "防守村落失败"
-    content: "玩家【%{attacker}】（来自(%{x}, %{y})）对你的村落发起了一起攻击，由于防守失败，被对方掠夺了10%的资源！"
+    content: "玩家【%{attacker}】（来自(%{x}, %{y})）对你的村落发起了一起攻击，由于防守失败，被对方掠夺了%{rate}%的资源！"
 
    match_win_mail:
     title: "挑战赛获胜"

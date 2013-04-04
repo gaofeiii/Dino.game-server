@@ -136,7 +136,14 @@ class Troops < Ohm::Model
 							end
 
 							target_player = defense_player
-							rwd = {:wood => target_player.wood/10, :stone => target_player.stone/10, :gold_coin => target_player.gold_coin/10, :items => []}
+
+							stolen_rate = 0.1 + player.tech_plunder_inc
+
+							rwd = {
+								:wood => (target_player.wood * stolen_rate).to_i, 
+								:stone => (target_player.stone * stolen_rate).to_i,
+								:gold_coin => (target_player.gold_coin * stolen_rate).to_i
+							}
 							target_player.spend!(rwd) # The target lost resource
 							self.player.receive!(rwd) # The winner receive resource
 							# i_cat = [1,2,3].sample
@@ -151,7 +158,8 @@ class Troops < Ohm::Model
 																										:attacker => player.nickname,
 																										:x => attacker_vil.x,
 																										:y => attacker_vil.y,
-																										:locale => target_player.locale
+																										:locale => target_player.locale,
+																										:rate => (stolen_rate * 100).to_i
 							rwd
 						end
 						

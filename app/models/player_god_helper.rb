@@ -27,7 +27,9 @@ module PlayerGodHelper
 		def trigger_god_effect
 			return 0 if self.god_taken_effect_time >= Time.now.beginning_of_day.to_i
 
-			if Tool.rate(GOD_TRIGGER_CHANCE)
+			real_rate = GOD_TRIGGER_CHANCE + tech_praying_inc
+
+			if Tool.rate(real_rate)
 				effect = case curr_god.type
 				when God.hashes[:argriculture]
 					res = ['wood', 'stone'].sample

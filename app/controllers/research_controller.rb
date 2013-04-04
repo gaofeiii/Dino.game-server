@@ -14,18 +14,25 @@ class ResearchController < ApplicationController
 			tech = Technology.create :type => params[:tech_type].to_i, :level => 0, :player_id => @player.id
 		end
 
+		if tech.level >= Technology::MAX_LEVEL
+			render_error(Error::NORMAL, I18n.t('research_error.reached_max_level')) and return
+		end
+
 		unless tech.research_finished?
 			render_success(:player => @player.to_hash(:techs), :info => I18n.t('research_error.research_not_complete'))
 			return
 		end
 		
 		if @player.spend!(tech.next_level[:cost])
+			time_reduce = 0
 			# 判断是否触发神灵效果
-			time_reduce = if @player.curr_god && @player.curr_god.type == God.hashes[:intelligence]
-				@player.trigger_god_effect
-			else
-				0
+			if @player.curr_god && @player.curr_god.type == God.hashes[:intelligence]
+				time_reduce = @player.trigger_god_effect
 			end
+
+			# 判断科技的影响
+			time_reduce += @player.tech_research_inc
+			p "time_reduce: #{time_reduce}"
 
 			b_id = if params[:building_id].nil? || params[:building_id] <= 0
 				@player.village.buildings.find(:type => Building.hashes[:workshop]).ids.first

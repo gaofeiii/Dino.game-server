@@ -94,6 +94,7 @@
   research_error:
    research_queue_full: "Research queue is full"
    research_not_complete: "Research not Completed"
+   reached_max_level: "Reached Max Level"
 
   login_error:
    INVALID_PLAYER_ID: "Invalid user ID"
@@ -246,7 +247,7 @@
 
    defense_village_lose_mail:
     title: "Defend Village Failed"
-    content: "Player [%{attacker}] from (%{x}, %{y}) raided your village and grabbed 10 percent of your resources!"
+    content: "Player [%{attacker}] from (%{x}, %{y}) raided your village and grabbed %{rate} percent of your resources!"
 
    match_win_mail:
     title: "Challenge won"

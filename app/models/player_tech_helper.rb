@@ -63,6 +63,12 @@ module PlayerTechHelper
 			tech.nil? ? Technology.const[7][0][:property][:eggs_max] : tech.property[:eggs_max]
 		end
 
+		# 孵化效率增加
+		def tech_hatching_inc
+			tech = tech_hatching
+			tech.nil? ? Technology.const[7][0][:property][:hatch_efficiency] : tech.property[:hatch_efficiency]
+		end
+
 		# 驯养
 		def tech_dinosaurs_size
 			tech = tech_raising
