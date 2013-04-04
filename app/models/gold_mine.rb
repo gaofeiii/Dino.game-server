@@ -69,14 +69,18 @@ class GoldMine < Ohm::Model
 		end
 	end
 
-	def to_hash
+	def to_hash(args = {})
+		gold_inc = 0
+
+		gold_inc = args[:gold_inc] if args[:gold_inc]
+
 		hash = {
 			:id => id,
 			:x => x,
 			:y => y,
 			:type => type,
 			:level => level,
-			:gold_output => GoldMine.gold_output(level),
+			:gold_output => GoldMine.gold_output(level) * (1 + gold_inc),
 			:owner => owner_name,
 			:owner_id => player_id.to_i,
 			:goldmine_type => goldmine_type
