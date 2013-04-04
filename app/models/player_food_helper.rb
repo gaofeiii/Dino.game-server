@@ -4,6 +4,14 @@ module PlayerFoodHelper
 	end
 	
 	module InstanceMethods
+		def foods
+			specialties
+		end
+
+		def food_list
+			specialties.map{|s| s.to_hash}
+		end
+		
 		def find_food_by_type(type)
 			foods.find(:type => type).first
 		end

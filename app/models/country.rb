@@ -7,6 +7,11 @@ class Country < Ohm::Model
 	attribute :index, Type::Integer
 	unique :index
 
+	def self.instance
+		@@inst ||= Country.first
+		@@inst
+	end
+
 	def refresh_monsters
 		db.del(creeps_info_key)
 		eval("$country_#{index}_creeps_info = nil")
