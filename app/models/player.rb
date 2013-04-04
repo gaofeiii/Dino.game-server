@@ -431,7 +431,9 @@ class Player < Ohm::Model
   end
 
   def village_level
-  	(level / 10.0).ceil
+  	l = (level / 10.0).ceil
+  	l = 3 if l > 3
+  	l
   end
 
   def special_items
