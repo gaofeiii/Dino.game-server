@@ -16,6 +16,7 @@ class BattleModel
 			battle_objects.each do |obj|
 				obj.extend(BattlePlayerModule)
 				obj[:army].extend(BattleArmyModule)
+				obj[:army].player = obj[:player]
 				obj[:army].each do |fighter|
 					fighter.extend(BattleFighterModule)
 
@@ -215,11 +216,10 @@ class BattleModel
 						next
 					end
 
-					if damage > dest.curr_hp
-						damage = dest.curr_hp
-					end
+					damage *= (1 + fighter.army.player.tech_damage_inc) if fighter.army.player
 
 					dest.curr_hp -= damage
+					dest.curr_hp = 0 if dest.curr_hp < 0
 					hp_later = dest.curr_hp
 					one_round.merge!({
 						:target_id => dest.id,
@@ -488,7 +488,7 @@ end
 
 # Used for extending army
 module BattleArmyModule
-	attr_accessor :team_buffs, :team
+	attr_accessor :team_buffs, :team, :player
 
 	# Sort army self by given attribute, in ASC order.
 	def ordered_by!(att)
@@ -510,6 +510,11 @@ module BattleArmyModule
 	def team_buffs
 		@team_buffs ||= []
 		@team_buffs
+	end
+
+	def team
+		@team ||= nil
+		@team
 	end
 
 	def to_hash

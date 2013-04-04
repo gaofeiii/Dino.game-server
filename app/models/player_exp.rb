@@ -98,7 +98,7 @@ module PlayerExp
 		end
 
 		def earn_exp!(exps = 0)
-			self.experience += exps
+			self.experience += (exps * (1 + self.tech_xp_inc))
 
 			if experience >= next_level_exp
 				self.experience -= next_level_exp

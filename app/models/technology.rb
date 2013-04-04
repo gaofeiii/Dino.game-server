@@ -20,6 +20,7 @@
 # 20	智慧
 class Technology < Ohm::Model
 	STATUS = {:idle => 0, :researching => 1}
+	MAX_LEVEL = 20
 
 	include Ohm::DataTypes
 	include Ohm::Timestamps
@@ -55,7 +56,7 @@ class Technology < Ohm::Model
 			:status => status
 		}
 		if status == STATUS[:researching]
-			hash[:total_time] = next_level[:cost][:time]
+			hash[:total_time] = finish_time - start_time
 			hash[:time_pass] = ::Time.now.to_i - start_time
 			hash[:building_id] = building_id
 		end

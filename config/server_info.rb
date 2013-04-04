@@ -120,12 +120,5 @@ class ServerInfo
 			file.close
 		end
 
-		# def info
-		# 	SERVER_INFO[server_name]
-		# end
-
-		# def account_server
-		# 	"http://#{info[:account_server_ip]}:#{info[:account_server_port]}"
-		# end
 	end
 end

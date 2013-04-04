@@ -100,33 +100,6 @@ class SessionsController < ApplicationController
 										:const_version 	=> ServerInfo.const_version
 	end
 
-	
-	# 注册
-	# def register
-	# 	result = account_register :username => params[:username],
-	# 														:email 		=> params[:email].blank? ? nil : params[:email],
-	# 														:password => params[:password],
-	# 														:password_confirmation => params[:password_confirmation],
-	# 														:server_id => params[:server_id]
-	# 	data = {:const_version => ServerInfo.const_version}
-	# 	if result[:success]
-	# 		begin
-	# 			@player = create_player(result[:account_id], params[:username])
-	# 			data.merge!({:message => 'SUCCESS', :player => @player.to_hash(:all)})
-	# 		rescue Exception => e
-	# 			data.merge!({:message => Error.format_message(e.to_s)})
-	# 		end
-	# 	else
-	# 		data = result
-	# 	end
-	# 	render :json => data
-	# end
-
-	# 登出
-	def logout
-		
-	end
-
 	# 更新账号
 	def update
 		result = account_update :account_id => @player.account_id,
@@ -160,15 +133,6 @@ class SessionsController < ApplicationController
 
 
 	private
-
-	# def create_player(account_id, nickname = nil)
-	# 	guest_id = Ohm.redis.get(Player.key[:id]).to_i + 1
-	# 	n_name = nickname.nil? ? "Player_#{guest_id}" : nickname
-	# 	Player.create :account_id => account_id, 
-	# 								:nickname => n_name, 
-	# 								:device_token => @device_token,
-	# 								:locale => LocaleHelper.get_server_locale_name(request.env["HTTP_CLIENT_LOCALE"])
-	# end
 
 	# Always return a new player
 	def creating_player(account_id: 0, nickname: "", gk_player_id: "")

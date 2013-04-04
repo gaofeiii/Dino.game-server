@@ -22,11 +22,12 @@ class Item < Ohm::Model
 		when Item.categories[:egg]
 			dino = Dinosaur.const[item_info[:type]]
 			building_id = options[:building_id]
+			cost_time = dino[:property][:hatching_time] * (1 - player.tech_hatching_inc)
 			dino = Dinosaur.new		:type 				=> item_info[:type],
 														:status 			=> Dinosaur::STATUS[:egg],
 														:event_type 	=> Dinosaur::EVENTS[:hatching],
 														:start_time 	=> ::Time.now.to_i,
-														:finish_time 	=> ::Time.now.to_i + dino[:property][:hatching_time],
+														:finish_time 	=> ::Time.now.to_i + cost_time,
 														:player_id 		=> player_id,
 														:quality 			=> self.quality
 			dino.building_id = building_id if building_id

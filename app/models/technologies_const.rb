@@ -251,7 +251,7 @@ module TechnologiesConst
 				property = {
 					:eggs_max => book.cell(i, 'B').to_i,
 					:hatch_max => book.cell(i, 'C').to_i,
-					:hatch_efficiency => book.cell(i, 'd').to_i
+					:hatch_efficiency => book.cell(i, 'd').to_f
 				}
 				reward = {
 					:experience => book.cell(i, 'i').to_i,

@@ -162,7 +162,7 @@ class Mail < Ohm::Model
 								:receiver_name 	=> args[:receiver_name],
 								:receiver_id		=> args[:receiver_id],
 								:title 					=> I18n.t('mail.defense_village_lose_mail.title', :locale => locale),
-								:content				=> I18n.t('mail.defense_village_lose_mail.content', :locale => locale, :x => args[:x], :y => args[:y], :attacker => args[:attacker])
+								:content				=> I18n.t('mail.defense_village_lose_mail.content', :locale => locale, :x => args[:x], :y => args[:y], :attacker => args[:attacker], :rate => args[:rate])
 	end
 
 	# args = {}

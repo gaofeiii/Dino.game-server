@@ -4,7 +4,6 @@ DinosaurGame::Application.routes.draw do
     post 'demo'        => 'sessions#demo'             # 快速试玩
     post 'login'       => 'sessions#create'           # 登录
     post 'register'    => 'sessions#register'         # 注册
-    post 'logout'      => 'sessions#logout'           # 登出
     post 'update'      => 'sessions#update'           # 更新账户
     post 'change_pass' => 'sessions#change_password'  # 修改密码
   end
