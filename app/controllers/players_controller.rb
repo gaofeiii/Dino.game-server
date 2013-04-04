@@ -57,12 +57,14 @@ class PlayersController < ApplicationController
 
 	def my_gold_mines
 		r_key = "GoldMine:indices:player_id:#{params[:player_id]}"
+		player = Player.new(:id => params[:player_id])
+
 		result = Ohm.redis.smembers(r_key).map do |g_id|
 			next unless GoldMine.exists?(g_id)
 
 			mine = GoldMine.new :id => g_id
 			mine.gets(:x, :y, :type, :level, :player_id, :strategy_id)
-			mine.to_hash
+			mine.to_hash(:gold_inc => player.tech_gold_inc)
 		end.compact
 
 		render :json => {
