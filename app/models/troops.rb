@@ -59,7 +59,7 @@ class Troops < Ohm::Model
 					end
 				end.compact
 				attacker_army = army
-				bill_number = player.curr_bill_quest[:number]
+				bill_number = player.curr_bill_quest.try("[]", :number)
 				defender_army = target.defense_troops(bill_number)
 
 				attacker = {
