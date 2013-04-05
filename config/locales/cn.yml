@@ -6,6 +6,7 @@ cn:
   client_version_expired: "客户端版本过低（当前版本v1.0），新下载新版本（v1.0.1）"
   monster_name:
    general: "野怪"
+   goldmine: "金矿野怪"
    cave: "巢穴"
 
   general:

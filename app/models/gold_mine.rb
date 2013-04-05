@@ -83,7 +83,9 @@ class GoldMine < Ohm::Model
 			:gold_output => GoldMine.gold_output(level) * (1 + gold_inc),
 			:owner => owner_name,
 			:owner_id => player_id.to_i,
-			:goldmine_type => goldmine_type
+			:goldmine_cat => goldmine_cat,
+			:gold_income => income,
+			:goldmine_type => goldmine_type # useless
 		}
 
 		if type == TYPE[:league] && !winner_league_id.blank?
@@ -105,6 +107,26 @@ class GoldMine < Ohm::Model
 		return hash
 	end
 
+	def income
+		if !player_id.blank?
+			delta_t = (Time.now.to_i - update_gold_time) / 3600.0
+			(delta_t * (output * (1 + player.tech_gold_inc))).to_i
+		else
+			0
+		end
+	end
+
+	def goldmine_cat
+		case type
+		when TYPE[:normal]
+			return level >= 20 ? 2 : 1
+		when TYPE[:league]
+			return 3
+		else
+			return 1
+		end
+	end
+
 	def goldmine_type
 		case type
 		when TYPE[:normal]
@@ -123,40 +145,11 @@ class GoldMine < Ohm::Model
 		Strategy[strategy_id]
 	end
 
-	def refresh_gold!(t = Time.now.to_i)
-		@player = self.player
-
-		if @player
-			self.set :update_gold_time, ::Time.now.to_i if update_gold_time.zero?
-			
-			delta_t = (t - self.update_gold_time) / 3600.0
-			harvest_gold_count = (delta_t * output).to_i
-
-			if harvest_gold_count > 0
-				@player.receive!(:gold => harvest_gold_count)
-				Mail.create_goldmine_total_harvest_mail :receiver_id 		=> @player.id,
-																								:receiver_name 	=> @player.nickname,
-																								:locale 				=> @player.locale,
-																								:x 							=> x,
-																								:y 							=> y,
-																								:count 					=> harvest_gold_count
-				self.set :update_gold_time, t
-			end
-			
-		end
-	end
-
-	# 将goldmine列入刷新队列
-	def move_to_refresh_queue(refresh_time)
-		# Background.add_queue(self.class, id, 'refresh_gold!', refresh_time)
-	end
-
 	def self.refresh_all_players_goldmine
 		Player.none_npc.each do |player|
 			player.harvest_gold_mines
 		end
 	end
-
 
 	protected
 

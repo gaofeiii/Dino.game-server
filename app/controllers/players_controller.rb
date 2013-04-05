@@ -1,7 +1,7 @@
 include SessionsHelper
 class PlayersController < ApplicationController
 
-	before_filter :validate_player, :only => [:refresh, :modify_nickname, :modify_password, :register_game_center]
+	before_filter :validate_player, :only => [:refresh, :modify_nickname, :modify_password, :register_game_center, :harvest_all_goldmines]
 	skip_filter :validate_session, :only => [:modify_nickname]
 
 	def deny_access
@@ -60,10 +60,9 @@ class PlayersController < ApplicationController
 		player = Player.new(:id => params[:player_id])
 
 		result = Ohm.redis.smembers(r_key).map do |g_id|
-			next unless GoldMine.exists?(g_id)
+			mine = GoldMine[g_id]
+			next unless mine
 
-			mine = GoldMine.new :id => g_id
-			mine.gets(:x, :y, :type, :level, :player_id, :strategy_id)
 			mine.to_hash(:gold_inc => player.tech_gold_inc)
 		end.compact
 
@@ -107,5 +106,10 @@ class PlayersController < ApplicationController
 		else
 			render_error(Error::NORMAL, "Failed")
 		end
+	end
+
+	def harvest_all_goldmines
+		count = @player.harvest_gold_mines_manual
+		render_success(:player => @player.to_hash, :count => count)
 	end
 end
