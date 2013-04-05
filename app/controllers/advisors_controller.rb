@@ -73,7 +73,7 @@ class AdvisorsController < ApplicationController
 
 		if employer.spend!(:gold_coin => adv_info[:price])
 			Advisor.employ!(params[:employer_id], params[:advisor_id], params[:type], adv_info[:days])
-			if !employer.beginning_guide_finished && !employer.guide_cache['has_advisor']
+			if !employer.beginning_guide_finished && !employer.guide_cache[:has_advisor]
 				cache = employer.guide_cache.merge(:has_advisor => true)
 				employer.set :guide_cache, cache
 			end

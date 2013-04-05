@@ -41,7 +41,7 @@ class ResearchController < ApplicationController
 			end
 
 			tech.research!(b_id, time_reduce)
-			if !@player.beginning_guide_finished && !@player.guide_cache['has_researched']
+			if !@player.beginning_guide_finished && !@player.guide_cache[:has_researched]
 				cache = @player.guide_cache.merge(:has_researched => true)
 				@player.set :guide_cache, cache
 			end

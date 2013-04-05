@@ -1,3 +1,82 @@
+module Ohm
+	def self.redis
+		if Rails.env.development?
+			$redis_count ||= 0
+			$redis_count += 1
+		end
+		Redis.current
+  end
+
+  class Model
+    def self.db
+			if Rails.env.development?
+				$redis_count ||= 0
+				$redis_count += 1
+			end
+     Redis.current
+    end
+
+    # Make id forced to integer
+    def id
+      raise MissingID if not defined?(@id)
+      @id.to_i
+    end
+
+    def hello
+      puts "world"
+    end
+  end
+
+  # 覆盖Timestamps module，让时间戳都为整数格式
+  module Timestamps
+  	def self.included(model)
+  		model.attribute :created_at, DataTypes::Type::Integer
+  		model.attribute :updated_at, DataTypes::Type::Integer
+  	end
+
+  	def save!
+  		self.created_at = Time.now.utc.to_i if new?
+  		self.updated_at = Time.now.utc.to_i
+
+  		super
+  	end
+  end
+
+  # 添加hash和array新类型，使nil默认转为为对应类型的空类型
+  module DataTypes
+    module Type
+      SmartHash = lambda do |h|
+        if h
+        	if h.is_a?(::Hash)
+        		h.is_a?(SerializedHash) ? h : SerializedHash[h]
+        	else
+        		SerializedHash[JSON(h).deep_symbolize_keys]
+        	end
+        else
+          SerializedHash.new
+        end
+      end
+
+      SmartArray = lambda do |a|
+        if a
+        	if a.is_a?(::Array)
+        		a.is_a?(SerializedArray) ? a : SerializedArray.new(a)
+        	else
+        		SerializedArray.new JSON(a)
+        	end
+        else
+          SerializedArray.new
+        end
+      end
+
+      SmartHashesArray = lambda do |a|
+      	a.is_a?(SerializedArray) ? a : SmartArray[a].map! { |element| element.deep_symbolize_keys }
+      end
+
+    end
+  end
+end
+
 module OhmExtension
 	module ClassMethods
 		def count
@@ -57,16 +136,35 @@ module OhmExtension
     	db.mapped_hmget(key[id], args)
     end
 
-    def attribute(name, cast = nil)
-    	@@attributes ||= Hash.new
-    	@@attributes[self.name] ||= Array.new
-    	@@attributes[self.name] << name
-    	super
-    end
-
     def all_attrs
     	@@attributes[self.name]
     end
+
+    def attribute(name, cast = nil, ext = nil)
+      @@attributes ||= Hash.new
+      @@attributes[self.name] ||= Array.new
+      @@attributes[self.name] << name
+
+      define_method(:"#{name}=") do |value|
+        @attributes[name] = value
+      end
+
+      if cast.nil?
+        define_method(name) do
+          @attributes[name]
+        end
+      elsif cast == Ohm::DataTypes::Type::SmartHash or cast == Ohm::DataTypes::Type::SmartArray or cast == Ohm::DataTypes::Type::SmartHashesArray
+        define_method(name) do
+          @attributes[name] = cast[@attributes[name]]
+          @attributes[name].extend(ext) if ext
+          @attributes[name]
+        end
+      else
+        define_method(name) do
+          cast[@attributes[name]]
+        end
+      end
+    end # === End of 'def attribute(name, cast = nil)' ===
 
 	end
 	
@@ -112,14 +210,21 @@ module OhmExtension
 		end
 
 		def _skip_empty(atts)
-      atts
+			atts
+    	# {}.tap do |ret|
+     #    atts.each do |att, val|
+     #      ret[att] = send(att).to_s unless val.to_s.empty?
+     #    end
+
+     #    throw :empty if ret.empty?
+     #  end
     end
 
     def exists?
     	if @id.nil?
     		return false
     	else
-    		self.class[@id].nil? ? false : true
+    		!self.class[@id].nil?
     	end
     end
 

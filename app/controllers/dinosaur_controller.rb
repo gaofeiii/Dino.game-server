@@ -28,7 +28,7 @@ class DinosaurController < ApplicationController
 		end
 
 		if @egg.use!(:building_id => @building.id)
-			if !@player.beginning_guide_finished && !@player.guide_cache['has_hatched_dino']
+			if !@player.beginning_guide_finished && !@player.guide_cache[:has_hatched_dino]
 				cache = @player.guide_cache.merge(:has_hatched_dino => true)
 				@player.set :guide_cache, cache
 			end
@@ -68,7 +68,7 @@ class DinosaurController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('dinosaur_error.not_enough_food')) and return
 		else
 			@dinosaur.eat!(food, count)
-			if !@player.beginning_guide_finished && !@player.guide_cache['feed_dino']
+			if !@player.beginning_guide_finished && !@player.guide_cache[:feed_dino]
 				cache = @player.guide_cache.merge('feed_dino' => true)
 				@player.set :guide_cache, cache
 			end
@@ -80,7 +80,7 @@ class DinosaurController < ApplicationController
 
 	def heal
 		if @player.spend!(@dinosaur.heal_speed_up_cost)
-			if !@player.beginning_guide_finished && !@player.guide_cache['heal_dino']
+			if !@player.beginning_guide_finished && !@player.guide_cache[:heal_dino]
 				cache = @player.guide_cache.merge('heal_dino' => true)
 				@player.set :guide_cache, cache
 			end

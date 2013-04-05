@@ -57,7 +57,7 @@ module BeginningGuide
 	def self.included(model)
 		model.attribute :guide_info
 		model.attribute :beginning_guide_finished, Ohm::DataTypes::Type::Boolean
-		model.attribute :guide_cache, Ohm::DataTypes::Type::Hash
+		model.attribute :guide_cache, Ohm::DataTypes::Type::SmartHash
 		model.class_eval do
 			remove_method :guide_info
 		end
@@ -67,20 +67,21 @@ module BeginningGuide
 	# Instance methods
 	def save!
 		self.guide_info = self.guide_info.except(:player).to_json
-		self.guide_cache = {}.to_json if self.guide_cache.nil?
+		# self.guide_cache = {}.to_json if self.guide_cache.nil?
 		super
 	end
 
 	def guide_info
-		if @attributes[:guide_info].kind_of?(Hash) && @attributes[:guide_info].any?
+		if @attributes[:guide_info].kind_of?(Hash)# && @attributes[:guide_info].any?
 			return @attributes[:guide_info]
 		else
 			@attributes[:guide_info] = @attributes[:guide_info].nil? ? {} : JSON.parse(@attributes[:guide_info])
 			@attributes[:guide_info].keys.each do |key|
 				@attributes[:guide_info][(key.to_i rescue key) || key] = @attributes[:guide_info].delete(key).symbolize_keys!.extend(BeginningGuideSingleHelper)
 			end
-			@attributes[:guide_info][:player] = self
+			# @attributes[:guide_info][:player] = self
 			@attributes[:guide_info].extend(BeginningGuideHelper)
+			@attributes[:guide_info].player = self
 			return @attributes[:guide_info]
 		end
 	end
@@ -116,7 +117,11 @@ module BeginningGuideHelper
 	end
 
 	def player
-		self[:player]
+		@player
+	end
+
+	def player=(p)
+		@player = p
 	end
 
 	def current
@@ -168,33 +173,33 @@ module BeginningGuideHelper
 			village_with_id.has_built_building?(Building.hashes[:habitat])
 		# 孵化并加速完成
 		when 4
-			ret = player.guide_cache['has_hatched_dino'] && player.guide_cache['hatch_speed_up']
+			ret = player.guide_cache[:has_hatched_dino] && player.guide_cache[:hatch_speed_up]
 			ret.nil? ? false : ret
 		# 建造兽栏并加速完成
 		when 5
 			village_with_id.has_built_building?(Building.hashes[:beastiary])
 		# 喂养恐龙
 		when 6
-			ret = player.guide_cache['feed_dino']
+			ret = player.guide_cache[:feed_dino]
 			ret.nil? ? false : ret
 		# 攻打野怪
 		when 7
-			ret = player.guide_cache['attack_monster']
+			ret = player.guide_cache[:attack_monster]
 			ret.nil? ? false : ret
 		# 恐龙疗伤
 		when 8
-			ret = player.guide_cache['heal_dino']
+			ret = player.guide_cache[:heal_dino]
 			ret.nil? ? false : ret
 		# 布防村落
 		when 9
-			ret = player.guide_cache['set_defense']
+			ret = player.guide_cache[:set_defense]
 			ret.nil? ? false : ret
 		# 建造工坊
 		when 10
 			village_with_id.has_built_building?(Building.hashes[:workshop])
 		# 研究科技
 		when 11
-			# ret = player.guide_cache['has_researched']
+			# ret = player.guide_cache[:has_researched]
 			# ret.nil? ? false : ret
 			player.tech_residential.try(:level).to_i > 0
 		# 建造神庙
@@ -202,11 +207,11 @@ module BeginningGuideHelper
 			village_with_id.has_built_building?(Building.hashes[:temple])
 		# 供奉神灵
 		when 13
-			ret = player.guide_cache['has_worshiped']
+			ret = player.guide_cache[:has_worshiped]
 			ret.nil? ? false : ret
 		# 聘用顾问
 		when 14
-			ret = player.guide_cache['has_advisor']
+			ret = player.guide_cache[:has_advisor]
 			ret.nil? ? false : ret
 		# 建造所有资源建筑
 		when 15
@@ -221,15 +226,15 @@ module BeginningGuideHelper
 			village_with_id.has_built_building?(Building.hashes[:market])
 		# 宝石购买龙蛋
 		when 18
-			ret = player.guide_cache['buy_egg']
+			ret = player.guide_cache[:buy_egg]
 			ret.nil? ? false : ret
 		# 攻打一次巢穴
 		when 19
-			ret = player.guide_cache['attack_cave']
+			ret = player.guide_cache[:attack_cave]
 			ret.nil? ? false : ret
 		# 指向任务按钮
 		when 20
-			ret = player.guide_cache['refresh_daily_quest']
+			ret = player.guide_cache[:refresh_daily_quest]
 			ret.nil? ? false : ret
 		else
 			true

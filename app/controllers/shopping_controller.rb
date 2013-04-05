@@ -89,7 +89,7 @@ class ShoppingController < ApplicationController
 
 				# === Guide ===
 				@player.gets :guide_cache, :beginning_guide_finished
-				if !@player.beginning_guide_finished && !@player.guide_cache['buy_egg']
+				if !@player.beginning_guide_finished && !@player.guide_cache[:buy_egg]
 					cache = @player.guide_cache.merge(:buy_egg => true)
 					@player.set :guide_cache, cache
 				end
