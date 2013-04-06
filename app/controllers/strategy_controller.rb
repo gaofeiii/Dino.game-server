@@ -206,9 +206,11 @@ class StrategyController < ApplicationController
 
 	def get_battle_report
 		@player.troops.map(&:refresh!)
-		report = @player.get_battle_report_with_troops_id(params[:troops_id])
+
+		report = @player.find_battle_report_by(:troops_id => params[:troops_id])
+
 		if report
-			render_success(report)
+			render_success(report.get_detail[:content])
 		else
 			render_error(Error::NORMAL, I18n.t('strategy_error.report_has_been_removed'))
 		end
@@ -338,17 +340,19 @@ class StrategyController < ApplicationController
 			winner.daily_quest_cache[:win_honour_val] += win_score
 			winner.set :daily_quest_cache, winner.daily_quest_cache.to_json
 
-			Mail.create_match_lose_mail :receiver_name => @enemy.nickname,
-																	:receiver_id => @enemy.id,
-																	:attacker => @player.nickname,
-																	:score => win_score,
-																	:locale => @enemy.locale
+			GameMail.create_match_win 	:attacker_id 		=> @player.id,
+																	:attacker_name 	=> @player.nickname,
+																	:defender_id 		=> @enemy.id,
+																	:defender_name 	=> @enemy.nickname,
+																	:score 					=> win_score,
+																	:locale 				=> @enemy.locale
 		else
-			Mail.create_match_win_mail 	:receiver_name => @enemy.nickname,
-																	:receiver_id => @enemy.id,
-																	:attacker => @player.nickname,
-																	:score => win_score,
-																	:locale => @enemy.locale
+			GameMail.create_match_lose 	:attacker_id 		=> @player.id,
+																	:attacker_name 	=> @player.nickname,
+																	:defender_id 		=> @enemy.id,
+																	:defender_name 	=> @enemy.nickname,
+																	:score 					=> win_score,
+																	:locale 				=> @enemy.locale
 		end
 
 		winner.add_honour(win_score)
@@ -408,15 +412,15 @@ class StrategyController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('strategy_error.send_at_least_one')) and return
 		end
 
-		if Troops.create 	:player_id => @player.id, 
-											:dinosaurs => dino_ids.to_json,
-											:target_type => BattleModel::TARGET_TYPE[:gold_mine],
-											:target_id => @gold_mine.id,
-											:start_time => Time.now.to_i,
-											:arrive_time => Time.now.to_i + 2.seconds,
-											:target_x => @gold_mine.x,
-											:target_y => @gold_mine.y,
-											:scroll_id => params[:scroll_id]
+		if Troops.create 	:player_id 		=> @player.id, 
+											:dinosaurs 		=> dino_ids.to_json,
+											:target_type 	=> BattleModel::TARGET_TYPE[:gold_mine],
+											:target_id 		=> @gold_mine.id,
+											:start_time 	=> Time.now.to_i,
+											:arrive_time 	=> Time.now.to_i + 2.seconds,
+											:target_x 		=> @gold_mine.x,
+											:target_y 		=> @gold_mine.y,
+											:scroll_id 		=> params[:scroll_id]
 
 			scroll = Item[params[:scroll_id]]
 			scroll.update :player_id => nil if scroll

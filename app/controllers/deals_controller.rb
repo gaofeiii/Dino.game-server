@@ -62,13 +62,15 @@ class DealsController < ApplicationController
 			end
 
 			seller = deal.seller
-			Mail.create_deal_succses_mail :receiver_name => seller.nickname,
-																		:receiver_id => seller.id,
-																		:buyer => @player.nickname,
-																		:gold => deal.price.to_i,
-																		:goods_name => deal.goods_name(seller.locale),
-																		:count => deal.count,
-																		:locale => seller.locale
+
+			GameMail.create_deal_succses_mail :buyer_id 		=> @player.id,
+																				:buyer_name 	=> @player.nickname,
+																				:seller_id 		=> seller.id,
+																				:seller_name 	=> seller.nickname,
+																				:gold 				=> deal.price.to_i,
+																				:goods_name 	=> deal.goods_name(seller.locale),
+																				:count 				=> deal.count,
+																				:locale 			=> seller.locale
 			deal.delete
 		end
 		render_success(:player => @player.to_hash(:resources), :deal_id => deal.id)

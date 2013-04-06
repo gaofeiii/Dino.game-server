@@ -85,11 +85,11 @@ class FriendsController < ApplicationController
 			render_error(Error::NORMAL, "Cannot add yourself") and return
 		end
 
-		Mail.create_friend_invite_mail 	:receiver_id => @friend.id, 
-																		:player_id => @player.id,
-																		:receiver_name => @friend.nickname,
-																		:player_name => @player.nickname,
-																		:locale => @friend.locale
+		GameMail.create_friend_application 	:player_id 		=> @player.id,
+																				:player_name 	=> @player.nickname,
+																				:friend_id 		=> @friend.id,
+																				:friend_name 	=> @friend.nickname
+																				:locale 			=> @friend.locale
 		render_success
 	end
 

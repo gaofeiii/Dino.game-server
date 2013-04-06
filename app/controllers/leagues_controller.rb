@@ -68,13 +68,13 @@ class LeaguesController < ApplicationController
 
 	def apply
 		@president = @league.president
-		mail = Mail.create_league_apply_mail  :president 		=> @president.nickname,
-																					:player_name 	=> @player.nickname,
-																					:player_id 		=> @player.id,
-																					:league_id 		=> @league.id,
-																					:league_name 	=> @league.name,
-																					:locale 			=> @president.locale,
-																					:receiver_id	=> @president.id
+		mail = GameMail.create_league_application :player_id 			=> @player.id,
+																							:player_name 		=> @player.nickname,
+																							:president_id 	=> @president.id,
+																							:president_name => @president.nickname,
+																							:league_id 			=> @league.id,
+																							:league_name 		=> @league.name,
+																							:locale 				=> @president.locale,
 
 		if mail
 			render_success
@@ -146,8 +146,13 @@ class LeaguesController < ApplicationController
 			render_error(Error::NORMAL, "INVALID_FRIEND_ID") and return
 		end
 
-		mail = Mail.create_league_invite_mail(:receiver_name => @friend.nickname, :player_name => @player.nickname, :league_name => @league.name, :league_id => @league.id)
-		
+		mail = GameMail.create_league_invitation 	:player_id 			=> @player.id,
+																							:player_name 		=> @player.nickname,
+																							:receiver_id 		=> @friend.id,
+																							:receiver_name 	=> @friend.nickname,
+																							:league_id 			=> @league.id,
+																							:league_name 		=> @league.name,
+																							:lcoale 				=> @friend.locale		
 
 		if mail
 			render_success

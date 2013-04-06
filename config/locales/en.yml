@@ -221,15 +221,15 @@
   mail:
    friend_invitation:
     title: "Friend Application"
-    content: "%{friend_name} wants to be your friend"
+    content: "[%{friend_name}] wants to be your friend"
 
    league_invitation:
     title: "Tribe invitation from %{league_name}"
-    content: "%{player_name} invite you to join Tribe: %{league_name}"
+    content: "[%{player_name}] invite you to join Tribe: %{league_name}"
 
    league_application:
     title: "Tribe application"
-    content: "%{player_name} want to join your Tribe: %{league_name}"
+    content: "[%{player_name}] want to join your Tribe: %{league_name}"
 
    battle_report:
     title: "Battle Report"

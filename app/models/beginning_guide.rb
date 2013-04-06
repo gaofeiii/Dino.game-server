@@ -56,8 +56,8 @@ module BeginningGuide
 
 	def self.included(model)
 		model.attribute :guide_info
-		model.attribute :beginning_guide_finished, Ohm::DataTypes::Type::Boolean
-		model.attribute :guide_cache, Ohm::DataTypes::Type::SmartHash
+		model.attribute :beginning_guide_finished, 	Ohm::DataTypes::Type::Boolean
+		model.attribute :guide_cache, 							Ohm::DataTypes::Type::SmartHash
 		model.class_eval do
 			remove_method :guide_info
 		end
@@ -67,7 +67,6 @@ module BeginningGuide
 	# Instance methods
 	def save!
 		self.guide_info = self.guide_info.except(:player).to_json
-		# self.guide_cache = {}.to_json if self.guide_cache.nil?
 		super
 	end
 
@@ -199,8 +198,6 @@ module BeginningGuideHelper
 			village_with_id.has_built_building?(Building.hashes[:workshop])
 		# 研究科技
 		when 11
-			# ret = player.guide_cache[:has_researched]
-			# ret.nil? ? false : ret
 			player.tech_residential.try(:level).to_i > 0
 		# 建造神庙
 		when 12

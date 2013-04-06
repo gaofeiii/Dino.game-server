@@ -46,7 +46,11 @@ class Troops < Ohm::Model
 	end
 
 	def refresh!
-		return if target.nil?
+		if target.nil?
+			self.dissolve!
+			return
+		end
+		
 		scroll = Item[scroll_id]
 
 		self.mutex(5) do

@@ -1,4 +1,4 @@
-module PlayerShppingHelper
+module PlayerShoppingHelper
 	module ClassMethods
 		
 	end

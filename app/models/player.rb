@@ -6,7 +6,7 @@ class Player < Ohm::Model
 	include OhmExtension
 	
 	include MailsModule
-	include BattleReport
+	# include BattleReport
 	include PlayerExp
 
 	include PlayerTechHelper
@@ -19,7 +19,7 @@ class Player < Ohm::Model
 	include PlayerBattleRankHelper
 	include PlayerCaveHelper
 	include PlayerLoginGiftHelper
-	include PlayerShppingHelper
+	include PlayerShoppingHelper
 	include PlayerVipHelper
 	include PlayerLeagueHelper
 	include PlayerTypeHelper
@@ -32,6 +32,7 @@ class Player < Ohm::Model
 	include PlayerDealsHelper
 	include PlayerIosHelper
 	include PlayerItemsHelper
+	include PlayerMailHelper
 
 	include BeginningGuide
 	include DailyQuest
@@ -231,10 +232,12 @@ class Player < Ohm::Model
 	end
 
   def locale
-  	if @attributes[:locale].blank?
-  		@attributes[:locale] = 'en'
+  	case @attributes[:locale]
+  	when 'cn', 'zh-Hans'
+  		'cn'
+  	else
+  		'en'
   	end
-  	@attributes[:locale]
   end
 
 	# Reward Structure:

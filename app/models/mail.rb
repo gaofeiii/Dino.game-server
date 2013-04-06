@@ -38,7 +38,6 @@ class Mail < Ohm::Model
 	index :league_id
 	index :is_read
 
-	include MailHelper
 
 	def cached_data
 		cache = @attributes[:cached_data]

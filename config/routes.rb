@@ -133,7 +133,6 @@ DinosaurGame::Application.routes.draw do
   # 邮件
   scope :path => 'mails', :as => 'mails' do
     post 'send_mail'    => 'mails#send_mail'
-    post 'receive_mail' => 'mails#receive_mails'
     post 'check_new_mails' => 'mails#check_new_mails'
     post 'mark_as_read' => 'mails#mark_as_read'
     post 'read_mail'    => 'mails#read_mail'

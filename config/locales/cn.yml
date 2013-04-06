@@ -220,15 +220,15 @@ cn:
   mail:
    friend_invitation:
     title: "好友申请通知"
-    content: "%{friend_name}希望加你为好友。"
+    content: "【%{friend_name}】希望加你为好友。"
 
    league_invitation:
     title: "来自%{league_name}部落的邀请"
-    content: "%{player_name}邀请你加入他的部落：%{league_name}。"
+    content: "【%{player_name}】邀请你加入他的部落：%{league_name}。"
 
    league_application:
     title: "部落申请通知"
-    content: "%{player_name}申请加入你的部落：%{league_name}"
+    content: "【%{player_name}】申请加入你的部落：%{league_name}"
 
    battle_report:
     title: "战斗报告"

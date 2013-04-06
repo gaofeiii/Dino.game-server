@@ -69,7 +69,16 @@ module MailsModule
 
 		def all_mails(args = {})
 			last_id = args[:last_id].to_i
-			private_mails(args) + league_mails(args) + system_mails(args)
+			# private_mails(args) + league_mails(args) + system_mails(args)
+			count = 10
+			
+			if last_id <= 0
+				Mail.find(:receiver_name => nickname).sort_by(:created_at, :order => 'DESC', :limit => [0, count])
+			else
+				Mail.find(:receiver_name => nickname).ids.map do |m_id|
+					m_id.to_i > last_id ? Mail[m_id] : nil
+				end.compact
+			end
 		end
 	end
 	

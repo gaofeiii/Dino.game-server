@@ -48,22 +48,14 @@ class MailsController < ApplicationController
 		end
 	end
 
-	def receive_mails
-		# mail_type = params[:mail_type].to_i
-
-		# if mail_type <= 0
-		# 	render_error(Error::NORMAL, "Invalid mail type") and return
-		# end
-
-		# mails = @player.mails(mail_type).to_a
-		mails = @player.all_mails
-		render_success(:mails => mails, :has_new_mail => @player.has_new_mail)
-	end
-
 	def check_new_mails
 		@player.troops.map(&:refresh!)
-		mails = @player.all_mails(:last_id => params[:last_id], :last_report_time => params[:last_report_time])
 		@player.check_rating
+
+		# mails = @player.all_mails(:last_id => params[:last_id], :last_report_time => params[:last_report_time])
+
+		mails = @player.game_mails(:last_id => params[:last_id].to_i, :count => 15)
+
 		render_success 	:mails => mails, 
 										:player => {
 											:level => @player.level, 
@@ -78,21 +70,15 @@ class MailsController < ApplicationController
 	end
 
 	def read_mail
-		@mail = Mail[params[:mail_id]]
-		if @mail.nil?
-			render_error(Error::NORMAL, I18n.t('mails.mail_has_been_deleted')) and return
-		end
+		@mail = GameMail[params[:mail_id]]
 
-		result = {
-			:id => @mail.id,
-			:mail_type => @mail.mail_type,
-			:content => @mail.get_content
-		}
-		render_success(result)
+		render_error(Error::NORMAL, I18n.t('mails_error.mail_has_been_deleted')) and return if @mail.nil?
+
+		render_success(@mail.get_detail)
 	end
 
 	def delete_mail
-		@mail = Mail[params[:mail_id]]
+		@mail = GameMail[params[:mail_id]]
 		if @mail
 			@mail.delete
 		end
@@ -101,7 +87,7 @@ class MailsController < ApplicationController
 
 	def mark_as_read
 		params[:mail_ids].to_a.each do |m_id|
-			m = Mail[m_id]
+			m = GameMail[m_id]
 			m.update :is_read => true if m
 		end
 		render_success
