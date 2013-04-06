@@ -62,6 +62,12 @@ class WorldMapController < ApplicationController
 					league.get :name
 				end
 
+				monster_type = 0
+				if vil.is_bill?
+					v_type = 2
+					monster_type = 7
+				end
+
 				towns_info << {
 					:x => vx,
 					:y => vy,
@@ -77,7 +83,8 @@ class WorldMapController < ApplicationController
 						:battle_power => player.battle_power,
 						:village_type => vil_type,
 						:under_protection => vil.under_protection,
-						:is_vip => player.is_vip?
+						:is_vip => player.is_vip?,
+						:monster_type => monster_type
 					}
 				}
 				left_ids -= CountryDataHelper::InstanceMethods.get_nodes_matrix(vx - 2, vy - 2, 5, 5)

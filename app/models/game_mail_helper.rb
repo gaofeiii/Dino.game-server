@@ -14,7 +14,7 @@ module GameMailHelper
 									:receiver_name 	=> friend_name,
 									:title 					=> I18n.t("mail.friend_invitation.title", :locale => locale),
 									:content 				=> I18n.t('mail.friend_invitation.content', :locale => locale, :friend_name => player_name),
-									:data 					=> {:player_id => player_id, :friend_id => friend_id}
+									:data 					=> {:player_id => player_id, :friend_id => friend_id}.to_json
 		end
 
 		# ** 公会邀请邮件 ** #
@@ -29,7 +29,7 @@ module GameMailHelper
 									:receiver_name 	=> receiver_name,
 									:title 					=> I18n.t("mail.league_invitation.title", :league_name => league_name, :locale => locale),
 									:content 				=> I18n.t('mail.league_invitation.content', :locale => locale, :player_name => player_name, :league_name => league_name),
-									:data				 		=> {:player_id => player_id, :receiver_id => receiver_id, :league_id => league_id}
+									:data				 		=> {:player_id => player_id, :receiver_id => receiver_id, :league_id => league_id}.to_json
 		end
 
 		# ** 公会申请邮件 ** #
@@ -43,7 +43,7 @@ module GameMailHelper
 									:receiver_name 	=> args[:president],
 									:title 					=> I18n.t("mail.league_application.title", :locale => locale),
 									:content 				=> I18n.t('mail.league_application.content', :locale => locale, :player_name => player_name, :league_name => league_name),
-									:data				 		=> {:player_id => player_id, :receiver_id => receiver_id, :league_id => league_id}
+									:data				 		=> {:player_id => player_id, :receiver_id => receiver_id, :league_id => league_id}.to_json
 		end
 
 		# ** 村落防守成功邮件 ** #

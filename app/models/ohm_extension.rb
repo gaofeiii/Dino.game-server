@@ -210,7 +210,12 @@ module OhmExtension
 		end
 
 		def _skip_empty(atts)
-			atts
+			new_atts = {}
+      atts.each do |att, val|
+        new_atts[att] = val
+      end
+
+      new_atts
     	# {}.tap do |ret|
      #    atts.each do |att, val|
      #      unless val.to_s.empty?

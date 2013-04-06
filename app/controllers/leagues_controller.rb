@@ -74,7 +74,7 @@ class LeaguesController < ApplicationController
 																							:president_name => @president.nickname,
 																							:league_id 			=> @league.id,
 																							:league_name 		=> @league.name,
-																							:locale 				=> @president.locale,
+																							:locale 				=> @president.locale
 
 		if mail
 			render_success
@@ -152,7 +152,7 @@ class LeaguesController < ApplicationController
 																							:receiver_name 	=> @friend.nickname,
 																							:league_id 			=> @league.id,
 																							:league_name 		=> @league.name,
-																							:lcoale 				=> @friend.locale		
+																							:locale 				=> @friend.locale		
 
 		if mail
 			render_success
