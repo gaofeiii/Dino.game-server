@@ -21,11 +21,13 @@ class MailsController < ApplicationController
 				render_error(Error::NORMAL, I18n.t('mails_error.receiver_not_exist')) and return
 			end
 
-			Mail.create :mail_type => Mail::TYPE[:private],
-									:sender_name => sender.nickname, 
-									:receiver_name => receiver.nickname,
-									:title => params[:title],
-									:content => params[:content]
+			GameMail.create :mail_type => Mail::TYPE[:private],
+											:sender_id => sender.id,
+											:sender_name => sender.nickname, 
+											:receiver_id => receiver.id,
+											:receiver_name => receiver.nickname,
+											:title => params[:title],
+											:content => params[:content]
 
 			render :json => {:message => Error.success_message} and return
 		# 公会邮件
@@ -94,16 +96,16 @@ class MailsController < ApplicationController
 	end
 
 	def on_mail_ok
-		mail = Mail.new(:id => params[:mail_id]).gets(:cached_data, :sys_mail_type)
+		mail = GameMail[params[:mail_id]]
 
 		if mail.nil?
 			render_error(Error::NORMAL, I18n.t('general.invitation_expired')) and return
 		end
 
-		case mail.sys_mail_type
+		case mail.sys_type
 		# 好友邀请
 		when Mail::SYS_TYPE[:friend_invite]
-			@friend = Player.new(:id => mail.cached_data[:player_id]).gets(:nickname)
+			@friend = Player.new(:id => mail.data[:player_id]).gets(:nickname)
 
 			if @player.id == @friend.id
 				render_error(Error::NORMAL, I18n.t('friends_error.cannot_add_self')) and return

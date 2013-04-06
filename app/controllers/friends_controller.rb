@@ -88,7 +88,7 @@ class FriendsController < ApplicationController
 		GameMail.create_friend_application 	:player_id 		=> @player.id,
 																				:player_name 	=> @player.nickname,
 																				:friend_id 		=> @friend.id,
-																				:friend_name 	=> @friend.nickname
+																				:friend_name 	=> @friend.nickname,
 																				:locale 			=> @friend.locale
 		render_success
 	end

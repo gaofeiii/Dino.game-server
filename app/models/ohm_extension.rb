@@ -213,11 +213,18 @@ module OhmExtension
 			atts
     	# {}.tap do |ret|
      #    atts.each do |att, val|
-     #      ret[att] = send(att).to_s unless val.to_s.empty?
+     #      unless val.to_s.empty?
+     #        if val.is_a?(Ohm::DataTypes::SerializedHash) or val.is_a?(Ohm::DataTypes::SerializedArray)
+     #          ret[att] = send(att).to_s
+     #        else
+     #          ret[att] = send(att)
+     #        end
+     #      end
+          
      #    end
 
      #    throw :empty if ret.empty?
-     #  end
+      # end
     end
 
     def exists?
