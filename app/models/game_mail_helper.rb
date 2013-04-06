@@ -22,7 +22,7 @@ module GameMailHelper
 			return false unless (player_id && player_name && receiver_id && league_id && league_name)
 
 			self.create :mail_type 			=> GameMail::TYPE[:system],
-									:sys_mail_type 	=> GameMail::SYS_TYPE[:league_invite],
+									:sys_type 			=> GameMail::SYS_TYPE[:league_invite],
 									:sender_id 			=> 0,
 									:sender_name 		=> I18n.t('system', :locale => locale),
 									:receiver_id		=> receiver_id,
@@ -37,7 +37,7 @@ module GameMailHelper
 			return false unless (player_id && player_name && president_id && league_id)
 
 			self.create :mail_type 			=> GameMail::TYPE[:system],
-									:sys_mail_type 	=> GameMail::SYS_TYPE[:league_apply],
+									:sys_type 			=> GameMail::SYS_TYPE[:league_apply],
 									:sender_id			=> 0,
 									:sender_name 		=> I18n.t('system', :locale => locale),
 									:receiver_name 	=> args[:president],
@@ -51,7 +51,7 @@ module GameMailHelper
 			return false unless (attacker_name && defender_id && defender_name && x && y)
 
 			self.create :mail_type 			=> GameMail::TYPE[:system],
-									:sys_mail_type 	=> GameMail::SYS_TYPE[:normal],
+									:sys_type 			=> GameMail::SYS_TYPE[:normal],
 									:sender_id			=> 0,
 									:sender_name 		=> I18n.t('system', :locale => locale),
 									:receiver_id		=> defender_id,
@@ -61,24 +61,25 @@ module GameMailHelper
 		end
 
 		# ** 村落防守失败邮件 ** #
-		def create_village_defense_lose(attacker_id:nil, attacker_name:nil, defender_id:nil, defender_name:nil, x:nil, y:nil, locale:'en')
+		def create_village_defense_lose(attacker_id:nil, attacker_name:nil, defender_id:nil, defender_name:nil, x:nil, y:nil, rate:0, locale:'en')
 			return false unless (attacker_name && defender_id && defender_name && x && y)
 
 			self.create :mail_type 			=> GameMail::TYPE[:system],
-									:sys_mail_type 	=> GameMail::SYS_TYPE[:normal],
+									:sys_type 			=> GameMail::SYS_TYPE[:normal],
 									:sender_id			=> 0,
 									:sender_name 		=> I18n.t('system', :locale => locale),
 									:receiver_id		=> defender_id,
 									:receiver_name 	=> defender_name,
 									:title 					=> I18n.t('mail.defense_village_lose_mail.title', :locale => locale),
-									:content				=> I18n.t('mail.defense_village_lose_mail.content', :locale => locale, :x => x, :y => y, :attacker => attacker_name)
+									:content				=> I18n.t('mail.defense_village_lose_mail.content', :locale => locale, :x => x, :y => y, :attacker => attacker_name, :rate => rate)
 		end
 
 		# ** 挑战赛胜利邮件 ** #
 		def create_match_win(attacker_id:nil, attacker_name:nil, defender_id:nil, defender_name:nil, score:0, locale:'en')
-			locale = args[:locale] || :en
+			return false unless (attacker_id && attacker_name && defender_id && score)
+
 			self.create :mail_type 			=> GameMail::TYPE[:system],
-									:sys_mail_type 	=> GameMail::SYS_TYPE[:normal],
+									:sys_type 			=> GameMail::SYS_TYPE[:normal],
 									:sender_id			=> 0,
 									:sender_name 		=> I18n.t('system', :locale => locale),
 									:receiver_id		=> defender_id,
@@ -92,7 +93,7 @@ module GameMailHelper
 			return false unless (attacker_id && attacker_name && defender_id && score)
 
 			self.create :mail_type 			=> GameMail::TYPE[:system],
-									:sys_mail_type 	=> GameMail::SYS_TYPE[:normal],
+									:sys_type 			=> GameMail::SYS_TYPE[:normal],
 									:sender_id			=> 0,
 									:sender_name 		=> I18n.t('system', :locale => locale),
 									:receiver_id		=> defender_id,
@@ -106,7 +107,7 @@ module GameMailHelper
 			return false unless (attacker_id && attacker_name && defender_id && gx && gy && ax && ay)
 
 			self.create :mail_type 			=> GameMail::TYPE[:system],
-									:sys_mail_type 	=> GameMail::SYS_TYPE[:normal],
+									:sys_type 			=> GameMail::SYS_TYPE[:normal],
 									:sender_id			=> 0,
 									:sender_name 		=> I18n.t('system', :locale => locale),
 									:receiver_id		=> defender_id,
@@ -116,11 +117,11 @@ module GameMailHelper
 		end
 
 		# ** 防守金矿失败邮件 ** #
-		def create_goldmine_defense_win(attacker_id:nil, attacker_name:nil, defender_id:nil, defender_name:nil, gx:0, gy:0, ax:0, ay:0, locale:'en')
+		def create_goldmine_defense_lose(attacker_id:nil, attacker_name:nil, defender_id:nil, defender_name:nil, gx:0, gy:0, ax:0, ay:0, locale:'en')
 			return false unless (attacker_id && attacker_name && defender_id && gx && gy && ax && ay)
 
 			self.create :mail_type 			=> GameMail::TYPE[:system],
-									:sys_mail_type 	=> GameMail::SYS_TYPE[:normal],
+									:sys_type 			=> GameMail::SYS_TYPE[:normal],
 									:sender_id			=> 0,
 									:sender_name 		=> I18n.t('system', :locale => locale),
 									:receiver_id		=> defender_id,
@@ -130,15 +131,15 @@ module GameMailHelper
 		end
 
 		# ** 交易成功邮件 ** #
-		def create_deal_succses_mail(buyer_id:nil, buyer_name:nil, seller_name:nil, gold:nil, goods_name:nil, count:0)
+		def create_deal_succses_mail(buyer_id:nil, buyer_name:nil, seller_id:nil, seller_name:nil, gold:nil, goods_name:nil, count:0, locale:'en')
 			return false unless (buyer_id && buyer_name && seller_name && gold && goods_name && count)
 
 			self.create :mail_type 			=> GameMail::TYPE[:system],
-									:sys_mail_type 	=> GameMail::SYS_TYPE[:normal],
+									:sys_type 			=> GameMail::SYS_TYPE[:normal],
 									:sender_id			=> 0,
 									:sender_name 		=> I18n.t('system', :locale => locale),
-									:receiver_name 	=> seller_id,
-									:receiver_id		=> seller_name,
+									:receiver_name 	=> seller_name,
+									:receiver_id		=> seller_id,
 									:title 					=> I18n.t('mail.deal_success.title', :locale => locale),
 									:content				=> I18n.t('mail.deal_success.content', :locale => locale, :buyer => buyer_name, :gold => gold, :goods_name => goods_name, :count => count)
 		end

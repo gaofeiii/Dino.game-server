@@ -251,7 +251,7 @@ cn:
 
    match_win_mail:
     title: "挑战赛获胜"
-    content: "玩家【%{attacker}】向你发起挑战，你赢得了胜利，并获得%{score}点战斗力。"
+    content: "玩家【%{attacker}】向你发起挑战，你赢得了胜利，并提升了%{score}点战斗力。"
 
    match_lose_mail:
     title: "挑战赛失败"

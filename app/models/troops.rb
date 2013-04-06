@@ -157,13 +157,14 @@ class Troops < Ohm::Model
 							target.set(:under_attack, 0)
 
 							attacker_vil = Village.new(:id => player.village_id).gets(:x, :y)
-							Mail.create_defense_village_lose_mail :receiver_id => target_player.id, 
-																										:receiver_name => target_player.nickname,
-																										:attacker => player.nickname,
-																										:x => attacker_vil.x,
-																										:y => attacker_vil.y,
-																										:locale => target_player.locale,
-																										:rate => (stolen_rate * 100).to_i
+							GameMail.create_village_defense_lose 	:attacker_id 		=> player.id,
+																										:attacker_name 	=> player.nickname,
+																										:defender_id 		=> target_player.id, 
+																										:defender_name 	=> target_player.nickname,
+																										:x 							=> attacker_vil.x,
+																										:y 							=> attacker_vil.y,
+																										:locale 				=> target_player.locale,
+																										:rate 					=> (stolen_rate * 100).to_i
 							rwd
 						end
 						
@@ -191,12 +192,14 @@ class Troops < Ohm::Model
 								target_player = target.player
 								ax, ay = db.hmget(Village.key[player.village_id], :x, :y).map!(&:to_i)
 
-								Mail.create_goldmine_defense_lose_mail 	:receiver_name => target_player.nickname,
-																												:receiver_id => target_player.id,
-																												:attacker => player.nickname,
-																												:gx => target.x, :gy => target.y,
-																												:ax => ax, :ay => ay,
-																												:locale => target_player.locale
+								# (attacker_id:nil, attacker_name:nil, defender_id:nil, defender_name:nil, gx:0, gy:0, ax:0, ay:0, locale:'en')
+								GameMail.create_goldmine_defense_lose :attacker_id 					=> player.id,
+																											:attacker_name 				=> player.nickname,
+																											:defender_id 					=> target_player.id,
+																											:defender_name 				=> target_player.nickname,
+																											:gx => target.x, 	:gy => target.y,
+																											:ax => ax, 				:ay => ay,
+																											:locale 							=> target_player.locale
 							end
 
 							target.update :player_id => player.id, 
@@ -228,23 +231,27 @@ class Troops < Ohm::Model
 						return nil if target.nil?
 						
 						attacker_vil = Village.new(:id => player.village_id).gets(:x, :y)
-						Mail.create_defense_village_win_mail 	:receiver_id => defense_player.id, 
-																									:receiver_name => defense_player.nickname,
-																									:attacker => player.nickname,
-																									:x => attacker_vil.x,
-																									:y => attacker_vil.y,
-																									:locale => defense_player.locale
+
+						GameMail.create_village_defense_win :attacker_id 		=> player.id,
+																								:attacker_name 	=> player.nickname,
+																								:defender_id 		=> defense_player.id,
+																								:defender_name 	=> defense_player.nickname,
+																								:x 							=> attacker_vil.x,
+																								:y 							=> attacker_vil.y,
+																								:locale 				=> defense_player.locale
+
 					when BattleModel::TARGET_TYPE[:gold_mine]
 						if not target.player_id.blank?
 							target_player = target.player
 							ax, ay = db.hmget(Village.key[player.village_id], :x, :y).map!(&:to_i)
 
-							Mail.create_goldmine_defense_win_mail :receiver_name => target_player.nickname,
-																										:receiver_id => target_player.id,
-																										:attacker => player.nickname,
-																										:gx => target.x, :gy => target.y,
-																										:ax => ax, :ay => ay,
-																										:locale => target_player.locale
+							GameMail.create_goldmine_defense_win	:attacker_id 					=> player.id,
+																										:attacker_name 				=> player.nickname,
+																										:defender_id 					=> target_player.id,
+																										:defender_name 				=> target_player.nickname,
+																										:gx => target.x, 	:gy => target.y,
+																										:ax => ax, 				:ay => ay,
+																										:locale 							=> target_player.locale
 						end
 					end
 				end # End of winner reward
