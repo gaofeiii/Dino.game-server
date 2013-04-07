@@ -33,10 +33,13 @@ class Player < Ohm::Model
 	include PlayerIosHelper
 	include PlayerItemsHelper
 	include PlayerMailHelper
+	include PlayerRewardHelper
 
 	include BeginningGuide
 	include DailyQuest
 	include KillBillQuest
+
+	include PlayerBeginnerGuideHelper
 
 	# Player的属性
 	attribute :account_id, 		Type::Integer
@@ -77,6 +80,8 @@ class Player < Ohm::Model
 	collection :troops,						Troops
 	collection :gold_mines,				GoldMine
 	collection :strategies, 			Strategy
+
+	collection :beginner_guides,	BeginnerGuide
 
 	reference :league, League
 	
@@ -193,7 +198,7 @@ class Player < Ohm::Model
 				has_beginning_guide = !beginning_guide_finished
 				# has_beginning_guide = false
 				hash[:has_beginning_guide] = has_beginning_guide
-				hash[:beginning_guide] = guide_info.current if has_beginning_guide
+				hash[:beginning_guide] = current_guide if has_beginning_guide
 			when :queue_info
 				hash[:max_queue_size] = action_queue_size
 				hash[:queue_in_use] = curr_action_queue_size
@@ -239,35 +244,6 @@ class Player < Ohm::Model
   		'en'
   	end
   end
-
-	# Reward Structure:
-	# {
-	# 	:wood => 1,
-	# 	:stone => 1,
-	# 	:gold => 2, :gold_coin => 2,
-	# 	:items => [{
-	# 		:item_cat => 1,
-	# 		:item_type => 1,
-	# 		:item_count => 1,
-	# 		:quality => 1
-	# 	}]
-	# }
-	def receive_reward!(reward = {})
-		return false if reward.blank?
-
-		self.receive!(reward)
-		self.earn_exp!(reward[:xp]) if reward.has_key?(:xp)
-
-		if reward.has_key?(:items)
-			reward[:items].each do |itm|
-				if itm[:item_cat] == Item.categories[:food]
-					self.receive_food!(itm[:item_type], itm[:item_count])
-				else
-					Item.create(:item_category => itm[:item_cat], :item_type => itm[:item_type], :quality => itm[:quality], :player_id => id)
-				end
-			end
-		end
-	end
 
 	# Callbacks
 	protected

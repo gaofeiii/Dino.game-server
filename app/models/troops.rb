@@ -169,7 +169,8 @@ class Troops < Ohm::Model
 						end
 						
 					when BattleModel::TARGET_TYPE[:creeps]
-						reward = Reward.judge!(target.type)
+						# reward = ModReward.judge!(target.type)
+						reward = Reward.monster_rewards(target.type)
 						
 						if not player.finish_daily_quest
 							player.daily_quest_cache[:kill_monsters] += 1
@@ -178,8 +179,9 @@ class Troops < Ohm::Model
 
 						player.del_temp_creeps(target.index)
 						target.delete
-						player.receive_reward!(reward)
-						reward
+						# player.receive_reward!(reward)
+						player.get_reward(reward)
+						reward.to_hash
 
 					when BattleModel::TARGET_TYPE[:gold_mine]
 						if not player.finish_daily_quest
@@ -208,7 +210,7 @@ class Troops < Ohm::Model
 														:update_gold_time => ::Time.now.to_i
 							target.strategy.try(:delete)
 
-							rwd = Reward.judge!(target.level)
+							rwd = ModReward.judge!(target.level)
 							player.receive_reward!(rwd)
 							rwd
 						else
@@ -259,6 +261,10 @@ class Troops < Ohm::Model
 				# Check beginning guide
 				if !player.beginning_guide_finished && !player.guide_cache['attack_monster']
 					player.set :guide_cache, player.guide_cache.merge('attack_monster' => true)
+				end
+
+				if player.has_beginner_guide?
+					player.cache_beginner_data(:has_attacked_monster => true)
 				end
 				
 				result.merge!(:reward => reward)

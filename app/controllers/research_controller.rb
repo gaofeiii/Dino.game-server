@@ -32,7 +32,6 @@ class ResearchController < ApplicationController
 
 			# 判断科技的影响
 			time_reduce += @player.tech_research_inc
-			p "time_reduce: #{time_reduce}"
 
 			b_id = if params[:building_id].nil? || params[:building_id] <= 0
 				@player.village.buildings.find(:type => Building.hashes[:workshop]).ids.first
@@ -41,10 +40,7 @@ class ResearchController < ApplicationController
 			end
 
 			tech.research!(b_id, time_reduce)
-			if !@player.beginning_guide_finished && !@player.guide_cache[:has_researched]
-				cache = @player.guide_cache.merge(:has_researched => true)
-				@player.set :guide_cache, cache
-			end
+
 			render_success(:player => @player.to_hash(:techs, :resources))
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_res'))

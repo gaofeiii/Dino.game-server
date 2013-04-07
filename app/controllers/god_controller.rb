@@ -22,6 +22,11 @@ class GodController < ApplicationController
 			cache = @player.guide_cache.merge(:has_worshiped => true)
 			@player.set :guide_cache, cache
 		end
+
+		if @player.has_beginner_guide?
+			@player.cache_beginner_data(:has_worshipped_god => true)
+		end
+		
 		render_success(:player => @player.to_hash(:resources, :god))
 	end
 

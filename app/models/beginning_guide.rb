@@ -159,6 +159,9 @@ module BeginningGuideHelper
 		quest = self[index]
 		return false unless quest
 
+		quest.finished = true
+		return true
+
 		sig = case index
 		# 建造采集场
 		when 1

@@ -72,6 +72,10 @@ class DinosaurController < ApplicationController
 				cache = @player.guide_cache.merge('feed_dino' => true)
 				@player.set :guide_cache, cache
 			end
+
+			if @player.has_beginner_guide?
+				@player.cache_beginner_data(:has_fed_dino => true)
+			end
 		end
 		render :json => {
 			:player => @player.to_hash(:dinosaurs, :specialties)
@@ -84,6 +88,11 @@ class DinosaurController < ApplicationController
 				cache = @player.guide_cache.merge('heal_dino' => true)
 				@player.set :guide_cache, cache
 			end
+
+			if @player.has_beginner_guide?
+				@player.cache_beginner_data(:has_healed_dino => true)
+			end
+			
 			@dinosaur.heal_speed_up!
 		end
 		render_success(:player => @player.to_hash(:dinosaurs))

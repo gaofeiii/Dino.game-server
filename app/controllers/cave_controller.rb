@@ -101,6 +101,10 @@ class CaveController < ApplicationController
 				cache = @player.guide_cache.merge(:attack_cave => true)
 				@player.set :guide_cache, cache
 			end
+
+			if @player.has_beginner_guide?
+				@player.cache_beginner_data(:has_attacked_cave => true)
+			end
 			# === End of Guide ===
 
 			@cave.todays_count += 1

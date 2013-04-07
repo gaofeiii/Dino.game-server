@@ -109,6 +109,18 @@ module PlayerExp
 			end
 		end
 
+		def update_level
+			level_up = false
+
+			until experience < next_level_exp
+				self.experience -= next_level_exp
+				self.level += 1
+				level_up = true
+			end
+
+			save if level_up
+		end
+
 	end
 	
 	def self.included(receiver)

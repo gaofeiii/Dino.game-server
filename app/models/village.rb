@@ -237,13 +237,33 @@ class Village < Ohm::Model
 			if buildings.find(:type => Building.hashes[:residential]).blank?
 				create_building :type => Building.hashes[:residential],
 												:level => 1,
-												:x => 25,
-												:y => 29,
+												:x => 19,
+												:y => 27,
 												:status => Building::STATUS[:finished]
 				create_building :type => Building.hashes[:arena],
 												:level => 1,
-												:x => 33,
-												:y => 36,
+												:x => 27,
+												:y => 31,
+												:status => Building::STATUS[:finished]
+				create_building :type => Building.hashes[:workshop],
+												:level => 1,
+												:x => 15,
+												:y => 19,
+												:status => Building::STATUS[:finished]
+				create_building :type => Building.hashes[:temple],
+												:level => 1,
+												:x => 22,
+												:y => 35,
+												:status => Building::STATUS[:finished]
+				create_building :type => Building.hashes[:beastiary],
+												:level => 1,
+												:x => 10,
+												:y => 23,
+												:status => Building::STATUS[:finished]
+				create_building :type => Building.hashes[:market],
+												:level => 1,
+												:x => 15,
+												:y => 32,
 												:status => Building::STATUS[:finished]
 			end
 		end

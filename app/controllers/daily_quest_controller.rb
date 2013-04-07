@@ -11,6 +11,10 @@ class DailyQuestController < ApplicationController
 			@player.set :guide_cache, cache.to_json
 		end
 
+		if @player.has_beginner_guide?
+			@player.cache_beginner_data(:has_opened_quests => true)
+		end
+
 		render_success(:player => @player.to_hash(:daily_quest))
 	end
 

@@ -2,17 +2,17 @@
 puts "--- Reading items const ---"
 
 module ItemsConst
+	CATEGORIES = {
+		:egg => 1,
+		:food => 2,
+		:scroll => 3,
+		:vip => 4,
+		:protection => 5,
+		:lottery => 6
+	}
+
 	module ClassMethods
 		@@const = Hash.new
-
-		CATEGORIES = {
-			:egg => 1,
-			:food => 2,
-			:scroll => 3,
-			:vip => 4,
-			:protection => 5,
-			:lottery => 6
-		}
 
 		def const
 			if @@const.blank?
@@ -79,6 +79,25 @@ module ItemsConst
 		
 		def info
 			self.class.const[item_category][item_type]
+		end
+
+		def cate_name
+			case item_category
+			when CATEGORIES[:egg]
+				"egg"
+			when CATEGORIES[:food]
+				"food"
+			when CATEGORIES[:scroll]
+				"scroll"
+			when CATEGORIES[:vip]
+				"vip"
+			when CATEGORIES[:protection]
+				"protection"
+			when CATEGORIES[:lottery]
+				"lottery"
+			else
+				"NONE"
+			end
 		end
 	end
 	

@@ -88,7 +88,7 @@ module OhmExtension
 		end
 
 		def last
-			self[self.all.ids.max]
+			self[self.all.ids.map!(&:to_i).max]
 		end
 
 		def sample(n = 1)
