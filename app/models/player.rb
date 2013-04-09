@@ -90,6 +90,7 @@ class Player < Ohm::Model
 	index :country_id
 	index :player_type
 	index :gk_player_id
+	index :device_token
 
 	# Player's finding methods:
 	def self.find_by_account_id(account_id)
