@@ -49,9 +49,13 @@ class DealsController < ApplicationController
 					end
 				end
 			when Deal::CATEGORIES[:egg]
-				i = Item[deal.gid]
-				i.update :player_id => @player.id
-				deal.seller.receive!(:gold => deal.price.to_i)
+				if @player.spend!(:gold_coin => deal.price.to_i)
+					i = Item[deal.gid]
+					i.update :player_id => @player.id
+					deal.seller.receive!(:gold => deal.price.to_i)
+				else
+					render_error(Error::NORMAL, I18n.t("general.not_enough_gold")) and return
+				end
 			when Deal::CATEGORIES[:food]
 				food = @player.foods.find(:type => deal.type).first
 				return nil if food.nil?
