@@ -1,6 +1,6 @@
 class DinosaurController < ApplicationController
 	before_filter :validate_dinosaur, :only => [:update, :hatch_speed_up, :feed, :heal, :rename, :reborn, :release]
-	before_filter :validate_player, :only => [:hatch, :food_list, :feed, :heal, :expand_capacity, :refresh_all_dinos, :training]
+	before_filter :validate_player, :only => [:hatch, :food_list, :feed, :heal, :expand_capacity, :refresh_all_dinos, :training, :evolution]
 
 	def update
 		@dinosaur.update_status!
@@ -160,4 +160,31 @@ class DinosaurController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gold'))
 		end
 	end
+
+	def evolution
+		target_egg = Item[params[:egg_id]]
+		render_error(Error::NORMAL, 'Egg disappear!!!') and return unless target_egg
+
+		source_eggs = params[:source_eggs].map{ |egg_id| Item[egg_id] }.compact
+		render_error(Error::NORMAL, 'No egg to use!!!') and return if source_eggs.blank?
+
+		total_evolution = source_eggs.sum{ |egg| egg.supply_evolution }
+		target_egg.evolution_exp += total_evolution
+		target_egg.update_evolution
+
+		render_success(:egg => target_egg.to_hash)
+	end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+

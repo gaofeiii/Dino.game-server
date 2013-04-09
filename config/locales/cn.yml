@@ -29,7 +29,7 @@ cn:
    be_stolen_for_three: "该玩家今天已经被偷取3次食物了，请明天再来"
 
   players_error:
-   invalid_nickname: "昵称不合法"
+   invalid_nickname: "昵称不合法。昵称只能由中、英、数字和下划线组成，中文长度不大于8，英文长度不大于16"
    set_nickname_failed: "设置昵称失败"
 
   items_error:

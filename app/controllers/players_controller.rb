@@ -72,13 +72,24 @@ class PlayersController < ApplicationController
 		}
 	end
 
+	# Some regular expressions
+	EN_NAME_REG = /^[A-Za-z][A-Za-z0-9]{2,15}$/
+	EN_CN_NAME_REG = /^[A-Za-z\u4E00-\uFA29][A-Za-z0-9\u4E00-\uFA29]{1,7}$/
+
 	def modify_nickname
 		nkname = params[:nickname]
-		if nkname.sensitive?# || nkname =~ /[~!@#$\%^&*()_+|\[\];:\'\",.<>\/?\\\s。，、？！“”·：；‘]/
+		if nkname.sensitive?
 			render_error(Error::NORMAL, I18n.t('players_error.invalid_nickname')) and return
 		end
 
-		unless nkname =~ /[a-zA-Z0-9_]{4,16}/
+		# 昵称检测：中文长度2-8，英文长度3-16
+		if nkname =~ /[\u4E00-\uFA29]/
+			valid = nkname =~ EN_CN_NAME_REG
+		else
+			valid = nkname =~ EN_NAME_REG
+		end
+
+		unless valid
 			render_error(Error::NORMAL, I18n.t('players_error.invalid_nickname')) and return
 		end
 

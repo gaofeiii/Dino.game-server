@@ -108,7 +108,8 @@ class ServerInfo
 					:match_gold_cost => Player.honour_gold_cost,
 					:advisor_cost => Advisor.const.values.map{|x| x[:price_per_day]},
 					:league_gold_cost => 1000,
-					:move_town_gems_cost => 50
+					:move_town_gems_cost => 50,
+					:cave_rewards => PlayerCave.all_star_rewards
 				}
 			}
 		end
@@ -117,6 +118,12 @@ class ServerInfo
 			content = server_data[:data].to_json
 			file = File.new("./server_data.json", "w")
 			file.write(content)
+			file.close
+		end
+
+		def export_tech_data
+			file = File.new("./tech.json", "w")
+			file.write(Technology.const.to_json)
 			file.close
 		end
 

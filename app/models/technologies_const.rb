@@ -70,9 +70,13 @@ module TechnologiesConst
 				number = book.cell(i, 'A').to_i
 				key_name = book.cell(i, 'C').to_s
 				definition[book.cell(i, 'B')] = number
-				@@tech_const[number] = {:name => key_name}
+				cn_desc = book.cell(i, 'D')
+				en_desc = book.cell(i, 'E')
+
+				@@tech_const[number] = {:name => key_name, :desc => {:en => en_desc, :cn => cn_desc}}
 				@@tech_names << key_name
 				@@tech_hashes[key_name.to_sym] = number
+
 			end
 
 			book.default_sheet = '住宅'
@@ -103,7 +107,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:worker_num]
 				}
 			end
 
@@ -129,7 +134,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:wood_inc]
 				}
 			end
 
@@ -155,7 +161,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:stone_inc]
 				}
 			end
 
@@ -181,7 +188,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:meat_inc]
 				}
 			end
 
@@ -207,7 +215,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:fruit_inc]
 				}
 			end
 
@@ -234,7 +243,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:resource_max]
 				}
 			end
 
@@ -262,7 +272,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:hatch_efficiency]
 				}
 			end
 
@@ -289,7 +300,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:dinosaur_max]
 				}
 			end
 
@@ -316,7 +328,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:transport_effeciency]
 				}
 			end
 
@@ -342,7 +355,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:research_effectiency]
 				}
 			end
 
@@ -368,7 +382,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:pray_effectiency]
 				}
 			end
 
@@ -395,7 +410,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:extra_gold]
 				}
 			end
 
@@ -421,7 +437,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:attack_inc]
 				}
 			end
 
@@ -447,7 +464,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:defense_inc]
 				}
 			end
 
@@ -473,7 +491,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:hp_inc]
 				}
 			end
 
@@ -499,7 +518,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:trigger_inc]
 				}
 			end
 
@@ -525,7 +545,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:eggfall]
 				}
 			end
 
@@ -551,7 +572,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost, 
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:damage_inc]
 				}
 			end
 
@@ -577,7 +599,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost,
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:plunder]
 				}
 			end
 
@@ -603,7 +626,8 @@ module TechnologiesConst
 					:condition => condition,
 					:cost => cost,
 					:property => property,
-					:reward => reward
+					:reward => reward,
+					:value => property[:xp_inc]
 				}
 			end
 			@@tech_types = @@tech_const.keys

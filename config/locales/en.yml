@@ -29,7 +29,7 @@
    be_stolen_for_three: "One can only be stolen for 3 times per day"
 
   players_error:
-   invalid_nickname: "Nickname illegal"
+   invalid_nickname: "Invalid nickname. Nickname should only contain letters, numbers and underscore. The length should be no more than 16."
    set_nickname_failed: "Setting nickname failed"
 
   items_error:

@@ -250,10 +250,10 @@ class Player < Ohm::Model
 
 	def before_create
 		return if player_type == TYPE[:npc]
-		self.gold_coin = 600
-		self.gems = 200
-		self.wood = 600
-		self.stone = 600
+		self.gold_coin = 5600
+		self.gems = 2200
+		self.wood = 5600
+		self.stone = 5600
 		self.level = 1 if (level.nil? or level == 0)
 		self.avatar_id = rand(1..12) if avatar_id.zero?
 		self.country_id = Country.first.id

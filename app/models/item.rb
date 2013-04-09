@@ -1,4 +1,4 @@
-class Item < Ohm::Model
+ class Item < Ohm::Model
 	include Ohm::DataTypes
 	include Ohm::Callbacks
 	include OhmExtension
@@ -7,6 +7,8 @@ class Item < Ohm::Model
 	attribute :item_type, 			Type::Integer
 	attribute :can_sell,				Type::Boolean
 	attribute :quality,					Type::Integer
+
+	attribute :evolution_exp,		Type::Integer
 
 	index :item_category
 
@@ -62,10 +64,28 @@ class Item < Ohm::Model
 			:id => id.to_i,
 			:category => item_category,
 			:type => item_type,
-			:can_sell => false
+			:can_sell => false,
+			:evolution_exp => evolution_exp,
+			:next_evolution_exp => next_evolution_exp
 		}
 		hash[:quality] = quality if is_egg?
 		hash
+	end
+
+	def supply_evolution
+		5 * (self.quality)
+	end
+
+	def next_evolution_exp
+		10 * (self.quality + 1)
+	end
+
+	def update_evolution
+		if evolution_exp >= next_evolution_exp
+			self.evolution_exp -= next_evolution_exp
+			self.quality += 1
+			self.save
+		end
 	end
 
 	protected

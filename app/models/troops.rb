@@ -210,9 +210,10 @@ class Troops < Ohm::Model
 														:update_gold_time => ::Time.now.to_i
 							target.strategy.try(:delete)
 
-							rwd = ModReward.judge!(target.level)
-							player.receive_reward!(rwd)
-							rwd
+							rwd = Reward.monster_rewards(target.level)
+
+							player.get_reward(rwd)
+							rwd.to_hash
 						else
 							unless player.league.nil?
 								pg = target.add_attacking_count(player.league_id)
@@ -226,7 +227,6 @@ class Troops < Ohm::Model
 					else
 						{}
 					end
-					player.receive!(reward)
 				else # attacker lose
 					case target_type
 					when BattleModel::TARGET_TYPE[:village]

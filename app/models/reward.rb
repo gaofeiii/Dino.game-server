@@ -53,7 +53,7 @@ class Reward
 		hash[:stone] 			= stone
 		hash[:gold_coin] 	= gold_coin
 		hash[:xp] 				= xp
-		hash[:items] 			= items unless items.blank?
+		hash[:items] 			= items.map(&:to_hash) unless items.blank?
 		hash
 	end
 	alias values to_hash

@@ -45,7 +45,7 @@ module PlayerCaveConst
 				reward[:item_cat] = item_cate if item_cate > 0
 				reward[:item_type] = item_type if item_type > 0
 				reward[:item_count] = item_count if item_count > 0
-				reward[:item_quality] = item_quality if item_quality > 0
+				reward[:quality] = item_quality if item_quality > 0
 
 				# TODO:
 
@@ -85,6 +85,19 @@ module PlayerCaveConst
 				1
 			end
 		end
+
+		def all_star_rewards
+			rewards = {}
+			caves_const.each do |idx, info|
+				rewards[idx] = {
+					1 => {:wood => idx * 10, :stone => idx * 10},
+					2 => {:wood => idx * 15, :stone => idx * 15},
+					3 => info[:reward]
+				}
+			end
+			rewards
+		end
+
 	end
 	
 	module InstanceMethods
