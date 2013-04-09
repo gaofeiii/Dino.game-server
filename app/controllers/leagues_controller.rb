@@ -200,6 +200,7 @@ class LeaguesController < ApplicationController
 			@player.league_member_ship.increase(:contribution, (count / @league.donate_exp_factor).to_i)
 			@league.increase(:contribution, (count / @league.donate_exp_factor).to_i)
 			@league.increase(:xp, (count / @league.donate_exp_factor).to_i)
+			@league.receive_res(cost)
 			@league.update_level!
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_res')) and return
