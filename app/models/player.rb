@@ -272,10 +272,10 @@ class Player < Ohm::Model
 
 	def before_create
 		return if player_type == TYPE[:npc]
-		self.gold_coin = 600
-		self.gems = 200
-		self.wood = 600
-		self.stone = 600
+		self.gold_coin = 1000
+		self.gems = 50
+		self.wood = 1000
+		self.stone = 1000
 		self.level = 1 if (level.nil? or level == 0)
 		self.avatar_id = rand(1..12) if avatar_id.zero?
 		self.country_id = Country.first.id
@@ -288,16 +288,16 @@ class Player < Ohm::Model
 		create_village
 
 		# Initial eggs:
-		Item.create :item_type => 1, :item_category => Item.categories[:egg], :player_id => id, :quality => 4
+		Item.create :item_type => 1, :item_category => Item.categories[:egg], :player_id => id, :quality => 2
 		Item.create :item_type => 2, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
-		Item.create :item_type => 3, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
-		Item.create :item_type => 4, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
+		# Item.create :item_type => 3, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
+		# Item.create :item_type => 4, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
 		Item.create :item_type => 1, :item_category => Item.categories[:scroll], :player_id => id
-		Item.create :item_type => 2, :item_category => Item.categories[:scroll], :player_id => id
-		Item.create :item_type => 3, :item_category => Item.categories[:scroll], :player_id => id
-		Item.create :item_type => 4, :item_category => Item.categories[:scroll], :player_id => id
-		Item.create :item_type => 5, :item_category => Item.categories[:scroll], :player_id => id
-		Item.create :item_type => 6, :item_category => Item.categories[:scroll], :player_id => id
+		# Item.create :item_type => 2, :item_category => Item.categories[:scroll], :player_id => id
+		# Item.create :item_type => 3, :item_category => Item.categories[:scroll], :player_id => id
+		# Item.create :item_type => 4, :item_category => Item.categories[:scroll], :player_id => id
+		# Item.create :item_type => 5, :item_category => Item.categories[:scroll], :player_id => id
+		# Item.create :item_type => 6, :item_category => Item.categories[:scroll], :player_id => id
 		
 		# Initial food:
 		(1..8).each do |i|
