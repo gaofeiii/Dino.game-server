@@ -57,10 +57,15 @@ class DealsController < ApplicationController
 					render_error(Error::NORMAL, I18n.t("general.not_enough_gold")) and return
 				end
 			when Deal::CATEGORIES[:food]
-				food = @player.foods.find(:type => deal.type).first
-				return nil if food.nil?
-				food.increase(:count, deal.count)
-				deal.seller.receive!(:gold => deal.price.to_i)
+				# food = @player.foods.find(:type => deal.type).first
+				# return nil if food.nil?
+				# food.increase(:count, deal.count)
+				if @player.spend!(:gold_coin => deal.price.to_i)
+					@player.receive_food!(deal.type, deal.count)
+					deal.seller.receive!(:gold => deal.price.to_i)
+				else
+					render_error(Error::NORMAL, I18n.t("general.not_enough_gold")) and return
+				end
 			else
 				render_error(Error::NORMAL, "INVALID_ITEM_CATE") and return
 			end
