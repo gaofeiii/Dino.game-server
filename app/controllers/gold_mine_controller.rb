@@ -16,7 +16,7 @@ class GoldMineController < ApplicationController
 				render_error(Error::NORMAL, "not enough resource")
 			end
 		else
-			render_error(Error::NORMAL, "Will open later")
+			
 		end
 	end
 

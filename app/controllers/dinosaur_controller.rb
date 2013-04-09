@@ -168,9 +168,14 @@ class DinosaurController < ApplicationController
 		source_eggs = params[:source_eggs].map{ |egg_id| Item[egg_id] }.compact
 		render_error(Error::NORMAL, 'No egg to use!!!') and return if source_eggs.blank?
 
-		total_evolution = source_eggs.sum{ |egg| egg.supply_evolution }
-		target_egg.evolution_exp += total_evolution
+		total_evolution = source_eggs.sum{ |egg| egg.supply_evolution }.to_i
+		p "total_evolution: #{total_evolution}"
+		p "current_evn: #{target_egg.evolution_exp}"
+		# target_egg.evolution_exp += total_evolution
+		target_egg.increase(:evolution_exp, total_evolution)
+		p "after + evo: #{target_egg.evolution_exp}"
 		target_egg.update_evolution
+		p "after update: #{target_egg.evolution_exp}"
 
 		render_success(:egg => target_egg.to_hash)
 	end

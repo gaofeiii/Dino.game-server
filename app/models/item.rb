@@ -73,11 +73,25 @@
 	end
 
 	def supply_evolution
-		5 * (self.quality)
+		50
 	end
 
 	def next_evolution_exp
-		10 * (self.quality + 1)
+		next_quality = quality + 1
+		case next_quality
+		when 1
+			10
+		when 2
+			50
+		when 3
+			100
+		when 4
+			500
+		when 5
+			2000
+		else
+			9999
+		end
 	end
 
 	def update_evolution
