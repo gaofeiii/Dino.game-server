@@ -37,6 +37,14 @@ class GoldMine < Ohm::Model
 		:league => 2
 	}
 
+	def is_normal?
+		type == TYPE[:normal]
+	end
+
+	def is_league?
+		type == TYPE[:league]
+	end
+
 	def defense_troops(index = nil)
 		if player_id.blank?
 
