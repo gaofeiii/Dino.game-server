@@ -201,6 +201,11 @@ DinosaurGame::Application.routes.draw do
     post 'get_caves_info' => 'cave#get_caves_info'
   end
 
+  # 金矿
+  scope :path => 'gold_mine', :as => 'gold_mine' do
+    post 'upgrade'    => 'gold_mine#upgrade'
+  end
+
   match 'rating_us' => 'real_time_info#rating_us', :via => :post
 
   root :to => 'players#deny_access'
