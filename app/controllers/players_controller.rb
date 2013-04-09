@@ -71,6 +71,10 @@ class PlayersController < ApplicationController
 			:gold_mines => result
 		}
 	end
+	
+	# Some regular expressions
+	EN_NAME_REG = /^[A-Za-z][A-Za-z0-9]{2,15}$/
+	EN_CN_NAME_REG = /^[A-Za-z\u4E00-\uFA29][A-Za-z0-9\u4E00-\uFA29]{1,7}$/
 
 	# Some regular expressions
 	EN_NAME_REG = /^[A-Za-z][A-Za-z0-9]{2,15}$/
