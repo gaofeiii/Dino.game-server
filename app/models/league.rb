@@ -17,6 +17,9 @@ class League < Ohm::Model
 
 	attribute :total_battle_power, 	Type::Integer
 
+	attribute :wood,		Type::Integer
+	attribute :stone, 	Type::Integer
+
 	collection :members, Player
 	collection :league_member_ships, LeagueMemberShip
 	collection :league_applys, LeagueApply
@@ -32,6 +35,14 @@ class League < Ohm::Model
 	}
 
 	DONATE_FACTOR = 192
+
+	def receive_res(wood:0, stone:0)
+		db.multi do |t|
+			t.hincrby(key, :wood, wood) if wood > 0
+			t.hincrby(key, :stone, stone) if stone > 0
+		end
+		gets(:wood, :stone)
+	end
 
 	def update_level!
 		if xp >= next_level_xp
