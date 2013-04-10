@@ -179,7 +179,7 @@ class StrategyController < ApplicationController
 			target.set(:under_attack, 1)
 
 			army.each do |dino|
-				dino.consume(:energy => 30)
+				dino.consume_energy(:energy => 30)
 			end
 
 			if target.is_a?(Village) || (target.is_a?(GoldMine) && !target.player_id.blank?)
