@@ -23,14 +23,15 @@ class CaveController < ApplicationController
 
 			if dino && dino.status > 0
 				dino.update_status!
-				if dino.current_hp < dino.total_hp * 0.1
-					render_error(Error::NORMAL, I18n.t('strategy_error.dino_hp_is_zero')) and return
-				end
+				render_error(Error::NORMAL, I18n.t('strategy_error.dino_is_hungry')) and return if dino.feed_point <= 5
+				render_error(Error::NORMAL, I18n.t('strategy_error.dino_hp_is_zero')) and return if dino.current_hp < dino.total_hp * 0.1
 				dino
 			else
 				nil
 			end
 		end.compact
+
+		scroll = Item[params[:scroll_id]]
 
 		attacker = {
 			:player => @player,
@@ -41,7 +42,7 @@ class CaveController < ApplicationController
 				:avatar_id => @player.avatar_id
 			},
 			:buff_info => [],
-			:scroll_effect => {},
+			:scroll_effect => scroll.try(:scroll_effect).to_h,
 			:army => player_dinos
 		}
 
@@ -59,6 +60,10 @@ class CaveController < ApplicationController
 			:scroll_effect => {},
 			:army => enemy_dinos
 		}
+
+		player_dinos.each do |dino|
+			dino.consume_energy(:energy => 50)
+		end
 
 		result = BattleModel.cave_attack(attacker, defender)
 

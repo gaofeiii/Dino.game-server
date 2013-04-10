@@ -178,6 +178,10 @@ class StrategyController < ApplicationController
 		if trps.save
 			target.set(:under_attack, 1)
 
+			army.each do |dino|
+				dino.consume(:energy => 30)
+			end
+
 			if target.is_a?(Village) || (target.is_a?(GoldMine) && !target.player_id.blank?)
 				vil = Village.new(:id => @player.village_id).gets(:protection_until)
 				now_time = ::Time.now.to_i

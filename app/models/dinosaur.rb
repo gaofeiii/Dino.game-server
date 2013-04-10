@@ -237,6 +237,16 @@ class Dinosaur < Ohm::Model
 		consume
 	end
 
+	def consume_energy(energy: 0)
+		return if energy <= 0
+
+		if self.feed_point < energy
+			self.set(:feed_point, 0)
+		else
+			self.increase(:feed_point, -energy)
+		end
+	end
+
 	def eat!(food, count = 1)
 		need_count = (hunger_time - self.feed_point) / food.feed_point + 1
 
