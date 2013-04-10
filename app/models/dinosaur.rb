@@ -328,7 +328,7 @@ class Dinosaur < Ohm::Model
 		self.current_hp = total_hp
 		self.updated_hp_time = Time.now.to_i if updated_hp_time.zero?
 		self.quality = 1 if quality.zero?
-		self.feed_point = d.hunger_time * 0.15
+		self.feed_point = self.hunger_time * 0.15
 	end
 
 	def after_create
