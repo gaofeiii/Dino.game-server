@@ -64,7 +64,7 @@ class ItemsController < ApplicationController
 	end
 
 	def food_list
-		render_success :player => {:dinosaurs => @player.dinosaurs_info, :food => @player.food_list}
+		render_success :player => {:food => @player.food_list}
 	end
 
 	def scrolls_list
