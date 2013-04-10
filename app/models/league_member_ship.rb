@@ -44,4 +44,10 @@ class LeagueMemberShip < Ohm::Model
 		}
 	end
 
+	protected
+	
+	def before_create
+		self.receive_gold_time = Time.now.to_i
+	end
+
 end

@@ -32,7 +32,8 @@ module GoldMineConst
 
 				@@upgrade_cost[1][level] = {
 					:wood => wood,
-					:stone => stone
+					:stone => stone,
+					:output => output
 				}
 			end
 
@@ -40,12 +41,14 @@ module GoldMineConst
 
 			2.upto(book.last_row) do |i|
 				level = book.cell(i, 'A').to_i
+				output = book.cell(i, 'B').to_i
 				wood = book.cell(i, 'D').to_i
 				stone = book.cell(i, 'E').to_i
 
 				@@upgrade_cost[2][level] = {
 					:wood => wood,
-					:stone => stone
+					:stone => stone,
+					:output => output
 				}
 			end
 		end

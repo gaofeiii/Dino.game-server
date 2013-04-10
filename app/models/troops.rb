@@ -215,11 +215,13 @@ class Troops < Ohm::Model
 							player.get_reward(rwd)
 							rwd.to_hash
 						else
-							unless player.league.nil?
+							player_league = player.league
+							unless player_league.nil?
 								pg = target.add_attacking_count(player.league_id)
 								self.player.increase(:experience, 25)
 								player.league_member_ship.increase(:contribution, 25)
 								result[:league_war_result] = {:progress => pg, :rank => rand(1..10)}
+								target.update :league_id => player_league.id
 							end
 							{} # reward = {}
 						end

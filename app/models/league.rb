@@ -25,6 +25,8 @@ class League < Ohm::Model
 	collection :league_applys, LeagueApply
 	set :winned_mines, GoldMine
 
+	collection :gold_mines, GoldMine
+
 	attribute :most_gold, 	Type::Integer
 
 	index :name
@@ -40,6 +42,16 @@ class League < Ohm::Model
 		db.multi do |t|
 			t.hincrby(key, :wood, wood) if wood > 0
 			t.hincrby(key, :stone, stone) if stone > 0
+		end
+		gets(:wood, :stone)
+	end
+
+	def spend_res(wood:0, stone:0)
+		return false if wood < 0 || stone < 0 || wood > self.wood || stone > self.stone
+
+		db.multi do |t|
+			t.hincrby(key, :wood, -wood) if wood > 0
+			t.hincrby(key, :stone, -stone) if stone > 0
 		end
 		gets(:wood, :stone)
 	end
@@ -68,7 +80,9 @@ class League < Ohm::Model
 			:xp => xp,
 			:max_xp => next_level_xp,
 			:rank => my_league_rank,
-			:gold_mine_count => winned_mines.size,
+			:wood => wood,
+			:stone => stone,
+			:gold_mine_count => gold_mines.size,
 			:can_get_league_gold => harvest_gold.to_i
 		}
 	end

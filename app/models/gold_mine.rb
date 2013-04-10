@@ -23,6 +23,7 @@ class GoldMine < Ohm::Model
 	collection :monsters, 	Monster
 
 	reference :player, 	Player
+	reference :league, 	League
 
 	index :x
 	index :y
@@ -70,8 +71,10 @@ class GoldMine < Ohm::Model
 	end
 
 	def owner_name
-		if player_id
+		if !player_id.blank?
 			db.hget(Player.key[player_id], :nickname)
+		elsif !league_id.blank?
+			db.hget(League.key[league_id], :name)
 		else
 			I18n.t('monster_name.general')
 		end

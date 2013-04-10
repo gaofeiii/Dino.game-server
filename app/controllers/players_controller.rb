@@ -66,6 +66,17 @@ class PlayersController < ApplicationController
 			mine.to_hash(:gold_inc => player.tech_gold_inc)
 		end.compact
 
+		player.get(:league_id)
+		p player
+		p player.league
+		unless player.league_id.blank?
+			p player.league.gold_mines.ids
+			player.league.gold_mines.each do |league_mine|
+				p league_mine
+				result << league_mine.to_hash
+			end
+		end
+
 		render :json => {
 			:message => Error.success_message,
 			:gold_mines => result

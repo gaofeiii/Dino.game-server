@@ -109,14 +109,15 @@ class ServerInfo
 					:advisor_cost => Advisor.const.values.map{|x| x[:price_per_day]},
 					:league_gold_cost => 1000,
 					:move_town_gems_cost => 50,
-					:cave_rewards => PlayerCave.all_star_rewards
+					:cave_rewards => PlayerCave.all_star_rewards,
+					:gold_mine_upg_data => GoldMine.upgrade_cost
 				}
 			}
 		end
 
 		def export_server_data
 			content = server_data[:data].to_json
-			file = File.new("./server_data.json", "w")
+			file = File.new("/Users/gaofei/magic/dinosaur/linode_svn/game-client/PhoneGame/Resource/game_data/server_data.json", "w")
 			file.write(content)
 			file.close
 		end

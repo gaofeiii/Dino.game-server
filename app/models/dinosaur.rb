@@ -46,6 +46,7 @@ class Dinosaur < Ohm::Model
 	attribute :finish_time, 	Type::Integer
 
 	attribute :growth_point, 	Type::Integer
+	attribute :growth_times,	Type::Integer
 
 	attribute :building_id, 	Type::Integer
 
@@ -81,6 +82,10 @@ class Dinosaur < Ohm::Model
 		end
 	end
 
+	def speed
+		total_agility
+	end
+
 	def to_hash
 		hash = {
 			:id => id.to_i,
@@ -93,11 +98,11 @@ class Dinosaur < Ohm::Model
 			:emotion => emotion,
 			:feed_point => feed_point,
 			:hungry_time => Time.now.to_i + feed_point,
-			:attack => total_attack.to_i,
+			:attack => total_attack,
 			:max_attack => max_attack,
-			:defense => total_defense.to_i,
+			:defense => total_defense,
 			:max_defense => max_defense.to_i,
-			:agility => total_agility.to_i,
+			:agility => total_agility,
 			:max_agility => max_agility,
 			:hp => current_hp.to_i,
 			:total_hp => total_hp.to_i,
@@ -105,8 +110,9 @@ class Dinosaur < Ohm::Model
 			:quality => quality,
 			:is_attacking => is_attacking,
 			:is_deployed => is_deployed,
-			:growth_point => growth_point,
-			:max_growth_point => max_growth_point,
+			:training_cost_gold => training_cost,
+			:growth_point => growth_times,
+			:max_growth_point => max_growth_times,
 			:action_status => action_status
 		}
 
@@ -290,15 +296,32 @@ class Dinosaur < Ohm::Model
 	end
 
 	def max_attack
-		255
+		info[:enhance_property][:attack_inc]* 1.2 * quality * 60
 	end
 
 	def max_agility
-		255
+		info[:enhance_property][:agility_inc]* 1.2 * quality * 60
 	end
 
 	def max_defense
-		255
+		info[:enhance_property][:defense_inc]* 1.2 * quality * 60
+	end
+
+	def max_growth_times
+		self.quality + 1 + (level / 10)
+	end
+
+	def training!(att)
+		return false if growth_times >= max_growth_times || !att.in?(:attack, :defense, :agility)
+
+		growth = info[:enhance_property]["#{att}_inc".to_sym].to_f * 0.1
+		curr_val = send("basic_#{att}")
+
+		send("basic_#{att}=", curr_val + growth)
+		send("total_#{att}=", curr_val + growth)
+
+		self.growth_times += 1
+		save
 	end
 
 	protected

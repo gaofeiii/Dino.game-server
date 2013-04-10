@@ -149,13 +149,33 @@ class DinosaurController < ApplicationController
 	def training
 		@dinosaur = Dinosaur[params[:dinosaur_id]]
 
-		if @dinosaur.growth_point >= @dinosaur.max_growth_point
+		train_attr = case params[:type]
+		when 1
+			:attack
+		when 2
+			:defense
+		when 3
+			:agility
+		end
+
+		# if @dinosaur.growth_point >= @dinosaur.max_growth_point
+		# 	render_error(Error::NORMAL, I18n.t('dinosaur_error.reach_max_growth_point')) and return
+		# end
+
+		if @dinosaur.growth_times > @dinosaur.max_growth_times
 			render_error(Error::NORMAL, I18n.t('dinosaur_error.reach_max_growth_point')) and return
 		end
 		
 		if @player.spend!(:gold => @dinosaur.training_cost)
-			@dinosaur.increase_by_float(:growth_point, @dinosaur.training_growth)
-			render_success(:growth_point => @dinosaur.growth_point, :gold_coin => @player.gold_coin)
+			# @dinosaur.increase_by_float(:growth_point, @dinosaur.training_growth)
+			# render_success(:growth_point => @dinosaur.growth_point, :gold_coin => @player.gold_coin)
+			@dinosaur.training!(train_attr)
+			render_success 	:growth_point => @dinosaur.growth_times,
+											:max_growth_point => @dinosaur.max_growth_times,
+											:attack => @dinosaur.total_attack,
+											:defense => @dinosaur.total_defense,
+											:speed => @dinosaur.speed,
+											:gold_coin => @player.gold_coin
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gold'))
 		end
@@ -169,13 +189,9 @@ class DinosaurController < ApplicationController
 		render_error(Error::NORMAL, 'No egg to use!!!') and return if source_eggs.blank?
 
 		total_evolution = source_eggs.sum{ |egg| egg.supply_evolution }.to_i
-		p "total_evolution: #{total_evolution}"
-		p "current_evn: #{target_egg.evolution_exp}"
-		# target_egg.evolution_exp += total_evolution
 		target_egg.increase(:evolution_exp, total_evolution)
-		p "after + evo: #{target_egg.evolution_exp}"
 		target_egg.update_evolution
-		p "after update: #{target_egg.evolution_exp}"
+		source_eggs.map(&:delete)
 
 		render_success(:egg => target_egg.to_hash)
 	end
