@@ -300,15 +300,15 @@ class Dinosaur < Ohm::Model
 	end
 
 	def max_attack
-		255
+		info[:enhance_property][:attack_inc] * 1.4 * 80
 	end
 
 	def max_agility
-		255
+		info[:enhance_property][:agility_inc] * 1.4 * 80
 	end
 
 	def max_defense
-		255
+		info[:enhance_property][:defense_inc] * 1.4 * 80
 	end
 
 	protected
