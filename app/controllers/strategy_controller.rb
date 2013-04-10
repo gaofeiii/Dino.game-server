@@ -196,7 +196,7 @@ class StrategyController < ApplicationController
 				end
 				dino.sets(:action_status => Dinosaur::ACTION_STATUS[:attacking], :strategy_id => 0)
 
-				
+				dino.consume_energy(:energy => 50)
 			end
 		end
 		

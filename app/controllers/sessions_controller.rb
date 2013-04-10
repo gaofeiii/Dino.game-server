@@ -17,6 +17,12 @@ class SessionsController < ApplicationController
 
 		# Get a demo account from AccountServer
 		unless @player
+			# Before getting demo account, validate device_token
+			if !@device_token.blank?
+				counts = Player.find(:device_token => @device_token).size
+				render_error(Error::NORMAL, I18n.t('too_many_accounts')) and return if counts >= 10
+			end
+
 			@demo_account = trying(:server_ip => params[:server_ip])
 
 			render_error(Error::NORMAL, I18n.t('general.server_busy')) and return if not @demo_account[:success]
