@@ -10,7 +10,7 @@ class Dinosaur < Ohm::Model
 		:attacking => 3
 	} # deployed = deployed_village
 	COMSUME_PER_SECOND = 5
-	HEALED_PER_SECOND = 10
+	HEALED_PER_SECOND = 5
 
 	include Ohm::DataTypes
 	include Ohm::Callbacks
