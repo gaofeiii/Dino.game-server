@@ -4,6 +4,7 @@ cn:
   system: "系统"
   system_maintaining: "服务器正在进行维护升级，请稍后再试。"
   client_version_expired: "客户端版本过低，新下载新版本（v1.0.2）"
+  too_many_accounts: "亲，注册账号不能太多了哦！"
   monster_name:
    general: "野怪"
    cave: "巢穴"
