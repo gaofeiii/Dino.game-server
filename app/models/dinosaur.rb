@@ -150,6 +150,10 @@ class Dinosaur < Ohm::Model
 		if event_type == EVENTS[:hatching]
 			if ::Time.now.to_i >= finish_time
 				init_atts
+
+				# 主线任务：孵化紫色恐龙蛋
+				@player = self.player
+
 				return self
 			end
 		elsif status > 0

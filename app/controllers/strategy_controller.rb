@@ -338,7 +338,11 @@ class StrategyController < ApplicationController
 		if winner == @player && !winner.finish_daily_quest
 			winner.daily_quest_cache[:win_match_game] += 1
 			winner.daily_quest_cache[:win_honour_val] += win_score
-			winner.set :daily_quest_cache, winner.daily_quest_cache.to_json
+			winner.serial_tasks_data[:win_match_game] ||= 0
+			winner.serial_tasks_data[:win_match_game] += 1
+
+			# winner.set :daily_quest_cache, winner.daily_quest_cache.to_json
+			winner.save
 
 			GameMail.create_match_lose 	:attacker_id 		=> @player.id,
 																	:attacker_name 	=> @player.nickname,

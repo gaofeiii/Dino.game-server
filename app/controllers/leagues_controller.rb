@@ -203,6 +203,11 @@ class LeaguesController < ApplicationController
 
 		if @player.spend!(cost)
 			@player.league_member_ship.increase(:contribution, (count / @league.donate_exp_factor).to_i)
+
+			@player.serial_tasks_data[:donate_league] ||= 0
+			@player.serial_tasks_data[:donate_league] += 1
+			@player.save
+
 			@league.increase(:contribution, (count / @league.donate_exp_factor).to_i)
 			@league.increase(:xp, (count / @league.donate_exp_factor).to_i)
 			@league.receive_res(cost)

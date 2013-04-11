@@ -34,6 +34,19 @@ class Float
 	end
 end
 
+class Hash
+	def to_s
+		to_json
+	end
+end
+
+class Array
+
+	def to_s
+		to_json
+	end
+end
+
 # ::Point = Struct.new(:x, :y, :type) do
 # 	def index
 # 		return (self.x.to_i + (self.y.to_i * Country::COORD_TRANS_FACTOR))

@@ -123,14 +123,19 @@ class Troops < Ohm::Model
 					when BattleModel::TARGET_TYPE[:village]
 						if target.is_bill?
 							player.curr_bill_quest[:finished_steps] = 1
-							player.set :kill_bill_quests, player.kill_bill_quests.to_json
+							player.set :kill_bill_quests, player.kill_bill_quests
 							defender_army.map(&:delete)
 							{}
 						else
+							# 判断日常任务
 							if not player.finish_daily_quest
 								player.daily_quest_cache[:attack_players] += 1
-								player.set :daily_quest_cache, player.daily_quest_cache.to_json
+								player.set :daily_quest_cache, player.daily_quest_cache
 							end
+
+							player.serial_tasks_data[:attack_players] ||= 0
+							player.serial_tasks_data[:attack_players] += 1
+							player.set :serial_tasks_data, player.serial_tasks_data
 
 							if target.in_dangerous_area?
 								tx, ty, ti = target.x, target.y, target.index
@@ -184,12 +189,24 @@ class Troops < Ohm::Model
 						reward.to_hash
 
 					when BattleModel::TARGET_TYPE[:gold_mine]
-						if not player.finish_daily_quest
-							player.daily_quest_cache[:occupy_gold_mines] += 1
-							player.set :daily_quest_cache, player.daily_quest_cache.to_json
-						end
 						
 						if target.type == GoldMine::TYPE[:normal]
+							# 判断主线任务
+							player.serial_tasks_data[:occupy_gold_mines] ||= 0
+							player.serial_tasks_data[:occupy_gold_mines] += 1
+
+							player.serial_tasks_data[:attack_level_3_mine] ||= 0
+							player.serial_tasks_data[:attack_level_3_mine] += 1
+
+							# 判断日常任务
+							if not player.finish_daily_quest
+								player.daily_quest_cache[:occupy_gold_mines] += 1
+								# player.set :daily_quest_cache, player.daily_quest_cache.to_json
+							end
+
+							player.save # For quest judging
+
+
 							if not target.player_id.blank?
 								target_player = target.player
 								ax, ay = db.hmget(Village.key[player.village_id], :x, :y).map!(&:to_i)
@@ -214,7 +231,12 @@ class Troops < Ohm::Model
 
 							player.get_reward(rwd)
 							rwd.to_hash
-						else
+						else # if goldmine's is league
+
+							# 判断主线任务
+							player.serial_tasks_data[:occupy_league_gold_mines] ||= 0
+							player.serial_tasks_data[:occupy_league_gold_mines] += 1
+
 							player_league = player.league
 							unless player_league.nil?
 								pg = target.add_attacking_count(player.league_id)
@@ -223,6 +245,8 @@ class Troops < Ohm::Model
 								result[:league_war_result] = {:progress => pg, :rank => rand(1..10)}
 								target.update :league_id => player_league.id
 							end
+
+							player.save # For quest judging
 							{} # reward = {}
 						end
 						

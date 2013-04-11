@@ -12,20 +12,24 @@ module SerialTaskConst
 
 			3.upto(book.last_row) do |i|
 				num = book.cell(i, 'A').to_i
-				gold = book.cell(i, 'c').to_i
-				item_cat = book.cell(i, 'd').to_i
-				item_type = book.cell(i, 'e').to_i
-				item_count = book.cell(i, 'f').to_i
-				quality = book.cell(i, 'g').to_i
-				exp = book.cell(i, 'h').to_i
-				forward_num = book.cell(i, 'i').to_i
-				en_desc = book.cell(i, 'j')
-				cn_desc = book.cell(i, 'k')
+				wood = book.cell(i, 'd').to_i
+				stone = book.cell(i, 'd').to_i
+				gold = book.cell(i, 'e').to_i
+				gems = book.cell(i, 'f').to_i
+				item_cat = book.cell(i, 'g').to_i
+				item_type = book.cell(i, 'h').to_i
+				item_count = book.cell(i, 'i').to_i
+				quality = book.cell(i, 'j').to_i
+				exp = book.cell(i, 'k').to_i
+				forward_num = book.cell(i, 'l').to_i
+				total_step = book.cell(i, 'm').to_i
+				en_desc = book.cell(i, 'n')
+				cn_desc = book.cell(i, 'o')
 
 				@@const[num] = {
 					:index => num,
 					:reward => {
-						:gold => gold,
+						:gold_coin => gold,
 						:item => {
 							:item_cat => item_cat,
 							:item_type => item_type,
@@ -34,6 +38,7 @@ module SerialTaskConst
 							:xp => exp
 						}
 					},
+					:total_steps => total_step,
 					:forward_index => forward_num,
 					:desc => {
 						:en => en_desc,
@@ -60,6 +65,14 @@ module SerialTaskConst
 		
 		def info
 			self.class.const[index]
+		end
+
+		def forward_index
+			info[:forward_index]
+		end
+
+		def total_steps
+			info[:total_steps]
 		end
 	end
 	

@@ -11,6 +11,8 @@ class GoldMineController < ApplicationController
 
 			if @player.spend!(@gold_mine.next_level_cost)
 				@gold_mine.update :level => @gold_mine.level + 1
+				@player.serial_tasks_data[:upgrade_goldmine] ||= 0
+				@player.serial_tasks_data[:upgrade_goldmine] = @gold_mine.level if @player.serial_tasks_data[:upgrade_goldmine] < @gold_mine.level
 
 				render_success 	:gold_mine => @gold_mine.to_hash(:gold_inc => @player.tech_gold_inc), 
 												:current_wood => @player.wood, 

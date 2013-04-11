@@ -122,10 +122,33 @@ module DailyQuest
 	
 	module InstanceMethods
 		module SingleQuestMethods
+			def player
+				@player
+			end
 
+			def player=(plr)
+				@player = plr
+			end
+
+			def get_reward
+				if self[:finished_steps] >= self[:total_steps]
+					rwd = player.find_reward_by_index(self[:number])
+					player.receive_daily_reward!(rwd) if rwd
+					self[:rewarded] = true
+				end
+			end
 		end
 
 		def find_quest_by_index(idx)
+			self.daily_quest.each do |d_quest|
+				if d_quest[:number] == idx
+					return d_quest
+				end
+			end
+			return nil
+		end
+
+		def find_daily_quest_by_index(idx)
 			self.daily_quest.each do |d_quest|
 				if d_quest[:number] == idx
 					return d_quest
@@ -250,6 +273,7 @@ module DailyQuest
 				end
 				@attributes[:daily_quest].each do |a_quest|
 					a_quest.extend(SingleQuestMethods)
+					a_quest.player = self
 				end
 			end
 		end

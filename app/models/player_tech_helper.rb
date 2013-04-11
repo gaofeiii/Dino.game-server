@@ -4,6 +4,10 @@ module PlayerTechHelper
 	end
 	
 	module InstanceMethods
+		def techs
+			technologies
+		end
+
 		# Define all tech methods like: player.tech_lumbering
 		# Techs:
 		# ["residential", "lumbering", "mining", "hunting", "farming", "storing", 

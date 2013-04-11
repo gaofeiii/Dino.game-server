@@ -19,26 +19,35 @@ class DailyQuestController < ApplicationController
 	end
 
 	def get_reward
-		quest = @player.find_quest_by_index(params[:quest_id])
+		# quest = @player.find_quest_by_index(params[:quest_id])
 
-		if quest.nil?
-			quest = @player.curr_bill_quest
+		# if quest.nil?
+		# 	quest = @player.curr_bill_quest
 
-			if quest
-				if @player.get_bill_reward
-				else
-					render_error(Error::NORMAL, I18n.t('quests_error.not_finished_yet')) and return
-				end
-			end
+		# 	if quest
+		# 		if @player.get_bill_reward
+		# 		else
+		# 			render_error(Error::NORMAL, I18n.t('quests_error.not_finished_yet')) and return
+		# 		end
+		# 	end
+		# 	render_success(:player => @player.to_hash(:daily_quest))
+		# else
+		# 	if @player.set_rewarded(params[:quest_id])
+		# 		@player.set :daily_quest, @player.daily_quest.to_json
+		# 		render_success(:player => @player.to_hash(:daily_quest))
+		# 	else
+		# 		render_error(Error::NORMAL, I18n.t('quests_error.not_finished_yet'))
+		# 	end
+		# end
+
+		quest = @player.find_task_by_index(params[:quest_id].to_i)
+
+		if quest && quest.get_reward
 			render_success(:player => @player.to_hash(:daily_quest))
 		else
-			if @player.set_rewarded(params[:quest_id])
-				@player.set :daily_quest, @player.daily_quest.to_json
-				render_success(:player => @player.to_hash(:daily_quest))
-			else
-				render_error(Error::NORMAL, I18n.t('quests_error.not_finished_yet'))
-			end
+			render_error(Error::NORMAL, I18n.t('quests_error.not_finished_yet'))
 		end
 
 	end
+
 end

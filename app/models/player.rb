@@ -214,7 +214,10 @@ class Player < Ohm::Model
 				end
 			when :daily_quest
 				reset_daily_quest!
-				hash[:daily_quests] = (daily_quests_full_info << curr_bill_quest_full_info).compact
+				all_quests = daily_quests_full_info << curr_bill_quest_full_info
+				all_quests += my_serial_tasks.map(&:to_hash)
+
+				hash[:daily_quests] = all_quests.compact
 			end
 
 		end
@@ -241,9 +244,22 @@ class Player < Ohm::Model
   def locale
   	case @attributes[:locale]
   	when 'cn', 'zh-Hans'
-  		'cn'
+  		:cn
   	else
-  		'en'
+  		:en
+  	end
+  end
+
+  def find_task_by_index(idx)
+  	return unless idx
+
+  	case idx
+  	when 1..10000 # Daily Quests
+  		find_daily_quest_by_index(idx)
+  	when 10001..20000 # Bill Quests
+  		curr_bill_quest
+		when 20001..30000 # Serial Tasks
+  		find_serial_task_by_index(idx)
   	end
   end
 

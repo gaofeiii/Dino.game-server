@@ -10,9 +10,10 @@ module BasicTask
 	end
 	
 	def self.included(model)
-		model.attribute :index, 		Ohm::DataTypes::Type::Integer
-		model.attribute :finished,	Ohm::DataTypes::Type::Boolean
-		model.attribute :rewarded,	Ohm::DataTypes::Type::Boolean
+		model.attribute :index, 						Ohm::DataTypes::Type::Integer
+		model.attribute :finished_steps, 		Ohm::DataTypes::Type::Integer
+		model.attribute :finished,					Ohm::DataTypes::Type::Boolean
+		model.attribute :rewarded,					Ohm::DataTypes::Type::Boolean
 
 		model.index :index
 		model.index :finished

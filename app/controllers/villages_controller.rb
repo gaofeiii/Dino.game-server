@@ -69,6 +69,10 @@ class VillagesController < ApplicationController
 					@player.receive_food!(@building.harvest_type, count)
 					@building.set :harvest_count, @building.harvest_count - count
 				end
+
+				@player.serial_tasks_data[:steal_friend] ||= 0
+				@player.serial_tasks_data[:steal_friend] += 1
+				@player.save
 				render_success(:count => count)
 			else
 				render_error(Error::NORMAL, "HARVEST_NOT_FINISHED") and return
