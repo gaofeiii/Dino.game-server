@@ -94,7 +94,8 @@ module PlayerExp
 	module InstanceMethods
 		
 		def next_level_exp
-			self.class.all_level_exps[self.level + 1]
+			exp = self.class.all_level_exps[self.level + 1]
+			exp.nil? ? 99999999 : exp
 		end
 
 		def earn_exp!(exps = 0)

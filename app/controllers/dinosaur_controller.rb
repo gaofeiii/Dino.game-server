@@ -77,9 +77,17 @@ class DinosaurController < ApplicationController
 				@player.cache_beginner_data(:has_fed_dino => true)
 			end
 		end
-		render :json => {
-			:player => @player.to_hash(:dinosaurs, :specialties)
+
+		data = {
+			:player => {
+				:dinosaurs => [@dinosaur.to_hash],
+				:food => @player.specialties.map{|s| s.to_hash}
+			}
 		}
+		render :json => data
+		# render :json => {
+		# 	:player => @player.to_hash(:dinosaurs, :specialties)
+		# }
 	end
 
 	def heal
