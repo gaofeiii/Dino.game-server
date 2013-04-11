@@ -123,7 +123,7 @@ class ServerInfo
 		end
 
 		def export_tech_data
-			file = File.new("./tech.json", "w")
+			file = File.new("/Users/gaofei/magic/dinosaur/linode_svn/game-client/PhoneGame/Resource/game_data/tech.json", "w")
 			file.write(Technology.const.to_json)
 			file.close
 		end

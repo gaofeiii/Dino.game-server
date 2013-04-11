@@ -279,11 +279,6 @@ class StrategyController < ApplicationController
 		end
 
 		player_dinos = @player.honour_strategy.map do |d_id|
-			# dino = Dinosaur[d_id]
-			# if dino
-			# 	dino.set :current_hp, dino.total_hp
-			# end
-			# dino
 			Dinosaur[d_id]
 		end.compact
 

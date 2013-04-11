@@ -39,8 +39,6 @@ class Player < Ohm::Model
 	include DailyQuest
 	include KillBillQuest
 
-	include PlayerBeginnerGuideHelper
-
 	# Player的属性
 	attribute :account_id, 		Type::Integer
 	attribute :nickname
@@ -97,6 +95,9 @@ class Player < Ohm::Model
 	index :player_type
 	index :gk_player_id
 	index :device_token
+
+	include PlayerBeginnerGuideHelper
+	include PlayerSerialTaskHelper
 
 	# Player's finding methods:
 	def self.find_by_account_id(account_id)
