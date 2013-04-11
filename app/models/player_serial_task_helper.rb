@@ -28,6 +28,8 @@ module PlayerSerialTaskHelper
 			all_tasks.each do |task|
 				if task.finished
 					visible_tasks << task if task.not_rewarded
+				else
+					# visible_tasks << task if task.not_finished && task.forward_task.rewarded
 				end
 			end
 		end
