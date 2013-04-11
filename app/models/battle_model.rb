@@ -553,7 +553,7 @@ module BattleArmyModule
 			enemy_avg_level = 1 if enemy_avg_level <= 0
 
 			each_exp = total_exp / alive_count
-			player_exp = Player.battle_exp[enemy_avg_level]
+			player_exp = Player.battle_exp[enemy_avg_level].to_i
 		end
 
 		self.each do |fighter|

@@ -62,7 +62,7 @@ class CaveController < ApplicationController
 		}
 
 		player_dinos.each do |dino|
-			dino.consume_energy(:energy => 100)
+			dino.consume_energy(:energy => 80)
 		end
 
 		result = BattleModel.cave_attack(attacker, defender)
