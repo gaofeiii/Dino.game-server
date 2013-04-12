@@ -18,15 +18,24 @@ end
 class Reward
 	attr_accessor :wood, :stone, :gold_coin, :gems, :items, :xp
 
-	# items是由item组成的数组,
-	# item.is_a?(RewardItem) # => true
 	def initialize(wood:0, stone:0, gold:0, gold_coin:0, gem:0, gems:0, items:[], item:nil, xp:0)
 		self.wood = wood
 		self.stone = stone
 		self.gold_coin = gold | gold_coin
 		self.gems = gem | gems
+
 		self.items = items
-		self.items << item if item && item.is_a?(RewardItem)
+		self.items << item if item
+
+		obj_items = self.items.map do |itm|
+			if itm.is_a?(RewardItem)
+				itm
+			else
+				RewardItem.new(itm[:item_cat], itm[:item_type], itm[:item_count] || itm[:count], itm[:quality])
+			end
+		end
+		self.items = obj_items
+
 		self.xp = xp
 	end
 
@@ -57,50 +66,5 @@ class Reward
 		hash
 	end
 	alias values to_hash
-
-end
-
-module ModReward
-
-	def judge!(target_type) # 1..20
-		origin = Monster.rewards[target_type]
-
-		reward = {}
-		case rand(1..1000)
-		# when 1..300
-		# 	reward = {
-		# 		:items => [{
-		# 			:item_cat => Item.categories[:food], 
-		# 			:item_type => Specialty.types.sample, 
-		# 			:item_count => origin[:food_count]
-		# 		}]
-		# 	}
-		when 1..900
-			reward = {
-				# :wood => origin[:res_count],
-				# :stone => origin[:res_count],
-				:gold_coin => origin[:res_count]
-			}
-		when 901..950
-			reward = {
-				:items => [{
-					:item_cat => Item.categories[:egg], 
-					:item_type => origin[:egg_type].sample, 
-					:item_count => 1
-				}]
-			}
-		when 951..1000
-			reward = {
-				:items => [{
-					:item_cat => Item.categories[:scroll],
-					:item_type => origin[:scroll_type].sample,
-					:item_count => 1
-				}]
-			}
-		end
-		reward
-	end
-	
-	module_function :judge!
 
 end

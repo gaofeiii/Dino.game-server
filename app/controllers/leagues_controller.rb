@@ -206,7 +206,7 @@ class LeaguesController < ApplicationController
 
 			@player.serial_tasks_data[:donate_league] ||= 0
 			@player.serial_tasks_data[:donate_league] += 1
-			@player.save
+			@player.set :serial_tasks_data, @player.serial_tasks_data
 
 			@league.increase(:contribution, (count / @league.donate_exp_factor).to_i)
 			@league.increase(:xp, (count / @league.donate_exp_factor).to_i)

@@ -65,6 +65,13 @@ class CaveController < ApplicationController
 			dino.consume_energy(:energy => 80)
 		end
 
+		# 主线：使用卷轴
+		if scroll
+			@player.serial_tasks_data[:use_scroll] ||= 0
+			@player.serial_tasks_data[:use_scroll] = 1
+			@player.set :serial_tasks_data, @player.serial_tasks_data
+		end
+
 		result = BattleModel.cave_attack(attacker, defender)
 
 		rounds_count = result[:all_rounds].size

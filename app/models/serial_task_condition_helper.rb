@@ -61,9 +61,6 @@ module SerialTaskConditionHelper
 			ret = @player.serial_tasks_data[:egg_evolution].to_i >= 1
 			self.set :finished_steps, 1 if ret
 		when 20018 # 抢占一座3级或以上的金矿
-			ret = @player.serial_tasks_data[:upgrade_goldmine].to_i >= 3
-			self.set :finished_steps, 1 if ret
-		when 20018 # 抢占一座3级或以上的金矿
 			ret = @player.serial_tasks_data[:attack_level_3_mine].to_i >= 1
 			self.set :finished_steps, 1 if ret
 		when 20019 # 请成为一个顾问
@@ -114,7 +111,7 @@ module SerialTaskConditionHelper
 		when 20031 # 探索完所有巢穴
 			cave_size = @player.caves.size
 			ret = cave_size >= 96 # The last one is unfinished
-			self.set :finished_steps, (ret ? 90 : cave_size - 1)
+			self.set :finished_steps, (ret ? 96 : cave_size - 1)
 		when 20032 # 累计掠夺10次玩家
 			ret = @player.serial_tasks_data[:attack_players].to_i >= 10
 			self.set :finished_steps, (ret ? 10 : @player.serial_tasks_data[:attack_players].to_i)
@@ -141,80 +138,120 @@ module SerialTaskConditionHelper
 			self.set :finished_steps, (ret ? 1000000 : @player.serial_tasks_data[:rob_gold].to_i)
 		when 20040 # 孵化出1只紫色恐龙
 			ret = @player.serial_tasks_data[:hatch_purple_dino].to_i >= 1
-			self.set :finished_steps, 1 if ret
+			if ret
+				@player.serial_tasks_data[:hatch_purple_dino] = 0
+				@player.set :serial_tasks_data, @player.serial_tasks_data
+				self.set :finished_steps, 1
+			else
+				self.set :finished_steps, @player.serial_tasks_data[:hatch_purple_dino].to_i
+			end
 		when 20041 # 孵化出3只紫色恐龙
 			ret = @player.serial_tasks_data[:hatch_purple_dino].to_i >= 3
-			self.set :finished_steps, @player.serial_tasks_data[:hatch_purple_dino].to_i
+			if ret
+				@player.serial_tasks_data[:hatch_purple_dino] = 0
+				@player.set :serial_tasks_data, @player.serial_tasks_data
+				self.set :finished_steps, 3
+			else
+				self.set :finished_steps, @player.serial_tasks_data[:hatch_purple_dino].to_i
+			end
 		when 20042 # 孵化出5只紫色恐龙
 			ret = @player.serial_tasks_data[:hatch_purple_dino].to_i >= 5
-			self.set :finished_steps, @player.serial_tasks_data[:hatch_purple_dino].to_i
+			if ret
+				@player.serial_tasks_data[:hatch_purple_dino] = 0
+				@player.set :serial_tasks_data, @player.serial_tasks_data
+				self.set :finished_steps, 5
+			else
+				self.set :finished_steps, @player.serial_tasks_data[:hatch_purple_dino].to_i
+			end
 		when 20043 # 孵化出7只紫色恐龙
 			ret = @player.serial_tasks_data[:hatch_purple_dino].to_i >= 7
-			self.set :finished_steps, @player.serial_tasks_data[:hatch_purple_dino].to_i
+			if ret
+				@player.serial_tasks_data[:hatch_purple_dino] = 0
+				@player.set :serial_tasks_data, @player.serial_tasks_data
+				self.set :finished_steps, 7
+			else
+				self.set :finished_steps, @player.serial_tasks_data[:hatch_purple_dino].to_i
+			end
 		when 20044 # 孵化出10只紫色恐龙
 			ret = @player.serial_tasks_data[:hatch_purple_dino].to_i >= 10
-			self.set :finished_steps, @player.serial_tasks_data[:hatch_purple_dino].to_i
+			if ret
+				@player.serial_tasks_data[:hatch_purple_dino] = 0
+				@player.set :serial_tasks_data, @player.serial_tasks_data
+				self.set :finished_steps, 10
+			else
+				self.set :finished_steps, @player.serial_tasks_data[:hatch_purple_dino].to_i
+			end
 		when 20045 # 孵化出1只橙色恐龙
 			ret = @player.serial_tasks_data[:hatch_orange_dino].to_i >= 1
 			self.set :finished_steps, @player.serial_tasks_data[:hatch_orange_dino].to_i
 		when 20046 # 培育出一只5级的恐龙
-			ret = @player.serial_tasks_data[:max_dino_level].to_i >= 5
-			self.set :finished_steps, @player.serial_tasks_data[:max_dino_level].to_i
+			curr_max = @player.dinosaurs.map{|d| d.level}.max.to_i
+			ret = curr_max >= 5
+			self.set :finished_steps, curr_max
 		when 20047 # 培育出一只10级的恐龙
-			ret = @player.serial_tasks_data[:max_dino_level].to_i >= 10
-			self.set :finished_steps, @player.serial_tasks_data[:max_dino_level].to_i
+			curr_max = @player.dinosaurs.map{|d| d.level}.max.to_i
+			ret = curr_max >= 10
+			self.set :finished_steps, curr_max
 		when 20048 # 培育出一只15级的恐龙
-			ret = @player.serial_tasks_data[:max_dino_level].to_i >= 15
-			self.set :finished_steps, @player.serial_tasks_data[:max_dino_level].to_i
+			curr_max = @player.dinosaurs.map{|d| d.level}.max.to_i
+			ret = curr_max >= 15
+			self.set :finished_steps, curr_max
 		when 20049 # 培育出一只30级的恐龙
-			ret = @player.serial_tasks_data[:max_dino_level].to_i >= 30
-			self.set :finished_steps, @player.serial_tasks_data[:max_dino_level].to_i
+			curr_max = @player.dinosaurs.map{|d| d.level}.max.to_i
+			ret = curr_max >= 30
+			self.set :finished_steps, curr_max
 		when 20050 # 培育出一只60级的恐龙
-			ret = @player.serial_tasks_data[:max_dino_level].to_i >= 60
-			self.set :finished_steps, @player.serial_tasks_data[:max_dino_level].to_i
+			curr_max = @player.dinosaurs.map{|d| d.level}.max.to_i
+			ret = curr_max >= 60
+			self.set :finished_steps, curr_max
 		when 20051 # 培育出一只90级的恐龙
-			ret = @player.serial_tasks_data[:max_dino_level].to_i >= 90
-			self.set :finished_steps, @player.serial_tasks_data[:max_dino_level].to_i
+			curr_max = @player.dinosaurs.map{|d| d.level}.max.to_i
+			ret = curr_max >= 90
+			self.set :finished_steps, curr_max
 		when 20052 # 1项科技达到3级
-			ret = @player.serial_tasks_data[:max_tech_level].to_i >= 3
-			self.set :finished_steps, @player.serial_tasks_data[:max_tech_level].to_i
+			reached_techs_size = @player.techs.select{|t| t.level >= 3}.size
+			ret = reached_techs_size >= 1
+			self.set :finished_steps, 1 if ret
 		when 20053 # 1项科技达到5级
-			ret = @player.serial_tasks_data[:max_tech_level].to_i >= 3
-			self.set :finished_steps, @player.serial_tasks_data[:max_tech_level].to_i
+			reached_techs_size = @player.techs.select{|t| t.level >= 5}.size
+			ret = reached_techs_size >= 1
+			self.set :finished_steps, 1 if ret
 		when 20054 # 1项科技达到10级
-			ret = @player.serial_tasks_data[:max_tech_level].to_i >= 3
-			self.set :finished_steps, @player.serial_tasks_data[:max_tech_level].to_i
+			reached_techs_size = @player.techs.select{|t| t.level >= 10}.size
+			ret = reached_techs_size >= 1
+			self.set :finished_steps, 1 if ret
 		when 20055 # 1项科技达到15级
-			ret = @player.serial_tasks_data[:max_tech_level].to_i >= 3
-			self.set :finished_steps, @player.serial_tasks_data[:max_tech_level].to_i
+			reached_techs_size = @player.techs.select{|t| t.level >= 15}.size
+			ret = reached_techs_size >= 1
+			self.set :finished_steps, 1 if ret
 		when 20056 # 5项科技达到10级
 			reached_techs_size = @player.techs.select{|t| t.level >= 10}.size
 			ret = reached_techs_size >= 5
-			self.set :finished_steps, reached_techs_size
+			self.set :finished_steps, 1 if ret
 		when 20057 # 5项科技达到15级
 			reached_techs_size = @player.techs.select{|t| t.level >= 15}.size
 			ret = reached_techs_size >= 5
-			self.set :finished_steps, reached_techs_size
+			self.set :finished_steps, 1 if ret
 		when 20058 # 5项科技达到20级
 			reached_techs_size = @player.techs.select{|t| t.level >= 20}.size
 			ret = reached_techs_size >= 5
-			self.set :finished_steps, reached_techs_size
+			self.set :finished_steps, 1 if ret
 		when 20059 # 10项科技达到15级
 			reached_techs_size = @player.techs.select{|t| t.level >= 15}.size
 			ret = reached_techs_size >= 10
-			self.set :finished_steps, reached_techs_size
+			self.set :finished_steps, 1 if ret
 		when 20060 # 10项科技达到20级
 			reached_techs_size = @player.techs.select{|t| t.level >= 20}.size
 			ret = reached_techs_size >= 10
-			self.set :finished_steps, reached_techs_size
+			self.set :finished_steps, 1 if ret
 		when 20061 # 15项科技达到15级
 			reached_techs_size = @player.techs.select{|t| t.level >= 15}.size
 			ret = reached_techs_size >= 15
-			self.set :finished_steps, reached_techs_size
+			self.set :finished_steps, 1 if ret
 		when 20062 # 15项科技达到20级
 			reached_techs_size = @player.techs.select{|t| t.level >= 20}.size
 			ret = reached_techs_size >= 15
-			self.set :finished_steps, reached_techs_size
+			self.set :finished_steps, 1 if ret
 		else
 			false
 		end # End of 'ret = case...'

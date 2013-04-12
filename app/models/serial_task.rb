@@ -23,11 +23,11 @@ class SerialTask < Ohm::Model
 			:total_steps => total_steps,
 			:goal => info[:desc][locale],
 			:level => 1,
-			:reward => reward
+			:reward => to_reward
 		}
 	end
 
-	def reward
+	def to_reward
 		rwd = {}
 		const_reward = info[:reward]
 		rwd[:wood] = const_reward[:wood] if const_reward[:wood].to_i > 0
@@ -41,20 +41,8 @@ class SerialTask < Ohm::Model
 		rwd
 	end
 
-	def not_finished
-		!finished
-	end
-
-	def not_rewarded
-		!rewarded
-	end
-
-	def is_finished
-		finished
-	end
-
-	def is_rewarded
-		rewarded
+	def get_reward
+		player.get_reward Reward.new(info[:reward])
 	end
 
 end

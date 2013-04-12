@@ -72,7 +72,8 @@ class VillagesController < ApplicationController
 
 				@player.serial_tasks_data[:steal_friend] ||= 0
 				@player.serial_tasks_data[:steal_friend] += 1
-				@player.save
+				@player.set :serial_tasks_data, @player.serial_tasks_data
+				
 				render_success(:count => count)
 			else
 				render_error(Error::NORMAL, "HARVEST_NOT_FINISHED") and return

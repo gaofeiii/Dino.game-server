@@ -34,6 +34,11 @@ class AdvisorsController < ApplicationController
 		end
 
 		if Advisor.create_by_type_and_days(params[:player_id], params[:type], params[:days])
+			advisor.get(:serial_tasks_data)
+			advisor.serial_tasks_data[:being_advisor] ||= 0
+			advisor.serial_tasks_data[:being_advisor] += 1
+			advisor.set :serial_tasks_data, advisor.serial_tasks_data
+			
 			render :json => {:message => Error.success_message}
 		else
 			render_error(Error::NORMAL, "UNKNOWN_ERROR_WHEN_APPLY_AN_ADVISOR")

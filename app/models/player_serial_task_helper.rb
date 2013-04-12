@@ -12,7 +12,7 @@ module PlayerSerialTaskHelper
 		module TasksHelper
 
 			def find_by_idx(index)
-				return nil if index <= 20000
+				return nil unless index.in?(20001..30000)
 
 				self.each do |task|
 					return task if task.index == index

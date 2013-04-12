@@ -4,8 +4,28 @@ module BasicTask
 	end
 	
 	module InstanceMethods
+		def not_finished
+			!finished
+		end
+
+		def not_rewarded
+			!rewarded
+		end
+
+		def is_finished
+			finished
+		end
+
+		def is_rewarded
+			rewarded
+		end
+		
 		def to_hash
 			
+		end
+
+		def set_rewarded(ret)
+			self.set :rewarded, ret
 		end
 	end
 	

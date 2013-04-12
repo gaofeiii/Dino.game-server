@@ -133,6 +133,7 @@ class Troops < Ohm::Model
 								player.set :daily_quest_cache, player.daily_quest_cache
 							end
 
+							# 主线任务
 							player.serial_tasks_data[:attack_players] ||= 0
 							player.serial_tasks_data[:attack_players] += 1
 							player.set :serial_tasks_data, player.serial_tasks_data
@@ -153,6 +154,11 @@ class Troops < Ohm::Model
 								:stone => (target_player.stone * stolen_rate).to_i,
 								:gold_coin => (target_player.gold_coin * stolen_rate).to_i
 							}
+
+							player.serial_tasks_data[:rob_gold] ||= 0
+							player.serial_tasks_data[:rob_gold] += rwd[:gold_coin]
+							player.set :serial_tasks_data, player.serial_tasks_data
+
 							target_player.spend!(rwd) # The target lost resource
 							self.player.receive!(rwd) # The winner receive resource
 							# i_cat = [1,2,3].sample
@@ -174,7 +180,6 @@ class Troops < Ohm::Model
 						end
 						
 					when BattleModel::TARGET_TYPE[:creeps]
-						# reward = ModReward.judge!(target.type)
 						reward = Reward.monster_rewards(target.type)
 						
 						if not player.finish_daily_quest

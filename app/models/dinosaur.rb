@@ -151,9 +151,6 @@ class Dinosaur < Ohm::Model
 			if ::Time.now.to_i >= finish_time
 				init_atts
 
-				# 主线任务：孵化紫色恐龙蛋
-				@player = self.player
-
 				return self
 			end
 		elsif status > 0
@@ -175,6 +172,14 @@ class Dinosaur < Ohm::Model
 	end
 
 	def init_atts
+		# 主线任务：孵化紫色恐龙蛋
+		@player = self.player
+		@player.serial_tasks_data[:hatch_purple_dino] ||= 0
+		@player.serial_tasks_data[:hatch_purple_dino] += 1 if quality == 4
+		@player.serial_tasks_data[:hatch_orange_dino] ||= 0
+		@player.serial_tasks_data[:hatch_orange_dino] += 1 if quality == 5
+		@player.set :serial_tasks_data, @player.serial_tasks_data
+
 		[:attack, :defense, :agility, :hp].each do |att|
 			send("basic_#{att}=", (info[:property][att] * rand(0.8..1.2)).round(1))
 			send("total_#{att}=", send("basic_#{att}"))
@@ -198,6 +203,11 @@ class Dinosaur < Ohm::Model
 		else
 			0
 		end
+
+		@player = self.player
+		@player.serial_tasks_data[:max_dino_level] ||= 0
+		@player.serial_tasks_data[:max_dino_level] = level if @player.serial_tasks_data[:max_dino_level] < level
+		@player.set :serial_tasks_data, @player.serial_tasks_data
 
 		self.basic_attack += (info[:enhance_property][:attack_inc] * factor).round(1)
 		self.basic_defense += (info[:enhance_property][:defense_inc] * factor).round(1)
@@ -225,6 +235,7 @@ class Dinosaur < Ohm::Model
 			self.experience -= next_level_exp
 			self.level += 1
 			self.growth_point = 0
+			self.growth_times = 0
 
 			upgrade_atts
 

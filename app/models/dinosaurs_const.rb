@@ -30,7 +30,7 @@ module DinosaursConst
 			# ===Reading experiece===
 			book.default_sheet = 'experience'
 
-			2.upto(52) do |i|
+			2.upto(book.last_row) do |i|
 				level = book.cell(i, "A").to_i
 				exp = book.cell(i, 'B').to_i
 				gold_cost = book.cell(i, 'D').to_i

@@ -22,7 +22,8 @@ class DinosaurController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('dinosaur_error.not_a_egg')) and return
 		end
 
-		@building = Building[params[:building_id]]
+		@building = Building[params[:building_id]]# || @player.buildings.find(:type => 6).first
+
 		if @building.nil?
 			render_error(Error::NORMAL, I18n.t('dinosaur_error.must_be_hatched_in_cuba')) and return
 		end
@@ -32,6 +33,9 @@ class DinosaurController < ApplicationController
 				cache = @player.guide_cache.merge(:has_hatched_dino => true)
 				@player.set :guide_cache, cache
 			end
+
+			
+
 			render_success({:player => @player.to_hash(:dinosaurs), :egg_id => @egg.id})
 		else
 			render_error(Error::NORMAL, "Unknown_Error_On_Hatching_Egg")
@@ -175,8 +179,10 @@ class DinosaurController < ApplicationController
 		end
 		
 		if @player.spend!(:gold => @dinosaur.training_cost)
-			# @dinosaur.increase_by_float(:growth_point, @dinosaur.training_growth)
-			# render_success(:growth_point => @dinosaur.growth_point, :gold_coin => @player.gold_coin)
+			@player.serial_tasks_data[:trained_dino] ||= 0
+			@player.serial_tasks_data[:trained_dino] += 1
+			@player.set :serial_tasks_data, @player.serial_tasks_data
+
 			@dinosaur.training!(train_attr)
 			render_success 	:growth_point => @dinosaur.growth_times,
 											:max_growth_point => @dinosaur.max_growth_times,
@@ -200,6 +206,10 @@ class DinosaurController < ApplicationController
 		target_egg.increase(:evolution_exp, total_evolution)
 		target_egg.update_evolution
 		source_eggs.map(&:delete)
+
+		@player.serial_tasks_data[:egg_evolution] ||= 0
+		@player.serial_tasks_data[:egg_evolution] += 1
+		@player.set :serial_tasks_data, @player.serial_tasks_data
 
 		render_success(:egg => target_egg.to_hash)
 	end

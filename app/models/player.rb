@@ -214,7 +214,9 @@ class Player < Ohm::Model
 				end
 			when :daily_quest
 				reset_daily_quest!
-				all_quests = daily_quests_full_info << curr_bill_quest_full_info
+				all_quests = []
+				# all_quests += daily_quests_full_info 
+				# all_quests += curr_bill_quest_full_info
 				all_quests += my_serial_tasks.map(&:to_hash)
 
 				hash[:daily_quests] = all_quests.compact

@@ -199,6 +199,13 @@ class StrategyController < ApplicationController
 				dino.consume_energy(:energy => 50)
 			end
 		end
+
+		# 主线：使用卷轴
+		if Item.exists?(params[:scroll])
+			@player.serial_tasks_data[:use_scroll] ||= 0
+			@player.serial_tasks_data[:use_scroll] = 1
+			@player.set :serial_tasks_data, @player.serial_tasks_data
+		end
 		
 		render_success(:player => @player.to_hash.merge(:troops => [trps.to_hash], :village => @player.village.to_hash(:strategy)))
 	end
@@ -298,6 +305,8 @@ class StrategyController < ApplicationController
 			dino
 		end.compact
 
+		scroll = Item[params[:scroll_id]]
+
 		attacker = {
 			:player => @player,
 			:owner_info => {
@@ -326,6 +335,14 @@ class StrategyController < ApplicationController
 
 		result = BattleModel.match_attack attacker, defender
 		@player.desr_honour_battle_count
+
+
+		# 主线：使用卷轴
+		if Item.exists?(params[:scroll])
+			@player.serial_tasks_data[:use_scroll] ||= 0
+			@player.serial_tasks_data[:use_scroll] = 1
+			@player.set :serial_tasks_data, @player.serial_tasks_data
+		end
 
 		winner, loser = if result[:winner] == "attacker"
 			[@player, @enemy]
@@ -429,10 +446,18 @@ class StrategyController < ApplicationController
 			scroll = Item[params[:scroll_id]]
 			scroll.update :player_id => nil if scroll
 			@gold_mine.set(:under_attack, 1)
+
 			params[:dinosaurs].each do |dino_id|
 				if Dinosaur.exists?(dino_id)
 					Ohm.redis.hset("Dinosaur:#{dino_id}", :is_attacking, 1)
 				end
+			end
+
+			# 主线：使用卷轴
+			if Item.exists?(params[:scroll])
+				@player.serial_tasks_data[:use_scroll] ||= 0
+				@player.serial_tasks_data[:use_scroll] = 1
+				@player.set :serial_tasks_data, @player.serial_tasks_data
 			end
 
 			render_success(:player => @player.to_hash(:troops))

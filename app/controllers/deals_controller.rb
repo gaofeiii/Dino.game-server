@@ -95,6 +95,8 @@ class DealsController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('deals_error.price_too_high')) and return
 		end
 
+		ret = false
+
 		case goods_cat
 		when Deal::CATEGORIES[:res]
 			type = params[:type]
@@ -122,6 +124,7 @@ class DealsController < ApplicationController
 			end
 
 			if @player.spend!(res_name => count)
+				ret = true
 				Deal.create :status => Deal::STATUS[:selling],
 										:category => goods_cat,
 										:type => goods_type,
@@ -153,6 +156,7 @@ class DealsController < ApplicationController
 											:seller_id => @player.id,
 											:quality => egg.quality
 				egg.update :player_id => nil
+				ret = true
 			end
 		when Deal::CATEGORIES[:food]
 			type = params[:type].to_i
@@ -175,6 +179,7 @@ class DealsController < ApplicationController
 			else
 				food.increase(:count, -count)
 
+				ret = true
 				Deal.create :status => Deal::STATUS[:selling],
 										:category => goods_cat,
 										:type => food.type,
@@ -184,6 +189,12 @@ class DealsController < ApplicationController
 										:end_time => Time.now.to_i + 3.days,
 										:seller_id => @player.id
 			end
+		end # End of 'case...'
+
+		if ret
+			@player.serial_tasks_data[:sell_goods] ||= 0
+			@player.serial_tasks_data[:sell_goods] += 1
+			@player.set :serial_tasks_data, @player.serial_tasks_data
 		end
 
 		render_success(:player => @player.to_hash(:resources, :items, :specialties))

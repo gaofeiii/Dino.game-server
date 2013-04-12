@@ -76,12 +76,31 @@ module KillBillQuest
 	end
 	
 	module InstanceMethods
+
+		module SingleQuestHelper
+			def player
+				@player
+			end
+
+			def player=(plr)
+				@player = plr
+			end
+
+			def get_reward
+				player.get_bill_reward
+			end
+		end
+
 		def kill_bill_quests
 			if @attributes[:kill_bill_quests].nil?
 				@attributes[:kill_bill_quests] = []
 			elsif @attributes[:kill_bill_quests].is_a?(String)
 				@attributes[:kill_bill_quests] = JSON(@attributes[:kill_bill_quests])
-				@attributes[:kill_bill_quests].map!{|q| q.deep_symbolize_keys}
+				@attributes[:kill_bill_quests].map! do |q|
+					quest = q.deep_symbolize_keys.extend(SingleQuestHelper)
+					quest.player = self
+					quest
+				end
 			end
 
 			return @attributes[:kill_bill_quests]
