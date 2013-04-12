@@ -1,6 +1,6 @@
 class DinosaurController < ApplicationController
 	before_filter :validate_dinosaur, :only => [:update, :hatch_speed_up, :feed, :heal, :rename, :reborn, :release]
-	before_filter :validate_player, :only => [:hatch, :food_list, :feed, :heal, :expand_capacity, :refresh_all_dinos, :training, :evolution]
+	before_filter :validate_player, :only => [:hatch, :food_list, :feed, :heal, :expand_capacity, :refresh_all_dinos, :refresh_all_dinos_with_advisor, :training, :evolution]
 
 	def update
 		@dinosaur.update_status!
@@ -156,6 +156,10 @@ class DinosaurController < ApplicationController
 
 	def refresh_all_dinos
 		render_success(:player => {:dinosaurs => @player.dinosaurs_info})
+	end
+
+	def refresh_all_dinos_with_advisor
+		render_success(:player => {:dinosaurs => @player.dinosaurs_info, :advisor_dino => Dinosaur[121].to_hash})
 	end
 
 	def training

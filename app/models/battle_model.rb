@@ -316,6 +316,16 @@ class BattleModel
 				write_result(attacker, defender, :exp)
 				return result.merge!(:time => Time.now.to_f)
 			end
+
+			# TODO: The dinosaurs's reward
+			result[:reward][:dino_rewards] = attacker[:army].map do |dino|
+				{
+					:id => dino.id,
+					:exp_inc => 100,
+					:is_upgraded => [true, false].sample
+				}
+			end
+
 			return result
 		end
 

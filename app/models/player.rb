@@ -223,6 +223,8 @@ class Player < Ohm::Model
 				all_quests += my_serial_tasks.select{|task| task.index > 20006}[0, 5]
 
 				hash[:daily_quests] = all_quests.compact
+			when :advisor_dino
+				hash[:advisor_dino] = Dinosaur[121].to_hash
 			end
 
 		end
