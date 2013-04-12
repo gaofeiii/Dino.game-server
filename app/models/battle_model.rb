@@ -569,7 +569,7 @@ module BattleArmyModule
 			fighter.sets(new_atts) unless new_atts.blank?
 		end
 
-		if player && is_win && player_exp > 0
+		if player && is_win && player_exp.to_i > 0
 			player.earn_exp!(player_exp)
 		end
 	end
