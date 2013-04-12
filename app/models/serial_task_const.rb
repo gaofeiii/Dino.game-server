@@ -29,14 +29,16 @@ module SerialTaskConst
 				@@const[num] = {
 					:index => num,
 					:reward => {
+						:wood => wood,
+						:stone => stone,
 						:gold_coin => gold,
 						:item => {
 							:item_cat => item_cat,
 							:item_type => item_type,
 							:item_count => item_count,
 							:quality => quality,
-							:xp => exp
-						}
+						},
+						:xp => exp
 					},
 					:total_steps => total_step,
 					:forward_index => forward_num,

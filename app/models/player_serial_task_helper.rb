@@ -22,7 +22,7 @@ module PlayerSerialTaskHelper
 		end
 
 		def all_serial_tasks
-			serial_tasks.to_a.map do |task|
+			serial_tasks.map do |task|
 				task.extend(SingleTaskHelper)
 			end.extend(TasksHelper)
 		end

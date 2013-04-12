@@ -31,10 +31,10 @@ class Reward
 			if itm.is_a?(RewardItem)
 				itm
 			else
-				RewardItem.new(itm[:item_cat], itm[:item_type], itm[:item_count] || itm[:count], itm[:quality])
+				RewardItem.new(itm[:item_cat], itm[:item_type], itm[:item_count] || itm[:count], itm[:quality]) if itm[:item_cat] > 0
 			end
 		end
-		self.items = obj_items
+		self.items = obj_items.compact
 
 		self.xp = xp
 	end

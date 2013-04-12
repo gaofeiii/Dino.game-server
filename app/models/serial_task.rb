@@ -15,7 +15,7 @@ class SerialTask < Ohm::Model
 		check!
 		
 		locale = player.locale
-		{
+		hash = {
 			:number => index,
 			:finished => finished,
 			:rewarded => rewarded,
@@ -25,6 +25,12 @@ class SerialTask < Ohm::Model
 			:level => 1,
 			:reward => to_reward
 		}
+
+		if index == 20009
+			hash[:x] = 488
+			hash[:y] = 498
+		end
+		hash
 	end
 
 	def to_reward

@@ -116,10 +116,12 @@ class Dinosaur < Ohm::Model
 			:action_status => action_status
 		}
 
+		hash[:total_time] = finish_time - start_time
+		hash[:time_pass] = Time.now.to_i - start_time
 		if event_type != 0
-			hash[:event_type]  = event_type
-			hash[:total_time] = finish_time - start_time
-			hash[:time_pass] = Time.now.to_i - start_time
+			# hash[:event_type]  = event_type
+			# hash[:total_time] = finish_time - start_time
+			# hash[:time_pass] = Time.now.to_i - start_time
 			hash[:building_id] = building_id.to_i if building_id
 		end
 

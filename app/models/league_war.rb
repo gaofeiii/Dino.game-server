@@ -31,7 +31,8 @@ module LeagueWar
 	end
 
 	def can_fight_danger_village?
-		not in_period_of_fight?
+		true
+		# not in_period_of_fight?
 	end
 
 	# 整点1刻进行此操作

@@ -169,7 +169,7 @@ module DinosaursConst
 		end
 
 		def training_cost
-			self.class.training_info[level + 1][:gold]
+			level > 80 ? level * 2000 : self.class.training_info[level + 1][:gold]
 		end
 	end
 	

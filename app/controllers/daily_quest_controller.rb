@@ -23,7 +23,8 @@ class DailyQuestController < ApplicationController
 
 		if quest && quest.get_reward
 			quest.set_rewarded(true)
-			render_success(:player => @player.to_hash(:daily_quest))
+			# @player.gets(:wood, :stone, :gems, :gold_coin).save
+			render_success(:player => @player.load!.to_hash(:daily_quest))
 		else
 			render_error(Error::NORMAL, I18n.t('quests_error.not_finished_yet'))
 		end

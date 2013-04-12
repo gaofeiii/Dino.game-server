@@ -215,9 +215,12 @@ class Player < Ohm::Model
 			when :daily_quest
 				reset_daily_quest!
 				all_quests = []
+				all_serial_tasks = my_serial_tasks
+				all_quests += my_serial_tasks.select{|task| task.index <= 20006}
+
 				# all_quests += daily_quests_full_info 
-				# all_quests += curr_bill_quest_full_info
-				all_quests += my_serial_tasks.map(&:to_hash)
+				# all_quests << curr_bill_quest_full_info
+				all_quests += my_serial_tasks.select{|task| task.index > 20006}[0, 5]
 
 				hash[:daily_quests] = all_quests.compact
 			end
@@ -290,7 +293,7 @@ class Player < Ohm::Model
 		Item.create :item_type => 2, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
 		Item.create :item_type => 3, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
 		Item.create :item_type => 4, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
-		Item.create :item_type => 1, :item_category => Item.categories[:scroll], :player_id => id
+		Item.create :item_type => 3, :item_category => Item.categories[:scroll], :player_id => id
 		# Item.create :item_type => 2, :item_category => Item.categories[:scroll], :player_id => id
 		# Item.create :item_type => 3, :item_category => Item.categories[:scroll], :player_id => id
 		# Item.create :item_type => 4, :item_category => Item.categories[:scroll], :player_id => id

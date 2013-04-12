@@ -123,7 +123,7 @@ class Troops < Ohm::Model
 					when BattleModel::TARGET_TYPE[:village]
 						if target.is_bill?
 							player.curr_bill_quest[:finished_steps] = 1
-							player.set :kill_bill_quests, player.kill_bill_quests
+							player.set :kill_bill_quests, player.kill_bill_quests.to_json
 							defender_army.map(&:delete)
 							{}
 						else

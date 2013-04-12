@@ -137,6 +137,10 @@ module DailyQuest
 					self[:rewarded] = true
 				end
 			end
+
+			def set_rewarded(ret)
+				self[:rewarded] = ret
+			end
 		end
 
 		def find_quest_by_index(idx)

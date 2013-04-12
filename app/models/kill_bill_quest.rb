@@ -89,6 +89,10 @@ module KillBillQuest
 			def get_reward
 				player.get_bill_reward
 			end
+
+			def set_rewarded(ret)
+				self[:rewarded] = ret
+			end
 		end
 
 		def kill_bill_quests
