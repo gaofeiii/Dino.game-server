@@ -264,7 +264,7 @@ class StrategyController < ApplicationController
 			end
 			players.compact!
 
-			render_success(:gold_coin => @player.gold_coin, :players => players)
+			render_success(:gold_coin => @player.gold_coin, :players => players, :todays_count => @player.todays_count, :total_match_count => 20)
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gold'))
 		end
@@ -379,7 +379,7 @@ class StrategyController < ApplicationController
 		winner.add_honour(win_score)
 		loser.dec_honour(win_score)
 
-		render_success(result.merge(:score => @player.honour_score, :my_rank => @player.my_battle_rank))
+		render_success(result.merge(:score => @player.honour_score, :my_rank => @player.my_battle_rank, :todays_count => @player.todays_count, :total_match_count => 20))
 	end
 
 	def set_match_strategy

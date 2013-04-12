@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :redis_access_log
   before_filter :set_default_locale
-  before_filter :validate_sig
+  # before_filter :validate_sig
   # before_filter :validate_session
 
   private

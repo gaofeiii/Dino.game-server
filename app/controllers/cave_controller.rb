@@ -21,7 +21,7 @@ class CaveController < ApplicationController
 		player_dinos = dino_ids.map do |dino_id|
 			dino = Dinosaur[dino_id]
 
-			if dino && dino.status > 0
+			if dino && dino.status > 0 && dino.player_id.to_i == @player.id
 				dino.update_status!
 				render_error(Error::NORMAL, I18n.t('strategy_error.dino_is_hungry')) and return if dino.feed_point <= 5
 				render_error(Error::NORMAL, I18n.t('strategy_error.dino_hp_is_zero')) and return if dino.current_hp < dino.total_hp * 0.1

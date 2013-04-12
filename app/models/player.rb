@@ -170,7 +170,9 @@ class Player < Ohm::Model
 			:login_days => login_days,
 			:has_lottery => has_lottery,
 			:in_league => in_league?,
-			:game_center_account => gk_player_id
+			:game_center_account => gk_player_id,
+			:todays_count => todays_count,
+			:total_match_count => 20
 		}
 		opts = if args.include?(:all)
 			args | [:league, :god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :beginning_guide, :queue_info]
@@ -224,7 +226,7 @@ class Player < Ohm::Model
 
 				hash[:daily_quests] = all_quests.compact
 			when :advisor_dino
-				hash[:advisor_dino] = Dinosaur[121].to_hash
+				hash[:advisor_dino] = Dinosaur[9].to_hash
 			end
 
 		end
