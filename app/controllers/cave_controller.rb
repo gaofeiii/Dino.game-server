@@ -21,7 +21,7 @@ class CaveController < ApplicationController
 		player_dinos = dino_ids.map do |dino_id|
 			dino = Dinosaur[dino_id]
 
-			if dino && dino.status > 0 && dino.player_id.to_i == @player.id
+			if dino && dino.status > 0# && dino.player_id.to_i == @player.id
 				dino.update_status!
 				render_error(Error::NORMAL, I18n.t('strategy_error.dino_is_hungry')) and return if dino.feed_point <= 5
 				render_error(Error::NORMAL, I18n.t('strategy_error.dino_hp_is_zero')) and return if dino.current_hp < dino.total_hp * 0.1
@@ -133,6 +133,15 @@ class CaveController < ApplicationController
 		# end
 		# render_success(:data => result)
 		@player.update_caves_info
+
+		result[:reward][:dino_rewards] = attacker[:army].map do |dino|
+			{
+				:id => dino.id,
+				:exp_inc => 100,
+				:is_upgraded => [true, false].sample
+			}
+		end
+
 		render_success(:report => result, :caves => @player.full_cave_stars_info)
 	end
 

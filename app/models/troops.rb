@@ -299,6 +299,14 @@ class Troops < Ohm::Model
 				end
 				
 				result.merge!(:reward => reward)
+				result[:reward][:dino_rewards] = attacker[:army].map do |dino|
+					{
+						:id => dino.id,
+						:exp_inc => 100,
+						:is_upgraded => [true].sample
+					}
+				end
+				
 				
 				player.save_battle_report(self.id, result)
 				scroll.delete if scroll

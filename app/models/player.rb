@@ -220,8 +220,8 @@ class Player < Ohm::Model
 				all_serial_tasks = my_serial_tasks
 				all_quests += my_serial_tasks.select{|task| task.index <= 20006}
 
-				# all_quests += daily_quests_full_info 
-				# all_quests << curr_bill_quest_full_info
+				all_quests += daily_quests_full_info 
+				all_quests << curr_bill_quest_full_info
 				all_quests += my_serial_tasks.select{|task| task.index > 20006}[0, 5]
 
 				hash[:daily_quests] = all_quests.compact
