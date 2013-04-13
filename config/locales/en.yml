@@ -181,6 +181,7 @@
    advisor_not_exist: "Advisor does not exist"
    has_hired: "Advisor has been hired"
    advisor_not_exist_or_has_been_hired: "Advisor does not exist or has been hired"
+   already_have_same_type_adv: "You can only hired one type of advisor once"
 
   chat_error:
    to_player_not_exist: "Player does not exist"

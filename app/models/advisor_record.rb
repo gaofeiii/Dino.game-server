@@ -10,6 +10,7 @@ class AdvisorRecord < Ohm::Model
 	attribute :type,				Type::Integer
 	attribute :price,				Type::Integer
 	attribute :player_id,		Type::Integer
+	attribute :is_npc,			Type::Boolean
 
 	index :type
 	index :player_id
@@ -27,6 +28,18 @@ class AdvisorRecord < Ohm::Model
 		def list(type: 0, count: 10)
 			find(:type => type).sort(:limit => [0, count])
 		end
+
+		def create_npc
+			Player.npc.to_a.each_with_index do |npc, idx|
+				npc_record = self.find(:player_id => npc.id).first
+				if npc_record.blank?
+					npc_record = self.create :type => idx + 1, :price => 1000, :player_id => npc.id, :is_npc => true
+				else
+					npc_record.update :type => idx + 1
+				end
+			end
+		end
+		
 	end
 
 	def player

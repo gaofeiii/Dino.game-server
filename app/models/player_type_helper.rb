@@ -10,6 +10,10 @@ module PlayerTypeHelper
 		def none_npc
 			self.find(:player_type => TYPE[:normal]).union(:player_type => TYPE[:vip])
 		end
+
+		def npc
+			self.find(:player_type => TYPE[:npc])
+		end
 	end
 	
 	module InstanceMethods

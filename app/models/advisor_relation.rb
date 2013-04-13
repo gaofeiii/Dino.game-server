@@ -9,6 +9,9 @@ class AdvisorRelation < Ohm::Model
 	attribute :advisor_id,	Type::Integer
 	attribute :price,				Type::Integer
 
+	index :type
+	index :price
+
 	reference :employer,		Player
 
 	def advisor
@@ -24,7 +27,7 @@ class AdvisorRelation < Ohm::Model
 			:nickname => @advisor.nickname,
 			:avatar_id => @advisor.avatar_id,
 			:price => price,
-			:left_time => 1.day
+			:left_time => created_at + 1.day - Time.now.to_i
 		}
 	end
 
