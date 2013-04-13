@@ -165,7 +165,8 @@ module DinosaursConst
 		end
 
 		def training_growth
-			self.class.training_info[level + 1][:growth_inc]
+			val = self.class.training_info[level + 1][:growth_inc]
+			val ? val : self.level * 1000
 		end
 
 		def training_cost
