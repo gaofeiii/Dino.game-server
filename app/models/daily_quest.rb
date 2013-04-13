@@ -140,6 +140,7 @@ module DailyQuest
 
 			def set_rewarded(ret)
 				self[:rewarded] = ret
+				self.player.set :daily_quest, self.player.daily_quest.to_json
 			end
 		end
 
@@ -185,6 +186,7 @@ module DailyQuest
 				rwd = find_reward_by_index(idx)
 				self.receive_daily_reward!(rwd) if rwd
 				quest[:rewarded] = true
+				self.set :daily_quest, self.daily_quest
 			end
 		end
 

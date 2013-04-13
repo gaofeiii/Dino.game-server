@@ -7,14 +7,15 @@ if Country.count <= 0
 	end
 end
 
-if Player.find(:player_type => Player::TYPE[:npc]).size < 1
+players = Player.find(:player_type => Player::TYPE[:npc]).to_a
+if players.size < 1
 	puts "--- Creating NPC Players ---"
 	players = 4.times.map do
 		Player.create(:nickname => "NPC", :player_type => Player::TYPE[:npc], :avatar_id => rand(1..8), :level => 1)
 	end
 
 	players.each_with_index do |player, idx|
-		Advisor.create_by_type_and_days(player.id, idx + 1, 1)
+		AdvisorRecord.create :type => idx + 1, :price => 1000, :player_id => player.id
 	end
 end
 

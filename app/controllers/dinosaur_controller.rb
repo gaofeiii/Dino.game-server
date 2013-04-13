@@ -213,7 +213,10 @@ class DinosaurController < ApplicationController
 
 		@player.serial_tasks_data[:egg_evolution] ||= 0
 		@player.serial_tasks_data[:egg_evolution] += 1
-		@player.set :serial_tasks_data, @player.serial_tasks_data
+		@player.beginner_guide_data[:egg_evolution] ||= 0
+		@player.beginner_guide_data[:egg_evolution] += 1
+		@player.sets 	:serial_tasks_data => @player.serial_tasks_data,
+									:beginner_guide_data => @player.beginner_guide_data
 
 		render_success(:egg => target_egg.to_hash)
 	end

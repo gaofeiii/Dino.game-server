@@ -191,7 +191,7 @@ class Dinosaur < Ohm::Model
 		self.status = 1
 		self.event_type = 0
 		self.emotion = EMOTIONS[:normal]
-		self.feed_point = 1
+		self.feed_point = self.hunger_time * 0.3
 		self.updated_feed_time = Time.now.to_i
 		self
 	end
@@ -368,7 +368,7 @@ class Dinosaur < Ohm::Model
 		self.current_hp = total_hp
 		self.updated_hp_time = Time.now.to_i if updated_hp_time.zero?
 		self.quality = 1 if quality.zero?
-		self.feed_point = self.hunger_time * 0.15
+		self.feed_point = self.hunger_time * 0.5
 	end
 
 	def after_create

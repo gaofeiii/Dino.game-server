@@ -11,7 +11,7 @@ class Player < Ohm::Model
 
 	include PlayerTechHelper
 	include PlayerGodHelper
-	include PlayerAdvisorHelper
+	# include PlayerAdvisorHelper
 	include PlayerResourceHelper
 	include PlayerCreepsHelper
 	include PlayerHonourHelper
@@ -34,6 +34,7 @@ class Player < Ohm::Model
 	include PlayerItemsHelper
 	include PlayerMailHelper
 	include PlayerRewardHelper
+	include PlayerAdvHelper
 
 	include BeginningGuide
 	include DailyQuest
@@ -197,7 +198,7 @@ class Player < Ohm::Model
 			when :league
 				hash[:league] = league.try(:to_hash)
 			when :advisors
-				hash[:advisors] = my_advisors_info
+				hash[:advisors] = my_advisors.map(&:to_hash)
 			when :beginning_guide
 				has_beginning_guide = !beginning_guide_finished
 				# has_beginning_guide = false

@@ -180,6 +180,7 @@ cn:
    cannot_hire_yourself: "不能雇佣自己为顾问"
    advisor_not_exist: "顾问不存在"
    has_hired: "已经被其他人雇佣了"
+   advisor_not_exist_or_has_been_hired: "顾问不存在或已经被雇佣了"
 
   chat_error:
    to_player_not_exist: "玩家不存在"

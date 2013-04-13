@@ -176,10 +176,11 @@
    not_finished_yet: "Quest is not finished yet"
 
   advisors_error:
-   already_an_advisor: "You have become a advisor already"
+   already_an_advisor: "You have already been an advisor"
    cannot_hire_yourself: "Cannot hire yourself"
    advisor_not_exist: "Advisor does not exist"
    has_hired: "Advisor has been hired"
+   advisor_not_exist_or_has_been_hired: "Advisor does not exist or has been hired"
 
   chat_error:
    to_player_not_exist: "Player does not exist"

@@ -59,7 +59,7 @@ class BeginnerGuide < Ohm::Model
 		when 11 # 宝石购买恐龙蛋
 			!!@player.beginner_guide_data[:has_bought_egg]
 		when 12
-			true
+			!!@player.beginner_guide_data[:egg_evolution]
 		when 13 # 刷新任务
 			!!@player.beginner_guide_data[:has_opened_quests]
 		else
