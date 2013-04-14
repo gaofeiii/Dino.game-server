@@ -9,6 +9,8 @@ class AdvisorRelation < Ohm::Model
 	attribute :advisor_id,	Type::Integer
 	attribute :price,				Type::Integer
 
+	TYPES = {:produce => 1, :military => 2, :business => 3, :technology => 4}
+
 	index :type
 	index :price
 

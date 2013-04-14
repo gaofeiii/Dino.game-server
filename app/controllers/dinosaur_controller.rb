@@ -159,7 +159,7 @@ class DinosaurController < ApplicationController
 	end
 
 	def refresh_all_dinos_with_advisor
-		render_success(:player => {:dinosaurs => @player.dinosaurs_info, :advisor_dino => nil})
+		render_success(:player => {:dinosaurs => @player.dinosaurs_info, :advisor_dino => @player.advisor_dinosaur})
 	end
 
 	def training

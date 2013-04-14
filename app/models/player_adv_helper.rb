@@ -16,6 +16,12 @@ module PlayerAdvHelper
 		def my_advisors
 			advisor_relations
 		end
+
+		def advisor_dinosaur
+			if my_advisors.find(:type => 2).any?
+				Dinosaur[9]
+			end
+		end
 	end
 	
 	def self.included(model)

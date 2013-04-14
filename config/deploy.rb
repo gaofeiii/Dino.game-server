@@ -6,9 +6,10 @@ require 'bundler/capistrano'
 @linode = "106.187.91.156"
 @a001 = "50.112.84.136"
 @ali001 = "42.120.23.41"
+@local = "192.168.1.201"
 
 # Deploy server
-@@server = [@ali001]
+@@server = [@local]
 
 set :rvm_ruby_string, "2.0.0@dinosaur_game"
 set :rvm_type, :user
@@ -20,7 +21,7 @@ set :runner, "gaofei"
 set :ssh_options,   { :forward_agent => true }
 set :application, "dinosaur"
 set :deploy_to, "/var/games/servers/#{application}"
-# set :deploy_via, :remote_cache
+set :deploy_via, :remote_cache
 set :rails_env, :production
 set :use_sudo, false
 set :keep_releases, 5

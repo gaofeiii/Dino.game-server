@@ -299,8 +299,8 @@ class Player < Ohm::Model
 		# Item.create :item_type => 3, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
 		# Item.create :item_type => 4, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
 		Item.create :item_type => 3, :item_category => Item.categories[:scroll], :player_id => id
-		# Item.create :item_type => 2, :item_category => Item.categories[:scroll], :player_id => id
-		# Item.create :item_type => 3, :item_category => Item.categories[:scroll], :player_id => id
+		Item.create :item_type => 1, :item_category => Item.categories[:scroll], :player_id => id
+		Item.create :item_type => 1, :item_category => Item.categories[:scroll], :player_id => id
 		# Item.create :item_type => 4, :item_category => Item.categories[:scroll], :player_id => id
 		# Item.create :item_type => 5, :item_category => Item.categories[:scroll], :player_id => id
 		# Item.create :item_type => 6, :item_category => Item.categories[:scroll], :player_id => id
