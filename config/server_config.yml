@@ -43,9 +43,9 @@ ali001:
   port: 6379
 
 ubuntu:
- ip: 192.168.1.201
+ ip: magic0fei.eicp.net
  port: 10002
- account_server_ip: 192.168.1.201
+ account_server_ip: magic0fei.eicp.net
  account_server_port: 10001
  info_const_version: 12
  env: dev

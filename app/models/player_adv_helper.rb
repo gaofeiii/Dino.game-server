@@ -19,7 +19,9 @@ module PlayerAdvHelper
 
 		def advisor_dinosaur
 			if my_advisors.find(:type => 2).any?
-				Dinosaur[9]
+				dino = Dinosaur[9]
+				dino.set :current_hp, dino.total_hp
+				dino
 			end
 		end
 	end

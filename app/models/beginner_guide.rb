@@ -36,6 +36,8 @@ class BeginnerGuide < Ohm::Model
 		@player = self.player
 
 		ret = case index
+		when 0
+			true
 		when 1 # 修建孵化园
 			@player.has_built?(Building.hashes[:habitat])
 		when 2 # 孵化恐龙
