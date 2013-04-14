@@ -57,7 +57,9 @@ class BeginnerGuide < Ohm::Model
 		when 10 # 防守村庄
 			!!@player.beginner_guide_data[:has_set_defense]
 		when 11 # 宝石购买恐龙蛋
-			!!@player.beginner_guide_data[:has_bought_egg]
+			temp_ret = !!@player.beginner_guide_data[:has_bought_egg]
+			Item.create :item_type => 2, :item_category => Item.categories[:egg], :player_id => player_id, :quality => 2 if temp_ret
+			temp_ret
 		when 12
 			!!@player.beginner_guide_data[:egg_evolution]
 		when 13 # 刷新任务

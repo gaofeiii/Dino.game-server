@@ -227,7 +227,7 @@ class Player < Ohm::Model
 
 				hash[:daily_quests] = all_quests.compact
 			when :advisor_dino
-				hash[:advisor_dino] = Dinosaur[9].to_hash
+				hash[:advisor_dino] = nil#Dinosaur[9].to_hash
 			end
 
 		end
@@ -295,9 +295,9 @@ class Player < Ohm::Model
 
 		# Initial eggs:
 		Item.create :item_type => 1, :item_category => Item.categories[:egg], :player_id => id, :quality => 2
-		Item.create :item_type => 2, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
-		Item.create :item_type => 3, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
-		Item.create :item_type => 4, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
+		# Item.create :item_type => 2, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
+		# Item.create :item_type => 3, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
+		# Item.create :item_type => 4, :item_category => Item.categories[:egg], :player_id => id, :quality => 1
 		Item.create :item_type => 3, :item_category => Item.categories[:scroll], :player_id => id
 		# Item.create :item_type => 2, :item_category => Item.categories[:scroll], :player_id => id
 		# Item.create :item_type => 3, :item_category => Item.categories[:scroll], :player_id => id

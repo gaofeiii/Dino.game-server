@@ -159,7 +159,7 @@ class DinosaurController < ApplicationController
 	end
 
 	def refresh_all_dinos_with_advisor
-		render_success(:player => {:dinosaurs => @player.dinosaurs_info, :advisor_dino => Dinosaur[9].to_hash})
+		render_success(:player => {:dinosaurs => @player.dinosaurs_info, :advisor_dino => nil})
 	end
 
 	def training
@@ -207,6 +207,11 @@ class DinosaurController < ApplicationController
 		render_error(Error::NORMAL, 'No egg to use!!!') and return if source_eggs.blank?
 
 		total_evolution = source_eggs.sum{ |egg| egg.supply_evolution }.to_i
+
+		if @player.current_guide.try(:index).to_i == 12
+			total_evolution = target_egg.next_evolution_exp
+		end
+
 		target_egg.increase(:evolution_exp, total_evolution)
 		target_egg.update_evolution
 		source_eggs.map(&:delete)
