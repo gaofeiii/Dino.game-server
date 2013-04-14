@@ -28,7 +28,7 @@ set :keep_releases, 5
 
 set :repository,  "gitolite@106.187.91.156:dinosaur_game_server.git"
 set :scm, :git
-set :branch, "master"
+set :branch, "v110"
 
 role :web, *@@server
 role :app, *@@server

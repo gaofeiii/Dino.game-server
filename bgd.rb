@@ -7,7 +7,6 @@ Dinosaur.const
 Technology.const
 Monster.const
 Building.const
-Advisor.const
 Player.daily_quests_const
 String.load_sensitive_words!
 Item.const
