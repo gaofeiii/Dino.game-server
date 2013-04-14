@@ -273,6 +273,16 @@ class Player < Ohm::Model
   	end
   end
 
+  def max_level_dinosaur
+  	max_level_dino_id = dinosaurs.ids.max do |dino_id|
+  		db.hget(Dinosaur.key[dino_id], :level).to_i
+  	end
+
+  	if max_level_dino_id
+  		Dinosaur[max_level_dino_id]
+  	end
+  end
+
 	# Callbacks
 	protected
 

@@ -174,10 +174,6 @@ class DinosaurController < ApplicationController
 			:agility
 		end
 
-		# if @dinosaur.growth_point >= @dinosaur.max_growth_point
-		# 	render_error(Error::NORMAL, I18n.t('dinosaur_error.reach_max_growth_point')) and return
-		# end
-
 		if @dinosaur.growth_times > @dinosaur.max_growth_times
 			render_error(Error::NORMAL, I18n.t('dinosaur_error.reach_max_growth_point')) and return
 		end

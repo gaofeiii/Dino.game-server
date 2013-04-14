@@ -55,7 +55,8 @@ class AdvisorRecord < Ohm::Model
 			:nickname => @player.nickname,
 			:level => @player.level,
 			:avatar_id => @player.avatar_id,
-			:days => 1
+			:days => 1,
+			:evaluation => rand(1000)
 		}
 	end
 end

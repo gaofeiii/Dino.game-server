@@ -42,6 +42,8 @@ class BattleModel
 					fighter.exp_inc = obj[:scroll_effect][:exp_inc].to_f
 					# ======================================
 
+					fighter.is_advisor = true if obj[:player] && fighter.try(:player_id).to_i != obj[:player].id
+
 					fighter.army = obj[:army]
 					fighter.skills.each{ |sk| sk.extend(SkillModule) }
 				end
@@ -311,12 +313,15 @@ class BattleModel
 					:is_upgraded => [true, false].sample
 				}
 			end
+			dino_rewards = []
 
 			if attacker[:army].all_curr_hp.zero?
 				result[:winner] = 'defender'
 				attacker[:is_win] = false
 				defender[:is_win] = true
-				write_result(attacker, defender, :exp)
+				# dino_rewards = write_result(attacker, defender, :exp)
+				result[:reward][:dino_rewards] = dino_rewards
+
 				return result.merge!(:time => Time.now.to_f)
 			elsif defender[:army].all_curr_hp.zero?
 				result[:winner] = 'attacker'
@@ -367,10 +372,6 @@ class BattleModel
 			defender[:army].write_army!(defender[:is_win], attacker, defender[:player], options)
 		end
 
-		def write_xp(attacker, defender)
-			attacker[:army].write_xp!(attacker[:is_win], defender)
-			defender[:army].write_xp!(defender[:is_win], attacker)
-		end
 	end
 
 end
@@ -393,7 +394,7 @@ end
 
 module BattleFighterModule
 	attr_accessor :curr_attack, :curr_defense, :curr_speed, :curr_hp, :total_hp, :skills, :stunned_count,
-		:bleeding_count, :bleeding_val, :army, :skill_trigger_inc, :exp_inc
+		:bleeding_count, :bleeding_val, :army, :skill_trigger_inc, :exp_inc, :is_advisor
 
 	def curr_attack
 		@curr_attack ||= self.total_attack
@@ -464,6 +465,11 @@ module BattleFighterModule
 	def exp_inc
 		@exp_inc ||= 0
 		@exp_inc
+	end
+
+	def is_advisor
+		@is_advisor ||= false
+		@is_advisor
 	end
 
 	def curr_info
@@ -612,9 +618,9 @@ module BattleArmyModule
 		end
 
 		self.each do |fighter|
-			if fighter.is_a?(Monster)
-				return false
-			end
+			return false if fighter.is_a?(Monster)
+			next if fighter.is_advisor
+			
 			exp = fighter.curr_hp > 0 ? fighter.experience + every_exp : fighter.experience
 			fighter.sets 	:current_hp => fighter.curr_hp,
 										:updated_hp_time => Time.now.to_i,

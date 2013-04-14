@@ -28,8 +28,10 @@ class AdvisorRelation < Ohm::Model
 			:player_id => advisor_id,
 			:nickname => @advisor.nickname,
 			:avatar_id => @advisor.avatar_id,
+			:level => @advisor.level,
 			:price => price,
-			:left_time => created_at + 1.day - Time.now.to_i
+			:left_time => created_at + 1.day - Time.now.to_i,
+			:evaluation => rand(1..1000)
 		}
 	end
 

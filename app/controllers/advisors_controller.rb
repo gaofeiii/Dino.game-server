@@ -4,7 +4,7 @@ class AdvisorsController < ApplicationController
 
 	# 顾问列表
 	def advisor_list
-		render_success :advisors => AdvisorRecord.list(:type => params[:type].to_i)
+		render_success :advisors => AdvisorRecord.list(:type => params[:type].to_i, :count => 20)
 	end
 
 	# 申请成为顾问

@@ -1,7 +1,4 @@
-puts "--- Updating Redis database ---"
-Player.delete_attrs :is_advisor, :is_hired, :advisor_type
-
-puts "--- Data Refreshing... ---"
+puts "--- Setting Server:status to 1... ---"
 
 Ohm.redis.set('Server:status', 1)
 

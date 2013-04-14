@@ -45,7 +45,6 @@ class Dinosaur < Ohm::Model
 	attribute :start_time, 		Type::Integer
 	attribute :finish_time, 	Type::Integer
 
-	attribute :growth_point, 	Type::Integer
 	attribute :growth_times,	Type::Integer
 
 	attribute :building_id, 	Type::Integer
@@ -176,11 +175,14 @@ class Dinosaur < Ohm::Model
 	def init_atts
 		# 主线任务：孵化紫色恐龙蛋
 		@player = self.player
-		@player.serial_tasks_data[:hatch_purple_dino] ||= 0
-		@player.serial_tasks_data[:hatch_purple_dino] += 1 if quality == 4
-		@player.serial_tasks_data[:hatch_orange_dino] ||= 0
-		@player.serial_tasks_data[:hatch_orange_dino] += 1 if quality == 5
-		@player.set :serial_tasks_data, @player.serial_tasks_data
+
+		if @player
+			@player.serial_tasks_data[:hatch_purple_dino] ||= 0
+			@player.serial_tasks_data[:hatch_purple_dino] += 1 if quality == 4
+			@player.serial_tasks_data[:hatch_orange_dino] ||= 0
+			@player.serial_tasks_data[:hatch_orange_dino] += 1 if quality == 5
+			@player.set :serial_tasks_data, @player.serial_tasks_data
+		end
 
 		[:attack, :defense, :agility, :hp].each do |att|
 			send("basic_#{att}=", (info[:property][att] * rand(0.8..1.2)).round(1))
@@ -233,11 +235,24 @@ class Dinosaur < Ohm::Model
 	end
 
 	def update_level
-		if experience >= next_level_exp
+		# if experience >= next_level_exp
+		# 	self.experience -= next_level_exp
+		# 	self.level += 1
+		# 	self.growth_times = 0
+
+		# 	upgrade_atts
+
+		# 	self.current_hp = self.total_hp
+		# 	if self.level.in?([1, 2])
+		# 		self.total_hp = self.basic_hp
+		# 	end
+
+		# 	self.status = STATUS[:adult] if level >= 8
+		# end
+
+		until experience < next_level_exp
 			self.experience -= next_level_exp
 			self.level += 1
-			self.growth_point = 0
-			self.growth_times = 0
 
 			upgrade_atts
 
@@ -248,6 +263,7 @@ class Dinosaur < Ohm::Model
 
 			self.status = STATUS[:adult] if level >= 8
 		end
+
 		self
 	end
 
@@ -279,10 +295,8 @@ class Dinosaur < Ohm::Model
 
 		if is_my_favorite_food(food.type)
 			self.emotion = EMOTIONS[:happy]
-			self.growth_point += count * 5
 		else
-			self.emotion = EMOTIONS[:normal]
-			self.growth_point += count * 2.5
+			self.emotion = EMOTIONS[:angry]
 		end
 
 		self.feed_point += food.feed_point * count

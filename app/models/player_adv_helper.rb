@@ -18,10 +18,11 @@ module PlayerAdvHelper
 		end
 
 		def advisor_dinosaur
-			if my_advisors.find(:type => 2).any?
-				dino = Dinosaur[9]
-				dino.set :current_hp, dino.total_hp
-				dino
+			military_advisor_relation = my_advisors.find(:type => 2).first
+
+			if military_advisor_relation
+				military_advisor = military_advisor_relation.advisor
+				military_advisor.max_level_dinosaur
 			end
 		end
 	end
