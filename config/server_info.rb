@@ -92,11 +92,9 @@ class ServerInfo
 					:buildings => Building.cost,
 					:guide_reward => Player.beginning_guide_reward,
 					:shopping_list => shop_list,
-					:dinosaurs => {:recovery_speed => 60},
 					:speed_up_info => {
 						:building => 300,
 						:tech => 300,
-						:dino_hp_recovery => 30000,
 						:hatch_speed_up => 300
 					},
 					:god_cost => {
@@ -105,8 +103,6 @@ class ServerInfo
 						:gold => 1000
 					},
 					:lottery_reward => LuckyReward.const(1).values,
-					:match_gold_cost => Player.honour_gold_cost,
-					:advisor_cost => Advisor.const.values.map{|x| x[:price_per_day]},
 					:league_gold_cost => 1000,
 					:move_town_gems_cost => 50,
 					:cave_rewards => PlayerCave.all_star_rewards,

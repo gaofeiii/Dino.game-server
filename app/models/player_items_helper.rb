@@ -13,6 +13,10 @@ module PlayerItemsHelper
 	  def scrolls
 	  	items.find(:item_category => Item.categories[:scroll])
 	  end
+
+	  def eggs
+	  	items.find(:item_category => Item.categories[:egg])
+	  end
 	end
 	
 	def self.included(receiver)

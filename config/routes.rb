@@ -189,6 +189,7 @@ DinosaurGame::Application.routes.draw do
   scope :path => 'shopping', :as => 'shopping' do
     post 'buy_gems'         => 'shopping#buy_gems'
     post 'buy'              => 'shopping#buy'
+    post 'buy_arena_count'  => 'shopping#buy_arena_count'
   end
 
   # 日常任务

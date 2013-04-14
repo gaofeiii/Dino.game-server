@@ -11,7 +11,8 @@ module PlayerResourceHelper
 			{
 				:wood => wood,
 				:stone => stone,
-				:gold_coin => gold_coin
+				:gold_coin => gold_coin,
+				:gems => gems
 			}
 		end
 

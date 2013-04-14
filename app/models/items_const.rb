@@ -11,6 +11,13 @@ module ItemsConst
 		:lottery => 6
 	}
 
+	EGG = 1
+	FOOD = 2
+	SCROLL = 3
+	VIP = 4
+	PROTECTION = 5
+	LOTTERY = 6
+
 	module ClassMethods
 		@@const = Hash.new
 

@@ -1,5 +1,5 @@
 class ShoppingController < ApplicationController
-	before_filter :validate_player, :only => [:buy, :buy_gems]
+	before_filter :validate_player, :only => [:buy, :buy_gems, :buy_arena_count]
 
 	def buy_gems
 		order = AppStoreOrder.find(:transaction_id => params[:transaction_id]).first
@@ -49,12 +49,12 @@ class ShoppingController < ApplicationController
 		# Buy resources...
 		when Shopping::GOODS_TYPE[:res]
 			res_type = goods[:res_type]
-			res_count = (goods[:count] * @player.tech_warehouse_size).to_i
-			gems_cost = (res_count / goods[:count_per_gem].to_f).ceil
+			res_count = goods[:count]
+			gems_cost = goods[:gems]
 
 			if @player.spend!(:gems => gems_cost)
 				@player.receive!(res_type => res_count)
-				render_success(:player => @player.to_hash)
+				render_success(:player => @player.resources)
 			else
 				render_error(Error::NORMAL, I18n.t("general.not_enough_gems")) and return
 			end
@@ -72,7 +72,7 @@ class ShoppingController < ApplicationController
 					else
 						food.increase(:count, goods[:count])
 					end
-					render_success(:player => @player.to_hash(:specialties)) and return
+					render_success(:player => @player.to_hash(:food)) and return
 				else
 					itm = goods.slice(:item_category, :item_type).merge(:player_id => @player.id)
 					Item.create(itm)
@@ -84,8 +84,8 @@ class ShoppingController < ApplicationController
 
 		# Buy eggs...
 		when Shopping::GOODS_TYPE[:egg]
-			if @player.spend!(goods.slice(:gems))
-				egg = Shopping.buy_random_egg(:item_type => goods[:item_type], :player_id => @player.id)
+			if @player.spend! goods.slice(:gems, :gold, :gold_coin)
+				egg = Shopping.buy_random_egg(:sid => sid, :player_id => @player.id)
 
 				# === Guide ===
 				@player.gets :guide_cache, :beginning_guide_finished
@@ -105,8 +105,18 @@ class ShoppingController < ApplicationController
 					render_success(:player => @player.to_hash(:items)) and return
 				end
 			else
-				render_error(Error::NORMAL, I18n.t("general.not_enough_gems")) and return
+				render_error(Error::NORMAL, I18n.t("general.not_enough_gems_or_gold")) and return
 			end
+		end
+	end
+
+	def buy_arena_count
+		
+		if @player.spend!(:gems => Shopping::MATCH_COUNT_COST)
+			@player.set :honour_battle_count, Shopping::MATCH_COUNT_COST
+			render_success(:todays_count => @player.todays_count, :gems => @player.gems)
+		else
+			render_error(Error::NORMAL, I18n.t("general.not_enough_gems"))
 		end
 	end
 

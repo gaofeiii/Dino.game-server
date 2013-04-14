@@ -6,11 +6,15 @@ module ShoppingConst
 		:item => 2,
 		:egg 	=> 3
 	}
+
+
 	module ClassMethods
 		
 		@@all_goods = Hash.new
 		@@all_goods_hash = Hash.new
 		@@goods_desc = Hash.new
+
+		@@eggs_drops = {}
 
 		@@first_time_rewards = {
 			1001 => {:gold => 100000 },
@@ -45,6 +49,13 @@ module ShoppingConst
 				reload!
 			end
 			@@goods_desc
+		end
+
+		def eggs_drops
+			if @@eggs_drops.blank?
+				reload!
+			end
+			@@eggs_drops
 		end
 
 		def reload!
@@ -94,40 +105,47 @@ module ShoppingConst
 			2.upto(book.last_row) do |i|
 				name = book.cell(i, 'B')
 				sid = book.cell(i, 'C').to_i
-				count = book.cell(i, 'D').to_f
-				count_per_gem = book.cell(i, 'g').to_i
-				gem_price = book.cell(i, 'E').to_i
-				res_type = book.cell(i, 'F').to_i
-				sid = book.cell(i, 'C').to_i
+				count = book.cell(i, 'e').to_i
+				gem_price = book.cell(i, 'f').to_i
+				res_type = book.cell(i, 'g').to_i
 
-				record = {:sid => sid, :count => count, :type => res_type, :gem => gem_price, :count_per_gem => count_per_gem}
+				record = {:sid => sid, :count => count, :type => res_type, :gem => gem_price}
 				if name == "金币"
 					@@all_goods[:gold] << record
-					@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :res_type => :gold,:count => count, :gems => gem_price, :count_per_gem => count_per_gem}
+					@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :res_type => :gold,:count => count, :gems => gem_price}
 				else
 					@@all_goods[:resources] << record
 					if name == "石料"
-						@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :res_type => :stone,:count => count, :gems => gem_price, :count_per_gem => count_per_gem}
+						@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :res_type => :stone,:count => count, :gems => gem_price}
 					else # if name == "木材"
-						@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :res_type => :wood,:count => count, :gems => gem_price, :count_per_gem => count_per_gem}
+						@@all_goods_hash[sid] = {:goods_type => GOODS_TYPE[:res], :res_type => :wood,:count => count, :gems => gem_price}
 					end
 				end
 			end
 
 			book.default_sheet = "道具"
-			2.upto(book.last_row) do |i|
+			3.upto(book.last_row) do |i|
 				name = book.cell(i, 'B')
 				sid = book.cell(i, 'C').to_i
 				count = book.cell(i, 'D').to_i
 				gem_price = book.cell(i, 'E').to_i
-				item_cat = book.cell(i, 'F').to_i
-				item_type = book.cell(i, 'G').to_i
-				cn_desc = book.cell(i, 'H').to_s
-				en_desc = book.cell(i, 'I').to_s
+				gold_price = book.cell(i, 'F').to_i
+				item_cat = book.cell(i, 'G').to_i
+				item_type = book.cell(i, 'H').to_i
+				cn_desc = book.cell(i, 'I').to_s
+				en_desc = book.cell(i, 'J').to_s
 
-				record = {:sid => sid, :count => count, :gem => gem_price, :cat => item_cat, :type => item_type}
+				record = {:sid => sid, :count => count, :gold => gold_price, :gem => gem_price, :cat => item_cat, :type => item_type}
 				goods_type = case name
 				when "恐龙蛋"
+					# 读取恐龙蛋概率信息
+					quality_odds = ('K'..'O').to_a.map { |column| book.cell(i, column).to_f }
+					egg_types_odds = ('Q'..'Y').to_a.map { |column|	book.cell(i, column).to_f }
+					@@eggs_drops[sid] = {
+						:quality_odds => quality_odds,
+						:egg_types_odds => egg_types_odds
+					}
+
 					@@all_goods[:eggs] << record
 					GOODS_TYPE[:egg]
 				when "卷轴"
@@ -142,6 +160,7 @@ module ShoppingConst
 					:item_type => item_type, 
 					:item_category => item_cat,
 					:gems => gem_price,
+					:gold => gold_price,
 					:count => count
 				}
 

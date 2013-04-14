@@ -193,7 +193,7 @@ class Player < Ohm::Model
 				hash[:dinosaurs] = dinosaurs_info
 			when :items
 				hash[:items] = items.map{|i| i.to_hash}
-			when :specialties
+			when :specialties, :food
 				hash[:food] = specialties.map{|s| s.to_hash}
 			when :league
 				hash[:league] = league.try(:to_hash)

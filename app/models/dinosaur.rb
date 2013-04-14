@@ -315,7 +315,7 @@ class Dinosaur < Ohm::Model
 	end
 
 	def heal_speed_up_cost
-		{:gems => 1}
+		{:gems => level / 10 + 1}
 	end
 
 	def heal_speed_up!

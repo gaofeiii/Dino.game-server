@@ -14,6 +14,7 @@
    server_busy: "Connection interrupted, Try later!"
    not_enough_gems: "Need more gems"
    not_enough_gem: "Need more gems"
+   not_enough_gems_or_gold: "Need more gems or gold coins"
    invitation_expired: "Invitation over time"
    join_league_success: "Join Succeed"
    add_friend_success: "Friend Added"

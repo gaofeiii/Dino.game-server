@@ -14,6 +14,7 @@ cn:
    server_busy: "网络不给力啊，请稍后再试~~"
    not_enough_gems: "宝石不足"
    not_enough_gem: "宝石不足"
+   not_enough_gems_or_gold: "宝石或金币不足"
    invitation_expired: "邀请函已经过期。"
    join_league_success: "成功加入部落！"
    add_friend_success: "添加好友成功！"
