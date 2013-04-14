@@ -38,13 +38,18 @@ class AdvisorsController < ApplicationController
 
 		render_error(Error::NORMAL, I18n.t('advisors_error.advisor_not_exist_or_has_been_hired')) unless record
 
-		if @player.my_advisors.find(:type => record.type).blank?
+		if @player.my_advisors.find(:type => record.type).any?
 			render_error(Error::NORMAL, I18n.t('advisors_error.already_have_same_type_adv')) and return
 		end
 
 		if @player.spend!(:gold => record.price)
 			AdvisorRelation.create :type => record.type, :advisor_id => record.player_id, :employer_id => @player.id, :price => record.price
 			record.delete if not record.is_npc
+
+			if !@player.beginning_guide_finished && !@player.guide_cache[:has_hired_advisor]
+				cache = @player.guide_cache.merge(:has_hired_advisor => true)
+				@player.set :guide_cache, cache
+			end
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gold')) and return
 		end

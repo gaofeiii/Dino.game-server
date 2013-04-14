@@ -1,5 +1,5 @@
 class	Tool
-	MAG_FACTOR = 1000000
+	MAG_FACTOR = 100000000
 	REGULAR_RANGE = 0..1
 
 	class << self

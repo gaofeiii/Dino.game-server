@@ -59,7 +59,6 @@ class Shopping
 		end
 
 		def buy_random_egg(sid: nil, player_id: nil)
-			p sid
 			egg = get_rand_egg(sid)
 
 			Item.create egg.merge(:player_id => player_id)

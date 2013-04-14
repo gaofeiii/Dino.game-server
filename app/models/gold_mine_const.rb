@@ -73,7 +73,14 @@ module GoldMineConst
 	module InstanceMethods
 		
 		def next_level_cost
-			self.class.upgrade_cost[type][level + 1]
+			cost = self.class.upgrade_cost[type][level + 1]
+			if cost
+				cost.slice(:wood, :stone)
+			else
+				{
+					:wood => 99999999, :stone => 99999999
+				}
+			end
 		end
 	end
 	

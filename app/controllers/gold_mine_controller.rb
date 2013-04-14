@@ -27,6 +27,7 @@ class GoldMineController < ApplicationController
 				render_error(Error::NORMAL, "GoldMine dosen't belong to your tribe!!!") and return
 			end
 
+			p "----", @gold_mine.next_level_cost
 			if @league.spend_res(@gold_mine.next_level_cost)
 				@gold_mine.update :level => @gold_mine.level + 1
 				render_success(:gold_mine => @gold_mine.to_hash, :current_wood => @league.wood, :current_stone => @league.stone)
