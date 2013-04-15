@@ -89,9 +89,10 @@ module PlayerCaveConst
 		def all_star_rewards
 			rewards = {}
 			caves_const.each do |idx, info|
+				res = (idx % 2).zero? ? :wood : :stone
 				rewards[idx] = {
-					1 => {:wood => idx * 10, :stone => idx * 10},
-					2 => {:wood => idx * 15, :stone => idx * 15},
+					1 => {res => idx * 10},
+					2 => {res => idx * 15},
 					3 => info[:reward]
 				}
 			end

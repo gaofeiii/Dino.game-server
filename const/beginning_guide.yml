@@ -3,7 +3,7 @@ Reward:
   wood: 100
   stone: 100
   gold_coin: 100
-  gems: 9999
+  gems: 5
  2:
   wood: 100
   stone: 100
@@ -83,7 +83,7 @@ Reward:
   wood: 1000
   stone: 1000
   gold_coin: 1000
-  gems: 188
+  gems: 200
  18:
   wood: 1000
   stone: 1000

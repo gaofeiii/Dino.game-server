@@ -44,7 +44,9 @@ module PlayerBeginnerGuideHelper
 	
 	def self.included(model)
 		model.attribute :beginner_guide_data, Ohm::DataTypes::Type::SmartHash
-
+		model.attribute :beginning_guide_finished, Ohm::DataTypes::Type::Boolean
+		model.attribute :guide_cache, Ohm::DataTypes::Type::SmartHash
+		
 		model.extend         ClassMethods
 		model.send :include, InstanceMethods
 	end

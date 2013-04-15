@@ -36,7 +36,6 @@ class Player < Ohm::Model
 	include PlayerRewardHelper
 	include PlayerAdvHelper
 
-	include BeginningGuide
 	include DailyQuest
 	include KillBillQuest
 
