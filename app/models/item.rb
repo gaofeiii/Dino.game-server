@@ -7,6 +7,7 @@
 	attribute :item_type, 			Type::Integer
 	attribute :can_sell,				Type::Boolean
 	attribute :quality,					Type::Integer
+	attribute :count,						Type::Integer
 
 	attribute :evolution_exp,		Type::Integer
 
@@ -40,6 +41,11 @@
 			dino
 		# 使用卷轴
 		when Item.categories[:scroll]
+			if count > 0
+				self.increase :count, -1
+			end
+
+			self.delete if count <= 0
 		when Item.categories[:vip]
 			player.player_type = Player::TYPE[:vip]
 			now = Time.now.to_i
@@ -66,8 +72,9 @@
 			:type => item_type,
 			:can_sell => false,
 			:evolution_exp => evolution_exp,
-			:next_evolution_exp => next_evolution_exp
+			:next_evolution_exp => next_evolution_exp,
 		}
+		hash[:count] = count if item_category == 3
 		hash[:quality] = quality if is_egg?
 		hash
 	end

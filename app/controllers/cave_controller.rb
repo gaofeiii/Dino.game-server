@@ -74,6 +74,7 @@ class CaveController < ApplicationController
 			@player.serial_tasks_data[:use_scroll] ||= 0
 			@player.serial_tasks_data[:use_scroll] = 1
 			@player.set :serial_tasks_data, @player.serial_tasks_data
+			scroll.use!
 		end
 
 		result = BattleModel.cave_attack(attacker, defender)
