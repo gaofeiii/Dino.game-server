@@ -1,6 +1,26 @@
 module PlayerBeginnerGuideHelper
 	module ClassMethods
-		
+		@@beginner_reward = {}
+		@@cache = {}
+
+		def beginning_guide_info
+			if @@cache.empty?
+				@@cache = YAML::load_file("#{Rails.root}/const/beginning_guide.yml").deep_symbolize_keys
+			end
+			@@cache
+		end
+
+		def beginning_guide_reward(index = nil)
+			if @@beginner_reward.empty?
+				@@beginner_reward = beginning_guide_info[:Reward]
+			end
+			
+			if index.nil?
+				return @@beginner_reward
+			else
+				return @@beginner_reward[index.to_i]
+			end
+		end
 	end
 	
 	module InstanceMethods
