@@ -235,21 +235,6 @@ class Dinosaur < Ohm::Model
 	end
 
 	def update_level
-		# if experience >= next_level_exp
-		# 	self.experience -= next_level_exp
-		# 	self.level += 1
-		# 	self.growth_times = 0
-
-		# 	upgrade_atts
-
-		# 	self.current_hp = self.total_hp
-		# 	if self.level.in?([1, 2])
-		# 		self.total_hp = self.basic_hp
-		# 	end
-
-		# 	self.status = STATUS[:adult] if level >= 8
-		# end
-
 		until experience < next_level_exp
 			self.experience -= next_level_exp
 			self.level += 1
@@ -352,10 +337,27 @@ class Dinosaur < Ohm::Model
 		self.quality + 1 + (level / 10)
 	end
 
+	def quality_factor
+		case quality
+		when 1
+			1
+		when 2
+			1.1
+		when 3
+			1.2
+		when 4
+			1.3
+		when 5
+			1.4
+		else
+			1
+		end
+	end
+
 	def training!(att)
 		return false if growth_times >= max_growth_times || !att.in?(:attack, :defense, :agility)
 
-		growth = info[:enhance_property]["#{att}_inc".to_sym].to_f * 0.1
+		growth = info[:enhance_property]["#{att}_inc".to_sym].to_f * 0.1 * quality_factor
 		curr_val = send("basic_#{att}")
 
 		send("basic_#{att}=", curr_val + growth)
