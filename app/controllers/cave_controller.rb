@@ -36,6 +36,7 @@ class CaveController < ApplicationController
 		end.compact
 
 		scroll = Item[params[:scroll_id]]
+		scroll_type = scroll.try(:item_type).to_i
 
 		attacker = {
 			:player => @player,
@@ -46,7 +47,7 @@ class CaveController < ApplicationController
 				:avatar_id => @player.avatar_id
 			},
 			:buff_info => [],
-			:scroll_effect => scroll.try(:scroll_effect).to_h,
+			:scroll_type => scroll_type,
 			:army => player_dinos
 		}
 

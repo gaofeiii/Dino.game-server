@@ -168,6 +168,11 @@ class StrategyController < ApplicationController
 
 		marching_time = 2 if Rails.env.development?
 
+		scroll = Item[params[:scroll_id]]
+		scroll_type = scroll ? scroll.item_type : 0
+
+		p "scroll", scroll
+
 		# 创建Troops
 		trps = Troops.new		:player_id => @player.id, 
 												:dinosaurs => params[:dinosaurs].to_json,
@@ -178,7 +183,8 @@ class StrategyController < ApplicationController
 												:monster_type => target_monster_type,
 												:target_x => target.x,
 												:target_y => target.y,
-												:scroll_id => params[:scroll_id]
+												:scroll_id => params[:scroll_id],
+												:scroll_type => scroll_type
 
 		if trps.save
 			target.set(:under_attack, 1)
@@ -198,6 +204,8 @@ class StrategyController < ApplicationController
 
 				dino.consume_energy(:energy => 50)
 			end
+
+			scroll.use! if scroll
 		end
 
 		# 主线：使用卷轴

@@ -12,6 +12,7 @@
 	attribute :evolution_exp,		Type::Integer
 
 	index :item_category
+	index :item_type
 
 	reference :player, :Player
 

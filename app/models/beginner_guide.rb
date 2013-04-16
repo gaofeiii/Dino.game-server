@@ -41,7 +41,7 @@ class BeginnerGuide < Ohm::Model
 		when 1 # 修建孵化园
 			@player.has_built?(Building.hashes[:habitat])
 		when 2 # 孵化恐龙
-			@player.dinosaurs.size > 0
+			@player.dinosaurs.select { |dino| dino.status > 0 }.size > 0
 		when 3 # 喂养和训练恐龙
 			!!@player.beginner_guide_data[:has_fed_dino]
 		when 4 # 进攻野怪

@@ -17,6 +17,34 @@ module PlayerItemsHelper
 	  def eggs
 	  	items.find(:item_category => Item.categories[:egg])
 	  end
+
+	  # {:item_category => item.category, :item_type => item.type, :count => item.count}
+	  def receive_scroll!(item_category: nil, item_type: nil, count: nil)
+	  	return unless item_category && item_type && count && count > 0	
+
+	  	the_scrolls = self.scrolls.find(:item_type => item_type).to_a
+
+	  	count_left = count
+	  	the_scrolls.each do |scroll|
+	  		if scroll.count < 5
+	  			full_inc = 5 - scroll.count
+	  			count_inc = full_inc <= count_left ? full_inc : count_left
+	  			scroll.increase(:count, count_inc)
+	  			count_left -= count_inc
+
+	  			break if count_left <= 0
+	  		end
+	  	end
+
+	  	until count_left <= 0
+	  		create_count = count_left > 5 ? 5 : count_left
+	  		Item.create :item_category => item_category, :item_type => item_type, :count => create_count, :player_id => id
+	  		count_left -= create_count
+	  	end
+
+	  	scrolls.map(&:count)
+	  end
+
 	end
 	
 	def self.included(receiver)

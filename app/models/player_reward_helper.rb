@@ -38,6 +38,8 @@ module PlayerRewardHelper
 				reward.items.each do |item|
 					if item.is_food?
 						self.receive_food!(item.type, item.count)
+					elsif item.is_scroll?
+						self.receive_scroll!(:item_category => item.category, :item_type => item.type, :count => item.count)
 					else
 						Item.create(:item_category => item.category, :item_type => item.type, :quality => item.quality, :player_id => id)
 					end

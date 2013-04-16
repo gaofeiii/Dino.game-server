@@ -21,13 +21,15 @@ class BattleModel
 					fighter.extend(BattleFighterModule)
 
 					# 初始化攻击、防御和血量————卷轴和玩家科技的影响
+					scroll_effect = Item.scroll_const[obj[:scroll_type]].to_h
+
 					attack_inc 	= obj[:player].try(:tech_attack_inc).to_f
-					scroll_attack_inc = obj[:scroll_effect][:attack_inc].to_f
-					speed_inc		= obj[:scroll_effect][:speed_inc].to_f # 没有科技对恐龙速度产生影响
-					scroll_speed_inc = obj[:scroll_effect][:attack_inc].to_f
+					scroll_attack_inc = scroll_effect[:attack_inc].to_f
+					speed_inc		= scroll_effect[:speed_inc].to_f # 没有科技对恐龙速度产生影响
+					scroll_speed_inc = scroll_effect[:attack_inc].to_f
 					defense_inc = obj[:player].try(:tech_defense_inc).to_f
-					scroll_defense_inc = obj[:scroll_effect][:defense_inc].to_f
-					hp_inc			= obj[:player].try(:tech_hp_inc).to_f + obj[:scroll_effect][:hp_inc].to_f
+					scroll_defense_inc = scroll_effect[:defense_inc].to_f
+					hp_inc			= obj[:player].try(:tech_hp_inc).to_f + scroll_effect[:hp_inc].to_f
 
 					fighter.curr_attack *= (1 + attack_inc)
 					fighter.curr_attack += scroll_attack_inc
@@ -38,8 +40,8 @@ class BattleModel
 					fighter.curr_hp *= (1 + hp_inc)
 					fighter.total_hp *= (1 + hp_inc)
 					fighter.curr_hp = fighter.total_hp if options[:match_attack] # 如果是荣誉战，恐龙满血满状态
-					fighter.skill_trigger_inc = obj[:scroll_effect][:skill_trigger_inc].to_f
-					fighter.exp_inc = obj[:scroll_effect][:exp_inc].to_f
+					fighter.skill_trigger_inc = scroll_effect[:skill_trigger_inc].to_f
+					fighter.exp_inc = scroll_effect[:exp_inc].to_f
 					# ======================================
 
 					fighter.is_advisor = true if obj[:player] && fighter.try(:player_id).to_i != obj[:player].id

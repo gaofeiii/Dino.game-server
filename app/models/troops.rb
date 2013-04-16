@@ -14,6 +14,7 @@ class Troops < Ohm::Model
 	attribute :target_x,		Type::Integer
 	attribute :target_y,		Type::Integer
 	attribute :scroll_id
+	attribute :scroll_type,	Type::Integer
 
 	reference :player, Player
 
@@ -74,7 +75,7 @@ class Troops < Ohm::Model
 						:name => player.nickname,
 						:avatar_id => player.avatar_id
 					},
-					:scroll_effect => scroll.try(:scroll_effect).to_h, # Note: Only ruby 2.0+
+					:scroll_type => scroll_type, # Note: Only ruby 2.0+
 					:buff_info => [],
 					:army => attacker_army
 				}
@@ -103,7 +104,7 @@ class Troops < Ohm::Model
 						:monster_type => target.type
 					},
 					:buff_info => [],
-					:scroll_effect => {},
+					:scroll_type => 0,
 					:army => defender_army
 				}
 
@@ -309,7 +310,6 @@ class Troops < Ohm::Model
 				
 				
 				player.save_battle_report(self.id, result)
-				scroll.delete if scroll
 				self.dissolve!
 			end
 		end

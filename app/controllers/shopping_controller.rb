@@ -74,7 +74,7 @@ class ShoppingController < ApplicationController
 					end
 					render_success(:player => @player.to_hash(:food)) and return
 				else
-					itm = goods.slice(:item_category, :item_type).merge(:player_id => @player.id)
+					itm = goods.slice(:item_category, :item_type, :count).merge(:player_id => @player.id)
 					Item.create(itm)
 					render_success(:player => @player.to_hash(:items)) and return
 				end
