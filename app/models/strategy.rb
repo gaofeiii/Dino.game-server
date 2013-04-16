@@ -6,8 +6,9 @@ class Strategy < Ohm::Model
 	include OhmExtension
 
 	attribute :village_id, 		Type::Integer
-	attribute :gold_mine_id
+	attribute :gold_mine_id, 	Type::Integer
 	attribute :dinosaurs
+	attribute :scroll_id,			Type::Integer
 
 	reference :player, 	Player
 
@@ -16,6 +17,10 @@ class Strategy < Ohm::Model
 	index :player_id
 
 	MAX_COUNT = 5
+
+	def scroll
+		Item[scroll_id]
+	end
 
 	def to_hash
 		hash = {}
