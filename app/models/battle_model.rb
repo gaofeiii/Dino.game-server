@@ -44,7 +44,7 @@ class BattleModel
 					fighter.exp_inc = scroll_effect[:exp_inc].to_f
 					# ======================================
 
-					fighter.is_advisor = true if obj[:player] && fighter.try(:player_id).to_i != obj[:player].id
+					fighter.is_advisor = true if obj[:player] && fighter.is_a?(Dinosaur) && fighter.try(:player_id).to_i != obj[:player].id
 
 					fighter.army = obj[:army]
 					fighter.skills.each{ |sk| sk.extend(SkillModule) }

@@ -88,16 +88,9 @@ class ShoppingController < ApplicationController
 				egg = Shopping.buy_random_egg(:sid => sid, :player_id => @player.id)
 
 				# === Guide ===
-				@player.gets :guide_cache, :beginning_guide_finished
-
-				if !@player.beginning_guide_finished && !@player.guide_cache[:buy_egg]
-					cache = @player.guide_cache.merge(:buy_egg => true)
-					@player.set :guide_cache, cache
-					egg.update :quality => 3, :item_type => 1
-				end
-
 				if @player.has_beginner_guide?
 					@player.cache_beginner_data(:has_bought_egg => true)
+					egg.update :quality => 3, :item_type => 3
 				end
 				# === End of Guide ===
 

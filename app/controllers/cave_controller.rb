@@ -85,33 +85,39 @@ class CaveController < ApplicationController
 		stars = PlayerCave.cave_rounds_stars(rounds_count)
 
 		reward = {}
-		default_reward = {:wood => @cave.index * 10, :stone => @cave.index * 10}
+		default_reward = {:wood => @cave.index * 10, :stone => @cave.index * 15}
 
 		if result[:winner] == 'attacker'
+			
+			all_star_rewards = @cave.all_star_rewards
 			case stars
 			when 1
-				reward = default_reward
+				reward = all_star_rewards[1]
 			when 2
-				reward = @cave.info[:reward] if Tool.rate(@cave.star_2_chance)
+				reward = all_star_rewards[2] if Tool.rate(@cave.star_2_chance)
 			when 3
-				if !@cave.get_perfect_reward
-					reward = @cave.info[:reward]
+				unless @cave.get_perfect_reward
+					reward = all_star_rewards[3]
 					@cave.get_perfect_reward = true
 				else
-					reward = @cave.info[:reward] if Tool.rate(@cave.star_3_chance)
+					reward = all_star_rewards[3] if Tool.rate(@cave.star_3_chance)
 				end
 			end
 
 			reward = default_reward if reward.blank?
 
+			rwd = nil
+
 			if !reward[:item_cat].nil?
 				result[:reward][:items] ||= []
 				result[:reward][:items] << reward
+				rwd = Reward.new :item => reward
 			else
 				result[:reward] = reward
+				rwd = Reward.new reward
 			end
 
-			@player.receive_cave_reward!(reward)
+			@player.get_reward(rwd)
 
 			# === Guide ===
 			if @player.has_beginner_guide?
@@ -124,14 +130,6 @@ class CaveController < ApplicationController
 			@cave.save
 		end
 
-
-		# result = BattleModel.calc_result(player, cave.monsters)
-		# if result[:winner] == player
-		# 	reward = cave.reward(stars)
-		# 	player.get(reward)
-		# 	result.merge(:reward => reward)
-		# end
-		# render_success(:data => result)
 		@player.update_caves_info
 
 		result[:reward][:dino_rewards] = attacker[:army].map do |dino|

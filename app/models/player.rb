@@ -226,7 +226,7 @@ class Player < Ohm::Model
 
 				hash[:daily_quests] = all_quests.compact
 			when :advisor_dino
-				hash[:advisor_dino] = nil#Dinosaur[9].to_hash
+				hash[:advisor_dino] = advisor_dinosaur
 			end
 
 		end

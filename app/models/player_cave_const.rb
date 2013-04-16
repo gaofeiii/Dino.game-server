@@ -12,6 +12,8 @@ module PlayerCaveConst
 			@@caves_const
 		end
 
+		alias const caves_const
+
 		def load_caves_const!
 			@@caves_const.clear
 

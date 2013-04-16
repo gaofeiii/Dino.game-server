@@ -209,9 +209,11 @@ class Dinosaur < Ohm::Model
 		end
 
 		@player = self.player
-		@player.serial_tasks_data[:max_dino_level] ||= 0
-		@player.serial_tasks_data[:max_dino_level] = level if @player.serial_tasks_data[:max_dino_level] < level
-		@player.set :serial_tasks_data, @player.serial_tasks_data
+		if @player
+			@player.serial_tasks_data[:max_dino_level] ||= 0
+			@player.serial_tasks_data[:max_dino_level] = level if @player.serial_tasks_data[:max_dino_level] < level
+			@player.set :serial_tasks_data, @player.serial_tasks_data
+		end
 
 		self.basic_attack += (info[:enhance_property][:attack_inc] * factor).round(1)
 		self.basic_defense += (info[:enhance_property][:defense_inc] * factor).round(1)
@@ -371,12 +373,7 @@ class Dinosaur < Ohm::Model
 	protected
 
 	def before_save
-		# [:attack, :defense, :agility].each do |att|
-		# 	send("total_#{att}=", send("basic_#{att}"))
-		# end
-		# self.feed_point -= Time.now.to_i - updated_feed_time
 		self.name = info[:name].classify if name.blank?
-		# self.current_hp = self.total_hp if total_hp.zero?
 		self.updated_hp_time = Time.now.to_i if updated_hp_time.zero?
 		self.quality = 1 if quality.zero?
 	end

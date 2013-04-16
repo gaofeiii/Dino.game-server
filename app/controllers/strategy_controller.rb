@@ -51,13 +51,10 @@ class StrategyController < ApplicationController
 
 		# Check beginner guide task
 		@player = target.player
-		@player.gets :beginner_guide_data, :beginning_guide_finished
-
-		if !@player.beginning_guide_finished && !@player.beginner_guide_data[:set_defense]
-			cache = @player.beginner_guide_data.merge(:set_defense => true)
-			@player.set :beginner_guide_data, cache
+		if @player.has_beginner_guide?
+			@player.cache_beginner_data(:has_set_defense => true)
 		end
-		
+
 		# Render result
 		data = {}
 		if target.is_a?(Village)

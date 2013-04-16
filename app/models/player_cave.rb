@@ -41,6 +41,10 @@ class PlayerCave < Ohm::Model
 		end
 	end
 
+	def all_star_rewards
+		self.class.all_star_rewards[index]
+	end
+
 	protected
 	def before_save
 		self.update_count_time = ::Time.now.to_i

@@ -13,6 +13,10 @@ RewardItem = Struct.new(:category, :type, :count, :quality) do
 	def is_food?
 		self.category == Item::CATEGORIES[:food]
 	end
+
+	def is_scroll?
+		self.category == Item::CATEGORIES[:scroll]
+	end
 end
 
 class Reward

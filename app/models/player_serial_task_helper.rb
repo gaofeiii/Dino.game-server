@@ -40,6 +40,7 @@ module PlayerSerialTaskHelper
 			visible_tasks = []
 
 			all_tasks.each do |task|
+				# p "--- task index: #{task.index}, --- task finished: #{task.finished}, --- task rewarded: #{task.rewarded}"
 				if task.finished
 					visible_tasks << task if task.not_rewarded
 				else

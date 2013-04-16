@@ -25,6 +25,7 @@ module PlayerAdvHelper
 				
 				dino = military_advisor.max_level_dinosaur
 				dino.current_hp = dino.total_hp
+				dino.feed_point = dino.hunger_time
 				dino
 			end
 		end
