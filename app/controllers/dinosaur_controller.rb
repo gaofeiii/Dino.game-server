@@ -45,12 +45,7 @@ class DinosaurController < ApplicationController
 	def hatch_speed_up
 		@player = @dinosaur.player
 		if @player.spend!(:gems => @dinosaur.hatch_speed_up_cost_gems)
-			if @dinosaur.hatch_speed_up!
-				if !@player.beginning_guide_finished && @player.guide_cache[:hatch_speed_up].nil?
-					cache = @player.guide_cache.merge(:hatch_speed_up => true)
-					@player.set :guide_cache, cache.to_json
-				end
-			end
+			@dinosaur.hatch_speed_up!
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gems')) and return
 		end
@@ -72,10 +67,6 @@ class DinosaurController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('dinosaur_error.not_enough_food')) and return
 		else
 			@dinosaur.eat!(food, count)
-			if !@player.beginning_guide_finished && !@player.guide_cache[:feed_dino]
-				cache = @player.guide_cache.merge('feed_dino' => true)
-				@player.set :guide_cache, cache
-			end
 
 			if @player.has_beginner_guide?
 				@player.cache_beginner_data(:has_fed_dino => true)
@@ -100,11 +91,7 @@ class DinosaurController < ApplicationController
 		end
 
 		if @player.spend!(@dinosaur.heal_speed_up_cost)
-			if !@player.beginning_guide_finished && !@player.guide_cache[:heal_dino]
-				cache = @player.guide_cache.merge('heal_dino' => true)
-				@player.set :guide_cache, cache
-			end
-
+			# Check beginner guide
 			if @player.has_beginner_guide?
 				@player.cache_beginner_data(:has_healed_dino => true)
 			end

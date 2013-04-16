@@ -238,6 +238,7 @@ class Dinosaur < Ohm::Model
 		until experience < next_level_exp
 			self.experience -= next_level_exp
 			self.level += 1
+			self.growth_times = 0
 
 			upgrade_atts
 
@@ -322,19 +323,19 @@ class Dinosaur < Ohm::Model
 	end
 
 	def max_attack
-		info[:enhance_property][:attack_inc]* 1.2 * quality * 60
+		56 + 24 * level
 	end
 
 	def max_agility
-		info[:enhance_property][:agility_inc]* 1.2 * quality * 60
+		28 + 24 * level
 	end
 
 	def max_defense
-		info[:enhance_property][:defense_inc]* 1.2 * quality * 60
+		39 + 24 * level
 	end
 
 	def max_growth_times
-		self.quality + 1 + (level / 10)
+		5
 	end
 
 	def quality_factor

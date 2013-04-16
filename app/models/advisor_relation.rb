@@ -16,6 +16,16 @@ class AdvisorRelation < Ohm::Model
 
 	reference :employer,		Player
 
+	def self.clean_up!
+		all.map do |rel|
+			if Time.now.to_i >= rel.created_at + 1.day
+				rel.delete
+			end
+		end
+		
+		puts "--- Clean AdvisorRelation OK"
+	end
+
 	def advisor
 		Player[advisor_id]
 	end
@@ -30,9 +40,14 @@ class AdvisorRelation < Ohm::Model
 			:avatar_id => @advisor.avatar_id,
 			:level => @advisor.level,
 			:price => price,
-			:left_time => created_at + 1.day - Time.now.to_i,
-			:evaluation => rand(1..1000)
+			:left_time => (created_at + 1.day - Time.now.to_i),
+			:evaluation => evaluation_score
 		}
+	end
+
+	def evaluation_score
+		# TODO
+		9999
 	end
 
 	protected

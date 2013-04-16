@@ -18,11 +18,6 @@ class GodController < ApplicationController
 			end
 		end
 
-		if !@player.beginning_guide_finished && !@player.guide_cache[:has_worshiped]
-			cache = @player.guide_cache.merge(:has_worshiped => true)
-			@player.set :guide_cache, cache
-		end
-
 		if @player.has_beginner_guide?
 			@player.cache_beginner_data(:has_worshipped_god => true)
 		end

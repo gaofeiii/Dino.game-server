@@ -6,11 +6,6 @@ class DailyQuestController < ApplicationController
 		@player.reset_daily_quest!
 
 		# refresh_daily_quest
-		if !@player.beginning_guide_finished && @player.guide_cache[:refresh_daily_quest].nil?
-			cache = @player.guide_cache.merge(:refresh_daily_quest => true)
-			@player.set :guide_cache, cache.to_json
-		end
-
 		if @player.has_beginner_guide?
 			@player.cache_beginner_data(:has_opened_quests => true)
 		end

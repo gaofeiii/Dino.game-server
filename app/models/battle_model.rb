@@ -577,12 +577,12 @@ module BattleArmyModule
 		self.each do |fighter|
 			new_atts = {}
 
-			if write_xp && fighter.curr_hp > 0
+			if write_xp && fighter.curr_hp > 0 && !fighter.is_advisor
 				fighter.experience += each_exp
 				new_atts[:experience] = fighter.experience
 			end
 
-			new_atts[:current_hp] = fighter.curr_hp if write_hp
+			new_atts[:current_hp] = fighter.curr_hp if write_hp && !fighter.is_advisor
 
 			fighter.sets(new_atts) unless new_atts.blank?
 		end
@@ -603,6 +603,7 @@ module BattleArmyModule
 		end
 
 		self.each do |fighter|
+			next if fighter.is_advisor
 			exp = fighter.curr_hp > 0 ? fighter.experience + every_exp : fighter.experience
 			fighter.set :experience, exp
 		end

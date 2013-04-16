@@ -22,7 +22,10 @@ module PlayerAdvHelper
 
 			if military_advisor_relation
 				military_advisor = military_advisor_relation.advisor
-				military_advisor.max_level_dinosaur
+				
+				dino = military_advisor.max_level_dinosaur
+				dino.current_hp = dino.total_hp
+				dino
 			end
 		end
 	end

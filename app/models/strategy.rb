@@ -27,6 +27,16 @@ class Strategy < Ohm::Model
 		hash[:village_id] = village_id if village_id
 		hash[:gold_mine_id] = gold_mine_id if gold_mine_id
 		hash[:dinosaurs] = dinosaurs
+
+		@scroll = scroll
+		if @scroll
+			hash[:scroll] = {
+				:id => @scroll.id,
+				:type => @scroll.item_type,
+				:count => @scroll.count
+			}
+		end
+
 		hash
 	end
 

@@ -160,8 +160,6 @@ class WorldMapController < ApplicationController
 			my_x, my_y = vil.x, vil.y
 
 			if tmp_creeps_idx.size <= 0
-				player.get :guide_info
-
 				# 如果有新手指引攻打野怪的任务，创建任务野怪
 				guide = player.beginner_guides.find(:index => 8).first
 				if !guide || guide.finished == false

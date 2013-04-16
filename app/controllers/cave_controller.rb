@@ -114,12 +114,6 @@ class CaveController < ApplicationController
 			@player.receive_cave_reward!(reward)
 
 			# === Guide ===
-			@player.gets :guide_cache, :beginning_guide_finished
-			if !@player.beginning_guide_finished && !@player.guide_cache[:attack_cave]
-				cache = @player.guide_cache.merge(:attack_cave => true)
-				@player.set :guide_cache, cache
-			end
-
 			if @player.has_beginner_guide?
 				@player.cache_beginner_data(:has_attacked_cave => true)
 			end

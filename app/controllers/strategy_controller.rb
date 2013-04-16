@@ -5,6 +5,7 @@ class StrategyController < ApplicationController
 		:match_attack, :set_match_strategy, :league_goldmine_attack, :give_up_goldmine]
 
 	def set_defense
+		# Determine the target
 		village = Village[params[:village_id]]
 		gold_mine = GoldMine[params[:gold_mine_id]]
 
@@ -14,14 +15,25 @@ class StrategyController < ApplicationController
 			render_error(Error::NORMAL, "NO_TARGET_TO_DEPLOY") and return
 		end
 
+		# Find or make Strategy object
 		@sta = target.strategy
 
 		if @sta.nil?
-			@sta = Strategy.new(:player_id => target.player_id)
+			@sta = Strategy.create(:player_id => target.player_id)
+			target.set :strategy_id, @sta.id
 		end
 
-		dino_status = Dinosaur::ACTION_STATUS[:idle]
+		# Validate dinosaur ids
+		params[:dinosaurs].each do |dino_id|
+			next if dino_id <= 0
 
+			if not Dinosaur.exists?(dino_id)
+				render_error(Error::NORMAL, I18n.t('strategy_error.dino_not_exist')) and return
+			end
+		end
+
+		# Determine the deployed dinosaurs' status
+		dino_status = Dinosaur::ACTION_STATUS[:idle]
 		if target.is_a?(Village)
 			@sta.village_id = target.id
 			dino_status = Dinosaur::ACTION_STATUS[:deployed]
@@ -30,31 +42,23 @@ class StrategyController < ApplicationController
 			dino_status = Dinosaur::ACTION_STATUS[:deployed_gold]
 		end
 
-		if @sta.save
-			target.set :strategy_id, @sta.id
-		end
-
-		params[:dinosaurs].each do |dino_id|
-			next if dino_id <= 0
-
-			if not Dinosaur.exists?(dino_id)
-				render_error(Error::NORMAL, I18n.t('strategy_error.dino_not_exist')) and return
-			end
-		end
+		# Set the dinosaurs' ids to strategy object
 		@sta.change_defense(params[:dinosaurs], dino_status)
 
+		# Check if has scroll
+		scroll = Item[params[:scroll_id]]
+		@sta.set :scroll_id, scroll.id if scroll
+
+		# Check beginner guide task
 		@player = target.player
-		@player.gets :guide_cache, :beginning_guide_finished
+		@player.gets :beginner_guide_data, :beginning_guide_finished
 
-		if !@player.beginning_guide_finished && !@player.guide_cache[:set_defense]
-			cache = @player.guide_cache.merge(:set_defense => true)
-			@player.set :guide_cache, cache
-		end
-
-		if @player.has_beginner_guide?
-			@player.cache_beginner_data(:has_set_defense => true)
+		if !@player.beginning_guide_finished && !@player.beginner_guide_data[:set_defense]
+			cache = @player.beginner_guide_data.merge(:set_defense => true)
+			@player.set :beginner_guide_data, cache
 		end
 		
+		# Render result
 		data = {}
 		if target.is_a?(Village)
 			data = {:player => {:village => {:strategy => @sta.to_hash}}}

@@ -291,10 +291,6 @@ class Troops < Ohm::Model
 				end # End of winner reward
 
 				# Check beginning guide
-				if !player.beginning_guide_finished && !player.guide_cache['attack_monster']
-					player.set :guide_cache, player.guide_cache.merge('attack_monster' => true)
-				end
-
 				if player.has_beginner_guide?
 					player.cache_beginner_data(:has_attacked_monster => true)
 				end
