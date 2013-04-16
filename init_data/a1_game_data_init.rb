@@ -22,7 +22,7 @@ if AdvisorRecord.count < 1
 	puts "[Init Data] Creating NPC Advisors record ---"
 
 	npcs.each_with_index do |player, idx|
-		AdvisorRecord.create :type => idx + 1, :price => 1000, :player_id => player.id
+		AdvisorRecord.create :type => idx + 1, :price => 1000, :player_id => player.id, :is_npc => true
 	end
 end
 

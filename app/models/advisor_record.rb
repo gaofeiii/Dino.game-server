@@ -59,4 +59,8 @@ class AdvisorRecord < Ohm::Model
 			:evaluation => rand(1000)
 		}
 	end
+
+	def after_create
+		player.set :advisor_record_id, id
+	end
 end
