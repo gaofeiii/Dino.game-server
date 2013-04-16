@@ -288,7 +288,7 @@ class Player < Ohm::Model
 	def before_create
 		return if player_type == TYPE[:npc]
 		self.gold_coin = 50000
-		self.gems = 60
+		self.gems = 250
 		self.wood = 6000
 		self.stone = 6000
 		self.level = 1 if (level.nil? or level == 0)

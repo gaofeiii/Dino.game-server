@@ -21,7 +21,7 @@ set :runner, "gaofei"
 set :ssh_options,   { :forward_agent => true }
 set :application, "dinosaur"
 set :deploy_to, "/var/games/servers/#{application}"
-set :deploy_via, :remote_cache
+# set :deploy_via, :remote_cache
 set :rails_env, :production
 set :use_sudo, false
 set :keep_releases, 5
