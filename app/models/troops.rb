@@ -295,15 +295,9 @@ class Troops < Ohm::Model
 					player.cache_beginner_data(:has_attacked_monster => true)
 				end
 				
-				result.merge!(:reward => reward)
-				result[:reward][:dino_rewards] = attacker[:army].map do |dino|
-					{
-						:id => dino.id,
-						:exp_inc => 100,
-						:is_upgraded => [true].sample
-					}
-				end
-				
+				result[:reward] ||= {}
+				result[:reward].merge!(reward)
+				# result.merge!(:reward => reward)				
 				
 				player.save_battle_report(self.id, result)
 				self.dissolve!

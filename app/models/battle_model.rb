@@ -280,12 +280,18 @@ class BattleModel
 				attacker[:is_win] = false
 				defender[:is_win] = true
 				write_result(attacker, defender, :exp, :hp)
+
 				return result.merge!(:time => Time.now.to_f)
 			elsif defender[:army].all_curr_hp.zero?
 				result[:winner] = 'attacker'
 				attacker[:is_win] = true
 				defender[:is_win] = false
-				write_result(attacker, defender, :exp, :hp)
+				# write_result(attacker, defender, :exp, :hp)
+				exp_result = attacker[:army].write_army!(attacker[:is_win], defender, attacker[:player], [:exp, :hp])
+				result[:reward] ||= {}
+
+				result[:reward][:dino_rewards] = exp_result
+
 				return result.merge!(:time => Time.now.to_f)
 			else
 				p "--- #{__FILE__}:#{__LINE__}"
@@ -574,7 +580,9 @@ module BattleArmyModule
 			player_exp = Player.battle_exp[enemy_avg_level].to_i
 		end
 
-		self.each do |fighter|
+		result = []
+
+		result = self.map do |fighter|
 			new_atts = {}
 
 			if write_xp && fighter.curr_hp > 0 && !fighter.is_advisor
@@ -585,50 +593,21 @@ module BattleArmyModule
 			new_atts[:current_hp] = fighter.curr_hp if write_hp && !fighter.is_advisor
 
 			fighter.sets(new_atts) unless new_atts.blank?
-		end
+
+			if write_xp && fighter.curr_hp > 0 && !fighter.is_advisor
+				{
+					:id => fighter.id,
+					:exp_inc => each_exp,
+					:is_upgraded => fighter.experience >= fighter.next_level_exp
+				}
+			end
+		end.compact
 
 		if player && is_win && player_exp.to_i > 0
 			player.earn_exp!(player_exp)
 		end
-	end
 
-	def write_xp!(is_win, target)
-		return false if self.first.is_a?(Monster)
-
-		earn_xp_fighters_count = self.select{ |fighter| fighter.curr_hp > 0 }.size
-		every_exp = 0
-		if is_win
-			total_exp = target[:army].sum{ |enemy| enemy.xp.to_i }
-			every_exp = total_exp / earn_xp_fighters_count
-		end
-
-		self.each do |fighter|
-			next if fighter.is_advisor
-			exp = fighter.curr_hp > 0 ? fighter.experience + every_exp : fighter.experience
-			fighter.set :experience, exp
-		end
-
-	end
-
-	def write_hp!(is_win, target)
-		return false if self.first.is_a?(Monster)
-
-		earn_xp_fighters_count = self.select{ |fighter| fighter.curr_hp > 0 }.size
-		every_exp = 0
-		if is_win
-			total_exp = target[:army].sum{ |enemy| enemy.xp.to_i }
-			every_exp = total_exp / earn_xp_fighters_count
-		end
-
-		self.each do |fighter|
-			return false if fighter.is_a?(Monster)
-			next if fighter.is_advisor
-			
-			exp = fighter.curr_hp > 0 ? fighter.experience + every_exp : fighter.experience
-			fighter.sets 	:current_hp => fighter.curr_hp,
-										:updated_hp_time => Time.now.to_i,
-										:experience => exp
-		end
+		result
 	end
 
 end
