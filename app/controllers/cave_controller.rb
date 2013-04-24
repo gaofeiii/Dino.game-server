@@ -85,20 +85,21 @@ class CaveController < ApplicationController
 
 		# result = BattleModel.cave_attack(attacker, defender)
 		battle = Battle.new :attacker => attacker, :defender => defender, :type => Battle::CAVE
-		battle.start_rounds
+		battle.start!
 
 		rounds_count = battle.result.rounds_count
 
 		stars = PlayerCave.cave_rounds_stars(rounds_count)
 
 		reward = {}
-		default_reward = {:wood => @cave.index * 10, :stone => @cave.index * 15}
+		# default_reward = {:wood => @cave.index * 10, :stone => @cave.index * 15}
 
 		# if result[:winner] == 'attacker'
 
 		if battle.result.winner == attacker
 			
 			all_star_rewards = @cave.all_star_rewards
+
 			case stars
 			when 1
 				reward = all_star_rewards[1]
@@ -113,21 +114,25 @@ class CaveController < ApplicationController
 				end
 			end
 
-			reward = default_reward if reward.blank?
-
 			rwd = nil
+			reward_obj = nil
 
 			if !reward[:item_cat].nil?
-				# battle.result.reward[:items] ||= []
-				# battle.result.reward[:items] << reward
 				rwd = Reward.new :item => reward
 			else
-				# battle.result.reward = reward
 				rwd = Reward.new reward
 			end
 
-			battle.result.reward = reward
+			battle.result.reward.reward = rwd
+			# battle.result.reward.dino_rewards = attacker.army.map do |dino|
+			# 	{
+			# 		:id => dino.id,
+			# 		:exp_inc => 999,
+			# 		:is_upgraded => [true, false].sample
+			# 	}
+			# end
 			p "reward", reward
+			p 'rwd.to_hash', rwd.to_hash
 
 			@player.get_reward(rwd)
 
@@ -151,7 +156,7 @@ class CaveController < ApplicationController
 		# 		:is_upgraded => [true, false].sample
 		# 	}
 		# end
-		p battle.result.to_hash
+		p 'result.reward', battle.result.reward.to_hash
 		render_success(:report => battle.result.to_hash, :caves => @player.full_cave_stars_info)
 	end
 

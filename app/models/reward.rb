@@ -4,7 +4,7 @@ RewardItem = Struct.new(:category, :type, :count, :quality) do
 		{
 			:item_cat 	=> self.category,
 			:item_type 	=> self.type,
-			:count 			=> self.count,
+			:item_count	=> self.count,
 			:quality 		=> self.quality
 		}
 	end

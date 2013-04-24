@@ -24,7 +24,7 @@
 # 	:scroll_effect => {},
 # 	:army => enemy_dinos
 # }
-module BattleArmyModule
+module BattleArmy
 	attr_accessor :camp, :player
 
 	# Sort army self by given attribute, in ASC order.
@@ -78,12 +78,12 @@ module BattleArmyModule
 			total_exp = 0
 			total_level = 0
 
-			target[:army].each do |enemy|
+			target.army.each do |enemy|
 				total_exp += enemy.xp.to_i
 				total_level += enemy.level.to_i
 			end
 
-			target_count = target[:army].size
+			target_count = target.army.size
 			target_count = 1 if target_count <= 0
 			enemy_avg_level = total_level / target_count
 			enemy_avg_level = 1 if enemy_avg_level <= 0
@@ -92,7 +92,9 @@ module BattleArmyModule
 			player_exp = Player.battle_exp[enemy_avg_level].to_i
 		end
 
-		self.each do |fighter|
+		result = []
+
+		result = self.map do |fighter|
 			new_atts = {}
 
 			if write_xp && fighter.curr_hp > 0 && !fighter.is_advisor
@@ -103,51 +105,23 @@ module BattleArmyModule
 			new_atts[:current_hp] = fighter.curr_hp if write_hp && !fighter.is_advisor
 
 			fighter.sets(new_atts) unless new_atts.blank?
-		end
+
+			if write_xp && fighter.curr_hp > 0 && !fighter.is_advisor
+				{
+					:id => fighter.id,
+					:exp_inc => each_exp,
+					:is_upgraded => fighter.experience >= fighter.next_level_exp
+				}
+			end
+		end.compact
 
 		if player && is_win && player_exp.to_i > 0
 			player.earn_exp!(player_exp)
 		end
+
+		result
 	end
-
-	def write_xp!(is_win, target)
-		return false if self.first.is_a?(Monster)
-
-		earn_xp_fighters_count = self.select{ |fighter| fighter.curr_hp > 0 }.size
-		every_exp = 0
-		if is_win
-			total_exp = target[:army].sum{ |enemy| enemy.xp.to_i }
-			every_exp = total_exp / earn_xp_fighters_count
-		end
-
-		self.each do |fighter|
-			next if fighter.is_advisor
-			exp = fighter.curr_hp > 0 ? fighter.experience + every_exp : fighter.experience
-			fighter.set :experience, exp
-		end
-
-	end
-
-	def write_hp!(is_win, target)
-		return false if self.first.is_a?(Monster)
-
-		earn_xp_fighters_count = self.select{ |fighter| fighter.curr_hp > 0 }.size
-		every_exp = 0
-		if is_win
-			total_exp = target[:army].sum{ |enemy| enemy.xp.to_i }
-			every_exp = total_exp / earn_xp_fighters_count
-		end
-
-		self.each do |fighter|
-			return false if fighter.is_a?(Monster)
-			next if fighter.is_advisor
-			
-			exp = fighter.curr_hp > 0 ? fighter.experience + every_exp : fighter.experience
-			fighter.sets 	:current_hp => fighter.curr_hp,
-										:updated_hp_time => Time.now.to_i,
-										:experience => exp
-		end
-	end
+	
 end
 
 module SkillModule
@@ -257,7 +231,7 @@ class Battler
 	def initialize(owner: nil, army: [], buff_info: [], camp: false, scroll_type: nil)
 		self.scroll_type = scroll_type
 		self.owner = owner.extend(BattleOwner)
-		self.army = army.extend(BattleArmyModule)
+		self.army = army.extend(BattleArmy)
 		self.army.camp = camp
 		self.army.player = owner
 

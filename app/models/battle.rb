@@ -36,6 +36,7 @@ BattleDinoReward = Struct.new(:id, :exp_inc, :is_upgraded) do
 	end
 end
 
+# Property reward is a Reward(see reward.rb) object.
 BattleReward = Struct.new(:reward, :dino_rewards) do
 	def initialize(reward: nil, dino_rewards: [])
 		self.reward = reward
@@ -44,7 +45,7 @@ BattleReward = Struct.new(:reward, :dino_rewards) do
 	
 	def to_hash
 		hash = {}
-		hash.merge(reward.to_hash) if reward
+		hash.merge!(reward.to_hash) if reward
 		hash[:dino_rewards] = dino_rewards.map(&:to_hash)
 		hash
 	end
@@ -293,23 +294,21 @@ class Battle
 	def handle_result
 		case type
 		when NORMAL
-			write_back_hp!(attacker.army)
-			write_back_xp!(attacker.army)
+			attacker_win = result.winner == attacker
+			result.reward.dino_rewards = attacker.army.write_army!(attacker_win, defender, attacker.owner, [:exp])
 		when HONOUR
-			write_back_xp!(attacker.army)
+			if result.winner == attacker
+				result.reward.dino_rewards = attacker.army.write_army!(true, defender, attacker.owner, [:exp])
+			end
 		when CAVE
-			write_back_hp!(attacker.army) if result.winner != attacker
-			write_back_xp!(attacker.army)
+			# 攻打巢穴失败会回写恐龙HP的结果
+			if result.winner == attacker
+			 	result.reward.dino_rewards = attacker.army.write_army!(true, defender, attacker.owner, [:exp])
+			else
+				attacker.army.write_army!(false, defender, attacker.owner, [:hp])
+			end
 		end
 	end
 
-	def write_back_hp!(*fighters)
-		
-	end
-
-	# Return an Array whose element is BattleDinoReward
-	def write_back_xp!(*fighters)
-		
-	end
 
 end

@@ -262,8 +262,11 @@ class StrategyController < ApplicationController
 					:id => player.id,
 					:nickname => player.nickname,
 					:level => player.level,
-					:power_point => player.honour_score,
-					:rank => player.my_battle_rank,
+					# TODO: 因客户端战斗力和排行写反
+					# :power_point => player.honour_score,
+					# :rank => player.my_battle_rank,
+					:power_point => player.my_battle_rank,
+					:rank => player.honour_score,
 					:avatar_id => player.avatar_id
 				}
 			end
@@ -314,46 +317,51 @@ class StrategyController < ApplicationController
 			dino
 		end.compact
 
-		scroll = Item[params[:scroll_id]]
+		# scroll = Item[params[:scroll_id]]
 
-		attacker = {
-			:player => @player,
-			:owner_info => {
-				:type => 'Player',
-				:id => @player.id,
-				:name => @player.nickname,
-				:avatar_id => @player.avatar_id
-			},
-			:buff_info => [],
-			:scroll_effect => {},
-			:army => player_dinos
-		}
+		# attacker = {
+		# 	:player => @player,
+		# 	:owner_info => {
+		# 		:type => 'Player',
+		# 		:id => @player.id,
+		# 		:name => @player.nickname,
+		# 		:avatar_id => @player.avatar_id
+		# 	},
+		# 	:buff_info => [],
+		# 	:scroll_effect => {},
+		# 	:army => player_dinos
+		# }
+		attacker = Battler.new :owner => @player, :army => player_dinos, :camp => false
 
-		defender = {
-			:player => @enemy,
-			:owner_info => {
-				:type => 'Player',
-				:id => @enemy.id,
-				:name => @enemy.nickname,
-				:avatar_id => @enemy.avatar_id
-			},
-			:buff_info => [],
-			:scroll_effect => {},
-			:army => enemy_dinos
-		}
+		# defender = {
+		# 	:player => @enemy,
+		# 	:owner_info => {
+		# 		:type => 'Player',
+		# 		:id => @enemy.id,
+		# 		:name => @enemy.nickname,
+		# 		:avatar_id => @enemy.avatar_id
+		# 	},
+		# 	:buff_info => [],
+		# 	:scroll_effect => {},
+		# 	:army => enemy_dinos
+		# }
+		defender = Battler.new :owner => @enemy, :army => enemy_dinos, :camp => true
 
-		result = BattleModel.match_attack attacker, defender
+		# result = BattleModel.match_attack attacker, defender
+		battle = Battle.new :attacker => attacker, :defender => defender, :type => Battle::HONOUR
+		battle.start!
+
 		@player.desr_honour_battle_count
 
 
 		# 主线：使用卷轴
-		if Item.exists?(params[:scroll])
-			@player.serial_tasks_data[:use_scroll] ||= 0
-			@player.serial_tasks_data[:use_scroll] = 1
-			@player.set :serial_tasks_data, @player.serial_tasks_data
-		end
+		# if Item.exists?(params[:scroll])
+		# 	@player.serial_tasks_data[:use_scroll] ||= 0
+		# 	@player.serial_tasks_data[:use_scroll] = 1
+		# 	@player.set :serial_tasks_data, @player.serial_tasks_data
+		# end
 
-		winner, loser = if result[:winner] == "attacker"
+		winner, loser = if battle.result.winner == attacker
 			[@player, @enemy]
 		else
 			[@enemy, @player]
@@ -387,6 +395,8 @@ class StrategyController < ApplicationController
 
 		winner.add_honour(win_score)
 		loser.dec_honour(win_score)
+
+		result = battle.result.to_hash
 
 		render_success result.merge(
 			:score => @player.honour_score, 
