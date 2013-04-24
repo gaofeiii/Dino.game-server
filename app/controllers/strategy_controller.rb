@@ -275,7 +275,7 @@ class StrategyController < ApplicationController
 			render_success 	:gold_coin => @player.gold_coin, 
 											:players => players, 
 											:todays_count => @player.todays_count, 
-											:total_match_count => 20,
+											:total_match_count => @player.total_honour_count,
 											:buy_count_cost => Shopping::MATCH_COUNT_COST
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gold'))
@@ -290,7 +290,7 @@ class StrategyController < ApplicationController
 		end
 
 		if @player.todays_count <= 0
-			render_error(Error::NORMAL, I18n.t('strategy_error.honour_count_full', :count => Player::HONOUR_BATTLE_COUNT)) and return
+			render_error(Error::NORMAL, I18n.t('strategy_error.honour_count_full', :count => @player.total_honour_count)) and return
 		end
 
 		if (@player.honour_score - @enemy.honour_score).abs >= 199
@@ -402,7 +402,7 @@ class StrategyController < ApplicationController
 			:score => @player.honour_score, 
 			:my_rank => @player.my_battle_rank, 
 			:todays_count => @player.todays_count, 
-			:total_match_count => 20, 
+			:total_match_count => @player.total_honour_count, 
 			:buy_count_cost => Shopping::MATCH_COUNT_COST
 			)
 	end

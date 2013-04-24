@@ -172,7 +172,7 @@ class Player < Ohm::Model
 			:in_league => in_league?,
 			:game_center_account => gk_player_id,
 			:todays_count => todays_count,
-			:total_match_count => 20
+			:total_match_count => total_honour_count
 		}
 		opts = if args.include?(:all)
 			args | [:league, :god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :beginning_guide, :queue_info]
