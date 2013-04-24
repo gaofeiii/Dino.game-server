@@ -38,33 +38,38 @@ class CaveController < ApplicationController
 		scroll = Item[params[:scroll_id]]
 		scroll_type = scroll.try(:item_type).to_i
 
-		attacker = {
-			:player => @player,
-			:owner_info => {
-				:type => 'Player',
-				:id => @player.id,
-				:name => @player.nickname,
-				:avatar_id => @player.avatar_id
-			},
-			:buff_info => [],
-			:scroll_type => scroll_type,
-			:army => player_dinos
-		}
+		# attacker = {
+		# 	:player => @player,
+		# 	:owner_info => {
+		# 		:type => 'Player',
+		# 		:id => @player.id,
+		# 		:name => @player.nickname,
+		# 		:avatar_id => @player.avatar_id
+		# 	},
+		# 	:buff_info => [],
+		# 	:scroll_type => scroll_type,
+		# 	:army => player_dinos
+		# }
 
-		enemy_dinos = @cave.defense_troops
-		defender = {
-			:player => nil,
-			:owner_info => {
-				:type => 'Creeps',
-				:id => @cave.id,
-				:name => @cave.name(:locale => @player.locale),
-				:avatar_id => 0,
-				:monster_type => enemy_dinos.sample.type
-			},
-			:buff_info => [],
-			:scroll_effect => {},
-			:army => enemy_dinos
-		}
+		attacker = Battler.new :owner => @player, :army => player_dinos, :camp => false, :scroll_type => scroll_type
+
+		# enemy_dinos = @cave.defense_troops
+		# defender = {
+		# 	:player => nil,
+		# 	:owner_info => {
+		# 		:type => 'Creeps',
+		# 		:id => @cave.id,
+		# 		:name => @cave.name(:locale => @player.locale),
+		# 		:avatar_id => 0,
+		# 		:monster_type => enemy_dinos.sample.type
+		# 	},
+		# 	:buff_info => [],
+		# 	:scroll_effect => {},
+		# 	:army => enemy_dinos
+		# }
+
+		defender = Battler.new :owner => @cave, :army => @cave.defense_troops, :camp => true
+
 
 		player_dinos.each do |dino|
 			dino.consume_energy(:energy => 80)
@@ -78,16 +83,20 @@ class CaveController < ApplicationController
 			scroll.use!
 		end
 
-		result = BattleModel.cave_attack(attacker, defender)
+		# result = BattleModel.cave_attack(attacker, defender)
+		battle = Battle.new :attacker => attacker, :defender => defender, :type => Battle::CAVE
+		battle.start_rounds
 
-		rounds_count = result[:all_rounds].size
+		rounds_count = battle.result.rounds_count
 
 		stars = PlayerCave.cave_rounds_stars(rounds_count)
 
 		reward = {}
 		default_reward = {:wood => @cave.index * 10, :stone => @cave.index * 15}
 
-		if result[:winner] == 'attacker'
+		# if result[:winner] == 'attacker'
+
+		if battle.result.winner == attacker
 			
 			all_star_rewards = @cave.all_star_rewards
 			case stars
@@ -109,13 +118,16 @@ class CaveController < ApplicationController
 			rwd = nil
 
 			if !reward[:item_cat].nil?
-				result[:reward][:items] ||= []
-				result[:reward][:items] << reward
+				# battle.result.reward[:items] ||= []
+				# battle.result.reward[:items] << reward
 				rwd = Reward.new :item => reward
 			else
-				result[:reward] = reward
+				# battle.result.reward = reward
 				rwd = Reward.new reward
 			end
+
+			battle.result.reward = reward
+			p "reward", reward
 
 			@player.get_reward(rwd)
 
@@ -125,22 +137,22 @@ class CaveController < ApplicationController
 			end
 			# === End of Guide ===
 
-			@cave.todays_count += 1
+			# @cave.todays_count += 1
 			@cave.stars = stars if @cave.stars < stars
 			@cave.save
 		end
 
 		@player.update_caves_info
 
-		result[:reward][:dino_rewards] = attacker[:army].map do |dino|
-			{
-				:id => dino.id,
-				:exp_inc => 100,
-				:is_upgraded => [true, false].sample
-			}
-		end
-
-		render_success(:report => result, :caves => @player.full_cave_stars_info)
+		# result[:reward][:dino_rewards] = attacker[:army].map do |dino|
+		# 	{
+		# 		:id => dino.id,
+		# 		:exp_inc => 100,
+		# 		:is_upgraded => [true, false].sample
+		# 	}
+		# end
+		p battle.result.to_hash
+		render_success(:report => battle.result.to_hash, :caves => @player.full_cave_stars_info)
 	end
 
 	def get_caves_info

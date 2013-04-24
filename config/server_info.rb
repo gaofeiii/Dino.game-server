@@ -77,6 +77,10 @@ class ServerInfo
 			"PZAaCr854VtQNcDrTSwBYyvfus0zZauY1Dg3WO4A45lL60LwBA1LbBXxmmAltcLqzhhMImi48oq7iK"
 		end
 
+		def default_locale
+			current[:default_locale].to_sym
+		end
+
 		def server_data
 			shop_list = Shopping.list
 			shop_list[:vip].each{|x| x[:desc] = Shopping.find_desc_by_sid(x[:sid])}

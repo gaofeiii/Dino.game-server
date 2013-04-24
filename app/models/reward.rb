@@ -62,10 +62,10 @@ class Reward
 
 	def to_hash
 		hash = {}
-		hash[:wood] 			= wood
-		hash[:stone] 			= stone
-		hash[:gold_coin] 	= gold_coin
-		hash[:xp] 				= xp
+		hash[:wood] 			= wood if wood > 0
+		hash[:stone] 			= stone if stone > 0
+		hash[:gold_coin] 	= gold_coin if gold_coin > 0
+		hash[:xp] 				= xp if xp > 0
 		hash[:items] 			= items.map(&:to_hash) unless items.blank?
 		hash
 	end

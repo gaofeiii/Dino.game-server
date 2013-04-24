@@ -13,7 +13,7 @@ class LocaleHelper
 		def get_server_locale_name(ori_name)
 			name = @@locale_namespace[ori_name.to_s]
 			if name.nil?
-				name = :en
+				name = ServerInfo.default_locale
 			end
 			return name
 		end
