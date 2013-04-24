@@ -85,7 +85,8 @@ module PlayerHonourHelper
 
 		def todays_count
 			if self.honour_refresh_time < Time.now.beginning_of_day.to_i
-				self.sets(:honour_refresh_time => Time.now.to_i, :honour_battle_count => HONOUR_BATTLE_COUNT)
+				total_count = is_vip? ? 30 : 20
+				self.sets(:honour_refresh_time => Time.now.to_i, :honour_battle_count => total_count)
 			end
 			self.honour_battle_count
 		end
