@@ -41,7 +41,7 @@ module PlayerGoldHelper
 			delta_t = (curr_time - mine.update_gold_time) / 3600.0
 			gold_count = (delta_t * mine.output).to_i
 
-			# mine.set :update_gold_time, curr_time if gold_count > 0
+			mine.set :update_gold_time, curr_time if gold_count > 0
 			gold_count
 		end
 
