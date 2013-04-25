@@ -172,6 +172,7 @@ cn:
    not_a_egg: "只能孵化恐龙蛋哦亲！"
    must_be_hatched_in_cuba: "恐龙只能在孵化园中进行孵化"
    invalid_dino_name: "名字不合法"
+   need_gold: "金币不足。还需要%{gold}金币"
 
   quests_error:
    not_finished_yet: "任务还没有完成"
@@ -183,6 +184,7 @@ cn:
    has_hired: "已经被其他人雇佣了"
    advisor_not_exist_or_has_been_hired: "顾问不存在或已经被雇佣了"
    already_have_same_type_adv: "只能雇佣同一类型的顾问哦~~"
+   invalid_price: "价格不正确哦！"
 
   chat_error:
    to_player_not_exist: "玩家不存在"

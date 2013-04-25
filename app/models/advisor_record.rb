@@ -46,6 +46,24 @@ class AdvisorRecord < Ohm::Model
 		Player[player_id]
 	end
 
+	# 顾问的评分
+	def evaluation
+		@player = self.player
+
+		case type
+		when TYPES[:produce]
+			(@player.tech_produce_wood_rate + @player.tech_produce_stone_rate) / 2
+		when TYPES[:military]
+			@player.honour_score
+		when TYPES[:business]
+			@player.is_npc? ? 100 : @player.gold_mines.sum { |mine| mine.output }.to_i
+		when TYPES[:technology]
+			@player.techs.map(&:level).max.to_i
+		else
+			0
+		end
+	end
+
 	def to_hash
 		@player = player
 		{
@@ -56,7 +74,7 @@ class AdvisorRecord < Ohm::Model
 			:level => @player.level,
 			:avatar_id => @player.avatar_id,
 			:days => 1,
-			:evaluation => rand(1000)
+			:evaluation => evaluation
 		}
 	end
 

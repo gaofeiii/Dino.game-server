@@ -104,6 +104,10 @@ class Technology < Ohm::Model
 		end
 	end
 
+	def max_level
+		type == 1 ? 5 : 20
+	end
+
 	protected
 
 	def before_create

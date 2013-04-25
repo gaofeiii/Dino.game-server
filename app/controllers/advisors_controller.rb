@@ -17,10 +17,14 @@ class AdvisorsController < ApplicationController
 
 		record = @player.advisor_record
 
-		price = 1000
+		price = params[:price].to_i
+
+		if price <= 0 || price > 999999
+			render_error(Error::NORMAL, I18n.t('advisors_error.invalid_price')) and return
+		end
 
 		if record.nil?
-			record = AdvisorRecord.create :player_id => @player.id, :type => params[:type], :price => price#params[:price]
+			record = AdvisorRecord.create :player_id => @player.id, :type => params[:type], :price => price
 		else
 			record.update :type => params[:type]
 		end

@@ -14,7 +14,7 @@ class ResearchController < ApplicationController
 			tech = Technology.create :type => params[:tech_type].to_i, :level => 0, :player_id => @player.id
 		end
 
-		if tech.level >= Technology::MAX_LEVEL
+		if tech.level >= tech.max_level
 			render_error(Error::NORMAL, I18n.t('research_error.reached_max_level')) and return
 		end
 

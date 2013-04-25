@@ -172,6 +172,7 @@
    not_a_egg: "You can only hatch eggs here"
    must_be_hatched_in_cuba: "Must be hatched in Incubation house"
    invalid_dino_name: "Illegal name"
+   need_gold: "Insufficient gold coins, still need %{gold}"
 
   quests_error:
    not_finished_yet: "Quest is not finished yet"
@@ -183,6 +184,7 @@
    has_hired: "Advisor has been hired"
    advisor_not_exist_or_has_been_hired: "Advisor does not exist or has been hired"
    already_have_same_type_adv: "You can only hired one type of advisor once"
+   invalid_price: "Invalid price"
 
   chat_error:
    to_player_not_exist: "Player does not exist"

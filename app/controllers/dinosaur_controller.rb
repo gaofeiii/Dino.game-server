@@ -192,18 +192,25 @@ class DinosaurController < ApplicationController
 			total_evolution = target_egg.next_evolution_exp
 		end
 
-		target_egg.increase(:evolution_exp, total_evolution)
-		target_egg.update_evolution
-		source_eggs.map(&:delete)
+		gold = total_evolution * 100
 
-		@player.serial_tasks_data[:egg_evolution] ||= 0
-		@player.serial_tasks_data[:egg_evolution] += 1
-		@player.beginner_guide_data[:egg_evolution] ||= 0
-		@player.beginner_guide_data[:egg_evolution] += 1
-		@player.sets 	:serial_tasks_data => @player.serial_tasks_data,
-									:beginner_guide_data => @player.beginner_guide_data
+		if @player.spend!(:gold => gold)
+			target_egg.increase(:evolution_exp, total_evolution)
+			target_egg.update_evolution
+			source_eggs.map(&:delete)
 
-		render_success(:egg => target_egg.to_hash)
+			@player.serial_tasks_data[:egg_evolution] ||= 0
+			@player.serial_tasks_data[:egg_evolution] += 1
+			@player.beginner_guide_data[:egg_evolution] ||= 0
+			@player.beginner_guide_data[:egg_evolution] += 1
+			@player.sets 	:serial_tasks_data => @player.serial_tasks_data,
+										:beginner_guide_data => @player.beginner_guide_data
+
+			render_success(:egg => target_egg.to_hash)
+		else
+			render_error(Error::NORMAL, I18n.t('dinosaur_error.need_gold', :gold => gold - @player.gold_coin))
+		end
+
 	end
 end
 
