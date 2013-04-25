@@ -206,7 +206,7 @@
   cave_error:
    cave_is_locked: "This cave is locked. Please finish the last one first"
    no_dino_sent: "No dinosaur sent"
-   reach_cave_max: "Every cave can be farmed only 3 times per day"
+   reach_cave_max: "Every cave can be farmed only 3 (5 for VIP) times per day"
 
   guide_error:
    quest_not_finished: "Quest not competed"

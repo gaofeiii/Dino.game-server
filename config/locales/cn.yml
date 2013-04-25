@@ -206,7 +206,7 @@ cn:
   cave_error:
    cave_is_locked: "巢穴还未解锁，请先攻破上一关！"
    no_dino_sent: "未派遣恐龙"
-   reach_cave_max: "每个巢穴每天只能刷新三次"
+   reach_cave_max: "每个巢穴每天只能刷新3次，VIP玩家5次"
 
   guide_error:
    quest_not_finished: "任务尚未完成"
