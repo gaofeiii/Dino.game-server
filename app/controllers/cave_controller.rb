@@ -38,38 +38,9 @@ class CaveController < ApplicationController
 		scroll = Item[params[:scroll_id]]
 		scroll_type = scroll.try(:item_type).to_i
 
-		# attacker = {
-		# 	:player => @player,
-		# 	:owner_info => {
-		# 		:type => 'Player',
-		# 		:id => @player.id,
-		# 		:name => @player.nickname,
-		# 		:avatar_id => @player.avatar_id
-		# 	},
-		# 	:buff_info => [],
-		# 	:scroll_type => scroll_type,
-		# 	:army => player_dinos
-		# }
-
 		attacker = Battler.new :owner => @player, :army => player_dinos, :camp => false, :scroll_type => scroll_type
 
-		# enemy_dinos = @cave.defense_troops
-		# defender = {
-		# 	:player => nil,
-		# 	:owner_info => {
-		# 		:type => 'Creeps',
-		# 		:id => @cave.id,
-		# 		:name => @cave.name(:locale => @player.locale),
-		# 		:avatar_id => 0,
-		# 		:monster_type => enemy_dinos.sample.type
-		# 	},
-		# 	:buff_info => [],
-		# 	:scroll_effect => {},
-		# 	:army => enemy_dinos
-		# }
-
 		defender = Battler.new :owner => @cave, :army => @cave.defense_troops, :camp => true
-
 
 		player_dinos.each do |dino|
 			dino.consume_energy(:energy => 80)
@@ -92,9 +63,6 @@ class CaveController < ApplicationController
 		stars = PlayerCave.cave_rounds_stars(rounds_count)
 
 		reward = {}
-		# default_reward = {:wood => @cave.index * 10, :stone => @cave.index * 15}
-
-		# if result[:winner] == 'attacker'
 
 		if battle.result.winner == attacker
 			
@@ -124,15 +92,6 @@ class CaveController < ApplicationController
 			end
 
 			battle.result.reward.reward = rwd
-			# battle.result.reward.dino_rewards = attacker.army.map do |dino|
-			# 	{
-			# 		:id => dino.id,
-			# 		:exp_inc => 999,
-			# 		:is_upgraded => [true, false].sample
-			# 	}
-			# end
-			p "reward", reward
-			p 'rwd.to_hash', rwd.to_hash
 
 			@player.get_reward(rwd)
 
@@ -142,21 +101,13 @@ class CaveController < ApplicationController
 			end
 			# === End of Guide ===
 
-			# @cave.todays_count += 1
+			@cave.todays_count += 1
 			@cave.stars = stars if @cave.stars < stars
 			@cave.save
 		end
 
 		@player.update_caves_info
 
-		# result[:reward][:dino_rewards] = attacker[:army].map do |dino|
-		# 	{
-		# 		:id => dino.id,
-		# 		:exp_inc => 100,
-		# 		:is_upgraded => [true, false].sample
-		# 	}
-		# end
-		p 'result.reward', battle.result.reward.to_hash
 		render_success(:report => battle.result.to_hash, :caves => @player.full_cave_stars_info)
 	end
 

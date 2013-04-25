@@ -317,34 +317,8 @@ class StrategyController < ApplicationController
 			dino
 		end.compact
 
-		# scroll = Item[params[:scroll_id]]
-
-		# attacker = {
-		# 	:player => @player,
-		# 	:owner_info => {
-		# 		:type => 'Player',
-		# 		:id => @player.id,
-		# 		:name => @player.nickname,
-		# 		:avatar_id => @player.avatar_id
-		# 	},
-		# 	:buff_info => [],
-		# 	:scroll_effect => {},
-		# 	:army => player_dinos
-		# }
 		attacker = Battler.new :owner => @player, :army => player_dinos, :camp => false
 
-		# defender = {
-		# 	:player => @enemy,
-		# 	:owner_info => {
-		# 		:type => 'Player',
-		# 		:id => @enemy.id,
-		# 		:name => @enemy.nickname,
-		# 		:avatar_id => @enemy.avatar_id
-		# 	},
-		# 	:buff_info => [],
-		# 	:scroll_effect => {},
-		# 	:army => enemy_dinos
-		# }
 		defender = Battler.new :owner => @enemy, :army => enemy_dinos, :camp => true
 
 		# result = BattleModel.match_attack attacker, defender
