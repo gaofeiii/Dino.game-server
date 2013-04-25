@@ -173,6 +173,8 @@ cn:
    must_be_hatched_in_cuba: "恐龙只能在孵化园中进行孵化"
    invalid_dino_name: "名字不合法"
    need_gold: "金币不足。还需要%{gold}金币"
+   egg_not_exist: "目标恐龙蛋已不存在"
+   eggs_empty_or_not_exist: "被注灵恐龙蛋已经消失，请重新选择恐龙蛋"
 
   quests_error:
    not_finished_yet: "任务还没有完成"

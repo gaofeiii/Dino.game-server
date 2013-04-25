@@ -181,10 +181,10 @@ class DinosaurController < ApplicationController
 
 	def evolution
 		target_egg = Item[params[:egg_id]]
-		render_error(Error::NORMAL, 'Egg disappear!!!') and return unless target_egg
+		render_error(Error::NORMAL, I18n.t('dinosaur_error.egg_not_exist')) and return unless target_egg
 
 		source_eggs = params[:source_eggs].map{ |egg_id| Item[egg_id] }.compact
-		render_error(Error::NORMAL, 'No egg to use!!!') and return if source_eggs.blank?
+		render_error(Error::NORMAL, I18n.t('dinosaur_error.eggs_empty_or_not_exist')) and return if source_eggs.blank?
 
 		total_evolution = source_eggs.sum{ |egg| egg.supply_evolution }.to_i
 

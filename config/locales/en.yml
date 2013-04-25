@@ -173,6 +173,8 @@
    must_be_hatched_in_cuba: "Must be hatched in Incubation house"
    invalid_dino_name: "Illegal name"
    need_gold: "Insufficient gold coins, still need %{gold}"
+   egg_not_exist: "Enchanting egg doesn’t exist"
+   eggs_empty_or_not_exist: "The egg doesn’t exist, please choose another one"
 
   quests_error:
    not_finished_yet: "Quest is not finished yet"
