@@ -49,6 +49,10 @@ module PlayerCaveHelper
 			end
 		end
 
+		def max_cave_count
+			is_vip? ? 5 : 3
+		end
+
 	end
 	
 	def self.included(model)

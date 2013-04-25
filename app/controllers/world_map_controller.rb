@@ -162,7 +162,7 @@ class WorldMapController < ApplicationController
 			if tmp_creeps_idx.size <= 0
 				# 如果有新手指引攻打野怪的任务，创建任务野怪
 				guide = player.beginner_guides.find(:index => 8).first
-				if !beginning_guide_finished && (!guide || guide.finished == false)
+				if !player.beginning_guide_finished && (!guide || guide.finished == false)
 					guide_creeps_atts = {:x => vil.x, :y => vil.y - 3, :level => 1, :type => rand(1..4), :monster_number => 1, :guide_creeps => true}
 					player.save_creeps(guide_creeps_atts)
 				end

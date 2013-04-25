@@ -14,7 +14,7 @@ class CaveController < ApplicationController
 		@cave = @player.find_cave(index)
 
 		@cave.update_cave_status
-		if @cave.todays_count >= PlayerCave::TOTAL_COUNT
+		if @cave.todays_count >= @player.max_cave_count
 			render_error(Error::NORMAL, I18n.t('cave_error.reach_cave_max')) and return
 		end
 
