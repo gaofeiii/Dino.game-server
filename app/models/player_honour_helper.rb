@@ -109,6 +109,15 @@ module PlayerHonourHelper
 				self.increase(:honour_score, -count)
 			end
 		end
+
+		def has_set_honour_strategy?
+			honour_strategy.each do |dino_id|
+				return true if Dinosaur.exists?(dino_id)
+			end
+			
+			false
+		end
+
 	end
 	
 	def self.included(model)

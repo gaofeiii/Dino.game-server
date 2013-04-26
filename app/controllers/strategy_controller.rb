@@ -247,9 +247,10 @@ class StrategyController < ApplicationController
 					next
 				end
 
-				player = Player.new(:id => player_id).gets(:nickname, :level, :avatar_id, :honour_strategy, :honour_score)
+				# player = Player.new(:id => player_id).gets(:nickname, :level, :avatar_id, :honour_strategy, :honour_score)
+				player = Player[player_id]
 
-				if player.honour_strategy.blank?
+				if not player.has_set_honour_strategy?
 					next
 				end
 

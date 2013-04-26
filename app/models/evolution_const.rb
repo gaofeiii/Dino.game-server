@@ -50,7 +50,8 @@ module EvolutionConst
 		def next_evolution_exp
 			return 99999999 if not is_egg?
 
-			self.class.evolution_const[item_type][quality + 1].try('[]', :need).to_i
+			val = self.class.evolution_const[item_type][quality + 1].try('[]', :need).to_i
+			val <= 0 ? 99999999 : val
 		end
 	end
 	

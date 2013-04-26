@@ -81,30 +81,6 @@
 		hash
 	end
 
-	# def supply_evolution
-	# 	5000
-	# end
-
-	# def next_evolution_exp
-	# 	return 99999999 if not is_egg?
-
-	# 	next_quality = quality + 1
-	# 	case next_quality
-	# 	when 1
-	# 		10
-	# 	when 2
-	# 		50
-	# 	when 3
-	# 		100
-	# 	when 4
-	# 		500
-	# 	when 5
-	# 		2000
-	# 	else
-	# 		99999999
-	# 	end
-	# end
-
 	def update_evolution
 		until evolution_exp < next_evolution_exp
 			self.evolution_exp -= next_evolution_exp

@@ -46,6 +46,7 @@ class Troops < Ohm::Model
 		end
 	end
 
+	# TODO: 事务的bug
 	def refresh!
 		if target.nil?
 			self.dissolve!

@@ -182,6 +182,7 @@ class DinosaurController < ApplicationController
 	def evolution
 		target_egg = Item[params[:egg_id]]
 		render_error(Error::NORMAL, I18n.t('dinosaur_error.egg_not_exist')) and return unless target_egg
+		render_error(Error::NORMAL, I18n.t('dinosaur_error.egg_reached_max_quality')) and return if target_egg.quality >= 5
 
 		source_eggs = params[:source_eggs].map{ |egg_id| Item[egg_id] }.compact
 		render_error(Error::NORMAL, I18n.t('dinosaur_error.eggs_empty_or_not_exist')) and return if source_eggs.blank?
