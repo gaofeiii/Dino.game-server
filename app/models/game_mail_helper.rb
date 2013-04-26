@@ -40,7 +40,8 @@ module GameMailHelper
 									:sys_type 			=> GameMail::SYS_TYPE[:league_apply],
 									:sender_id			=> 0,
 									:sender_name 		=> I18n.t('system', :locale => locale),
-									:receiver_name 	=> args[:president],
+									:receiver_id		=> president_id,
+									:receiver_name 	=> president_name,
 									:title 					=> I18n.t("mail.league_application.title", :locale => locale),
 									:content 				=> I18n.t('mail.league_application.content', :locale => locale, :player_name => player_name, :league_name => league_name),
 									:data				 		=> {:player_id => player_id, :receiver_id => receiver_id, :league_id => league_id}.to_json
