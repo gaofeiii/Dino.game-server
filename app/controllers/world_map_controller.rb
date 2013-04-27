@@ -139,7 +139,7 @@ class WorldMapController < ApplicationController
 						:goldmine_type => g_mine.goldmine_type,
 						:goldmine_cat => g_mine.goldmine_cat,
 						:left_time => LeagueWar.time_left,
-						:league_id => g_mine.league_id,
+						:league_id => g_mine.league_id.to_i,
 						:can_attack => LeagueWar.in_period_of_fight?
 					}
 				}

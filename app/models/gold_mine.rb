@@ -100,7 +100,7 @@ class GoldMine < Ohm::Model
 		}
 
 		if type == TYPE[:league] && !winner_league_id.blank?
-			hash[:league_id] = league_id
+			hash[:league_id] = league_id.to_i
 			hash[:owner_name] = db.hget(League.key[winner_league_id], :name)
 			hash[:gold_income] = league_income(:member => args[:player])
 		end
