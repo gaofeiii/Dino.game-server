@@ -65,7 +65,7 @@ module PlayerHonourHelper
 
 		def honour_strategy
 			if @attributes[:honour_strategy].blank?
-				@attributes[:honour_strategy] = []
+				@attributes[:honour_strategy] = Array.new(5, -1)
 				return @attributes[:honour_strategy]
 			end
 
@@ -76,6 +76,7 @@ module PlayerHonourHelper
 			if @attributes[:honour_strategy].is_a?(String)
 				@attributes[:honour_strategy] = JSON(@attributes[:honour_strategy].to_s)
 			end
+			@attributes[:honour_strategy] = Array.new(5, -1) if @attributes[:honour_strategy].blank?
 			@attributes[:honour_strategy]
 		end
 

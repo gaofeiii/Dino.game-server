@@ -231,35 +231,21 @@ class LeaguesController < ApplicationController
 
 	def receive_gold
 		membership = @player.league_member_ship
+		@league = @player.league
 
-		if LeagueWar.in_period_of_fight?
-			render_error(Error::NORMAL, I18n.t('league_error.still_in_league_war')) and return
-		end
-
-		if membership.nil?
+		if membership.nil? || @league.nil?
 			render_error(Error::NORMAL, I18n.t('league_error.not_in_a_league')) and return
 		end
 
-		# if membership.receive_gold_count > 0
-		# 	render_error(Error::NORMAL, I18n.t('league_error.had_received_gold')) and return
-		# end
-		if membership.receive_gold_time > Time.now.beginning_of_day.to_i
-			render_error(Error::NORMAL, I18n.t('league_error.had_received_gold')) and return
-		end
+		gold = @league.can_get_gold(:member => @player)
 
-		if membership.contribution <= 100
-			render_error(Error::NORMAL, I18n.t('league_error.contribution_count_is_zero')) and return
-		end
+		render_error(Error::NORMAL, 'No gold to receive') and return if gold <= 0
 
-		if membership.increase(:contribution, -100)
-			gold = @player.league.harvest_gold
-			@player.receive!(:gold => gold)
-			membership.increase(:receive_gold_count, -1)
+		if @player.receive!(:gold => gold)
 			membership.set :receive_gold_time, Time.now.to_i
-			render_success(:player => @player.to_hash(:league), :info => I18n.t("general.get_league_gold_success", :gold_count => gold))
-		else
-			render_error(Error::NORMAL, "Unknown League Error")
 		end
+
+		render_success(:player => @player.to_hash(:league), :info => I18n.t("general.get_league_gold_success", :gold_count => gold))
 	end
 
 	def kick_member
@@ -276,7 +262,7 @@ class LeaguesController < ApplicationController
 		member_relation = LeagueMemberShip[Player.get(params[:member_id], :league_member_ship_id)]
 
 		if member_relation.nil?
-			render_error(Error::NORMAL, I18n.t('')) and return
+			render_error(Error::NORMAL, I18n.t('league_error.not_in_a_league')) and return
 		end
 
 		if member_relation.league_id.to_i != params[:league_id].to_i

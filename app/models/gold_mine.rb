@@ -100,7 +100,9 @@ class GoldMine < Ohm::Model
 		}
 
 		if type == TYPE[:league] && !winner_league_id.blank?
+			hash[:league_id] = league_id
 			hash[:owner_name] = db.hget(League.key[winner_league_id], :name)
+			hash[:gold_income] = league_income(:member => args[:player])
 		end
 
 		stra = strategy
@@ -125,6 +127,16 @@ class GoldMine < Ohm::Model
 		else
 			0
 		end
+	end
+
+	def league_income(member: nil)
+		return 0 if member.nil?
+
+		membership = member.league_member_ship
+		return 0 if membership.nil?
+
+		delta_t = (Time.now.to_i - membership.receive_gold_time) / 3600.0
+		(delta_t * output).to_i
 	end
 
 	def goldmine_cat

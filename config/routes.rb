@@ -84,6 +84,8 @@ DinosaurGame::Application.routes.draw do
     post 'evolution'          => 'dinosaur#evolution'
 
     post 'refresh_all_dinos_with_advisor'  => 'dinosaur#refresh_all_dinos_with_advisor'
+    post 'refresh_all_dinos_with_goldmines' => 'dinosaur#refresh_all_dinos_with_goldmines'
+    post 'refresh_all_dinos_with_arena_strategy' => 'dinosaur#refresh_all_dinos_with_arena_strategy'
   end
   
   # 公会

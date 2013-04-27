@@ -175,7 +175,7 @@ class Player < Ohm::Model
 			:total_match_count => total_honour_count
 		}
 		opts = if args.include?(:all)
-			args | [:league, :god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :beginning_guide, :queue_info]
+			args | [:league, :god, :troops, :specialties, :village, :techs, :dinosaurs, :advisors, :beginning_guide, :queue_info, :gold_mines, :advisor_dino]
 		else
 			args
 		end
@@ -195,7 +195,7 @@ class Player < Ohm::Model
 			when :specialties, :food
 				hash[:food] = specialties.map{|s| s.to_hash}
 			when :league
-				hash[:league] = league.try(:to_hash)
+				hash[:league] = league.to_hash(:member => self) if league
 			when :advisors
 				hash[:advisors] = my_advisors.map(&:to_hash)
 			when :beginning_guide
@@ -227,6 +227,14 @@ class Player < Ohm::Model
 				hash[:daily_quests] = all_quests.compact
 			when :advisor_dino
 				hash[:advisor_dino] = advisor_dinosaur
+			when :gold_mines
+				hash[:gold_mines] = gold_mines.map(&:to_hash)
+			when :advisor_dino
+				hash[:advisor_dino] = advisor_dinosaur
+			when :scrolls
+				hash[:scrolls] = items.find(:item_category => 3)
+			when :honour_strategy
+				hash[:honour_strategy] = honour_strategy
 			end
 
 		end

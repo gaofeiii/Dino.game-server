@@ -1,6 +1,6 @@
 class DinosaurController < ApplicationController
 	before_filter :validate_dinosaur, :only => [:update, :hatch_speed_up, :feed, :heal, :rename, :reborn, :release]
-	before_filter :validate_player, :only => [:hatch, :food_list, :feed, :heal, :expand_capacity, :refresh_all_dinos, :refresh_all_dinos_with_advisor, :training, :evolution]
+	before_filter :validate_player, :only => [:hatch, :food_list, :feed, :heal, :expand_capacity, :refresh_all_dinos, :refresh_all_dinos_with_advisor, :training, :evolution, :refresh_all_dinos_with_goldmines, :refresh_all_dinos_with_arena_strategy]
 
 	def update
 		@dinosaur.update_status!
@@ -139,11 +139,19 @@ class DinosaurController < ApplicationController
 	end
 
 	def refresh_all_dinos
-		render_success(:player => {:dinosaurs => @player.dinosaurs_info})
+		render_success(:player => {:dinosaurs => @player.dinosaurs_info, :scrolls => @player.items.find(:item_category => 3)})
 	end
 
 	def refresh_all_dinos_with_advisor
-		render_success(:player => {:dinosaurs => @player.dinosaurs_info, :advisor_dino => @player.advisor_dinosaur})
+		render_success(:player => {:dinosaurs => @player.dinosaurs_info, :advisor_dino => @player.advisor_dinosaur, :scrolls => @player.items.find(:item_category => 3)})
+	end
+
+	def refresh_all_dinos_with_goldmines
+		render_success(:player => @player.to_hash(:gold_mines, :advisor_dino, :dinosaurs, :scrolls))
+	end
+
+	def refresh_all_dinos_with_arena_strategy
+		render_success(:player => @player.to_hash(:gold_mines, :advisor_dino, :dinosaurs, :scrolls, :honour_strategy))
 	end
 
 	def training

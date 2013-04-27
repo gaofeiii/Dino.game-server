@@ -68,7 +68,7 @@ class League < Ohm::Model
 		Player[president_id]
 	end
 
-	def to_hash
+	def to_hash(member: nil)
 		hash = {
 			:id => id.to_i,
 			:name => name,
@@ -83,8 +83,20 @@ class League < Ohm::Model
 			:wood => wood,
 			:stone => stone,
 			:gold_mine_count => gold_mines.size,
-			:can_get_league_gold => harvest_gold.to_i
+			:can_get_league_gold => can_get_gold(:member => member)
 		}
+	end
+
+	def can_get_gold(member: nil)
+		return 0 if member.nil?
+
+		membership = member.league_member_ship
+		return 0 if membership.nil?
+
+		total_output = gold_mines.sum{|mine| mine.output}.to_i
+
+		delta_t = (Time.now.to_i - membership.receive_gold_time) / 3600.0
+		(delta_t * total_output).to_i		
 	end
 
 	def members_list
