@@ -44,7 +44,7 @@ module GameMailHelper
 									:receiver_name 	=> president_name,
 									:title 					=> I18n.t("mail.league_application.title", :locale => locale),
 									:content 				=> I18n.t('mail.league_application.content', :locale => locale, :player_name => player_name, :league_name => league_name),
-									:data				 		=> {:player_id => player_id, :receiver_id => receiver_id, :league_id => league_id}.to_json
+									:data				 		=> {:player_id => player_id, :receiver_id => president_id, :league_id => league_id}.to_json
 		end
 
 		# ** 村落防守成功邮件 ** #
