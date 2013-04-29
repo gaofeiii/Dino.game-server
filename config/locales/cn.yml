@@ -176,6 +176,7 @@ cn:
    egg_not_exist: "目标恐龙蛋已不存在"
    eggs_empty_or_not_exist: "被注灵恐龙蛋已经消失，请重新选择恐龙蛋"
    egg_reached_max_quality: "恐龙蛋已达到最高等级——橙色"
+   dino_is_healthy: "恐龙宝宝很健康哦！"
 
   quests_error:
    not_finished_yet: "任务还没有完成"

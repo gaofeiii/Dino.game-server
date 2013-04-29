@@ -176,6 +176,7 @@
    egg_not_exist: "Enchanting egg doesn’t exist"
    eggs_empty_or_not_exist: "The egg doesn’t exist, please choose another one"
    egg_reached_max_quality: "The egg has reached highest level: orange"
+   dino_is_healthy: "Your dinosaur is healthy!"
 
   quests_error:
    not_finished_yet: "Quest is not finished yet"

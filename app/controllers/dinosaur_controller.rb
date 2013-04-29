@@ -80,7 +80,7 @@ class DinosaurController < ApplicationController
 
 	def heal
 		if @dinosaur.current_hp == @dinosaur.total_hp
-			render_error(Error::NORMAL, "Dinosaur is healthy") and return
+			render_error(Error::NORMAL, I18n.t('dinosaur_error.dino_is_healthy')) and return
 		end
 
 		if @player.spend!(@dinosaur.heal_speed_up_cost)
