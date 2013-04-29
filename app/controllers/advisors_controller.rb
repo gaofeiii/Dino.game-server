@@ -28,6 +28,10 @@ class AdvisorsController < ApplicationController
 		else
 			record.update :type => params[:type]
 		end
+		
+		@player.serial_tasks_data[:being_advisor] ||= 0
+		@player.serial_tasks_data[:being_advisor] += 1
+		@player.save
 
 		render_success
 	end
