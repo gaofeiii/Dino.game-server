@@ -26,9 +26,9 @@ class AdvisorsController < ApplicationController
 		if record.nil?
 			record = AdvisorRecord.create :player_id => @player.id, :type => params[:type], :price => price
 		else
-			record.update :type => params[:type]
+			record.update :type => params[:type], :price => price
 		end
-		
+
 		@player.serial_tasks_data[:being_advisor] ||= 0
 		@player.serial_tasks_data[:being_advisor] += 1
 		@player.save
