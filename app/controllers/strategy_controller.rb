@@ -24,7 +24,7 @@ class StrategyController < ApplicationController
 		end
 
 		# Validate dinosaur ids
-		valid_dinos = params[:dinosaurs].each do |dino_id|
+		valid_dinos = params[:dinosaurs].map do |dino_id|
 			next if dino_id <= 0
 
 			if not Dinosaur.exists?(dino_id)
