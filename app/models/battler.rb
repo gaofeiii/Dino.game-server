@@ -95,8 +95,6 @@ module BattleArmy
 		result = []
 
 		result = self.map do |fighter|
-			p "==== is_advisor: #{fighter.is_advisor}"
-			p fighter if fighter.is_advisor
 			next if fighter.is_advisor
 
 			new_atts = {}

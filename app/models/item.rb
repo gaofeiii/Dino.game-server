@@ -46,8 +46,6 @@
 			if count > 0
 				self.increase :count, -1
 			end
-
-			self.delete if count <= 0
 		when Item.categories[:vip]
 			player.player_type = Player::TYPE[:vip]
 			now = Time.now.to_i

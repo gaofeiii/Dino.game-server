@@ -114,6 +114,8 @@ class Player < Ohm::Model
 	end
 
 	def login!
+		cleanup_scrolls
+		
 		curr_time = ::Time.now.to_i
 
 		todays_begin_time = ::Time.now.beginning_of_day.to_i
@@ -230,7 +232,7 @@ class Player < Ohm::Model
 			when :advisor_dino
 				hash[:advisor_dino] = advisor_dinosaur
 			when :scrolls
-				hash[:scrolls] = items.find(:item_category => 3)
+				hash[:scrolls] = scrolls_info
 			when :honour_strategy
 				hash[:honour_strategy] = honour_strategy
 			end
@@ -291,8 +293,17 @@ class Player < Ohm::Model
   end
 
   def max_level_dinosaur
-  	max_level_dino_id = dinosaurs.ids.max do |dino_id|
-  		db.hget(Dinosaur.key[dino_id], :level).to_i
+  	dino_ids = dinosaurs.ids
+  	max_level_dino_id = dino_ids.first
+  	max_level = db.hget(Dinosaur.key[max_level_dino_id], :level).to_i
+
+  	dino_ids.each do |dino_id|
+  		lvl = db.hget(Dinosaur.key[dino_id], :level).to_i
+
+  		if lvl > max_level
+  			max_level = lvl
+  			max_level_dino_id = dino_id
+  		end
   	end
 
   	if max_level_dino_id

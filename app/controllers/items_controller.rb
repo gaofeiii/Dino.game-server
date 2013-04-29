@@ -1,6 +1,6 @@
 class ItemsController < ApplicationController
 	before_filter :validate_player
-	before_filter :validate_item, :only => [:lucky_reward, :drop]
+	before_filter :validate_item, :only => [:lucky_reward]
 
 	def my_items_list
 		render :json => {:player => {:items => @player.items.map{|item| item.to_hash}}}
@@ -68,7 +68,7 @@ class ItemsController < ApplicationController
 	end
 
 	def scrolls_list
-		render_success :player => {:scrolls => @player.items.find(:item_category => 3)}
+		render_success :player => {:scrolls => @player.scrolls_info}
 	end
 
 	def eggs_list
@@ -80,7 +80,8 @@ class ItemsController < ApplicationController
 	end
 
 	def drop
-		@item.delete
+		item = Item[params[:item_id]]
+		item.delete if item
 		render_success
 	end
 

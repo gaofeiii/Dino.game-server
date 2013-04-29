@@ -14,6 +14,16 @@ module PlayerItemsHelper
 	  	items.find(:item_category => Item.categories[:scroll])
 	  end
 
+	  def scrolls_info
+	  	all_scrolls = scrolls.to_a
+	  	# all_scrolls.map { |scroll| scroll.delete if scroll.count <= 0 }
+	  	all_scrolls
+	  end
+
+	  def cleanup_scrolls
+	  	scrolls.map { |scroll| scroll.delete if scroll.count <= 0 }
+	  end
+
 	  def eggs
 	  	items.find(:item_category => Item.categories[:egg])
 	  end
