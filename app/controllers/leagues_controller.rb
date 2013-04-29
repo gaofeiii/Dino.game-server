@@ -245,7 +245,9 @@ class LeaguesController < ApplicationController
 			membership.set :receive_gold_time, Time.now.to_i
 		end
 
-		render_success(:player => @player.to_hash(:league), :info => I18n.t("general.get_league_gold_success", :gold_count => gold))
+		p "========= GOLD: #{gold} =========="
+
+		render_success(:player => @player.to_hash(:league), :info => I18n.t("general.get_league_gold_success", :gold_count => gold), :gold_count => gold)
 	end
 
 	def kick_member

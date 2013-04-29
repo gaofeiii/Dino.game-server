@@ -18,6 +18,8 @@ class CaveController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('cave_error.reach_cave_max')) and return
 		end
 
+		player_dinos_count = 0
+
 		player_dinos = dino_ids.map do |dino_id|
 			dino = Dinosaur[dino_id]
 
@@ -25,6 +27,7 @@ class CaveController < ApplicationController
 				dino.update_status!
 
 				if dino.player_id.to_i == @player.id
+					player_dinos_count += 1
 					render_error(Error::NORMAL, I18n.t('strategy_error.dino_is_hungry')) and return if dino.feed_point <= 5
 					render_error(Error::NORMAL, I18n.t('strategy_error.dino_hp_is_zero')) and return if dino.current_hp < dino.total_hp * 0.1
 				end
@@ -34,6 +37,9 @@ class CaveController < ApplicationController
 				nil
 			end
 		end.compact
+
+		render_error(Error::NORMAL, I18n.t('cave_error.no_dino_sent')) and return if player_dinos_count < 1
+
 
 		scroll = Item[params[:scroll_id]]
 		scroll_type = scroll.try(:item_type).to_i

@@ -95,6 +95,10 @@ module BattleArmy
 		result = []
 
 		result = self.map do |fighter|
+			p "==== is_advisor: #{fighter.is_advisor}"
+			p fighter if fighter.is_advisor
+			next if fighter.is_advisor
+
 			new_atts = {}
 
 			if write_xp && fighter.curr_hp > 0 && !fighter.is_advisor
@@ -241,6 +245,7 @@ class Battler
 			fighter.skills.each{ |sk| sk.extend(SkillModule) }
 			fighter.army = self.army
 			fighter.camp = camp
+			fighter.is_advisor = true if owner && fighter.is_a?(Dinosaur) && fighter.try(:player_id).to_i != owner.id
 		end
 		self.camp = camp
 	end

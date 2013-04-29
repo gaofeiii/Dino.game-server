@@ -40,6 +40,7 @@ class BattleModel
 					fighter.curr_hp *= (1 + hp_inc)
 					fighter.total_hp *= (1 + hp_inc)
 					fighter.curr_hp = fighter.total_hp if options[:match_attack] # 如果是荣誉战，恐龙满血满状态
+					fighter.curr_hp = fighter.total_hp if fighter.is_a?(Dinosaur) && fighter.player_id != obj[:player].id
 					fighter.skill_trigger_inc = scroll_effect[:skill_trigger_inc].to_f
 					fighter.exp_inc = scroll_effect[:exp_inc].to_f
 					# ======================================

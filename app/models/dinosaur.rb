@@ -165,7 +165,7 @@ class Dinosaur < Ohm::Model
 	end
 
 	def update_status!
-		self.feed_point = hunger_time
+		self.feed_point = (hunger_time * 0.7).to_i
 		if update_status
 			save
 		else

@@ -29,7 +29,7 @@ class DinosaurController < ApplicationController
 		end
 
 		if @egg.use!(:building_id => @building.id)
-			render_success({:player => @player.to_hash(:dinosaurs), :egg_id => @egg.id})
+			render_success({:player => @player.to_hash(:dinosaurs).merge(:items => [@egg.to_hash.merge(:count => 0)]), :egg_id => @egg.id})
 		else
 			render_error(Error::NORMAL, "Unknown_Error_On_Hatching_Egg")
 		end
@@ -201,7 +201,7 @@ class DinosaurController < ApplicationController
 			total_evolution = target_egg.next_evolution_exp
 		end
 
-		gold = total_evolution * 100
+		gold = @player.beginning_guide_finished ? total_evolution * 100 : 1000
 
 		if @player.spend!(:gold => gold)
 			target_egg.increase(:evolution_exp, total_evolution)

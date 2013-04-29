@@ -225,10 +225,8 @@ class Player < Ohm::Model
 				all_quests += my_serial_tasks.select{|task| task.index > 20006}[0, 5]
 
 				hash[:daily_quests] = all_quests.compact
-			when :advisor_dino
-				hash[:advisor_dino] = advisor_dinosaur
 			when :gold_mines
-				hash[:gold_mines] = gold_mines.map(&:to_hash)
+				hash[:gold_mines] = my_all_goldmines.map(&:to_hash)
 			when :advisor_dino
 				hash[:advisor_dino] = advisor_dinosaur
 			when :scrolls
@@ -239,6 +237,18 @@ class Player < Ohm::Model
 
 		end
 		return hash
+	end
+
+	def my_all_goldmines
+		result = gold_mines.to_a
+
+		unless self.league_id.blank?
+			self.league.gold_mines.each do |league_mine|
+				result << league_mine.to_hash(:player => self)
+			end
+		end
+
+		result
 	end
 
 	# 好友列表
@@ -296,7 +306,7 @@ class Player < Ohm::Model
 	def before_create
 		return if player_type == TYPE[:npc]
 		self.gold_coin = 50000
-		self.gems = 300
+		self.gems = Rails.env.production? ? 300 : 30000
 		self.wood = 6000
 		self.stone = 6000
 		self.level = 1 if (level.nil? or level == 0)

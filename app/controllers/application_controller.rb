@@ -51,7 +51,6 @@ class ApplicationController < ActionController::Base
     logger.debug format("%-64s", '='*64)
     logger.debug "\n"
     # logger.debug '---- Response body ----'
-    # p response.body
   end
 
   def validate_session

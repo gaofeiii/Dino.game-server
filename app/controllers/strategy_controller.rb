@@ -51,7 +51,7 @@ class StrategyController < ApplicationController
 
 		# Check beginner guide task
 		@player = target.player
-		if @player.has_beginner_guide?
+		if @player && @player.has_beginner_guide?
 			@player.cache_beginner_data(:has_set_defense => true)
 		end
 
@@ -72,7 +72,6 @@ class StrategyController < ApplicationController
 		elsif params[:gold_mine_id]
 			GoldMine[params[:gold_mine_id]]
 		elsif params[:creeps_id]
-			# Creeps[params[:creeps_id]]
 			creeps_info = @player.temp_creeps(params[:creeps_id])
 			if creeps_info.nil?
 				nil
@@ -111,7 +110,7 @@ class StrategyController < ApplicationController
 				render_error(Error::NORMAL, I18n.t('strategy_error.cannot_attack_friend_goldmine')) and return
 			end
 
-			if target.type == GoldMine::TYPE[:normal] 				
+			if target.type == GoldMine::TYPE[:normal]				
 				render_error(Error::NORMAL, I18n.t('strategy_error.cannot_attack_self_goldmine')) and return if target.player_id.to_i == @player.id
 				render_error(Error::NORMAL, I18n.t('strategy_error.reach_gold_mine_max')) and return if @player.gold_mines.size >= @player.curr_goldmine_size
 				
@@ -171,8 +170,6 @@ class StrategyController < ApplicationController
 
 		scroll = Item[params[:scroll_id]]
 		scroll_type = scroll ? scroll.item_type : 0
-
-		p "scroll", scroll
 
 		# 创建Troops
 		trps = Troops.new		:player_id => @player.id, 

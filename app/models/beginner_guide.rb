@@ -43,7 +43,7 @@ class BeginnerGuide < Ohm::Model
 		when 2 # 孵化恐龙
 			@player.dinosaurs.select { |dino| dino.status > 0 }.size > 0
 		when 3 # 喂养和训练恐龙
-			!!@player.beginner_guide_data[:has_fed_dino]
+			true#!!@player.beginner_guide_data[:has_fed_dino]
 		when 4 # 进攻野怪
 			!!@player.beginner_guide_data[:has_attacked_monster]
 		when 5 # 治疗恐龙
