@@ -139,7 +139,7 @@ class DinosaurController < ApplicationController
 	end
 
 	def refresh_all_dinos
-		render_success(:player => {:dinosaurs => @player.dinosaurs_info, :scrolls => @player.items.find(:item_category => 3)})
+		render_success(:player => {:dinosaurs => @player.dinosaurs_info, :food => @player.specialties.map{|s| s.to_hash}, :scrolls => @player.items.find(:item_category => 3)})
 	end
 
 	def refresh_all_dinos_with_advisor
