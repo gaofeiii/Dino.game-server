@@ -24,13 +24,15 @@ class StrategyController < ApplicationController
 		end
 
 		# Validate dinosaur ids
-		params[:dinosaurs].each do |dino_id|
+		valid_dinos = params[:dinosaurs].each do |dino_id|
 			next if dino_id <= 0
 
 			if not Dinosaur.exists?(dino_id)
 				render_error(Error::NORMAL, I18n.t('strategy_error.dino_not_exist')) and return
 			end
-		end
+
+			dino_id
+		end.compact
 
 		# Determine the deployed dinosaurs' status
 		dino_status = Dinosaur::ACTION_STATUS[:idle]
@@ -50,7 +52,7 @@ class StrategyController < ApplicationController
 		@sta.set :scroll_id, scroll.id if scroll
 
 		# Check beginner guide task
-		@player = target.player
+		@player = target.player || Dinosaur[valid_dinos.sample].player
 		if @player && @player.has_beginner_guide?
 			@player.cache_beginner_data(:has_set_defense => true)
 		end
