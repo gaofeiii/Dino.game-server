@@ -32,6 +32,19 @@ module ServerHelper
 	end
 end
 
+module ServerEnvHelper
+	def dev?
+		self == "dev"
+	end
+
+	alias debug? dev?
+
+	def production?
+		self == "production"
+	end
+
+end
+
 class ServerInfo
 	# include OhmExtension
 
@@ -60,6 +73,10 @@ class ServerInfo
 			all[server_name].extend(ServerHelper)
 		end
 		alias current info
+
+		def env
+			current[:env].extend(ServerEnvHelper)
+		end
 
 		def account_server
 			"http://#{info[:account_server_ip]}:#{info[:account_server_port]}"

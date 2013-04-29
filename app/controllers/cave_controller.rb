@@ -107,7 +107,7 @@ class CaveController < ApplicationController
 			end
 			# === End of Guide ===
 
-			# @cave.todays_count += 1
+			@cave.todays_count += 1 if ServerInfo.env.production?
 			@cave.stars = stars if @cave.stars < stars
 			@cave.save
 		end
