@@ -145,6 +145,8 @@ class Troops < Ohm::Model
 								target.move_to_random_coords
 								target.set :protection_until, ::Time.now.to_i + 10.minutes
 								self.player.village.update :x => tx, :y => ty, :index => ti
+							else
+								target.set :protection_until, ::Time.now.to_i + 3.hours.to_i
 							end
 
 							target_player = defense_player
