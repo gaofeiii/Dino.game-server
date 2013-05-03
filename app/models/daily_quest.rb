@@ -131,7 +131,7 @@ module DailyQuest
 			end
 
 			def get_reward
-				if self[:finished_steps] >= self[:total_steps]
+				if !self[:rewarded] && self[:finished_steps] >= self[:total_steps]
 					rwd = player.find_reward_by_index(self[:number])
 					player.receive_daily_reward!(rwd) if rwd
 					self[:rewarded] = true

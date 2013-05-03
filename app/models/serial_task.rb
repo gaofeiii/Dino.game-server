@@ -48,7 +48,7 @@ class SerialTask < Ohm::Model
 	end
 
 	def get_reward
-		player.get_reward Reward.new(info[:reward]) if finished
+		player.get_reward Reward.new(info[:reward]) if finished && !rewarded
 	end
 
 end

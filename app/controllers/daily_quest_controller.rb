@@ -14,13 +14,22 @@ class DailyQuestController < ApplicationController
 	end
 
 	def get_reward
-		quest = @player.find_task_by_index(params[:quest_id].to_i)
+		lock_key = @player.key[:quest][params[:quest_id]]
 
-		if quest && quest.get_reward
-			quest.set_rewarded(true)
-			render_success(:player => @player.load!.to_hash(:daily_quest))
+		if Ohm.redis.setnx(lock_key, 0)
+			quest = @player.find_task_by_index(params[:quest_id].to_i)
+
+			if quest && quest.get_reward
+				quest.set_rewarded(true)
+				Ohm.redis.del(lock_key)
+				render_success(:player => @player.load!.to_hash(:daily_quest))
+			else
+				Ohm.redis.del(lock_key)
+				render_error(Error::NORMAL, I18n.t('quests_error.not_finished_yet'))
+			end
+
 		else
-			render_error(Error::NORMAL, I18n.t('quests_error.not_finished_yet'))
+			render_success(:player => @player.to_hash(:daily_quest))
 		end
 
 	end
