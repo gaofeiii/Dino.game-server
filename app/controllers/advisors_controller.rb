@@ -29,6 +29,8 @@ class AdvisorsController < ApplicationController
 			record.update :type => params[:type], :price => price
 		end
 
+		@player.advisor_record_id = record.id
+
 		@player.serial_tasks_data[:being_advisor] ||= 0
 		@player.serial_tasks_data[:being_advisor] += 1
 		@player.save
@@ -44,7 +46,9 @@ class AdvisorsController < ApplicationController
 
 		record = AdvisorRecord.find_by_player_id(params[:advisor_id])
 
-		render_error(Error::NORMAL, I18n.t('advisors_error.advisor_not_exist_or_has_been_hired')) unless record
+		render_error(Error::NORMAL, I18n.t('advisors_error.advisor_not_exist_or_has_been_hired')) and return unless record
+
+		render_error(Error::NORMAL, I18n.t('advisors_error.cannot_hire_yourself')) and return if record.player_id == @player.id
 
 		# if @player.my_advisors.find(:type => record.type).any?
 		# 	render_error(Error::NORMAL, I18n.t('advisors_error.already_have_same_type_adv')) and return

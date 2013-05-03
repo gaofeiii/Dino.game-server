@@ -5,9 +5,9 @@ class AdvisorRelation < Ohm::Model
 	include Ohm::Locking
 	include OhmExtension
 
-	attribute :type, 				Type::Integer
-	attribute :advisor_id,	Type::Integer
-	attribute :price,				Type::Integer
+	attribute :type, 					Type::Integer
+	attribute :advisor_id,		Type::Integer
+	attribute :price,					Type::Integer
 
 	TYPES = {:produce => 1, :military => 2, :business => 3, :technology => 4}
 
@@ -18,7 +18,7 @@ class AdvisorRelation < Ohm::Model
 
 	def self.clean_up!
 		all.map do |rel|
-			if Time.now.to_i >= rel.created_at + 1.day
+			if Time.now.to_i >= rel.updated_at + 1.day
 				rel.delete
 			end
 		end
