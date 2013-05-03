@@ -40,7 +40,7 @@ class AdvisorRelation < Ohm::Model
 			:avatar_id => @advisor.avatar_id,
 			:level => @advisor.level,
 			:price => price,
-			:left_time => (created_at + 1.day - Time.now.to_i),
+			:left_time => (updated_at + 1.day - Time.now.to_i) / 3600,
 			:evaluation => evaluation_score
 		}
 	end
