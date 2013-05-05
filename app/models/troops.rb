@@ -66,6 +66,12 @@ class Troops < Ohm::Model
 				end.compact
 				attacker_army = army
 				bill_number = player.curr_bill_quest.try("[]", :number)
+
+				if bill_number.nil?
+					self.dissolve!
+					return
+				end
+
 				defender_army = target.defense_troops(bill_number)
 
 				attacker = {

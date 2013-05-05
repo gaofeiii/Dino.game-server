@@ -39,7 +39,7 @@
    already_use_lottery: "You have already got lottery reward today"
 
   player:
-   whos_village: "%{player_name}’s village"
+   whos_village: "%{player_name}"
    empty_village_name: "an empty village"
 
   resource:
