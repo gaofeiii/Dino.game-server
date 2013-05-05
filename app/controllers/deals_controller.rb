@@ -96,6 +96,7 @@ class DealsController < ApplicationController
 		end
 
 		ret = false
+		sold_item = nil
 
 		case goods_cat
 		when Deal::CATEGORIES[:res]
@@ -119,6 +120,7 @@ class DealsController < ApplicationController
 			else
 				nil
 			end
+
 			if error
 				render_error(Error::NORMAL, error) and return
 			end
@@ -158,6 +160,8 @@ class DealsController < ApplicationController
 				egg.update :player_id => nil
 				ret = true
 			end
+
+			sold_item = egg.to_hash.merge(:count => 0)
 		when Deal::CATEGORIES[:food]
 			type = params[:type].to_i
 			count = params[:count].to_i
@@ -197,7 +201,10 @@ class DealsController < ApplicationController
 			@player.set :serial_tasks_data, @player.serial_tasks_data
 		end
 
-		render_success(:player => @player.to_hash(:resources, :items, :specialties))
+		data = {:player => @player.to_hash(:resources, :items, :specialties)}
+		data[:player][:items] << sold_item
+
+		render_success(data)
 	end
 
 	def my_items_list
