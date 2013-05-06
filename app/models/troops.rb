@@ -67,7 +67,7 @@ class Troops < Ohm::Model
 				attacker_army = army
 				bill_number = player.curr_bill_quest.try("[]", :number)
 
-				if bill_number.nil?
+				if target.is_a?(Village) && target.is_bill? && bill_number.nil?
 					self.dissolve!
 					return
 				end
