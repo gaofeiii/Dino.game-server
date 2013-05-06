@@ -225,7 +225,7 @@ module DailyQuest
 
 				min = level - level % 5 - 1
 				min = 1 if min < 0
-				min = 85 if min > 90
+				min = 85 if min > 85
 				max = level
 				new_quests_ids = self.class.random_daily_quests_by_level_range(:min => min, :max => max, :limit => 5)
 				self.daily_quest = new_quests_ids.map do |q_id|
