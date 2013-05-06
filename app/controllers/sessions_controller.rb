@@ -37,6 +37,7 @@ class SessionsController < ApplicationController
 		@player.set :locale, new_locale
 
 		# "Updating player's stuffs..."
+		@player.dinsaurs.map(&:update_status!)
 		@player.reset_daily_quest!
 		@player.refresh_village_status
 		@player.refresh_god_status!
@@ -90,6 +91,7 @@ class SessionsController < ApplicationController
 		@player.set :locale, new_locale
 
 		# Updating player's stuffs...
+		@player.dinsaurs.map(&:update_status!)
 		@player.reset_daily_quest!
 		@player.refresh_village_status
 		@player.refresh_god_status!
