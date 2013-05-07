@@ -18,6 +18,10 @@ class AppStoreOrder < Ohm::Model
 
   reference :player, 	Player
 
+  def self.valid_orders
+    self.all.select { |order| order.product_id =~ /com.dinosaur.gems/ }
+  end
+
   def self.validate_iap(rcp)
   	uri = URI("https://buy.itunes.apple.com/verifyReceipt")
     uri = case ServerInfo.info[:env]

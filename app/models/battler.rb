@@ -99,8 +99,14 @@ module BattleArmy
 
 			new_atts = {}
 
+			each_earn_xp = (each_exp * (1 - (fighter.level - enemy_avg_level).abs * 0.1)).to_i
+
+			if each_earn_xp < 0
+				next
+			end
+
 			if write_xp && fighter.curr_hp > 0 && !fighter.is_advisor
-				fighter.experience += each_exp
+				fighter.experience += each_earn_xp
 				new_atts[:experience] = fighter.experience
 			end
 
@@ -111,7 +117,7 @@ module BattleArmy
 			if write_xp && fighter.curr_hp > 0 && !fighter.is_advisor
 				{
 					:id => fighter.id,
-					:exp_inc => each_exp,
+					:exp_inc => each_earn_xp,
 					:is_upgraded => fighter.experience >= fighter.next_level_exp
 				}
 			end
