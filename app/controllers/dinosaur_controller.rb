@@ -37,8 +37,10 @@ class DinosaurController < ApplicationController
 
 	def hatch_speed_up
 		@player = @dinosaur.player
-		if @player.spend!(:gems => @dinosaur.hatch_speed_up_cost_gems)
+		gems_cost = @dinosaur.hatch_speed_up_cost_gems
+		if @player.spend!(:gems => gems_cost)
 			@dinosaur.hatch_speed_up!
+			Stat.record_gems_consume(:type => :hatch_speed_up, :times => 1, :count => gems_cost)
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gems')) and return
 		end
@@ -83,13 +85,15 @@ class DinosaurController < ApplicationController
 		# 	render_error(Error::NORMAL, I18n.t('dinosaur_error.dino_is_healthy')) and return
 		# end
 
-		if @player.spend!(@dinosaur.heal_speed_up_cost)
+		gems_cost = @dinosaur.heal_speed_up_cost[:gems]
+		if @player.spend!(:gems => gems_cost)
 			# Check beginner guide
 			if @player.has_beginner_guide?
 				@player.cache_beginner_data(:has_healed_dino => true)
 			end
 			
 			@dinosaur.heal_speed_up!
+			Stat.record_gems_consume(:type => :dinosaur_heal, :times => 1, :count => gems_cost)
 		end
 		render_success(:player => @player.to_hash(:dinosaurs))
 	end
@@ -130,8 +134,10 @@ class DinosaurController < ApplicationController
 	end
 
 	def expand_capacity
-		if @player.spend!(:gems => @player.next_dino_space_gems)
+		gems_cost = @player.next_dino_space_gems
+		if @player.spend!(:gems => gems_cost)
 			@player.increase :dinosaurs_capacity
+			Stat.record_gems_consume(:type => :buy_dionsaur_space, :times => 1, :count => gems_cost)
 			render_success(:player => @player.to_hash)
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gems'))
@@ -170,10 +176,13 @@ class DinosaurController < ApplicationController
 			render_error(Error::NORMAL, I18n.t('dinosaur_error.reach_max_growth_point')) and return
 		end
 		
-		if @player.spend!(:gold => @dinosaur.training_cost)
+		gold = @dinosaur.training_cost
+		if @player.spend!(:gold => gold)
 			@player.serial_tasks_data[:trained_dino] ||= 0
 			@player.serial_tasks_data[:trained_dino] += 1
 			@player.set :serial_tasks_data, @player.serial_tasks_data
+
+			Stat.record_gold_consume(:type => :train_dinosaur, :times => 1, :count => gold)
 
 			@dinosaur.training!(train_attr)
 			render_success 	:growth_point => @dinosaur.growth_times,
@@ -207,6 +216,8 @@ class DinosaurController < ApplicationController
 			target_egg.increase(:evolution_exp, total_evolution)
 			target_egg.update_evolution
 			source_eggs.map(&:delete)
+
+			Stat.record_gold_consume(:type => :egg_evolution, :times => 1, :count => gold)
 
 			@player.serial_tasks_data[:egg_evolution] ||= 0
 			@player.serial_tasks_data[:egg_evolution] += 1

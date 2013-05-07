@@ -77,12 +77,15 @@ class BuildingsController < ApplicationController
 			return
 		end
 
-		if @player.spend!(:gems => @building.build_speed_up_gem_cost)
+		gems_cost = @building.build_speed_up_gem_cost
+		if @player.spend!(:gems => gems_cost)
 			# @building.update :status => 2, :start_building_time => 0
 			@building.start_building_time = 0
 			if @building.update_status!
 				@player.earn_exp!(150)
 			end
+
+			Stat.record_gems_consume(:type => :build_speed_up, :times => 1, :count => gems_cost)
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gems')) and return
 		end

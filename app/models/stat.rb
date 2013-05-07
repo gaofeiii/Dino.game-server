@@ -12,6 +12,7 @@ module StatFormat
 end
 
 class Stat
+	include StatGameInfo
 
 	INIT_PLAYER_RESULT = {
 		:time => 0,
@@ -119,7 +120,7 @@ class Stat
 
 			ids = AppStoreOrder.all.ids
 
-			result[:time] = Time.now.utc
+			result[:time] = Time.now
 			result[:receipt_count] = ids.count
 
 			ids.each do |order_id|

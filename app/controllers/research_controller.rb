@@ -23,7 +23,8 @@ class ResearchController < ApplicationController
 			return
 		end
 		
-		if @player.spend!(tech.next_level[:cost])
+		cost = tech.next_level[:cost]
+		if @player.spend!(cost)
 			time_reduce = 0
 			# 判断是否触发神灵效果
 			if @player.curr_god && @player.curr_god.type == God.hashes[:intelligence]
@@ -40,6 +41,8 @@ class ResearchController < ApplicationController
 			end
 
 			tech.research!(b_id, time_reduce)
+
+			Stat.record_gold_consume(:type => :research, :times => 1, :count => cost[:gold])
 
 			render_success(:player => @player.to_hash(:techs, :resources))
 		else
@@ -60,9 +63,11 @@ class ResearchController < ApplicationController
 			tech = Technology.create :type => params[:tech_type].to_i, :level => 0, :player_id => @player.id
 		end
 
-		if @player.spend!(tech.speed_up_cost)
+		gems_cost = tech.speed_up_cost[:gems]
+		if @player.spend!(:gems => gems_cost)
 			tech.speed_up!
 			@player.load!
+			Stat.record_gems_consume(:type => :tech_speed_up, :times => 1, :count => gems_cost)
 		else
 			render_error(Error::NORMAL, I18n.t('general.not_enough_gems')) and return
 		end

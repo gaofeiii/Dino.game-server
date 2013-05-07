@@ -54,6 +54,9 @@ class ShoppingController < ApplicationController
 
 			if @player.spend!(:gems => gems_cost)
 				@player.receive!(res_type => res_count)
+
+				Stat.record_gems_consume(:type => :buy_resource, :times => 1, :count => gems_cost)
+
 				render_success(:player => @player.resources)
 			else
 				render_error(Error::NORMAL, I18n.t("general.not_enough_gems")) and return
@@ -72,10 +75,27 @@ class ShoppingController < ApplicationController
 					else
 						food.increase(:count, goods[:count])
 					end
+
+					Stat.record_gems_consume(:type => :buy_food, :times => 1, :count => goods.slice(:gems)[:gems])
+
 					render_success(:player => @player.to_hash(:food)) and return
 				else
 					itm = goods.slice(:item_category, :item_type, :count).merge(:player_id => @player.id)
 					Item.create(itm)
+
+					record_type = case goods[:item_category]
+					when 3
+						:buy_scroll
+					when 4
+						:buy_vip
+					when 5
+						:buy_protection
+					when 6
+						:buy_lottery
+					end
+
+					Stat.record_gems_consume(:type => record_type, :times => 1, :count => goods.slice(:gems)[:gems])
+
 					render_success(:player => @player.to_hash(:items)) and return
 				end
 			else
@@ -94,6 +114,15 @@ class ShoppingController < ApplicationController
 				end
 				# === End of Guide ===
 
+				# Recording...
+				if goods[:gems].to_i > 0
+					Stat.record_gems_consume(:type => :buy_egg, :times => 1, :count => goods[:gems])
+				end
+
+				if goods[:gold].to_i > 0
+					Stat.record_gold_consume(:type => :buy_egg, :times => 1, :count => goods[:gold])
+				end
+
 				if egg
 					render_success(:player => @player.to_hash(:items)) and return
 				end
@@ -106,7 +135,8 @@ class ShoppingController < ApplicationController
 	def buy_arena_count
 		
 		if @player.spend!(:gems => Shopping::MATCH_COUNT_COST)
-			@player.set :honour_battle_count, Shopping::MATCH_COUNT_COST
+			@player.set :honour_battle_count, @player.total_honour_count
+			Stat.record_gems_consume(:type => :buy_arena, :times => 1, :count => Shopping::MATCH_COUNT_COST)
 			render_success(:todays_count => @player.todays_count, :gems => @player.gems)
 		else
 			render_error(Error::NORMAL, I18n.t("general.not_enough_gems"))
