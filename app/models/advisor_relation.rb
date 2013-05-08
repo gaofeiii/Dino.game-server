@@ -46,7 +46,7 @@ class AdvisorRelation < Ohm::Model
 	end
 
 	def evaluation_score
-		# TODO
+		# TODO: Evaluation score of advisor
 		9999
 	end
 

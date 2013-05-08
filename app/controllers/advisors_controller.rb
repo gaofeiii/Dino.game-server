@@ -59,10 +59,12 @@ class AdvisorsController < ApplicationController
 			relation = @player.advisor_relations.find(:type => record.type).first
 
 			if relation.nil?
-				AdvisorRelation.create :type => record.type, :advisor_id => record.player_id, :employer_id => @player.id, :price => record.price
+				relation = AdvisorRelation.create :type => record.type, :advisor_id => record.player_id, :employer_id => @player.id, :price => record.price
 			else
 				relation.update :employer_id => @player.id
 			end
+
+			relation.advisor.set :advisor_relation_id, relation.id
 			
 			record.delete if not record.is_npc
 
