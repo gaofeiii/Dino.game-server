@@ -31,11 +31,8 @@ module StatGameInfo
 		# Note: Gems stat related
 		def record_gems_consume(type: nil, times: 0, count: 0)
 			type_str = type.to_s
-			p "type: #{type}"
 
 			return false if type_str.blank? || count <= 0 || times <= 0 || !type_str.in?(CONSUME_GEMS_TYPE)
-
-			p "recording..."
 
 			Ohm.redis.multi do |t|
 				t.hincrby "#{key}:gems:#{type}", :times, times
