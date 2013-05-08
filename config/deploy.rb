@@ -9,7 +9,7 @@ require 'bundler/capistrano'
 @local = "192.168.1.201"
 
 # Deploy server
-@@server = [@ali001, @a001]
+@@server = [@local]
 
 set :rvm_ruby_string, "2.0.0@dinosaur_game"
 set :rvm_type, :user
@@ -28,7 +28,24 @@ set :keep_releases, 5
 
 set :repository,  "gitolite@106.187.91.156:dinosaur_game_server.git"
 set :scm, :git
-set :branch, "master"
+# set :branch, "master"
+set :branch do
+  all_tags = `git tag`.split("\n")
+
+  puts
+  puts format("%-20s", "***** All Tags *****")
+  all_tags.each do |tg|
+    puts format("* %-16s *", " #{tg}")
+  end
+  puts format("%-20s", "******* End ********")
+  puts
+
+  default_tag = `git tag`.split("\n").last
+
+  tag = Capistrano::CLI.ui.ask "** Choose a tag to deploy (make sure to push the tag first): [default is #{default_tag}]"
+  tag = default_tag if tag.empty?
+  tag
+end
 
 role :web, *@@server
 role :app, *@@server
