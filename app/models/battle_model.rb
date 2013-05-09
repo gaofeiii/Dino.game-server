@@ -586,7 +586,14 @@ module BattleArmyModule
 		result = self.map do |fighter|
 			new_atts = {}
 
-			each_earn_xp = (each_exp * (1 - (fighter.level - enemy_avg_level).abs * 0.1)).to_i
+			lvl_dis = (fighter.level - enemy_avg_level).abs
+			each_earn_xp = 0
+
+			if lvl_dis <= 10
+				each_earn_xp = (each_exp * lvl_dis * 0.1).to_i
+			else
+				each_earn_xp = (each_exp * 0.1).to_i
+			end
 
 			if each_earn_xp < 0
 				next
