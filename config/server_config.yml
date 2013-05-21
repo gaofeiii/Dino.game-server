@@ -11,13 +11,13 @@ gaofei.local:
   port: 6379
 
 dinotest:
- default_locale: 'cn'
+ default_locale: 'en'
  ip: 106.187.91.156
  port: 10002
  account_server_ip: 106.187.91.156
  account_server_port: 10001
  info_const_version: 12
- env: dev
+ env: production
  redis:
   host: 127.0.0.1
   port: 6379

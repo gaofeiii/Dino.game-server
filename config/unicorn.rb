@@ -28,7 +28,7 @@ else
 end
 
 
-puts "--- Unicorn: the worker_processes is #{proc_count} ==="
+puts "--- Unicorn: the worker_processes is #{proc_count} ---"
 
 worker_processes proc_count
 
