@@ -28,6 +28,8 @@ proc_count = case RbConfig::CONFIG['host_os']
   end
 end
 
+puts "--- Unicorn: the worker_processes is #{proc_count} ==="
+
 worker_processes proc_count
 
 listen "/tmp/#{application}.sock", :backlog => 128
