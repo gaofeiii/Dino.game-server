@@ -76,7 +76,7 @@ stdout_redirect '/var/games/servers/dinosaur/shared/log/puma.stdout.log', '/var/
 # bind 'unix:///var/run/puma.sock'
 # bind 'unix:///var/run/puma.sock?umask=0777'
 # bind 'ssl://127.0.0.1:9292?key=path_to_key&cert=path_to_cert'
-bind 'unix:///tmp/ds2.sock'
+bind 'unix:///tmp/dinosaur.sock'
 
 # Instead of “bind 'ssl://127.0.0.1:9292?key=path_to_key&cert=path_to_cert'” you
 # can also use the “ssl_bind” option.
