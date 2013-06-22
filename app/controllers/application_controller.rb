@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
     
     # return true if Rails.env.development?
 
-    if not request.env['HTTP_USER_AGENT'].in?(['1.1', '1.1.1'])
+    if not request.env['HTTP_USER_AGENT'].in?(['1.1', '1.1.1', '1.1.2'])
       render :json => {
         :message => I18n.t('client_version_expired'),
         :error_type => Error::NORMAL,
