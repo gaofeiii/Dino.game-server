@@ -28,24 +28,24 @@ set :keep_releases, 5
 
 set :repository,  "git@106.187.91.156:dinostyle/game-server.git"
 set :scm, :git
-# set :branch, "master"
-set :branch do
-  all_tags = `git tag`.split("\n")
+set :branch, "master"
+# set :branch do
+#   all_tags = `git tag`.split("\n")
 
-  puts
-  puts format("%-20s", "***** All Tags *****")
-  all_tags.each do |tg|
-    puts format("* %-16s *", " #{tg}")
-  end
-  puts format("%-20s", "******* End ********")
-  puts
+#   puts
+#   puts format("%-20s", "***** All Tags *****")
+#   all_tags.each do |tg|
+#     puts format("* %-16s *", " #{tg}")
+#   end
+#   puts format("%-20s", "******* End ********")
+#   puts
 
-  default_tag = `git tag`.split("\n").last
+#   default_tag = `git tag`.split("\n").last
 
-  tag = Capistrano::CLI.ui.ask "** Choose a tag to deploy (make sure to push the tag first): [default is #{default_tag}]"
-  tag = default_tag if tag.empty?
-  tag
-end
+#   tag = Capistrano::CLI.ui.ask "** Choose a tag to deploy (make sure to push the tag first): [default is #{default_tag}]"
+#   tag = default_tag if tag.empty?
+#   tag
+# end
 
 role :web, *@@server
 role :app, *@@server
