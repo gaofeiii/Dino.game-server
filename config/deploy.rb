@@ -26,7 +26,7 @@ set :rails_env, :production
 set :use_sudo, false
 set :keep_releases, 5
 
-set :repository,  "gitolite@106.187.91.156:dinosaur_game_server.git"
+set :repository,  "git@106.187.91.156:dinostyle/game-server.git"
 set :scm, :git
 # set :branch, "master"
 set :branch do
