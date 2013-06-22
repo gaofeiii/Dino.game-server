@@ -12,6 +12,7 @@ gem 'ohm', '~> 1.0'
 gem 'ohm-contrib', '~> 1.0'
 gem 'roo', '~> 1.10.1'
 gem 'daemons'
+gem 'puma'
 
 group :development do
 	gem 'thin'
