@@ -275,12 +275,13 @@ class Player < Ohm::Model
 	end
 
   def locale
-  	case @attributes[:locale]
-  	when 'cn', 'zh-Hans'
-  		:cn
-  	else
-  		:en
-  	end
+  	# case @attributes[:locale]
+  	# when 'cn', 'zh-Hans'
+  	# 	:cn
+  	# else
+  	# 	:en
+  	# end
+  	:cn
   end
 
   def find_task_by_index(idx)
