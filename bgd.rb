@@ -25,7 +25,7 @@ options = {
   :log_output => true
 }
 
-Daemons.run_proc('Refreshing', options) do
+Daemons.run_proc('DS2-game-background-job', options) do
 	loop do
 		begin
 			Background.perform!
