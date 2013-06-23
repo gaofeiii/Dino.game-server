@@ -72,6 +72,7 @@ GEM
     method_source (0.8.1)
     mime-types (1.21)
     multi_json (1.6.1)
+    mysql2 (0.3.11)
     nest (1.1.2)
       redis
     net-scp (1.1.0)
@@ -187,6 +188,7 @@ DEPENDENCIES
   guard
   guard-rspec
   hiredis (~> 0.4)
+  mysql2
   ohm (~> 1.0)
   ohm-contrib (~> 1.0)
   puma
