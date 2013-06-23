@@ -28,7 +28,7 @@ set :keep_releases, 5
 
 set :repository,  "git@106.187.91.156:dinostyle/game-server.git"
 set :scm, :git
-set :branch, "master"
+set :branch, "ds2"
 # set :branch do
 #   all_tags = `git tag`.split("\n")
 
