@@ -1,3 +1,5 @@
+require 'net/http'
+
 class AppStoreOrder < Ohm::Model
 	include Ohm::DataTypes
 	include Ohm::Timestamps
@@ -19,7 +21,7 @@ class AppStoreOrder < Ohm::Model
   reference :player, 	Player
 
   def self.valid_orders
-    self.all.select { |order| order.product_id =~ /com.dinosaur.gems/ }
+    self.all.select { |order| order.product_id =~ /com.gaofei.dinostyle2/ }
   end
 
   def self.validate_iap(rcp)

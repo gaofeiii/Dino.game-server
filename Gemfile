@@ -14,7 +14,10 @@ gem 'roo', '~> 1.10.1'
 gem 'daemons'
 gem 'puma'
 gem 'bcrypt-ruby'
-gem 'mysql2'
+
+group :production do
+  gem 'mysql2'
+end
 
 group :development do
 	gem 'thin'

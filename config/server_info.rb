@@ -134,7 +134,7 @@ class ServerInfo
 
 		def export_server_data
 			content = server_data[:data].to_json
-			file = File.new("/Users/gaofei/magic/dinosaur/linode_svn/game-client/PhoneGame/Resource/game_data/server_data.json", "w")
+			file = File.new("/Users/gaofei/Desktop/server_data.json", "w")
 			file.write(content)
 			file.close
 		end

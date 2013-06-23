@@ -6,8 +6,8 @@ module PlayerIosHelper
 	module InstanceMethods
 		def send_push(message)
 			return if device_token.blank?
-			
-			send_push_message(:device_token => device_token, :message => message)
+
+			Notification.send(device_token, message)
 		end
 
 		# 评论App Store检查

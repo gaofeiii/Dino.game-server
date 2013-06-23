@@ -1,6 +1,6 @@
 class SessionsProController < ApplicationController
 
-	before_filter :get_device_token, :only => [:demo, :create]
+	before_filter :get_device_token, :only => [:demo, :login]
 	skip_filter :check_server_status, :only => [:server_list]
 	skip_filter :check_version, :only => [:server_list]
 	skip_filter :validate_sig, :only => [:server_list]
@@ -23,6 +23,11 @@ class SessionsProController < ApplicationController
 														:nickname			=> account.username,
 														:device_token => @device_token
 
+		player.reset_daily_quest!
+		player.refresh_village_status
+		player.refresh_god_status!
+		player.get_vip_daily_reward
+		player.login!
 		player.login!
 		render_success 	:player 				=> player.to_hash(:all),
 										:is_new 				=> true,
@@ -37,6 +42,14 @@ class SessionsProController < ApplicationController
 
 		if account && account.authenticate(params[:password])
 			player = Player.find_by_account_id(account.id)
+
+			player.set :device_token, @device_token if @device_token
+
+			player.dinosaurs.map(&:update_status!)
+			player.reset_daily_quest!
+			player.refresh_village_status
+			player.refresh_god_status!
+			player.get_vip_daily_reward
 			player.login!
 
 			render_success 	:player 				=> player.to_hash(:all),
