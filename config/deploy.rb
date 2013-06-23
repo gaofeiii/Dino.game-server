@@ -11,7 +11,7 @@ require 'bundler/capistrano'
 # Deploy server
 @@server = [@linode]
 
-set :rvm_ruby_string, "2.0.0@dinosaur_game"
+set :rvm_ruby_string, "2.0.0@ds2-game"
 set :rvm_type, :user
 require "rvm/capistrano"
 
@@ -19,7 +19,7 @@ default_run_options[:pty] = true
 set :user, "gaofei"
 set :runner, "gaofei"
 set :ssh_options,   { :forward_agent => true }
-set :application, "dinosaur"
+set :application, "ds2-game"
 set :deploy_to, "/var/games/servers/#{application}"
 # set :deploy_via, :remote_cache
 set :rails_env, :production
@@ -76,7 +76,7 @@ end
 namespace :nginx do
   desc "Copy nginx config file to aim directory"
   task :config do
-    run "sudo cp #{current_path}/config/nginx/dinosaur-game.conf /etc/nginx/conf.d/"
+    run "sudo cp #{current_path}/config/nginx/dinosaur-game.conf /etc/nginx/conf.d/ds2-game.conf"
   end
 
   desc "Reload nginx"
@@ -160,12 +160,12 @@ end
 namespace :game do
   desc "Soft shutdown"
   task :shutdown, :roles => :app do
-    run "sudo /usr/local/bin/redis-cli del Server:status"
+    run "sudo /usr/local/bin/redis-cli -p 20003 del Server:status"
   end
 
   desc "Soft start server"
   task :start, :roles => :app do
-    run "sudo /usr/local/bin/redis-cli set Server:status 1"
+    run "sudo /usr/local/bin/redis-cli -p 20003 set Server:status 1"
   end
 end
 
