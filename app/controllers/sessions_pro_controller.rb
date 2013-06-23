@@ -3,6 +3,7 @@ class SessionsProController < ApplicationController
 	before_filter :get_device_token, :only => [:demo, :create]
 	skip_filter :check_server_status, :only => [:server_list]
 	skip_filter :check_version, :only => [:server_list]
+	skip_filter :validate_sig, :only => [:server_list]
 
 	def server_list
 		render :json => ServerInfo.current[:server_list]
