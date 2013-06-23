@@ -21,7 +21,7 @@ test:
 production:
   adapter: mysql2
   encoding: utf8
-  database: dinosaur_accounts
+  database: dino2_account
   username: root
   password: 
   pool: 5

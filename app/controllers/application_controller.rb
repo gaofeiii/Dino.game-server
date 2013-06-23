@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :redis_access_log
   before_filter :set_default_locale
-  # before_filter :validate_sig
+  before_filter :validate_sig
   # before_filter :validate_session
 
   private
@@ -16,9 +16,9 @@ class ApplicationController < ActionController::Base
 
     if status.nil?
       render :json => {
-        :message => I18n.t('system_maintaining'),
+        :message => I18n.t('system_maintaining', :locale => 'cn'),
         :error_type => Error::NORMAL,
-        :error => I18n.t('system_maintaining')
+        :error => I18n.t('system_maintaining', :locale => 'cn')
       }
     end
   end
