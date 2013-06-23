@@ -27,6 +27,8 @@
 #
 # The default is “development”.
 #
+app_name = 'ds2-game'
+
 environment 'production'
 
 # Daemonize the server into the background. Highly suggest that
@@ -40,7 +42,7 @@ daemonize true
 # Store the pid of the server in the file at “path”.
 #
 # pidfile '/u/apps/lolcat/tmp/pids/puma.pid'
-pidfile '/var/games/servers/ds2-game/shared/pids/puma.pid'
+pidfile "/var/games/servers/#{app_name}/shared/pids/puma.pid"
 
 # Use “path” as the file to store the server info state. This is
 # used by “pumactl” to query and control the server.
@@ -51,7 +53,7 @@ pidfile '/var/games/servers/ds2-game/shared/pids/puma.pid'
 # (“append”) specifies whether the output is appended, the default is
 # “false”.
 #
-stdout_redirect '/var/games/servers/ds2-game/shared/log/puma.stdout.log', '/var/games/servers/ds2-game/shared/log/puma.stderr.log'
+stdout_redirect "/var/games/servers/#{app_name}/shared/log/puma.stdout.log", "/var/games/servers/#{app_name}/shared/log/puma.stderr.log"
 # stdout_redirect '/u/apps/lolcat/log/stdout', '/u/apps/lolcat/log/stderr', true
 
 # Disable request logging.
@@ -76,7 +78,7 @@ stdout_redirect '/var/games/servers/ds2-game/shared/log/puma.stdout.log', '/var/
 # bind 'unix:///var/run/puma.sock'
 # bind 'unix:///var/run/puma.sock?umask=0777'
 # bind 'ssl://127.0.0.1:9292?key=path_to_key&cert=path_to_cert'
-bind 'unix:///tmp/ds2-game.sock'
+bind "unix:///tmp/#{app_name}.sock"
 
 # Instead of “bind 'ssl://127.0.0.1:9292?key=path_to_key&cert=path_to_cert'” you
 # can also use the “ssl_bind” option.
