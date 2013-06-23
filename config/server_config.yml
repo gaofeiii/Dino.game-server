@@ -28,12 +28,17 @@ linode:
  ip: 106.187.91.156
  port: 10002
  account_server_ip: 106.187.91.156
- account_server_port: 10001
+ account_server_port: 10003
  info_const_version: 12
  env: production
  redis:
   host: 127.0.0.1
   port: 16379
+ server_list:
+ - id: 1
+   name: 中文1服
+   ip: 106.187.91.156
+   port: 10003
 
 
 ali001:
