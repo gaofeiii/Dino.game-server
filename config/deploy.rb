@@ -169,6 +169,17 @@ namespace :game do
   end
 end
 
+namespace :puma do
+  task :start, :roles => :app do
+    run "cd #{current_path} && bundle exec puma -C #{current_path}/config/puma.rb"
+  end
+
+  task :stop, :roles => :app do
+    run "kill -QUIT `cat #{deploy_to}/shared/pids/puma.pid`"
+  end
+
+end
+
 task :deploy_all do
   find_and_execute_task("deploy:cleanup")
   find_and_execute_task("deploy")
