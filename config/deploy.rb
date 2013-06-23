@@ -177,8 +177,8 @@ namespace :puma do
   task :stop, :roles => :app do
     run "kill -QUIT `cat #{deploy_to}/shared/pids/puma.pid`"
   end
-
 end
+after "puma:start", "background:restart"
 
 task :deploy_all do
   find_and_execute_task("deploy:cleanup")
