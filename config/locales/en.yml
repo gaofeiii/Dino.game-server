@@ -1,5 +1,6 @@
 ﻿en:
   hello: "Hello"
+  lord: "lord"
 
   system: "System"
   system_maintaining: "The server is under maintaining for a few mins, please try again later"

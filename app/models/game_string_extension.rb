@@ -36,6 +36,12 @@ module GameStringExtension
 				Regexp.new word
 			end
 		end
+
+		def random_number(n = 1)
+			str = new
+			1.upto(n).each { str << NUMBERS.sample }
+			str
+		end
 	end
 	
 	module InstanceMethods

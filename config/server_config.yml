@@ -8,7 +8,20 @@ gaofei.local:
  env: dev
  redis:
   host: 127.0.0.1
-  port: 6379
+  port: 16379
+ server_list:
+ - id: 1
+   name: gaofei.local
+   ip: 192.168.1.200
+   port: 3000
+ - id: 2
+   name: 中文1服
+   ip: 42.120.23.41
+   port: 10002
+ - id: 3
+   name: English 01
+   ip: 106.187.91.156
+   port: 10002
 
 linode:
  default_locale: 'cn'

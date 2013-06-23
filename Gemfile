@@ -13,6 +13,7 @@ gem 'ohm-contrib', '~> 1.0'
 gem 'roo', '~> 1.10.1'
 gem 'daemons'
 gem 'puma'
+gem 'bcrypt-ruby'
 
 group :development do
 	gem 'thin'

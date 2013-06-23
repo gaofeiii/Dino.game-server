@@ -113,6 +113,10 @@ class Player < Ohm::Model
 		self.find(:gk_player_id => gk_id).first
 	end
 
+	def account
+		Account.find(account_id)
+	end
+
 	def login!
 		cleanup_scrolls
 		

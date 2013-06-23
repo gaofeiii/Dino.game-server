@@ -1,19 +1,25 @@
 DinosaurGame::Application.routes.draw do
   # 账户模块
   scope :path => 'accounts', :as => 'accounts' do
-    post 'demo'        => 'sessions#demo'             # 快速试玩
-    post 'login'       => 'sessions#create'           # 登录
-    post 'register'    => 'sessions#register'         # 注册
-    post 'update'      => 'sessions#update'           # 更新账户
-    post 'change_pass' => 'sessions#change_password'  # 修改密码
+    # post 'demo'        => 'sessions#demo'             # 快速试玩
+    # post 'login'       => 'sessions#create'           # 登录
+    # post 'register'    => 'sessions#register'         # 注册
+    # post 'update'      => 'sessions#update'           # 更新账户
+    # post 'change_pass' => 'sessions#change_password'  # 修改密码
+    post 'demo'   => 'sessions_pro#demo'
+    post 'login'  => 'sessions_pro#login'
+    post 'change_pass' => 'sessions_pro#change_pass'
   end
+
+  match '/players/modify_nickname' => 'sessions_pro#modify_nickname', :via => :post
+  match '/server_list' => 'sessions_pro#server_list'
 
   # 玩家信息
   scope :path => 'players', :as => 'players' do
     post 'refresh'                => 'players#refresh'
     post 'change_avatar'          => 'players#change_avatar'
     post 'my_gold_mines'          => 'players#my_gold_mines'
-    post 'modify_nickname'        => 'players#modify_nickname'
+    # post 'modify_nickname'        => 'players#modify_nickname'
     post 'register_game_center'   => 'players#register_game_center'
     post 'harvest_all_goldmines'  => 'players#harvest_all_goldmines'
   end
