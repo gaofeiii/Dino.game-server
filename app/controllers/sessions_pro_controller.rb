@@ -65,7 +65,14 @@ class SessionsProController < ApplicationController
 		player = Player[params[:player_id]]
 
 		if player
-			player.update :nickname => params[:nickname]
+
+			# check nickname
+			nickname = params[:nickname].to_s
+			if nickname.sensitive?
+				render_error(Error::NORMAL, I18n.t('players_error.invalid_nickname')) and return
+			end
+
+			player.update :nickname => params[:nickname], :is_set_nickname => true
 			player.account.update_attributes :username => params[:nickname]
 			render_success(:player => {:nickname => player.nickname}, :username => player.nickname)
 		else
