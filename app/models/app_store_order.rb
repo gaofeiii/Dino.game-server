@@ -24,6 +24,10 @@ class AppStoreOrder < Ohm::Model
     self.all.select { |order| order.product_id =~ /com.gaofei.dinostyle2/ }
   end
 
+  def self.clean!
+    self.all.select { |order| order.delete if !(order.product_id =~ /com.dinosaur.gems/) }
+  end
+
   def self.validate_iap(rcp)
   	uri = URI("https://buy.itunes.apple.com/verifyReceipt")
     uri = case ServerInfo.info[:env]
