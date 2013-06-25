@@ -9,7 +9,7 @@ require 'bundler/capistrano'
 @local = "192.168.1.201"
 
 # Deploy server
-@@server = [@linode]
+@@server = [@ali001]
 
 set :rvm_ruby_string, "2.0.0@dinosaur_game"
 set :rvm_type, :user
