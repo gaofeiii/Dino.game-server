@@ -2,11 +2,11 @@ class ApplicationController < ActionController::Base
   after_filter :log_info if Rails.env.development?
 
   before_filter :check_server_status
-  before_filter :check_version
+  # before_filter :check_version
 
   before_filter :redis_access_log
   before_filter :set_default_locale
-  before_filter :validate_sig
+  # before_filter :validate_sig
   # before_filter :validate_session
 
   private

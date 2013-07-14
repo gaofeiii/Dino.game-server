@@ -11,7 +11,7 @@ require 'bundler/capistrano'
 # Deploy server
 @@server = [@ali001]
 
-set :rvm_ruby_string, "2.0.0@ds2-game"
+set :rvm_ruby_string, "2.0.0@dinosaur_game"
 set :rvm_type, :user
 require "rvm/capistrano"
 
@@ -19,7 +19,7 @@ default_run_options[:pty] = true
 set :user, "gaofei"
 set :runner, "gaofei"
 set :ssh_options,   { :forward_agent => true }
-set :application, "ds2-game"
+set :application, "dinosaur"
 set :deploy_to, "/var/games/servers/#{application}"
 # set :deploy_via, :remote_cache
 set :rails_env, :production
