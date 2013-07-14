@@ -104,7 +104,7 @@ bind 'unix:///tmp/dinosaur.sock'
 #
 # The default is “0”.
 #
-# workers 2
+workers 2
 
 # Code to run when a worker boots to setup the process before booting
 # the app.
