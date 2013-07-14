@@ -18,7 +18,7 @@ class ToolBox
 			end
 
 			system('clear')
-			puts "--- Cleaned: #{cleaned} | Finished: #{i + 1}/#{count} (#{format("%.2f", (i+1)/count.to_f)}%) ---"
+			puts "--- Cleaned: #{cleaned} | Finished: #{i + 1}/#{count} (#{format("%.2f", (i+1)/count.to_f * 100)}%) ---"
 		end
 
 		puts "Done!!!"
