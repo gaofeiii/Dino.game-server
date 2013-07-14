@@ -22,6 +22,6 @@ class ToolBox
 		end
 
 		puts "Done!!!"
-		puts "=== Spend #{format("%.3f", Time.now.to_f - start_time)} seconds. ==="
+		puts "=== Clear #{cleaned} players. Spend #{format("%.3f", Time.now.to_f - start_time)} seconds. ==="
 	end
 end
