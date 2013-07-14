@@ -26,7 +26,7 @@ set :rails_env, :production
 set :use_sudo, false
 set :keep_releases, 5
 
-set :repository,  "gitolite@192.168.1.201:dinostyle.game-server.git"
+set :repository,  "gitolite@magic0fei.eicp.net:dinostyle.game-server.git"
 set :scm, :git
 set :branch, "master"
 # set :branch do
@@ -183,6 +183,8 @@ namespace :puma do
     find_and_execute_task("puma:start")
   end
 end
+
+after "puma:start", "background:restart"
 
 task :deploy_all do
   find_and_execute_task("deploy:cleanup")
