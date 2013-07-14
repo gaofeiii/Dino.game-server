@@ -357,7 +357,8 @@ class Player < Ohm::Model
 		country = Country.first
 		x, y = find_rand_coords(country)
 		random_coord = x + y * Country::COORD_TRANS_FACTOR
-		vil = Village.create :name => "#{self.nickname}'s village", :player_id => self.id, 
+		village_name = I18n.t('player.whos_village', :locale => 'cn', :player_name => nickname)
+		vil = Village.create :name => village_name, :player_id => self.id, 
 		:x => x, :y => y, :country_index => 1
 		country.add_used_town_nodes(random_coord)
 		self.set :village_id, vil.id
