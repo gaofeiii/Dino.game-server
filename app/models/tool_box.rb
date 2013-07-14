@@ -1,5 +1,5 @@
 class ToolBox
-	
+
 	def self.clean_player(time_interval)
 		if time_interval.blank?
 			raise "Should input time interval"
@@ -23,5 +23,24 @@ class ToolBox
 
 		puts "Done!!!"
 		puts "=== Clear #{cleaned} players. Spend #{format("%.3f", Time.now.to_f - start_time)} seconds. ==="
+	end
+
+	def self.clean_iap
+		count = AppStoreOrder.count
+		cleaned = 0
+		start_time = Time.now.to_f
+
+		AppStoreOrder.all.each_with_index do |order, i|
+			if order.product_id =~ /com.dinosaur.gems/
+				order.delete
+				cleaned += 1
+			end
+
+			system('clear')
+			puts "--- Finished: #{i+1}/#{count} (#{format("%.2f", (i+1)/count.to_f*200)}%) ---"
+		end
+
+		puts "Done!!!"
+		puts "=== Clear #{cleaned} orders. Spend #{format("%.3f", Time.now.to_f - start_time)} seconds. ==="
 	end
 end
