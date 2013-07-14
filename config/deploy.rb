@@ -110,7 +110,7 @@ namespace :redis do
 
   task :stop do
     # run "sudo kill -QUIT `cat /var/run/redis.pid`"
-    run "sudo /usr/local/bin/redis-cli shutdown"
+    run "sudo /usr/local/bin/redis-cli -p 16379 shutdown"
   end
 end
 
