@@ -66,7 +66,7 @@ class Country < Ohm::Model
 	def refresh_used_town_nodes
 		db.multi do |t|
 			t.del key[:used_town_nodes]
-			t..sadd key[:used_town_nodes], Village.all.map(&:index)
+			t.sadd key[:used_town_nodes], Village.all.map(&:index)
 		end
 	end
 
