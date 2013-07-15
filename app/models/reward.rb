@@ -48,6 +48,8 @@ class Reward
 
 		reward = Reward.new
 
+		return reward if origin.nil?
+
 		case rand(1..1000)
 		when 1..900
 			reward.gold_coin = origin[:res_count]

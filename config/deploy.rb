@@ -3,13 +3,29 @@
 require 'bundler/capistrano'
 
 # Server list
-@linode = "106.187.91.156"
-@a001 = "50.112.84.136"
-@ali001 = "42.120.23.41"
-@local = "192.168.1.201"
+@servers = {
+  'linode' => "106.187.91.156",
+  'ali001' => "42.120.23.41",
+  'local'  => "192.168.1.201"
+}
 
-# Deploy server
-@@server = [@ali001]
+require 'pp'
+system('clear')
+puts "--- Choose a server to deploy ---\n"
+pp @servers
+puts
+target = Capistrano::CLI.ui.ask "--- Type the server name ---"
+
+until @servers.keys.include?(target)
+  target = Capistrano::CLI.ui.ask "--- No such server: '#{target}', please try again or press CTRL+C to quit ---"
+end
+
+@@server = [@servers[target]]
+
+system('clear')
+puts "  * You have chosen '#{target}' IP: #{@servers[target]} to deploy\n\n"
+
+
 
 set :rvm_ruby_string, "2.0.0@dinosaur_game"
 set :rvm_type, :user
