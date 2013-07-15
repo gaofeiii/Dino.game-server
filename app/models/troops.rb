@@ -224,6 +224,11 @@ class Troops < Ohm::Model
 
 							if not target.player_id.blank?
 								target_player = target.player
+
+								if target_player.nil?
+									self.dissolve! and return
+								end
+
 								ax, ay = db.hmget(Village.key[player.village_id], :x, :y).map!(&:to_i)
 
 								# (attacker_id:nil, attacker_name:nil, defender_id:nil, defender_name:nil, gx:0, gy:0, ax:0, ay:0, locale:'en')
