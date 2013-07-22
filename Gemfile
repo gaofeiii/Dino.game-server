@@ -23,6 +23,7 @@ group :development do
   gem 'guard-rspec'
   # gem 'ruby_gntp'
   gem 'terminal-notifier-guard'
+  gem 'awesome_print'
 end
 
 group :test do

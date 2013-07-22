@@ -10,10 +10,10 @@ require 'bundler/capistrano'
 }
 
 # Manually choose an target server.
-require 'pp'
+require 'ap'
 system('clear')
 puts "--- Choose a server to deploy ---\n"
-pp @servers
+ap @servers
 puts
 target = Capistrano::CLI.ui.ask "--- Type the server name ---"
 
