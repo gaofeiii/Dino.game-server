@@ -4,7 +4,6 @@ require 'bundler/capistrano'
 
 # Server list
 @servers = {
-  'linode' => "106.187.91.156",
   'ali001' => "42.120.23.41",
   'local'  => "192.168.1.201"
 }

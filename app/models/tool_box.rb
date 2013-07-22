@@ -1,4 +1,17 @@
 class ToolBox
+	def clean_with_log(&block)
+		start_time = Time.now.to_f
+		block.call
+		puts "\n-- Work Done!!! Cost #{format("%.3f", Time.now.to_f - start_time)} seconds."
+	end
+
+	def log_in_loop(name, curr, total, cleaned = 0)
+		system('clear') and puts "\e[H\e[2J"
+		puts "-- #{name}..." || "--- [No title]"
+		puts
+		puts "* finished: #{curr}/#{total}(#{format("%.1f", curr/total.to_f*100)}%)"
+		puts "* cleaned: #{cleaned}"
+	end
 
 	def self.clean_player(time_interval)
 		if time_interval.blank?
@@ -17,7 +30,7 @@ class ToolBox
 				cleaned += 1
 			end
 
-			system('clear')
+			system('clear') and puts "\e[H\e[2J"
 			puts "--- Cleaned: #{cleaned} | Finished: #{i + 1}/#{count} (#{format("%.2f", (i+1)/count.to_f * 100)}%) ---"
 		end
 
