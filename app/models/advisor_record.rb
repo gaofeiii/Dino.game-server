@@ -48,6 +48,7 @@ class AdvisorRecord < Ohm::Model
 			self.all.each_with_index do |record, idx|
 				if record.player.nil?
 					record.delete
+					cleaned += 1
 
 					system('clear')
 					puts "... finished: #{idx+1}/#{total} (#{format("%.2f", (idx+1)/total.to_f*100)}%), cleaned: #{cleaned}."
