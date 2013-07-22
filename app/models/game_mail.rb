@@ -59,7 +59,7 @@ class GameMail < Ohm::Model
 			end
 
 			system('clear')
-			puts "...Finished: #{i+1}/#{count} (#{format("%.2f", (i+1)/count.to_f*100)}%)"
+			puts "...Finished: #{i+1}/#{count} (#{format("%.2f", (i+1)/count.to_f*100)}%), cleaned: #{cleaned}."
 		end
 
 		puts "Done!!!"
