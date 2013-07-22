@@ -9,6 +9,7 @@ require 'bundler/capistrano'
   'local'  => "192.168.1.201"
 }
 
+# Manually choose an target server.
 require 'pp'
 system('clear')
 puts "--- Choose a server to deploy ---\n"
@@ -37,12 +38,12 @@ set :runner, "gaofei"
 set :ssh_options,   { :forward_agent => true }
 set :application, "dinosaur"
 set :deploy_to, "/var/games/servers/#{application}"
-set :deploy_via, :remote_cache
+# set :deploy_via, :remote_cache
 set :rails_env, :production
 set :use_sudo, false
 set :keep_releases, 5
 
-set :repository,  "gitolite@magic0fei.eicp.net:dinostyle.game-server.git"
+set :repository,  "https://github.com/gaofeiii/Dino.game-server.git"
 set :scm, :git
 set :branch, "master"
 # set :branch do
