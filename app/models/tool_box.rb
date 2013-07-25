@@ -6,10 +6,10 @@ class ToolBox
 	end
 
 	def self.log_in_loop(name, curr, total, cleaned = 0)
-		if total > 1000 && curr % 3 != 0
+		if total >= 1000 && curr % 3 != 0 && curr != total
 			return nil
 		end
-		
+
 		system('clear') and puts "\e[H\e[2J"
 		puts "-- #{name}..." || "--- [No title]"
 		puts
