@@ -6,7 +6,7 @@ class ToolBox
 	end
 
 	def self.log_in_loop(name, curr, total, cleaned = 0)
-		if total >= 1000 && curr % 3 != 0 && curr != total
+		if total >= 1000 && curr % 5 != 0 && curr != total
 			return nil
 		end
 
