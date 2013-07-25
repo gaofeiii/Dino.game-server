@@ -81,5 +81,20 @@ class ToolBox
 		end
 	end
 
+	def self.clean_beginner_guide(count = 1000)
+		clean_with_log do
+			arr = Ohm.redis.srandmembers(BeginnerGuide.all.key, count)
+			r_count = arr.count
+
+			arr.each_with_index do |kid, i|
+				guide = BeginnerGuide[kid]
+				if guide.player.blank?
+					guide.delete
+				end
+				log_in_loop('Cleaning beginner guides data', i+1, r_count, i+1)
+			end
+		end
+	end
+
 
 end
