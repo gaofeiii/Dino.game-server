@@ -67,7 +67,7 @@ class ToolBox
 			# 	log_in_loop("Clean Monsters", i+1, count, i+1)
 			# end
 
-			key_array = Ohm.redis.srandmembers(Monster.all.key)
+			key_array = Ohm.redis.srandmembers(Monster.all.key, count)
 			real_count = key_array.count
 
 			key_array.each_with_index do |id, index|
