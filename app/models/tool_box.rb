@@ -59,5 +59,14 @@ class ToolBox
 		puts "=== Clear #{cleaned} orders. Spend #{format("%.3f", Time.now.to_f - start_time)} seconds. ==="
 	end
 
+	def self.clean_monsters(count = 1000)
+		clean_with_log do
+			count.times do |i|
+				Monster.first.delete
+				log_in_loop("Clean Monsters", i+1, count, i+1)
+			end
+		end
+	end
+
 
 end

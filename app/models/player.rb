@@ -348,6 +348,7 @@ class Player < Ohm::Model
 			self.send(coll).map(&:delete)
 		end
 		db.zadd(Player.key[:battle_rank], self.honour_score, id)
+		db.keys("*#{self.key}*").map { |k| db.del k }
 	end
 
 	private
