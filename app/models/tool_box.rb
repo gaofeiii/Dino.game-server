@@ -1,11 +1,11 @@
 class ToolBox
-	def clean_with_log(&block)
+	def self.clean_with_log(&block)
 		start_time = Time.now.to_f
 		block.call
 		puts "\n-- Work Done!!! Cost #{format("%.3f", Time.now.to_f - start_time)} seconds."
 	end
 
-	def log_in_loop(name, curr, total, cleaned = 0)
+	def self.log_in_loop(name, curr, total, cleaned = 0)
 		system('clear') and puts "\e[H\e[2J"
 		puts "-- #{name}..." || "--- [No title]"
 		puts
