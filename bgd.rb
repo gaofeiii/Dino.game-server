@@ -1,10 +1,7 @@
 require File.expand_path("./config/environment.rb")
-Ohm.redis = Redis.new(GameServer.current.redis)
 
 puts "--- RAILS_ENV: #{Rails.env} ---"
 
-
-Ohm.redis.quit
 Dinosaur.const
 Technology.const
 Monster.const
@@ -19,7 +16,7 @@ Shopping.list
 Skill.const
 
 puts "--- Adding cronjobs ---"
-Background.clear_all_cronjobs
+Background.clear_all_cronjobs(Ohm.redis)
 Background.add_cronjob(WorldChat, 'clean_up!', 1.day.to_i)
 Background.add_cronjob(LeagueChat, 'clean_up!', 1.day.to_i)
 Background.add_cronjob(PrivateChat, 'clean_up!', 1.day.to_i)
@@ -35,7 +32,7 @@ Background.add_cronjob(AdvisorRecord, 'clean_up!', 30.minutes)
 Background.add_cronjob(GameMail, 'clean_up!', 6.hours)
 Background.add_cronjob(ToolBox, 'clean_all', 1.hour)
 
-# Background.add_cronjob('Ohm.redis', 'bgsave', 5.minutes)
+Background.add_cronjob('Ohm.redis', 'bgsave', 5)
 
 require 'daemons'
 
@@ -44,8 +41,10 @@ options = {
  	:backtrace  => true,
  	:log_dir	=> "#{Rails.root}/log",
  	:log_output => true,
- 	:monitor 	=> true
+ 	:monitor 	=> false
 }
+
+Ohm.redis.quit
 
 Daemons.run_proc('DS-Refreshing', options) do
 	loop do

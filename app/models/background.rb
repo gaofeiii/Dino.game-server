@@ -1,52 +1,57 @@
 class Background
 	@@queue = []
 	@@cronjob = []
+	@@redis = nil
+
+	def self.redis(r)
+		r
+	end
 
 	# Background.add_queue(Troops, 1, "refresh!", 1360045836)
 	def self.add_queue(klass, id, action, time)
 		key = "#{klass}:queue:#{action}"
 		@@queue << key
-		Ohm.redis.multi do |t|
+		redis(r).multi do |t|
 			t.sadd "Background:queues", key
 			t.zadd key, time, id
 		end
 	end
 
-	def self.all_queues
+	def self.all_queues(r)
 		if @@queue.empty?
-			@@queue = Ohm.redis.smembers "Background:queues"
+			@@queue = redis(r).smembers "Background:queues"
 		end
 
 		@@queue
 	end
 
-	def self.refresh_queues
-		self.all_queues.each do |queue_key|
+	def self.refresh_queues(r)
+		self.all_queues(r).each do |queue_key|
 			key_arr = queue_key.split(':')
 			klass = key_arr.first.constantize
 			action = key_arr.last
 
 			raise "Invalid queue class:#{klass} @#{__FILE__}:#{__LINE__}" if klass.nil?
 
-			ids = Ohm.redis.zrangebyscore queue_key, "-inf", Time.now.to_i
+			ids = redis(r).zrangebyscore queue_key, "-inf", Time.now.to_i
 
 			ids.each do |k_id|
 				obj = klass[k_id]
 				if obj.nil?
-					Ohm.redis.zrem queue_key, k_id
+					redis(r).zrem queue_key, k_id
 					next
 				end
 
 				obj.send(action)
-				Ohm.redis.zrem queue_key, k_id
+				redis(r).zrem queue_key, k_id
 			end
 		end
 	end
 
-	def self.remove_queue(klass, id, action)
+	def self.remove_queue(klass, id, action, r = Redis.new(GameServer.current.redis))
 		key = "#{klass}:queue:#{action}"
 
-		Ohm.redis.multi do |t|
+		redis(r).multi do |t|
 			t.srem "Background:queues", key
 			t.zrem key, id
 		end
@@ -72,30 +77,30 @@ class Background
 
 	# 默认从当前时间的整点开始计时
 	# 例如，当前时间为1:05，time_duration = 15.minutes，执行时间为1:15，1:30，1:45，以此类推
-	def self.add_cronjob(klass, action, time_duration)
+	def self.add_cronjob(klass, action, time_duration, r = Redis.new(GameServer.current.redis))
 		key = "#{klass}:cronjob:#{action}"
 		@@cronjob << key
 
 		# begin_time = Time.now.beginning_of_hour.to_i
 		begin_time = Time.now.to_i
 
-		Ohm.redis.multi do |t|
+		redis(r).multi do |t|
 			t.sadd "Background:cronjobs", key
 			t.hmset key, 'time_duration', time_duration, 'next_exec_time', begin_time + time_duration
 		end
 	end
 
-	def self.all_cronjobs
+	def self.all_cronjobs(r)
 		if @@cronjob.empty?
-			@@cronjob = Ohm.redis.smembers("Background:cronjobs")
+			@@cronjob = redis(r).smembers("Background:cronjobs")
 		end
 		@@cronjob
 	end
 
-	def self.clear_all_cronjobs
-		jobs = all_cronjobs
+	def self.clear_all_cronjobs(r)
+		jobs = all_cronjobs(r)
 
-		Ohm.redis.multi do |t|
+		redis(r).multi do |t|
 			t.del *jobs if not jobs.empty?
 			t.del "Background:cronjobs"
 		end
@@ -103,11 +108,11 @@ class Background
 		@@cronjob.clear
 	end
 
-	def self.refresh_cronjobs
-		self.all_cronjobs.map do |cron_key|
-			cron = Ohm.redis.hgetall cron_key # keys = [:time_duration, :last_exec_time]
+	def self.refresh_cronjobs(r)
+		self.all_cronjobs(r).map do |cron_key|
+			cron = redis(r).hgetall cron_key # keys = [:time_duration, :last_exec_time]
 			if cron.empty?
-				Ohm.redis.del cron_key
+				redis(r).del cron_key
 				next
 			end
 
@@ -124,16 +129,17 @@ class Background
 				
 				raise "Invalid cronjob class:#{klass} @#{__FILE__}:#{__LINE__}" if klass.nil?
 				klass.send(action) 
-				puts "--- Run '#{cron_key}' successfully! ---" if cron_key == 'Ohm.redis:cronjob:bgsave'
+				puts "--- Run '#{cron_key}' successfully! ---" if cron_key == 'redis:cronjob:bgsave'
 				
-				Ohm.redis.hmset cron_key, 'next_exec_time', next_exec_time + cron['time_duration'].to_i
+				redis(r).hmset cron_key, 'next_exec_time', next_exec_time + cron['time_duration'].to_i
 			end
 
 		end
 	end
 
 	def self.perform!
-		self.refresh_queues
-		self.refresh_cronjobs
+		r = Redis.new(GameServer.current.redis)
+		self.refresh_queues(r)
+		self.refresh_cronjobs(r)
 	end
 end
