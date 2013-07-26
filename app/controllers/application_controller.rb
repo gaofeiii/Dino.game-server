@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :redis_access_log
   before_filter :set_default_locale
-  # before_filter :validate_sig
+  before_filter :validate_sig
   # before_filter :validate_session
 
   private
@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
     
     # return true if Rails.env.development?
 
-    if not request.env['HTTP_USER_AGENT'].in?(['1.0'])
+    if not request.env['HTTP_USER_AGENT'].in?(['1.1.1', '1.1.2', '1.2'])
       render :json => {
         :message => I18n.t('client_version_expired'),
         :error_type => Error::NORMAL,

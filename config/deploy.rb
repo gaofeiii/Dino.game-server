@@ -3,13 +3,29 @@
 require 'bundler/capistrano'
 
 # Server list
-@linode = "106.187.91.156"
-@a001 = "50.112.84.136"
-@ali001 = "42.120.23.41"
-@local = "192.168.1.201"
+@servers = {
+  'ali001' => "42.120.23.41",
+  'local'  => "192.168.1.201"
+}
 
-# Deploy server
-@@server = [@ali001]
+# Manually choose an target server.
+require 'ap'
+system('clear')
+puts "--- Choose a server to deploy ---\n"
+ap @servers
+puts
+target = Capistrano::CLI.ui.ask "--- Type the server name ---"
+
+until @servers.keys.include?(target)
+  target = Capistrano::CLI.ui.ask "--- No such server: '#{target}', please try again or press CTRL+C to quit ---"
+end
+
+@@server = [@servers[target]]
+
+system('clear')
+puts "  * You have chosen '#{target}' IP: #{@servers[target]} to deploy\n\n"
+
+
 
 set :rvm_ruby_string, "2.0.0@dinosaur_game"
 set :rvm_type, :user
@@ -21,12 +37,12 @@ set :runner, "gaofei"
 set :ssh_options,   { :forward_agent => true }
 set :application, "dinosaur"
 set :deploy_to, "/var/games/servers/#{application}"
-# set :deploy_via, :remote_cache
+set :deploy_via, :remote_cache
 set :rails_env, :production
 set :use_sudo, false
 set :keep_releases, 5
 
-set :repository,  "git@106.187.91.156:dinostyle/game-server.git"
+set :repository,  "https://github.com/gaofeiii/Dino.game-server.git"
 set :scm, :git
 set :branch, "ds2"
 # set :branch do
@@ -110,7 +126,7 @@ namespace :redis do
 
   task :stop do
     # run "sudo kill -QUIT `cat /var/run/redis.pid`"
-    run "sudo /usr/local/bin/redis-cli shutdown"
+    run "sudo /usr/local/bin/redis-cli -p 16379 shutdown"
   end
 end
 
@@ -175,7 +191,7 @@ namespace :puma do
   end
 
   task :stop, :roles => :app do
-    run "kill -QUIT `cat #{deploy_to}/shared/pids/puma.pid`"
+    run "kill -QUIT `cat #{current_path}/tmp/pids/puma.pid`"
   end
 
   task :restart, :roles => :app do
@@ -183,6 +199,7 @@ namespace :puma do
     find_and_execute_task("puma:start")
   end
 end
+
 after "puma:start", "background:restart"
 
 task :deploy_all do

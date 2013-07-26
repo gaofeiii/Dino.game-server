@@ -39,6 +39,23 @@ class AdvisorRecord < Ohm::Model
 				end
 			end
 		end
+
+		def clean_up!
+			total = self.all.count
+			start_time = Time.now.to_f
+			cleaned = 0
+
+			self.all.each_with_index do |record, idx|
+				if record.player.nil?
+					record.delete
+					cleaned += 1
+				end
+				system('clear')
+				puts "... finished: #{idx+1}/#{total} (#{format("%.2f", (idx+1)/total.to_f*100)}%), cleaned: #{cleaned}."
+			end
+
+			puts "Done!!! Cost #{format("%.3f", Time.now.to_f - start_time)} seconds. "
+		end
 		
 	end
 

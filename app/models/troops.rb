@@ -67,7 +67,7 @@ class Troops < Ohm::Model
 				attacker_army = army
 				bill_number = player.curr_bill_quest.try("[]", :number)
 
-				if target.is_a?(Village) && target.is_bill? && bill_number.nil?
+				if target.nil? || target.is_a?(Village) && target.is_bill? && bill_number.nil?
 					self.dissolve!
 					return
 				end
@@ -224,6 +224,11 @@ class Troops < Ohm::Model
 
 							if not target.player_id.blank?
 								target_player = target.player
+
+								if target_player.nil?
+									self.dissolve! and return
+								end
+
 								ax, ay = db.hmget(Village.key[player.village_id], :x, :y).map!(&:to_i)
 
 								# (attacker_id:nil, attacker_name:nil, defender_id:nil, defender_name:nil, gx:0, gy:0, ax:0, ay:0, locale:'en')

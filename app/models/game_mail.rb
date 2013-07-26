@@ -45,6 +45,27 @@ class GameMail < Ohm::Model
 
 	include GameMailHelper
 
+	def self.clean_up!
+		curr_time = Time.now.beginning_of_day.to_i
+
+		count = self.count
+		start_time = Time.now.to_f
+		cleaned = 0
+
+		self.all.each_with_index do |mail, i|
+			if curr_time > mail.created_at
+				mail.delete
+				cleaned += 1
+			end
+
+			system('clear')
+			puts "...Finished: #{i+1}/#{count} (#{format("%.2f", (i+1)/count.to_f*100)}%), cleaned: #{cleaned}."
+		end
+
+		puts "Done!!!"
+		puts "--- Cost #{format("%.3f", Time.now.to_f - start_time)} seconds ---"
+	end
+
 
 	def to_hash
 		hash = {

@@ -40,7 +40,7 @@ cn:
    already_use_lottery: "您已经抽过奖了，请明天再来"
 
   player:
-   whos_village: "%{player_name}"
+   whos_village: "%{player_name}的村庄"
    empty_village_name: "一座空城"
 
   resource:
