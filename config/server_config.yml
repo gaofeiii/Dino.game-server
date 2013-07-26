@@ -9,6 +9,8 @@ gaofei.local:
  redis:
   host: 127.0.0.1
   port: 6379
+  drvier: 'hiredis'
+  db: 0
 
 ali001:
  default_locale: 'cn'
@@ -21,3 +23,5 @@ ali001:
  redis:
   host: 127.0.0.1
   port: 16379
+  drvier: 'hiredis'
+  db: 0

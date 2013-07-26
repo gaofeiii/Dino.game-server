@@ -1,7 +1,8 @@
 require File.expand_path("./config/environment.rb")
-require './config/initializers/ohm.rb'
+Redis.current = Redis.new(GameServer.current.redis)
 
 puts "--- RAILS_ENV: #{Rails.env} ---"
+
 
 Ohm.redis.quit
 Dinosaur.const
