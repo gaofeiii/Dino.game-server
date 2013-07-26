@@ -32,7 +32,7 @@ Background.add_cronjob(AdvisorRecord, 'clean_up!', 30.minutes)
 Background.add_cronjob(GameMail, 'clean_up!', 6.hours)
 Background.add_cronjob(ToolBox, 'clean_all', 1.hour)
 
-Background.add_cronjob('Ohm.redis', 'bgsave', 5)
+Background.add_cronjob('Ohm.redis', 'bgsave', 5.minutes)
 
 require 'daemons'
 
