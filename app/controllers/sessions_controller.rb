@@ -55,7 +55,7 @@ class SessionsController < ApplicationController
 										:username 			=> @demo_account[:username],
 										:password 			=> @demo_account[:password],
 										:session_key 		=> @player.session_key,
-										:const_version 	=> ServerInfo.const_version
+										:const_version 	=> GameServer.const_version
 	end
 
 	# 登录
@@ -105,7 +105,7 @@ class SessionsController < ApplicationController
 		render_success 	:player 				=> @player.to_hash(:all),
 										:is_new 				=> new_player,
 										:session_key 		=> @player.session_key,
-										:const_version 	=> ServerInfo.const_version
+										:const_version 	=> GameServer.const_version
 	end
 
 	# 更新账号

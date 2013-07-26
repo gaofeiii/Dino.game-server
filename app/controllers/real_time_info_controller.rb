@@ -15,7 +15,7 @@ class RealTimeInfoController < ApplicationController
 		
 		data = {
 			:data => {
-				:version => ServerInfo.info[:info_const_version],
+				:version => GameServer.info[:info_const_version],
 				:buildings => Building.cost,
 				:guide_reward => Player.beginning_guide_reward,
 				:shopping_list => shop_list,

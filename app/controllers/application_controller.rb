@@ -84,10 +84,10 @@ class ApplicationController < ActionController::Base
 
     my_sig = case request.method
     when "GET"
-      key_str = "#{request.fullpath}--#{cdate}--#{ServerInfo.cli_pri_key}"
+      key_str = "#{request.fullpath}--#{cdate}--#{GameServer.cli_pri_key}"
       Digest::MD5.hexdigest(key_str)
     when "POST"
-      key_str = "#{request.raw_post}--#{cdate}--#{ServerInfo.cli_pri_key}"
+      key_str = "#{request.raw_post}--#{cdate}--#{GameServer.cli_pri_key}"
       Digest::MD5.hexdigest(key_str)
     else
       ""

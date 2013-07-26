@@ -200,7 +200,7 @@ end
 
 module BattleOwner
 
-	def name(locale: ServerInfo.default_locale)
+	def name(locale: GameServer.default_locale)
 		case self.class.name
 		when "Player"
 			self.nickname
@@ -228,7 +228,7 @@ module BattleOwner
 		self.class.name == "Player" ? avatar_id : 0
 	end
 
-	def to_battle_hash(locale: ServerInfo.default_locale)
+	def to_battle_hash(locale: GameServer.default_locale)
 		{
 			:type => self.class.name,
 			:id => id,

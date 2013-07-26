@@ -54,6 +54,9 @@ class Background
 		@@queue.delete(key)
 	end
 
+	## Cronjob defination.
+	# 	- duration: 執行的間隔時間
+	# 	- last_exec_time: 上次執行任務的時間
 	Cronjob = Struct.new(:duration, :last_exec_time) do
 		def to_hash
 			{
@@ -73,7 +76,8 @@ class Background
 		key = "#{klass}:cronjob:#{action}"
 		@@cronjob << key
 
-		begin_time = Time.now.beginning_of_hour.to_i
+		# begin_time = Time.now.beginning_of_hour.to_i
+		begin_time = Time.now.to_i
 
 		Ohm.redis.multi do |t|
 			t.sadd "Background:cronjobs", key
@@ -113,12 +117,15 @@ class Background
 			next_exec_time = cron['next_exec_time'].to_i
 
 			if now_time >= cron['next_exec_time'].to_i
+				puts "--- Running #{cron_key} ..."
 				key_arr = cron_key.split(':')
-				klass = key_arr.first.constantize
+				klass = eval(key_arr.first)
 				action = key_arr.last
 				
 				raise "Invalid cronjob class:#{klass} @#{__FILE__}:#{__LINE__}" if klass.nil?
-				klass.send(action)
+				klass.send(action) 
+				puts "--- Run '#{cron_key}' successfully! ---" if cron_key == 'Ohm.redis:cronjob:bgsave'
+				
 				Ohm.redis.hmset cron_key, 'next_exec_time', next_exec_time + cron['time_duration'].to_i
 			end
 

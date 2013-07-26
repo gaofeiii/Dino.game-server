@@ -17,6 +17,10 @@ class ToolBox
 		puts "* cleaned: #{cleaned}"
 	end
 
+	## Clean inactive players by time interval, params: time_interval
+	#
+	#  E.g, ToolBox.clean_player(3.months.ago)
+	#
 	def self.clean_player(time_interval)
 		if time_interval.blank?
 			raise "Should input time interval"
@@ -45,6 +49,7 @@ class ToolBox
 		puts "=== Clear #{cleaned} players. Spend #{format("%.3f", Time.now.to_f - start_time)} seconds. ==="
 	end
 
+	# Clean all the invalid app store orders.
 	def self.clean_iap
 		count = AppStoreOrder.count
 		cleaned = 0
@@ -64,6 +69,7 @@ class ToolBox
 		puts "=== Clear #{cleaned} orders. Spend #{format("%.3f", Time.now.to_f - start_time)} seconds. ==="
 	end
 
+	# Clean the monsters, params: count, default=1000
 	def self.clean_monsters(count = 1000)
 		clean_with_log do
 			# count.times do |i|
@@ -81,6 +87,7 @@ class ToolBox
 		end
 	end
 
+	# Clean the beginner, params: count, default=1000
 	def self.clean_beginner_guide(count = 1000)
 		clean_with_log do
 			arr = Ohm.redis.srandmembers(BeginnerGuide.all.key, count)
@@ -98,6 +105,7 @@ class ToolBox
 		end
 	end
 
+	# Clean the serial tasks, params: count, default=1000
 	def self.clean_serial_tasks(count = 1000)
 		clean_with_log do
 			arr = Ohm.redis.srandmembers(SerialTask.all.key, count)
@@ -115,5 +123,11 @@ class ToolBox
 		end
 	end
 
-
+	def self.clean_all
+		self.clean_player(3.months.ago)
+		self.clean_iap
+		self.clean_beginner_guide
+		self.clean_monsters
+		self.clean_serial_tasks
+	end
 end

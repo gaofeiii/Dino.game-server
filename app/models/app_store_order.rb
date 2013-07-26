@@ -28,7 +28,7 @@ class AppStoreOrder < Ohm::Model
 
   def self.validate_iap(rcp)
   	uri = URI("https://buy.itunes.apple.com/verifyReceipt")
-    uri = case ServerInfo.info[:env]
+    uri = case GameServer.info[:env]
     when "production"
       URI("https://buy.itunes.apple.com/verifyReceipt")
     else

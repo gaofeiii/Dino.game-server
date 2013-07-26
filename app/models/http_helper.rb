@@ -12,7 +12,7 @@ class HttpHelper
 
 			currTime = ::Time.now.to_i
 			req['Date'] = currTime.to_s
-			req['Sig'] = Digest::MD5.hexdigest("#{req.fullpath}--#{currTime}--#{ServerInfo.account_server_private_key}")
+			req['Sig'] = Digest::MD5.hexdigest("#{req.fullpath}--#{currTime}--#{GameServer.account_server_private_key}")
 
 			res = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(req) }
 
@@ -30,7 +30,7 @@ class HttpHelper
 
 			currTime = ::Time.now.to_i
 			req['Date'] = currTime.to_s
-			req['Sig'] = Digest::MD5.hexdigest("#{params.to_json}--#{currTime}--#{ServerInfo.account_server_private_key}")
+			req['Sig'] = Digest::MD5.hexdigest("#{params.to_json}--#{currTime}--#{GameServer.account_server_private_key}")
 
 			res = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(req) }
 

@@ -10,31 +10,6 @@ gaofei.local:
   host: 127.0.0.1
   port: 6379
 
-linode:
- default_locale: 'cn'
- ip: 106.187.91.156
- port: 10002
- account_server_ip: 106.187.91.156
- account_server_port: 10001
- info_const_version: 12
- env: production
- redis:
-  host: 127.0.0.1
-  port: 16379
-
-ubuntu:
- default_locale: 'cn'
- ip: 192.168.1.201
- port: 10002
- account_server_ip: 192.168.1.201
- account_server_port: 10001
- info_const_version: 12
- env: production
- redis:
-  host: 127.0.0.1
-  port: 16379
-
-
 ali001:
  default_locale: 'cn'
  ip: 42.120.23.41
@@ -45,4 +20,4 @@ ali001:
  env: production
  redis:
   host: 127.0.0.1
-  port: 6379
+  port: 16379

@@ -45,20 +45,18 @@ module ServerEnvHelper
 
 end
 
-class ServerInfo
-	# include OhmExtension
-
+class GameServer
 	@@cache = Hash.new
 
 	class << self
 
-		def reload!
+		def load!
 			@@cache = YAML::load_file("#{Dir::pwd}/config/server_config.yml").deep_symbolize_keys
 		end
 
 		def all
 			if @@cache.empty?
-				reload!
+				load!
 			else
 				@@cache
 			end
@@ -109,7 +107,7 @@ class ServerInfo
 
 			{
 				:data => {
-					:version => ServerInfo.info[:info_const_version],
+					:version => GameServer.info[:info_const_version],
 					:buildings => Building.cost,
 					:guide_reward => Player.beginning_guide_reward,
 					:shopping_list => shop_list,
