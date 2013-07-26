@@ -1,4 +1,5 @@
 require File.expand_path("./config/environment.rb")
+require './config/initializers/ohm.rb'
 
 puts "--- RAILS_ENV: #{Rails.env} ---"
 
@@ -40,7 +41,7 @@ require 'daemons'
 options = {
 	:app_name 	=> 'dinosaur_bgd',
  	:backtrace  => true,
- 	:log_dir		=> "#{Rails.root}/log",
+ 	:log_dir	=> "#{Rails.root}/log",
  	:log_output => true,
  	:monitor 	=> true
 }
