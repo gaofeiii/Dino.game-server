@@ -18,12 +18,27 @@ class AppStoreOrder < Ohm::Model
 
   reference :player, 	Player
 
+  PRODUCT_ID_REGS = [/com.dinosaur.gems/, /com.gaofei.dinostyle2.gems/]
+
+  PRODUCT_GEMS = {
+    "com.dinosaur.gems.usd499" => 600,
+    "com.dinosaur.gems.usd999" => 1500,
+    "com.dinosaur.gems.usd1999" => 3100,
+    "com.dinosaur.gems.usd4999" => 8000,
+    "com.dinosaur.gems.usd9999" => 18000,
+    "com.gaofei.dinostyle2.gems.us499" => 600,
+    "com.gaofei.dinostyle2.gems.us999" => 1500,
+    "com.gaofei.dinostyle2.gems.us1999" => 3100,
+    "com.gaofei.dinostyle2.gems.us4999" => 8000,
+    "com.gaofei.dinostyle2.gems.us9999" => 18000,
+  }
+
   def self.valid_orders
-    self.all.select { |order| order.product_id =~ /com.dinosaur.gems/ }
+    self.all.select { |order| order.product_id =~ /com.gaofei.dinostyle2.gems/ or order.product_id =~ /com.dinosaur.gems/}
   end
 
   def self.clean!
-    self.all.select { |order| order.delete if !(order.product_id =~ /com.dinosaur.gems/) }
+    self.all.select { |order| order.delete if !(order.product_id =~ /com.gaofei.dinostyle2.gems/ or order.product_id =~ /com.dinosaur.gems/) }
   end
 
   def self.validate_iap(rcp)
@@ -53,6 +68,7 @@ class AppStoreOrder < Ohm::Model
   	return false if (is_validated || !is_valid)
 
     result = self.class.validate_iap(base64_receipt)
+    
   	# result example:
     # result = {
     #   :receipt=> {
@@ -79,7 +95,8 @@ class AppStoreOrder < Ohm::Model
  			self.product_id = result[:receipt][:product_id]
  			self.is_validated = true
 			if self.save
-				gems = Shopping.find_gems_count_by_product_id(self.product_id)
+				# gems = Shopping.find_gems_count_by_product_id(self.product_id)
+        gems = PRODUCT_GEMS[self.product_id]
 				if gems
           self.player.receive!(:gems => gems)
         else

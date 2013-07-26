@@ -11,6 +11,19 @@ class Shopping
 	QUALITY_VALS = [1, 2, 3, 4, 5]
 	EGG_TYPES_VALS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
+	PRODUCT_ID_TO_SID = {
+		"com.dinosaur.gems.usd499" => 1001,
+	    "com.dinosaur.gems.usd999" => 1002,
+	    "com.dinosaur.gems.usd1999" => 1003,
+	    "com.dinosaur.gems.usd4999" => 1004,
+	    "com.dinosaur.gems.usd9999" => 1005,
+	    "com.gaofei.dinostyle2.gems.us499" => 1001,
+	    "com.gaofei.dinostyle2.gems.us999" => 1002,
+	    "com.gaofei.dinostyle2.gems.us1999" => 1003,
+	    "com.gaofei.dinostyle2.gems.us4999" => 1004,
+	    "com.gaofei.dinostyle2.gems.us9999" => 1005,
+	}
+
 
 	include ShoppingConst
 
@@ -27,8 +40,9 @@ class Shopping
 		end
 
 		def find_sid_by_product_id(product_id)
-			itm = find_iap_info_by_product_id(product_id)
-			return itm[:sid] if itm
+			# itm = find_iap_info_by_product_id(product_id)
+			# return itm[:sid] if itm
+			PRODUCT_ID_TO_SID[product_id]
 		end
 
 		def find_first_reward_by_sid(sid)
