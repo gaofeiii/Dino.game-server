@@ -1,5 +1,5 @@
 require File.expand_path("./config/environment.rb")
-Redis.current = Redis.new(GameServer.current.redis)
+Ohm.redis = Redis.new(GameServer.current.redis)
 
 puts "--- RAILS_ENV: #{Rails.env} ---"
 
