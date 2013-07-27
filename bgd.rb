@@ -41,7 +41,7 @@ options = {
  	:backtrace  => true,
  	:log_dir	=> "#{Rails.root}/log",
  	:log_output => true,
- 	:monitor 	=> false
+ 	:monitor 	=> true
 }
 
 Ohm.redis.quit
