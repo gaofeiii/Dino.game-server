@@ -40,7 +40,7 @@ options = {
 	:app_name 	=> 'dinosaur_bgd',
  	:backtrace  => true,
  	# :log_dir	=> "#{Rails.root}/log",
- 	:log_dir 	=> '/data/dinosaur'
+ 	:log_dir 	=> '/data/dinosaur',
  	:log_output => true,
  	:monitor 	=> true
 }
