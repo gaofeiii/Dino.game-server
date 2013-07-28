@@ -8,7 +8,7 @@ class Background
 	end
 
 	# Background.add_queue(Troops, 1, "refresh!", 1360045836)
-	def self.add_queue(klass, id, action, time)
+	def self.add_queue(klass, id, action, time, r = Ohm.redis)
 		key = "#{klass}:queue:#{action}"
 		@@queue << key
 		redis(r).multi do |t|
