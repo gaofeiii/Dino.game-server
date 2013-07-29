@@ -149,8 +149,6 @@ namespace :unicorn do
   end
 end
 
-after "unicorn:start", "background:restart"
-
 namespace :background do
   desc "Start background job"
   task :start, :roles => :app do
@@ -170,6 +168,20 @@ namespace :background do
   desc "Check background status job"
   task :status, :roles => :app do
     run "cd #{current_path} && RAILS_ENV=production bundle exec ruby bgd.rb status"
+  end
+end
+
+namespace :bg do
+  task :start, :roles => :app do
+    run "cd #{current_path} && RAILS_ENV=production bundle exec ./lib/daemons/new_bg_ctl start"
+  end
+
+  task :restart, :roles => :app do
+    run "cd #{current_path} && RAILS_ENV=production bundle exec ./lib/daemons/new_bg_ctl restart"
+  end
+
+  task :stop, :roles => :app do
+    run "cd #{current_path} && RAILS_ENV=production bundle exec ./lib/daemons/new_bg_ctl stop"
   end
 end
 
@@ -200,7 +212,7 @@ namespace :puma do
   end
 end
 
-after "puma:start", "background:restart"
+after "puma:start", "bg:restart"
 
 task :deploy_all do
   find_and_execute_task("deploy:cleanup")

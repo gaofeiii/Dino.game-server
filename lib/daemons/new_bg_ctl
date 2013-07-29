@@ -19,6 +19,5 @@ options = YAML.load(
   )).result).with_indifferent_access
     
 options[:dir_mode] = options[:dir_mode].to_sym
-options[:log_output] = true
 
 Daemons.run File.dirname(__FILE__) + "/new_bg.rb", options
