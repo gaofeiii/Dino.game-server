@@ -51,7 +51,8 @@ class GameServer
 	class << self
 
 		def load!
-			@@cache = YAML::load_file("#{Dir::pwd}/config/server_config.yml").deep_symbolize_keys
+			# @@cache = YAML::load_file("#{Dir::pwd}/config/server_config.yml").deep_symbolize_keys
+			@@cache = YAML::load_file("#{File.dirname(__FILE__)}/server_config.yml").deep_symbolize_keys
 		end
 
 		def all
