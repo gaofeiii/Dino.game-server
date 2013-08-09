@@ -13,8 +13,7 @@ class ToolBox
 		system('clear') and puts "\e[H\e[2J"
 		puts "-- #{name}..." || "--- [No title]"
 		puts
-		puts "* finished: #{curr}/#{total}(#{format("%.1f", curr/total.to_f*100)}%)"
-		puts "* cleaned: #{cleaned}"
+		STDOUT.write "\r* finished: #{curr}/#{total}(#{format("%.1f", curr/total.to_f*100)}%)\n\n* cleaned: #{cleaned}"
 	end
 
 	## Clean inactive players by time interval, params: time_interval
@@ -37,8 +36,7 @@ class ToolBox
 				unless player.level < 10 && player.app_store_orders.size == 0
 					player.delete
 					cleaned += 1
-					system('clear') and puts "\e[H\e[2J"
-					puts "--- Cleaned: #{cleaned} | Finished: #{i + 1}/#{count} (#{format("%.2f", (i+1)/count.to_f * 100)}%) ---"
+					STDOUT.write "\r--- Cleaned: #{cleaned} | Finished: #{i + 1}/#{count} (#{format("%.2f", (i+1)/count.to_f * 100)}%) ---"
 				end
 			end
 		end
@@ -46,7 +44,7 @@ class ToolBox
 		Country.first.refresh_used_town_nodes
 
 		puts "Done!!!"
-		puts "=== Clear #{cleaned} players. Spend #{format("%.3f", Time.now.to_f - start_time)} seconds. ==="
+		STDOUT.write "\r=== Clear #{cleaned} players. Spend #{format("%.3f", Time.now.to_f - start_time)} seconds. ==="
 	end
 
 	def self.clean_players
@@ -70,8 +68,7 @@ class ToolBox
 				cleaned += 1
 			end
 
-			system('clear') and puts "\e[H\e[2J"
-			puts "--- Cleaned: #{cleaned} | Finished: #{i + 1}/#{count} (#{format("%.2f", (i+1)/count.to_f * 100)}%) ---"
+			STDOUT.write "\r--- Cleaned: #{cleaned} | Finished: #{i + 1}/#{count} (#{format("%.2f", (i+1)/count.to_f * 100)}%) ---"
 		end
 	end
 
@@ -88,7 +85,7 @@ class ToolBox
 			end
 
 			system('clear')
-			puts "--- Finished: #{i+1}/#{count} (#{format("%.2f", (i+1)/count.to_f*100)}%) ---"
+			STDOUT.write "\r--- Finished: #{i+1}/#{count} (#{format("%.2f", (i+1)/count.to_f*100)}%) ---"
 		end
 
 		puts "Done!!!"
