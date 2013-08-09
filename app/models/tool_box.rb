@@ -49,6 +49,32 @@ class ToolBox
 		puts "=== Clear #{cleaned} players. Spend #{format("%.3f", Time.now.to_f - start_time)} seconds. ==="
 	end
 
+	def self.clean_players
+		count = Player.none_npc.count
+		cleaned = 0
+
+		start_time = Time.now.to_f
+
+		Player.none_npc.each_with_index do |player, i|
+			if player.village.nil
+				player.delete
+				cleaned += 1
+			elsif player.level < 3 && player.last_login_time < 2.weeks.ago.to_i && player.app_store_orders.count <= 0
+				player.delete
+				cleaned += 1
+			elsif player.level >= 3 && player.level < 10 && player.last_login_time < 1.months.ago.to_i && player.app_store_orders.count <= 0
+				player.delete
+				cleaned += 1
+			elsif player.level >= 10 && player.last_login_time < 3.months.ago.to_i && player.app_store_orders.count <= 0
+				player.delete
+				cleaned += 1
+			end
+			
+			system('clear') and puts "\e[H\e[2J"
+			puts "--- Cleaned: #{cleaned} | Finished: #{i + 1}/#{count} (#{format("%.2f", (i+1)/count.to_f * 100)}%) ---"
+		end
+	end
+
 	# Clean all the invalid app store orders.
 	def self.clean_iap
 		count = AppStoreOrder.count
