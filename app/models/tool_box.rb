@@ -10,9 +10,7 @@ class ToolBox
 			return nil
 		end
 
-		system('clear') and puts "\e[H\e[2J"
 		puts "-- #{name}..." || "--- [No title]"
-		puts
 		STDOUT.write "\r* finished: #{curr}/#{total}(#{format("%.1f", curr/total.to_f*100)}%)\n\n* cleaned: #{cleaned}"
 	end
 
