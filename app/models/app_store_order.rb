@@ -54,9 +54,9 @@ class AppStoreOrder < Ohm::Model
   	# http = Net::HTTP.new(uri.host, uri.port)
   	# http.use_ssl = true
 
-  	# request = Net::HTTP::Post.new(uri.request_uri)
-  	# request.content_type = 'application/json'
-  	# request.body = {'receipt-data' => rcp}.to_json
+  	request = Net::HTTP::Post.new(uri.request_uri)
+  	request.content_type = 'application/json'
+  	request.body = {'receipt-data' => rcp}.to_json
 
   	# res = http.start{ |h| h.request(request) }
     res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true){ |h| h.request(request) }
