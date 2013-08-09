@@ -56,7 +56,7 @@ class ToolBox
 		start_time = Time.now.to_f
 
 		Player.none_npc.each_with_index do |player, i|
-			if player.village.nil
+			if player.village.nil?
 				player.delete
 				cleaned += 1
 			elsif player.level < 3 && player.last_login_time < 2.weeks.ago.to_i && player.app_store_orders.count <= 0
@@ -69,7 +69,7 @@ class ToolBox
 				player.delete
 				cleaned += 1
 			end
-			
+
 			system('clear') and puts "\e[H\e[2J"
 			puts "--- Cleaned: #{cleaned} | Finished: #{i + 1}/#{count} (#{format("%.2f", (i+1)/count.to_f * 100)}%) ---"
 		end
