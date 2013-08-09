@@ -43,21 +43,27 @@ class AppStoreOrder < Ohm::Model
 
   def self.validate_iap(rcp)
   	uri = URI("https://buy.itunes.apple.com/verifyReceipt")
-    uri = case GameServer.info[:env]
-    when "production"
-      URI("https://buy.itunes.apple.com/verifyReceipt")
-    else
-      URI("https://sandbox.itunes.apple.com/verifyReceipt")
-    end
-  	http = Net::HTTP.new(uri.host, uri.port)
-  	http.use_ssl = true
+    uri_dev = URI('https://sandbox.itunes.apple.com/verifyReceipt')
+    # uri = case GameServer.info[:env]
+    # when "production"
+    #   URI("https://buy.itunes.apple.com/verifyReceipt")
+    # else
+    #   URI("https://sandbox.itunes.apple.com/verifyReceipt")
+    # end
 
-  	request = Net::HTTP::Post.new(uri.request_uri)
-  	request.content_type = 'application/json'
-  	request.body = {'receipt-data' => rcp}.to_json
+  	# http = Net::HTTP.new(uri.host, uri.port)
+  	# http.use_ssl = true
+
+  	# request = Net::HTTP::Post.new(uri.request_uri)
+  	# request.content_type = 'application/json'
+  	# request.body = {'receipt-data' => rcp}.to_json
 
   	# res = http.start{ |h| h.request(request) }
     res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true){ |h| h.request(request) }
+
+    if res.body['status'] != 0
+      res = Net::HTTP.start(uri_dev.hostname, uri_dev.port, :use_ssl => true){ |h| h.request(request) }
+    end
 
   	result = JSON.parse(res.body)
 
@@ -70,6 +76,7 @@ class AppStoreOrder < Ohm::Model
     result = self.class.validate_iap(base64_receipt)
     
   	# result example:
+    # 
     # result = {
     #   :receipt=> {
     #     :original_purchase_date_pst=>"2013-03-24 00:15:36 America/Los_Angeles", 

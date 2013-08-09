@@ -11,7 +11,7 @@ class ToolBox
 		end
 
 		puts "-- #{name}..." || "--- [No title]"
-		STDOUT.write "\r* finished: #{curr}/#{total}(#{format("%.1f", curr/total.to_f*100)}%)\n\n* cleaned: #{cleaned}"
+		STDOUT.write "\r* finished: #{curr}/#{total}(#{format("%.1f", curr/total.to_f*100)}%)\n* cleaned: #{cleaned}"
 	end
 
 	## Clean inactive players by time interval, params: time_interval

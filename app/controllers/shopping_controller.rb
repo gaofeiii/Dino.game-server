@@ -5,8 +5,8 @@ class ShoppingController < ApplicationController
 		order = AppStoreOrder.find(:transaction_id => params[:transaction_id]).first
 		if order.nil?
 			order = AppStoreOrder.create 	:base64_receipt => params[:base64_receipt], 
-																		:transaction_id => params[:transaction_id],
-																		:player_id => @player.id
+											:transaction_id => params[:transaction_id],
+											:player_id => @player.id
 		end
 
 		if order.validate!
