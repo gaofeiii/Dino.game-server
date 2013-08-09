@@ -61,11 +61,13 @@ class AppStoreOrder < Ohm::Model
   	# res = http.start{ |h| h.request(request) }
     res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true){ |h| h.request(request) }
 
+    result = JSON.parse(res.body)
+
     if res.body['status'] != 0
       res = Net::HTTP.start(uri_dev.hostname, uri_dev.port, :use_ssl => true){ |h| h.request(request) }
     end
 
-  	result = JSON.parse(res.body)
+    result = JSON.parse(res.body)    
 
     result.deep_symbolize_keys
   end
