@@ -5,7 +5,7 @@ require 'bundler/capistrano'
 # Server list
 @servers = {
   'ali001' => "42.120.23.41",
-  'local'  => "192.168.1.201"
+  'local'  => "192.168.1.204"
 }
 
 # Manually choose an target server.
