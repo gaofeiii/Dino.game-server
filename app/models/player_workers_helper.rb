@@ -15,8 +15,9 @@ module PlayerWorkersHelper
 
 		# The size of building or researching queue.
 		def action_queue_size
-			bd_size = village.buildings.find(:type => Building.hashes[:residential], :status => Building::STATUS[:finished]).size
-			self.tech_worker_number * bd_size
+			# bd_size = village.buildings.find(:type => Building.hashes[:residential], :status => Building::STATUS[:finished]).size
+			# self.tech_worker_number * bd_size
+			4
 		end
 
 		def curr_research_queue_size

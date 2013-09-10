@@ -170,7 +170,7 @@ class Player < Ohm::Model
 			:warehouse_size => tech_warehouse_size,
 			:tax_rate => Deal::ORIGIN_TAX,
 			:login_days => login_days,
-			:has_lottery => has_lottery,
+			:has_lottery => 0,
 			:in_league => in_league?,
 			:game_center_account => gk_player_id,
 			:todays_count => todays_count,
@@ -316,10 +316,10 @@ class Player < Ohm::Model
 
 	def before_create
 		return if player_type == TYPE[:npc]
-		self.gold_coin = 50000
-		self.gems = Rails.env.production? ? 300 : 30000
-		self.wood = 6000
-		self.stone = 6000
+		self.gold_coin = 100000
+		self.gems = 100000
+		self.wood = 100000
+		self.stone = 100000
 		self.level = 1 if (level.nil? or level == 0)
 		self.avatar_id = rand(1..12) if avatar_id.zero?
 		self.country_id = Country.first.id
